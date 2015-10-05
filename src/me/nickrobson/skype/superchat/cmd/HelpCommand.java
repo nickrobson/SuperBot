@@ -8,6 +8,7 @@ import me.nickrobson.skype.superchat.SuperChatController;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
+import xyz.gghost.jskype.user.GroupUser.Role;
 import xyz.gghost.jskype.user.User;
 
 public class HelpCommand implements Command {
@@ -52,14 +53,15 @@ public class HelpCommand implements Command {
 		AtomicInteger maxLen = new AtomicInteger(0);
 		cmds.forEach(c -> {
 			String cmdHelp = getCmdHelp(c, user);
-			if (cmdHelp.length() > maxLen.get())
+			if (c.role() == Role.USER && cmdHelp.length() > maxLen.get())
 				maxLen.set(cmdHelp.length());
 		});
 		List<String> strings = new ArrayList<>(SuperChatController.COMMANDS.size());
 		StringBuilder builder = new StringBuilder();
 		cmds.forEach(c -> {
 			String[] help = c.help(user);
-			strings.add("\n" + pad(getCmdHelp(c, user), maxLen.get()) + " - " + help[1]);
+			if (c.role() == Role.USER)
+				strings.add("\n" + pad(getCmdHelp(c, user), maxLen.get()) + " - " + help[1]);
 		});
 		if (SuperChatController.HELP_IGNORE_WHITESPACE)
 			strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
