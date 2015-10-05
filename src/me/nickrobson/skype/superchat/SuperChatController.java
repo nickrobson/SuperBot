@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import me.nickrobson.skype.superchat.cmd.Command;
+import me.nickrobson.skype.superchat.cmd.GitCommand;
 import me.nickrobson.skype.superchat.cmd.HelpCommand;
 import me.nickrobson.skype.superchat.cmd.ProgressCommand;
 import me.nickrobson.skype.superchat.cmd.SetProgressCommand;
@@ -52,6 +53,8 @@ public class SuperChatController {
 				}
 			} catch (IOException ex) {}
 			
+			SuperChatShows.setup();
+			
 			load();
 			commands();
 			
@@ -87,6 +90,7 @@ public class SuperChatController {
 		register(new ShowsCommand());
 		register(new StopCommand());
 		register(new WipeCommand());
+		register(new GitCommand());
 	}
 
 	public static void load() {

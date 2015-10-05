@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import me.nickrobson.skype.superchat.cmd.Command;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.event.EventListener;
@@ -59,11 +60,27 @@ public class SuperChatListener implements EventListener {
 		return sb.toString();
 	}
 	
+	public static Map<String, String> getProgress(Show show) {
+		return getProgress(show.getMainName());
+	}
+	
 	public static Map<String, String> getProgress(String show) {
 		Map<String, String> prg = PROGRESS.get(show);
 		if (prg == null)
 			prg = new HashMap<>();
 		return prg;
+	}
+	
+	public static String whichEarlier(String a, String b) {
+		String[] ad = a.substring(1).split("E");
+		String[] bd = b.substring(1).split("E");
+		int as = Integer.parseInt(ad[0]);
+		int ae = Integer.parseInt(ad[1]);
+		int bs = Integer.parseInt(bd[0]);
+		int be = Integer.parseInt(bd[1]);
+		if (as < bs) return a;
+		if (bs < as) return b;
+		return ae < be ? a : b;
 	}
 	
 	public void join(UserJoinEvent event) {

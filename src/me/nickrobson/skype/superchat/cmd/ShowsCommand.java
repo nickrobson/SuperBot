@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import me.nickrobson.skype.superchat.SuperChatShows;
+import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
@@ -24,17 +25,15 @@ public class ShowsCommand implements Command {
 	@Override
 	public void exec(User user, Group group, String used, String[] args, Message message) {
 		List<String> send = new LinkedList<>();
-		for (String key : SuperChatShows.DISPLAY_NAMES.keySet()) {
+		for (Show show : SuperChatShows.TRACKED_SHOWS) {
 			StringBuilder sb = new StringBuilder();
-			for (String s : SuperChatShows.TRACKED_SHOWS) {
-				if (s.startsWith(key + ":")) {
-					if (sb.length() > 0)
-						sb.append(", ");
-					sb.append(s.split(":", 2)[1]);
-				}
+			for (String s : show.getNames()) {
+				if (sb.length() > 0)
+					sb.append(", ");
+				sb.append(s);
 			}
 			if (sb.length() > 0)
-				send.add(FormatUtils.bold(FormatUtils.encodeRawText(SuperChatShows.DISPLAY_NAMES.get(key) + ": ")) + FormatUtils.encodeRawText(sb.toString()));
+				send.add(FormatUtils.bold(FormatUtils.encodeRawText(show.getDisplay() + ": ")) + FormatUtils.encodeRawText(sb.toString()));
 		}
 		send.sort(null);
 		String toSend = "";

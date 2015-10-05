@@ -1,11 +1,5 @@
 package me.nickrobson.skype.superchat.cmd;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import me.nickrobson.skype.superchat.SuperChatListener;
-import me.nickrobson.skype.superchat.SuperChatShows;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
@@ -42,19 +36,4 @@ public interface Command {
 		}
 	}
 	
-	default MessageBuilder show(String show, MessageBuilder builder) {
-		Map<String, String> prg = SuperChatListener.getProgress(show);
-		List<String> eps = prg.values().stream()
-				.filter(s -> SuperChatShows.EPISODE_PATTERN.matcher(s).matches())
-				.sorted((e1, e2) -> SuperChatShows.whichEarlier(e1, e2).equals(e1) ? -1 : 1)
-				.collect(Collectors.toList());
-		builder.addHtml(FormatUtils.bold(FormatUtils.encodeRawText("Episode progress: " + SuperChatShows.DISPLAY_NAMES.get(show))));
-		if (eps.size() > 0) {
-			builder.addText("\n- Earliest: " + eps.get(0) + " (" + SuperChatListener.getUsersOn(show, eps.get(0)) + ")");
-			builder.addText("\n- Latest:   " + eps.get(eps.size() - 1) + " (" + SuperChatListener.getUsersOn(show, eps.get(eps.size() - 1)) + ")");
-		} else {
-			builder.addText("\nNo progress submitted.");
-		}
-		return builder;
-	}
 }
