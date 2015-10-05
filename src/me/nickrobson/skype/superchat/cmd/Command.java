@@ -21,6 +21,8 @@ public interface Command {
 		return GroupUser.Role.USER;
 	}
 	
+	String[] help(User user);
+	
 	void exec(User user, Group group, String used, String[] args, Message message);
 	
 	/* UTILITY FUNCTIONS */

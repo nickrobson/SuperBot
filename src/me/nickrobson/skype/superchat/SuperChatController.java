@@ -33,6 +33,8 @@ public class SuperChatController {
 	
 	public static SkypeAPI skype;
 	
+	public static boolean HELP_IGNORE_WHITESPACE = false;
+	
 	public static void main(String[] args) {
 		try {
 			File config = new File("config.cfg");
@@ -53,13 +55,15 @@ public class SuperChatController {
 			load();
 			commands();
 			
+			HELP_IGNORE_WHITESPACE = properties.getOrDefault("help.whitespace", "false").equalsIgnoreCase("true");
+			
 			System.out.println("Logging in with " + properties.get("username") + " : ********");
 			
 			skype = new SkypeAPI(properties.get("username"), properties.get("password"));
 			skype.login();
 			skype.getEventManager().registerListener(new SuperChatListener());
 			
-			Thread.sleep(5000);
+			Thread.sleep(2000);
 
 			Group g = new GroupInfoPacket(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");
 			if (g != null)

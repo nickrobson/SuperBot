@@ -15,6 +15,11 @@ public class ProgressCommand implements Command {
 	}
 
 	@Override
+	public String[] help(User user) {
+		return new String[]{"(shows...)", "see progress on all or provided shows"};
+	}
+
+	@Override
 	public void exec(User user, Group group, String used, String[] args, Message message) {
 		MessageBuilder builder = new MessageBuilder();
 		boolean sent = false;
@@ -23,7 +28,7 @@ public class ProgressCommand implements Command {
 			sent = true;
 			for (int i = 0; i < args.length; i++) {
 				String main = SuperChatShows.getMainName(args[i]);
-				if (i > 1)
+				if (i > 0)
 					builder.addText("\n");
 				if (main == null)
 					builder = builder.addText("Invalid show: " + args[i]);

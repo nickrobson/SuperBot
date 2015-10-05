@@ -17,6 +17,11 @@ public class SetProgressCommand implements Command {
 	}
 
 	@Override
+	public String[] help(User user) {
+		return new String[]{"[show] [episode]", "set your progress on [show] to [episode]"};
+	}
+
+	@Override
 	public void exec(User user, Group group, String used, String[] args, Message message) {
 		if (args.length < 2) {
 			sendMessage(group, "Incorrect usage: `~me [show] [episode]`", true);

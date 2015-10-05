@@ -22,7 +22,14 @@ public class WipeCommand implements Command {
 	}
 
 	@Override
+	public String[] help(User user) {
+		return new String[]{"[user]", "wipe [user]'s progress"};
+	}
+
+	@Override
 	public void exec(User user, Group group, String used, String[] args, Message message) {
+		if (args.length == 0)
+			return;
 		String toRemove = args[0];
 		AtomicBoolean wiped = SuperChatListener.wipe(toRemove);
 		if (wiped.get()) {

@@ -19,6 +19,11 @@ public class StopCommand implements Command {
 	}
 
 	@Override
+	public String[] help(User user) {
+		return new String[]{"", "stop the bot (restarting it)"};
+	}
+
+	@Override
 	public void exec(User user, Group group, String used, String[] args, Message message) {
 		sendMessage(group, "Goodbye!", true);
 		SuperChatController.save();

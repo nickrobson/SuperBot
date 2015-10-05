@@ -17,6 +17,11 @@ public class ShowsCommand implements Command {
 	}
 
 	@Override
+	public String[] help(User user) {
+		return new String[]{"", "see which shows are being tracked"};
+	}
+
+	@Override
 	public void exec(User user, Group group, String used, String[] args, Message message) {
 		List<String> send = new LinkedList<>();
 		for (String key : SuperChatShows.DISPLAY_NAMES.keySet()) {
