@@ -67,16 +67,18 @@ public class HelpCommand implements Command {
 			strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
 		else
 			strings.sort(null);
+		String welcome = SuperChatController.WELCOME_MESSAGE;
+		int mid = welcome.length() / 2;
+		String wel = pad(welcome.substring(0, mid), maxLen.get());
+		String come = welcome.substring(mid);
 		maxLen.set(0);
 		strings.forEach(s -> {
 			if (s.length() > maxLen.get())
 				maxLen.set(s.length());
 			builder.append(s);
 		});
-		String welcome = SuperChatController.WELCOME_MESSAGE;
-		while (welcome.length() < strings.get(0).length())
-			welcome = " " + welcome + " ";
-		sendMessage(group, FormatUtils.bold(FormatUtils.encodeRawText(welcome.replaceFirst("\\s+$", ""))) + FormatUtils.code(FormatUtils.encodeRawText(builder.toString())), false);
+		String spaces = SuperChatController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
+		sendMessage(group, FormatUtils.code(FormatUtils.encodeRawText(spaces)) + FormatUtils.bold(FormatUtils.encodeRawText(wel.trim() + come)) + FormatUtils.code(FormatUtils.encodeRawText(builder.toString())), false);
 	}
 	
 

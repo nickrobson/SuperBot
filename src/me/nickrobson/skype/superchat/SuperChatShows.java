@@ -7,11 +7,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class SuperChatShows {
-	
-	public static final Pattern EPISODE_PATTERN = Pattern.compile("S[0-9]E[0-9]{1,2}");
-	
+
 	public static final List<Show> TRACKED_SHOWS = new ArrayList<>();
 	public static final Map<String, Show> SHOWS_BY_NAME = new HashMap<>();
+	public static final Pattern EPISODE_PATTERN = Pattern.compile("S[0-9]E[0-9]{1,2}");
 	
 	public static void setup() {
 		if (TRACKED_SHOWS.size() > 0)

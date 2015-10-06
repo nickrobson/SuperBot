@@ -35,6 +35,7 @@ public class SuperChatController {
 	public static SkypeAPI skype;
 	
 	public static boolean HELP_IGNORE_WHITESPACE = false;
+	public static boolean HELP_WELCOME_CENTRED = true;
 	
 	public static void main(String[] args) {
 		try {
@@ -57,8 +58,9 @@ public class SuperChatController {
 			
 			load();
 			commands();
-			
+
 			HELP_IGNORE_WHITESPACE = properties.getOrDefault("help.whitespace", "false").equalsIgnoreCase("true");
+			HELP_WELCOME_CENTRED = properties.getOrDefault("help.welcome.centred", "false").equalsIgnoreCase("true");
 			
 			System.out.println("Logging in with " + properties.get("username") + " : ********");
 			
