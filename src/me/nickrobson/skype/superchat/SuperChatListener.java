@@ -102,11 +102,11 @@ public class SuperChatListener implements EventListener {
 		String msg = message.getMessage().trim();
 		String[] words = msg.split("\\s+");
 		
-		if (words.length == 0 || !words[0].startsWith("~")) {
+		if (words.length == 0 || !words[0].startsWith(SuperChatController.COMMAND_PREFIX)) {
 			return;
 		}
 		
-		String cmdName = words[0].substring(1).toLowerCase();
+		String cmdName = words[0].substring(SuperChatController.COMMAND_PREFIX.length()).toLowerCase();
 		Command cmd = SuperChatController.COMMANDS.get(cmdName);
 		
 		if (cmd == null)

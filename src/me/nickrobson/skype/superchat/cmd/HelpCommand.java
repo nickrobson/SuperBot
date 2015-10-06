@@ -24,9 +24,10 @@ public class HelpCommand implements Command {
 	}
 	
 	String getCmdHelp(Command cmd, User user) {
-		String s = "";
+		String pre = SuperChatController.COMMAND_PREFIX;
+		String s = pre;
 		for (String n : cmd.names()) {
-			if (s.length() > 0) s += ",";
+			if (s.length() > pre.length()) s += ",";
 			s += n.trim();
 		}
 		String cmdHelp = cmd.help(user)[0];
@@ -78,7 +79,7 @@ public class HelpCommand implements Command {
 			builder.append(s);
 		});
 		String spaces = SuperChatController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
-		sendMessage(group, FormatUtils.code(FormatUtils.encodeRawText(spaces)) + FormatUtils.bold(FormatUtils.encodeRawText(wel.trim() + come)) + FormatUtils.code(FormatUtils.encodeRawText(builder.toString())), false);
+		sendMessage(group, FormatUtils.code(FormatUtils.encodeRawText(spaces.substring(1))) + FormatUtils.bold(FormatUtils.encodeRawText(wel.trim() + come)) + FormatUtils.code(FormatUtils.encodeRawText(builder.toString())), false);
 	}
 	
 

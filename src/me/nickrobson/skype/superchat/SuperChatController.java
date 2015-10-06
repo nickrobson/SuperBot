@@ -29,13 +29,15 @@ public class SuperChatController {
 	
 	public static final Map<String, Command> COMMANDS = new HashMap<>();
 	
+	public static final String COMMAND_PREFIX = "~";
+	
 	public static final String WELCOME_MESSAGE = "Welcome to the SuperChat";
 	public static final String WELCOME_MESSAGE_JOIN = "Welcome, %s, to the SuperChat";
 	
-	public static SkypeAPI skype;
-	
 	public static boolean HELP_IGNORE_WHITESPACE = false;
 	public static boolean HELP_WELCOME_CENTRED = true;
+	
+	public static SkypeAPI skype;
 	
 	public static void main(String[] args) {
 		try {
@@ -68,7 +70,7 @@ public class SuperChatController {
 			skype.login();
 			skype.getEventManager().registerListener(new SuperChatListener());
 			
-			Thread.sleep(2000);
+			Thread.sleep(500);
 
 			Group g = new GroupInfoPacket(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");
 			if (g != null)
