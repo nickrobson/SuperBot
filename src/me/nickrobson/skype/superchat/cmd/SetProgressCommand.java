@@ -3,27 +3,26 @@ package me.nickrobson.skype.superchat.cmd;
 import java.util.Map;
 
 import me.nickrobson.skype.superchat.SuperChatController;
-import me.nickrobson.skype.superchat.SuperChatListener;
 import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.User;
+import xyz.gghost.jskype.user.GroupUser;
 
 public class SetProgressCommand implements Command {
 
 	@Override
 	public String[] names() {
-		return new String[]{ "me" };
+		return new String[]{ "me", "setprg" };
 	}
 
 	@Override
-	public String[] help(User user) {
+	public String[] help(GroupUser user) {
 		return new String[]{"[show] [episode]", "set your progress on [show] to [episode]"};
 	}
 
 	@Override
-	public void exec(User user, Group group, String used, String[] args, Message message) {
+	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
 		if (args.length < 2) {
 			sendMessage(group, "Incorrect usage: `~me [show] [episode]`", true);
 		} else {
@@ -35,10 +34,10 @@ public class SetProgressCommand implements Command {
 			} else if (!SuperChatShows.EPISODE_PATTERN.matcher(ep).matches()) {
 				sendMessage(group, "Invalid episode: " + ep + " (doesn't match SxEyy format)", true);
 			} else {
-				Map<String, String> prg = SuperChatListener.getProgress(show);
-				prg.put(user.getUsername(), ep);
-				SuperChatListener.PROGRESS.put(show.getMainName(), prg);
-				sendMessage(group, "Set " + user.getDisplayName() + "'s progress on " + show.getDisplay() + " to " + ep, true);
+				Map<String, String> prg = SuperChatController.getProgress(show);
+				prg.put(user.getUser().getUsername(), ep);
+				SuperChatController.PROGRESS.put(show.getMainName(), prg);
+				sendMessage(group, "Set " + user.getUser().getDisplayName() + "'s progress on " + show.getDisplay() + " to " + ep, true);
 				SuperChatController.save();
 			}
 		}

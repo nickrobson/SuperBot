@@ -8,7 +8,7 @@ import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.User;
+import xyz.gghost.jskype.user.GroupUser;
 
 public class ShowsCommand implements Command {
 
@@ -18,12 +18,12 @@ public class ShowsCommand implements Command {
 	}
 
 	@Override
-	public String[] help(User user) {
+	public String[] help(GroupUser user) {
 		return new String[]{"", "see which shows are being tracked"};
 	}
 
 	@Override
-	public void exec(User user, Group group, String used, String[] args, Message message) {
+	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
 		List<String> send = new LinkedList<>();
 		for (Show show : SuperChatShows.TRACKED_SHOWS) {
 			StringBuilder sb = new StringBuilder();

@@ -5,7 +5,6 @@ import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
 import xyz.gghost.jskype.message.MessageBuilder;
 import xyz.gghost.jskype.user.GroupUser;
-import xyz.gghost.jskype.user.User;
 
 public interface Command {
 	
@@ -15,9 +14,9 @@ public interface Command {
 		return GroupUser.Role.USER;
 	}
 	
-	String[] help(User user);
+	String[] help(GroupUser user);
 	
-	void exec(User user, Group group, String used, String[] args, Message message);
+	void exec(GroupUser user, Group group, String used, String[] args, Message message);
 	
 	/* UTILITY FUNCTIONS */
 

@@ -2,7 +2,7 @@ package me.nickrobson.skype.superchat.cmd;
 
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.User;
+import xyz.gghost.jskype.user.GroupUser;
 
 public class GitCommand implements Command {
 
@@ -12,13 +12,13 @@ public class GitCommand implements Command {
 	}
 
 	@Override
-	public String[] help(User user) {
+	public String[] help(GroupUser user) {
 		return new String[]{ "", "tells you the bot's git repo" };
 	}
 
 	@Override
-	public void exec(User user, Group group, String used, String[] args, Message message) {
-		group.sendMessage("<a href=\"http://github.com/nickrobson/SuperChat/\">Click me for the GitHub repo!</a>");
+	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
+		group.sendMessage("<a href=\"http://github.com/nickrobson/SuperChat/\">http://github.com/nickrobson/SuperChat/</a>");
 	}
 
 }

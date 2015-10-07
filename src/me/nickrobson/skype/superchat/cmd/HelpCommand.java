@@ -8,8 +8,8 @@ import me.nickrobson.skype.superchat.SuperChatController;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
+import xyz.gghost.jskype.user.GroupUser;
 import xyz.gghost.jskype.user.GroupUser.Role;
-import xyz.gghost.jskype.user.User;
 
 public class HelpCommand implements Command {
 
@@ -19,11 +19,11 @@ public class HelpCommand implements Command {
 	}
 
 	@Override
-	public String[] help(User user) {
+	public String[] help(GroupUser user) {
 		return new String[]{"", "see this help message"};
 	}
 	
-	String getCmdHelp(Command cmd, User user) {
+	String getCmdHelp(Command cmd, GroupUser user) {
 		String pre = SuperChatController.COMMAND_PREFIX;
 		String s = pre;
 		for (String n : cmd.names()) {
@@ -43,7 +43,7 @@ public class HelpCommand implements Command {
 	}
 
 	@Override
-	public void exec(User user, Group group, String used, String[] args, Message message) {
+	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
 		List<Command> cmds = new ArrayList<>(SuperChatController.COMMANDS.size());
 		SuperChatController.COMMANDS.forEach((name, cmd) -> {
 			boolean go = true;

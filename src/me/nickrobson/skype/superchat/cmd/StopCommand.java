@@ -4,7 +4,6 @@ import me.nickrobson.skype.superchat.SuperChatController;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.Message;
 import xyz.gghost.jskype.user.GroupUser;
-import xyz.gghost.jskype.user.User;
 
 public class StopCommand implements Command {
 
@@ -19,12 +18,12 @@ public class StopCommand implements Command {
 	}
 
 	@Override
-	public String[] help(User user) {
+	public String[] help(GroupUser user) {
 		return new String[]{"", "stop the bot (restarting it)"};
 	}
 
 	@Override
-	public void exec(User user, Group group, String used, String[] args, Message message) {
+	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
 		sendMessage(group, "Goodbye!", true);
 		SuperChatController.save();
 		System.exit(0);

@@ -6,9 +6,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
+import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import me.nickrobson.skype.superchat.cmd.Command;
 import me.nickrobson.skype.superchat.cmd.GitCommand;
 import me.nickrobson.skype.superchat.cmd.HelpCommand;
@@ -28,6 +33,7 @@ import xyz.gghost.jskype.message.MessageBuilder;
 public class SuperChatController {
 	
 	public static final Map<String, Command> COMMANDS = new HashMap<>();
+	public static final Map<String, Map<String, String>> PROGRESS = new TreeMap<>();
 	
 	public static final String COMMAND_PREFIX = "~";
 	
@@ -111,7 +117,7 @@ public class SuperChatController {
 						String[] data = line.split("=", 2);
 						map.put(data[0], data[1]);
 					}
-					SuperChatListener.PROGRESS.put(file.getName().substring(0, file.getName().length() - 4), map);
+					PROGRESS.put(file.getName().substring(0, file.getName().length() - 4), map);
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
@@ -120,7 +126,7 @@ public class SuperChatController {
  	}
 
 	public static void save() {
-		Map<String, Map<String, String>> map = SuperChatListener.PROGRESS;
+		Map<String, Map<String, String>> map = PROGRESS;
 		File dir = new File("superchat_data");
 		if (!dir.exists())
 			dir.mkdir();
@@ -137,6 +143,61 @@ public class SuperChatController {
 				ex.printStackTrace();
 			}
 		}
+	}
+	
+	public static String whichEarlier(String a, String b) {
+		String[] ad = a.substring(1).split("E");
+		String[] bd = b.substring(1).split("E");
+		int as = Integer.parseInt(ad[0]);
+		int ae = Integer.parseInt(ad[1]);
+		int bs = Integer.parseInt(bd[0]);
+		int be = Integer.parseInt(bd[1]);
+		if (as < bs) return a;
+		if (bs < as) return b;
+		return ae < be ? a : b;
+	}
+	
+	public static AtomicBoolean wipe(String toRemove) {
+		AtomicBoolean wiped = new AtomicBoolean(false);
+		PROGRESS.keySet().forEach(s -> {
+			Map<String, String> prg = PROGRESS.get(s);
+			if (prg.containsKey(toRemove)) {
+				prg.remove(toRemove);
+				wiped.set(true);
+				PROGRESS.put(s, prg);
+			}
+		});
+		return wiped;
+	}
+
+	public static String getUsersOn(String show, String ep) {
+		if (!SuperChatShows.EPISODE_PATTERN.matcher(ep).matches())
+			return null;
+		
+		List<String> users = getProgress(show).entrySet().stream()
+			.filter(e -> e.getValue().equals(ep))
+			.map(e -> e.getKey())
+			.collect(Collectors.toList());
+		
+		StringBuilder sb = new StringBuilder();
+		for (String s : users) {
+			if (sb.length() > 0)
+				sb.append(", ");
+			sb.append(s);
+		}
+		return sb.toString();
+	}
+	
+	public static Map<String, String> getProgress(Show show) {
+		return getProgress(show == null ? null : show.getMainName());
+	}
+	
+	public static Map<String, String> getProgress(String show) {
+		if (show == null) return null;
+		Map<String, String> prg = PROGRESS.get(show);
+		if (prg == null)
+			prg = new HashMap<>();
+		return prg;
 	}
 
 }
