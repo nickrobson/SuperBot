@@ -16,7 +16,7 @@ public class SuperChatListener implements EventListener {
 	public static void sendMessage(Group group, String message, boolean encode) {
 		if (encode)
 			message = FormatUtils.encodeRawText(message);
-		group.sendMessage((message));
+		group.sendMessage(message);
 	}
 	
 	public void join(UserJoinEvent event) {
