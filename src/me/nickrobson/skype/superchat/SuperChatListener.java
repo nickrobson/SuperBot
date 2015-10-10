@@ -3,6 +3,7 @@ package me.nickrobson.skype.superchat;
 import me.nickrobson.skype.superchat.cmd.Command;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.event.EventListener;
+import xyz.gghost.jskype.events.APILoadedEvent;
 import xyz.gghost.jskype.events.UserChatEvent;
 import xyz.gghost.jskype.events.UserJoinEvent;
 import xyz.gghost.jskype.events.UserLeaveEvent;
@@ -10,7 +11,9 @@ import xyz.gghost.jskype.events.UserPendingContactRequestEvent;
 import xyz.gghost.jskype.internal.impl.GroupImpl;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
+import xyz.gghost.jskype.message.MessageBuilder;
 import xyz.gghost.jskype.user.GroupUser;
+import xyz.gghost.jskype.user.OnlineStatus;
 import xyz.gghost.jskype.user.User;
 
 public class SuperChatListener implements EventListener {
@@ -26,6 +29,18 @@ public class SuperChatListener implements EventListener {
 		group.sendMessage(fin.replaceAll("\\\\n", "\n"));
 	}
 	
+	public void loaded(APILoadedEvent event) {
+		SuperChatController.skype.updateStatus(OnlineStatus.ONLINE);
+		Group g = SuperChatController.getChatGroup();
+		if (g != null)
+			g.sendMessage(new MessageBuilder().setItalic(true).addText("SuperBot activated!").build());
+		
+		try {
+			for (User user : SuperChatController.skype.getContactRequests())
+				user.sendContactRequest(SuperChatController.skype, "FYI, you can send commands here too!");
+		} catch (Exception ex) {}
+	}
+	
 	public void join(UserJoinEvent event) {
 		sendMessage(event.getGroup(), FormatUtils.bold(FormatUtils.encodeRawText(String.format(SuperChatController.WELCOME_MESSAGE_JOIN, event.getUser().getDisplayName()))) + "\n" +
 				FormatUtils.encodeRawText("I'm tracking everyone's progress through common TV shows through commands.\n" +
@@ -39,7 +54,7 @@ public class SuperChatListener implements EventListener {
 	}
 	
 	public void contactRequest(UserPendingContactRequestEvent event) {
-		SuperChatController.skype.sendContactRequest(event.getUser(), "FYI, you can send commands here too!");
+		event.accept(SuperChatController.skype);
 	}
 	
 	public void chat(UserChatEvent event) {

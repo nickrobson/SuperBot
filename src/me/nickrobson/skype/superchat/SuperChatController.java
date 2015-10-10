@@ -25,9 +25,6 @@ import me.nickrobson.skype.superchat.cmd.WipeCommand;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.SkypeAPI;
 import xyz.gghost.jskype.internal.packet.packets.GroupInfoPacket;
-import xyz.gghost.jskype.message.MessageBuilder;
-import xyz.gghost.jskype.user.OnlineStatus;
-import xyz.gghost.jskype.user.User;
 
 /**
  * @author Nick Robson
@@ -77,15 +74,6 @@ public class SuperChatController {
 			skype = new SkypeAPI(properties.get("username"), properties.get("password"));
 			skype.login();
 			skype.getEventManager().registerListener(new SuperChatListener());
-			
-			Thread.sleep(500);
-
-			skype.updateStatus(OnlineStatus.ONLINE);
-			Group g = getChatGroup();
-			if (g != null)
-				g.sendMessage(new MessageBuilder().setItalic(true).addText("SuperBot activated!").build());
-			for (User user : skype.getContactRequests())
-				user.sendContactRequest(skype, "FYI, you can send commands here too!");
 			
 			while (true) {}
 		} catch (Exception ex) {
