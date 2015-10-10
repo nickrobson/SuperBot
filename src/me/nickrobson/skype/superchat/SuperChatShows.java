@@ -15,6 +15,10 @@ public class SuperChatShows {
 	public static void setup() {
 		if (TRACKED_SHOWS.size() > 0)
 			return;
+		// format:
+		// you only need the first two strings ("Display Name" and "main"), the others are optional!
+		// Please keep the "main" string to only contain lowercase english letters (as it is used for file names)!
+		// register(new Show("Display Name", "main", "other_name", "any_other_name", "blah"));
 		register(new Show("Arrow", "arrow", "thearrow"));
 		register(new Show("The Flash", "flash", "theflash"));
 		register(new Show("Agents of SHIELD", "aos", "agentsofshield"));
@@ -26,6 +30,7 @@ public class SuperChatShows {
 		register(new Show("Constantine", "const", "constantine"));
 		register(new Show("Narcos", "narcos", "narc"));
 		register(new Show("Mr. Robot", "robot", "mrrobot"));
+		register(new Show("sense8", "sensate", "sense8", "s8"));
 	}
 	
 	public static void register(Show show) {
