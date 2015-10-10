@@ -24,6 +24,7 @@ public class SuperChatShows {
 		register(new Show("Supergirl", "sg", "supergirl"));
 		register(new Show("Gotham", "gotham", "goth"));
 		register(new Show("Constantine", "const", "constantine"));
+		register(new Show("Narcos", "narcos", "narc"));
 	}
 	
 	public static void register(Show show) {
