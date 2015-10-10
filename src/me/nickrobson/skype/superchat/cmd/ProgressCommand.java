@@ -22,7 +22,7 @@ public class ProgressCommand implements Command {
 
 	@Override
 	public String[] help(GroupUser user) {
-		return new String[]{"(shows...)", "see progress on all or provided shows"};
+		return new String[]{"[shows...]", "see progress on all or provided shows"};
 	}
 
 	@Override
@@ -43,14 +43,8 @@ public class ProgressCommand implements Command {
 				}
 			}
 		} else {
-			for (Show show : SuperChatShows.TRACKED_SHOWS) {
-				if (!SuperChatController.getProgress(show).isEmpty()) {
-					if (sent)
-						builder.addText("\n");
-					sent = true;
-					builder = show(show.getMainName(), builder);
-				}
-			}
+			sendMessage(group, FormatUtils.bold(FormatUtils.encodeRawText("Usage: ")) + FormatUtils.encodeRawText(SuperChatController.COMMAND_PREFIX + "progress [show...]"), false);
+			return;
 		}
 		if (sent) {
 			sendMessage(group, builder.build(), false);
