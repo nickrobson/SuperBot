@@ -35,7 +35,7 @@ public class ShowsCommand implements Command {
 			if (sb.length() > 0)
 				send.add(FormatUtils.bold(FormatUtils.encodeRawText(show.getDisplay() + ": ")) + FormatUtils.encodeRawText(sb.toString()));
 		}
-		send.sort(null);
+		send.sort(String.CASE_INSENSITIVE_ORDER);
 		String toSend = "";
 		for (String s : send) {
 			if (toSend.length() > 0)
