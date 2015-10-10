@@ -1,7 +1,7 @@
 package me.nickrobson.skype.superchat.cmd;
 
+import me.nickrobson.skype.superchat.SuperChatListener;
 import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
 import xyz.gghost.jskype.message.MessageBuilder;
 import xyz.gghost.jskype.user.GroupUser;
@@ -21,9 +21,7 @@ public interface Command {
 	/* UTILITY FUNCTIONS */
 
 	default void sendMessage(Group group, String message, boolean encode) {
-		if (encode)
-			message = FormatUtils.encodeRawText(message);
-		group.sendMessage((message));
+		SuperChatListener.sendMessage(group, message, encode);
 	}
 	
 	default void setBold(MessageBuilder builder, boolean bold) {

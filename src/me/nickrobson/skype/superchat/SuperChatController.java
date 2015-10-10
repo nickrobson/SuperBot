@@ -8,8 +8,8 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -26,6 +26,8 @@ import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.SkypeAPI;
 import xyz.gghost.jskype.internal.packet.packets.GroupInfoPacket;
 import xyz.gghost.jskype.message.MessageBuilder;
+import xyz.gghost.jskype.user.OnlineStatus;
+import xyz.gghost.jskype.user.User;
 
 /**
  * @author Nick Robson
@@ -78,9 +80,12 @@ public class SuperChatController {
 			
 			Thread.sleep(500);
 
-			Group g = new GroupInfoPacket(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");
+			skype.updateStatus(OnlineStatus.ONLINE);
+			Group g = getChatGroup();
 			if (g != null)
 				g.sendMessage(new MessageBuilder().setItalic(true).addText("SuperBot activated!").build());
+			for (User user : skype.getContactRequests())
+				user.sendContactRequest(skype, "FYI, you can send commands here too!");
 			
 			while (true) {}
 		} catch (Exception ex) {
@@ -198,6 +203,10 @@ public class SuperChatController {
 		if (prg == null)
 			prg = new HashMap<>();
 		return prg;
+	}
+
+	public static Group getChatGroup() {
+		return new GroupInfoPacket(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");
 	}
 
 }

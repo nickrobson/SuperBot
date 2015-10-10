@@ -6,6 +6,8 @@ import xyz.gghost.jskype.event.EventListener;
 import xyz.gghost.jskype.events.UserChatEvent;
 import xyz.gghost.jskype.events.UserJoinEvent;
 import xyz.gghost.jskype.events.UserLeaveEvent;
+import xyz.gghost.jskype.events.UserPendingContactRequestEvent;
+import xyz.gghost.jskype.internal.impl.GroupImpl;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
 import xyz.gghost.jskype.user.GroupUser;
@@ -14,9 +16,14 @@ import xyz.gghost.jskype.user.User;
 public class SuperChatListener implements EventListener {
 	
 	public static void sendMessage(Group group, String message, boolean encode) {
-		if (encode)
-			message = FormatUtils.encodeRawText(message);
-		group.sendMessage(message);
+		String[] lines = message.split("\\n");
+		String fin = "";
+		for (String line : lines) {
+			if (encode)
+				line = FormatUtils.encodeRawText(line);
+			fin += (fin.length() > 0 ? "\n" : "") + line;
+		}
+		group.sendMessage(fin.replaceAll("\\\\n", "\n"));
 	}
 	
 	public void join(UserJoinEvent event) {
@@ -29,6 +36,10 @@ public class SuperChatListener implements EventListener {
 	
 	public void leave(UserLeaveEvent event) {
 		SuperChatController.wipe(event.getUser().getUsername());
+	}
+	
+	public void contactRequest(UserPendingContactRequestEvent event) {
+		SuperChatController.skype.sendContactRequest(event.getUser(), "FYI, you can send commands here too!");
 	}
 	
 	public void chat(UserChatEvent event) {
@@ -52,7 +63,19 @@ public class SuperChatListener implements EventListener {
 		for (int i = 1; i < words.length; i++)
 			args[i-1] = words[i];
 		
-		GroupUser guser = group.getClients().stream().filter(c -> c.getUser().getUsername().equals(user.getUsername())).findFirst().orElse(null);
+		GroupUser guser;
+		if (group.isUserChat())
+			if (cmd.role() == GroupUser.Role.MASTER)
+				try {
+					guser = SuperChatController.getChatGroup().getClients().stream().filter(c -> c.getUser().getUsername().equals(user.getUsername())).findFirst().orElse(null);
+				} catch (Exception ex) {
+					guser = null;
+				}
+			else
+				guser = new GroupUser(user, GroupUser.Role.USER, (GroupImpl) group);
+		else
+			guser = group.getClients().stream().filter(c -> c.getUser().getUsername().equals(user.getUsername())).findFirst().orElse(null);
+		
 		if (guser != null)
 			if (cmd.role() == GroupUser.Role.USER || guser.role == GroupUser.Role.MASTER)
 				cmd.exec(guser, group, cmdName, args, message);
