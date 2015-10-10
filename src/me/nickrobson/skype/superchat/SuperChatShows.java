@@ -31,6 +31,8 @@ public class SuperChatShows {
 		register(new Show("Narcos", "narcos", "narc"));
 		register(new Show("Mr. Robot", "robot", "mrrobot"));
 		register(new Show("sense8", "sensate", "sense8", "s8"));
+		register(new Show("SleepyHollow", "sh", "sleho"));
+		register(new Show("Grimm", "grimm", "gr"));
 	}
 	
 	public static void register(Show show) {
