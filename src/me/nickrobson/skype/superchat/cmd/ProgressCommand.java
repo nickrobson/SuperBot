@@ -35,7 +35,7 @@ public class ProgressCommand implements Command {
 			for (int i = 0; i < args.length; i++) {
 				Show show = SuperChatShows.getShow(args[i]);
 				if (i > 0)
-					builder.addText("\n");
+					builder.addHtml("\n");
 				if (show == null)
 					builder = builder.addText("Invalid show: " + args[i]);
 				else {

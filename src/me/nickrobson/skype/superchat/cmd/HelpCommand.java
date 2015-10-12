@@ -38,7 +38,7 @@ public class HelpCommand implements Command {
 	
 	String pad(String str, int len) {
 		while (str.length() < len)
-			str = " " + str;
+			str += " "; // + str;
 		return str;
 	}
 
