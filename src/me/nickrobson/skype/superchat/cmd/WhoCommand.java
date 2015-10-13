@@ -3,7 +3,6 @@ package me.nickrobson.skype.superchat.cmd;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import me.nickrobson.skype.superchat.SuperChatController;
 import me.nickrobson.skype.superchat.SuperChatShows;
@@ -42,18 +41,14 @@ public class WhoCommand implements Command {
 			}
 		}
 		shows.sort(String.CASE_INSENSITIVE_ORDER);
-		AtomicInteger maxLen = new AtomicInteger(0);
-		shows.forEach(s -> {
-			if (s.length() > maxLen.get())
-				maxLen.set(s.length());
-		});
+		int maxLen = shows.stream().mapToInt(s -> s.length()).max().orElse(0);
 		String s = "";
 		int rows = (shows.size() / 2) + (shows.size() % 2);
 		for (int i = 0; i < rows; i++) {
 			if (shows.size() > i) {
-				String t = pad(shows.get(i), maxLen.get());
+				String t = pad(shows.get(i), maxLen);
 				if (shows.size() > rows+i) {
-					t += "      " + pad(shows.get(rows+i), maxLen.get());
+					t += "      " + pad(shows.get(rows+i), maxLen);
 				}
 				s += FormatUtils.encodeRawText(t);
 				if (i != rows - 1)
