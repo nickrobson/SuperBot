@@ -1,5 +1,8 @@
 package me.nickrobson.skype.superchat;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import me.nickrobson.skype.superchat.cmd.Command;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.event.EventListener;
@@ -57,12 +60,26 @@ public class SuperChatListener implements EventListener {
 		event.accept(SuperChatController.skype);
 	}
 	
+	private final Set<String> seenMessages = new HashSet<>();
+	
 	public void chat(UserChatEvent event) {
 		Message message = event.getMsg();
 		User user = message.getSender();
 		Group group = event.getChat();
 		String msg = message.getMessage().trim();
 		String[] words = msg.split("\\s+");
+		
+		if (seenMessages.contains(message.getId()))
+			return;
+		
+		seenMessages.add(message.getId());
+		
+		new Thread(() -> {
+			try {
+				Thread.sleep(1000);
+				seenMessages.remove(message.getId());
+			} catch (Exception e) {}
+		}).start();
 		
 		if (words.length == 0 || !words[0].startsWith(SuperChatController.COMMAND_PREFIX)) {
 			return;

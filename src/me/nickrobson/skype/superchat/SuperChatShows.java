@@ -35,7 +35,7 @@ public class SuperChatShows {
 		register(new Show("Grimm", "grimm", "gr"));
 		register(new Show("The Walking Dead", "twd", "thewalkingdead"));
 		register(new Show("Heroes", "heroes", "her"));
-		register(new Show("Doctor Who", "dw" "doctorwho"));
+		register(new Show("Doctor Who", "dw", "doctorwho"));
 	}
 	
 	public static void register(Show show) {
