@@ -22,6 +22,7 @@ import me.nickrobson.skype.superchat.cmd.SetProgressCommand;
 import me.nickrobson.skype.superchat.cmd.ShowsCommand;
 import me.nickrobson.skype.superchat.cmd.StopCommand;
 import me.nickrobson.skype.superchat.cmd.ViewingOrderCommand;
+import me.nickrobson.skype.superchat.cmd.WhoCommand;
 import me.nickrobson.skype.superchat.cmd.WipeCommand;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.SkypeAPI;
@@ -96,6 +97,7 @@ public class SuperChatController {
 		register(new WipeCommand());
 		register(new GitCommand());
 		register(new ViewingOrderCommand());
+		register(new WhoCommand());
 	}
 
 	public static void load() {

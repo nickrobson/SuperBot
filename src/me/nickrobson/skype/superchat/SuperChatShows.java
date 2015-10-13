@@ -40,7 +40,7 @@ public class SuperChatShows {
 	public static void register(Show show) {
 		TRACKED_SHOWS.add(show);
 		for (String s : show.names)
-			SHOWS_BY_NAME.put(s, show);
+			SHOWS_BY_NAME.put(s.toLowerCase(), show);
 	}
 	
 	public static Show getShow(String name) {

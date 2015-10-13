@@ -28,9 +28,17 @@ public class SetProgressCommand implements Command {
 		} else {
 			Show show = SuperChatShows.getShow(args[0]);
 			String ep = args[1].toUpperCase();
+			ep = ep.replaceFirst("E0", "E");
+			ep = ep.replaceFirst("S0", "S");
 			
 			if (show == null) {
 				sendMessage(group, "Invalid show name: " + args[0], true);
+			} else if (ep.equalsIgnoreCase("none") || ep.equalsIgnoreCase("remove")) {
+				Map<String, String> prg = SuperChatController.getProgress(show);
+				prg.remove(user.getUser().getUsername());
+				SuperChatController.PROGRESS.put(show.getMainName(), prg);
+				sendMessage(group, "Removed " + user.getUser().getDisplayName() + "'s progress on " + show.getDisplay(), true);
+				SuperChatController.save();
 			} else if (!SuperChatShows.EPISODE_PATTERN.matcher(ep).matches()) {
 				sendMessage(group, "Invalid episode: " + ep + " (doesn't match SxEyy format)", true);
 			} else {
