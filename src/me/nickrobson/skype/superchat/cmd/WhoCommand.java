@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import me.nickrobson.skype.superchat.SuperChatController;
-import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.FormatUtils;
@@ -25,30 +24,34 @@ public class WhoCommand implements Command {
 	}
 	
 	String pad(String s, int len) {
-		while (s.length() < len)
-			s = " " + s;
-		return s;
+		StringBuilder builder = new StringBuilder(s);
+		while (builder.length() < len)
+			builder.insert(builder.indexOf("("), ' ');
+		return builder.toString();
 	}
 
 	@Override
 	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
 		String username = args.length > 0 ? args[0].toLowerCase() : user.getUser().getUsername();
 		List<String> shows = new ArrayList<>();
-		for (Show show : SuperChatShows.TRACKED_SHOWS) {
-			Map<String, String> progress = SuperChatController.getProgress(show);
-			if (progress.containsKey(username)) {
-				shows.add(show.getDisplay() + " (" + progress.get(username) + ")");
-			}
-		}
+		Map<Show, String> progress = SuperChatController.getUserProgress(username);
+		progress.forEach((show, ep) -> {
+			shows.add(show.getDisplay() + "    (" + ep + ")");
+		});
 		shows.sort(String.CASE_INSENSITIVE_ORDER);
-		int maxLen = shows.stream().mapToInt(s -> s.length()).max().orElse(0);
-		String s = "";
 		int rows = (shows.size() / 2) + (shows.size() % 2);
+		int maxLen1 = 0;
+		for (int i = 0; i < rows; i++)
+			maxLen1 = Math.max(maxLen1, shows.get(i).length());
+		int maxLen2 = 0;
+		for (int i = rows; i < shows.size(); i++)
+			maxLen2 = Math.max(maxLen2, shows.get(i).length());
+		String s = "";
 		for (int i = 0; i < rows; i++) {
 			if (shows.size() > i) {
-				String t = pad(shows.get(i), maxLen);
+				String t = pad(shows.get(i), maxLen1);
 				if (shows.size() > rows+i) {
-					t += "      " + pad(shows.get(rows+i), maxLen);
+					t += "    |    " + pad(shows.get(rows+i), maxLen2);
 				}
 				s += FormatUtils.encodeRawText(t);
 				if (i != rows - 1)

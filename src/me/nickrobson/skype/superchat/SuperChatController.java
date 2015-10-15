@@ -196,6 +196,15 @@ public class SuperChatController {
 			prg = new HashMap<>();
 		return prg;
 	}
+	
+	public static Map<Show, String> getUserProgress(String username) {
+		Map<Show, String> prg = new HashMap<>();
+		PROGRESS.forEach((s, m) -> {
+			if (m.containsKey(username))
+				prg.put(SuperChatShows.getShow(s), m.get(username));
+		}); 
+		return prg;
+	}
 
 	public static Group getChatGroup() {
 		return new GroupInfoPacket(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");

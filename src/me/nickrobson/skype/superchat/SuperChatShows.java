@@ -10,7 +10,7 @@ public class SuperChatShows {
 
 	public static final List<Show> TRACKED_SHOWS = new ArrayList<>();
 	public static final Map<String, Show> SHOWS_BY_NAME = new HashMap<>();
-	public static final Pattern EPISODE_PATTERN = Pattern.compile("S[0-9]{1,2}E[0-9]{1,2}");
+	public static final Pattern EPISODE_PATTERN = Pattern.compile("S[1-9][0-9]?E[1-9][0-9]?");
 	
 	public static void setup() {
 		if (TRACKED_SHOWS.size() > 0)

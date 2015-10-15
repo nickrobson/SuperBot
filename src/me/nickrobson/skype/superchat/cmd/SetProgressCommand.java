@@ -28,8 +28,6 @@ public class SetProgressCommand implements Command {
 		} else {
 			Show show = SuperChatShows.getShow(args[0]);
 			String ep = args[1].toUpperCase();
-			ep = ep.replaceFirst("E0", "E");
-			ep = ep.replaceFirst("S0", "S");
 			
 			if (show == null) {
 				sendMessage(group, "Invalid show name: " + args[0], true);
