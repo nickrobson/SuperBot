@@ -20,7 +20,7 @@ public class SuperChatShows {
 		// Please keep the "main" string to only contain lowercase english letters (as it is used for file names)!
 		// register(new Show("Display Name", "main", "other_name", "any_other_name", "blah"));
 		register(new Show("Arrow", "arrow", "thearrow"));
-		register(new Show("The Flash", "flash", "theflash"));
+		register(new Show("The Flash", "flash", "theflash", "tf"));
 		register(new Show("Agents of SHIELD", "aos", "agentsofshield"));
 		register(new Show("Agent Carter", "ac", "agentcarter"));
 		register(new Show("Jessica Jones", "jj", "jessicajones"));
@@ -30,7 +30,7 @@ public class SuperChatShows {
 		register(new Show("Constantine", "const", "constantine"));
 		register(new Show("Narcos", "narcos", "narc"));
 		register(new Show("Mr. Robot", "robot", "mrrobot"));
-		register(new Show("sense8", "sensate", "sense8", "s8"));
+		register(new Show("Sense8", "sensate", "sense8", "s8"));
 		register(new Show("SleepyHollow", "sh", "sleho"));
 		register(new Show("Grimm", "grimm", "gr"));
 		register(new Show("The Walking Dead", "twd", "thewalkingdead"));
