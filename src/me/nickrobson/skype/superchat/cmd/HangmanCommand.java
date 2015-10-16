@@ -23,7 +23,7 @@ public class HangmanCommand implements Command {
 	@Override
 	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
 		if (group.isUserChat()) {
-			if (currentPhrase == null) 
+			if (currentPhrase != null) 
 				sendMessage(group, "[Hangman] There is already a game in progress.", true);
 			else
 				if (args.length == 0) {
