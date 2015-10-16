@@ -52,19 +52,19 @@ public class HangmanCommand implements Command {
 			else
 				if (args.length != 1)
 					sendMessage(group, bold(encode("Usage: ")) + encode("~hangman [guess]"));
-				else
+				else {
+					char first = args[0].trim().toUpperCase().charAt(0);
 					if (args[0].trim().length() != 1)
 						sendMessage(group, "[Hangman] You can only guess one letter!", true);
-					else if (!('A' <= args[0].charAt(0) && args[0].charAt(0) <= 'Z'))
+					else if (!('A' <= first && first <= 'Z'))
 						sendMessage(group, "[Hangman] You can only guess letters!", true);
 					else {
-						if (found.indexOf(args[0].toUpperCase()) != -1)
-							sendMessage(group, "[Hangman] " + args[0].toUpperCase() + " has already been guessed and found." , true);
-						else if (guessed.indexOf(args[0].toUpperCase()) != -1)
-							sendMessage(group, "[Hangman] " + args[0].toUpperCase() + " has already been guessed and was not found." , true);
+						if (found.indexOf(first) != -1)
+							sendMessage(group, "[Hangman] " + first + " has already been guessed and found." , true);
+						else if (guessed.indexOf(first) != -1)
+							sendMessage(group, "[Hangman] " + first + " has already been guessed and was not found." , true);
 						else {
-							char first = args[0].toUpperCase().charAt(0);
-							if (currentPhrase.indexOf(args[0].toUpperCase()) != -1) {
+							if (currentPhrase.indexOf(first) != -1) {
 								StringBuilder sb = new StringBuilder(found);
 								for (int i = 0; i < currentPhrase.length(); i++) {
 									if (currentPhrase.charAt(i) == first) {
@@ -72,19 +72,20 @@ public class HangmanCommand implements Command {
 									}
 								}
 								found = sb.toString();
-								sendMessage(group, encode("[Hangman] Congratulations! " + first + " is in the phrase!") + "\n" + encode("Phrase so far: ") + code(encode(found)), false);
+								if (currentPhrase.equals(found)) {
+									sendMessage(group, encode("[Hangman] Congratulations! You've uncovered the phrase!") + "\n" + encode("It was: ") + code(encode(currentPhrase)));
+									currentPhrase = null;
+									found = null;
+									guessed = null;
+								} else
+									sendMessage(group, encode("[Hangman] Congratulations! " + first + " is in the phrase!") + "\n" + encode("Phrase so far: ") + code(encode(found)), false);
 							} else {
 								guessed += first;
 								sendMessage(group, encode("[Hangman] Sorry, " + first + " isn't in the phrase!") + "\n" + encode("Phrase so far: ") + code(encode(found)), false);
 							}
-							if (currentPhrase.equals(found)) {
-								sendMessage(group, encode("[Hangman] Congratulations! You've uncovered the phrase!") + "\n" + encode("It was: ") + code(encode(currentPhrase)));
-								currentPhrase = null;
-								found = null;
-								guessed = null;
-							}
 						}
 					}
+				}
 		}
 	}
 
