@@ -24,7 +24,7 @@ public class ProgressCommand implements Command {
 	}
 
 	@Override
-	public String[] help(GroupUser user) {
+	public String[] help(GroupUser user, boolean userChat) {
 		return new String[]{"[-a] [shows...]", "see progress on all or provided shows"};
 	}
 

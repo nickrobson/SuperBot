@@ -20,7 +20,7 @@ public class WipeCommand implements Command {
 	}
 
 	@Override
-	public String[] help(GroupUser user) {
+	public String[] help(GroupUser user, boolean userChat) {
 		return new String[]{"[user]", "wipe [user]'s progress"};
 	}
 

@@ -18,7 +18,7 @@ public class ShowsCommand implements Command {
 	}
 
 	@Override
-	public String[] help(GroupUser user) {
+	public String[] help(GroupUser user, boolean userChat) {
 		return new String[]{"", "see which shows are being tracked"};
 	}
 

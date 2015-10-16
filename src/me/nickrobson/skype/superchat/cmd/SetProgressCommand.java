@@ -17,7 +17,7 @@ public class SetProgressCommand implements Command {
 	}
 
 	@Override
-	public String[] help(GroupUser user) {
+	public String[] help(GroupUser user, boolean userChat) {
 		return new String[]{"[show] [episode]", "set your progress on [show] to [episode]"};
 	}
 

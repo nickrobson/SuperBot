@@ -18,7 +18,7 @@ public class ViewingOrderCommand implements Command {
 	}
 
 	@Override
-	public String[] help(GroupUser user) {
+	public String[] help(GroupUser user, boolean userChat) {
 		return new String[]{ "[mcu,af]", "shows the advised viewing order for the show" };
 	}
 

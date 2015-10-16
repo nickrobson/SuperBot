@@ -18,7 +18,7 @@ public class StopCommand implements Command {
 	}
 
 	@Override
-	public String[] help(GroupUser user) {
+	public String[] help(GroupUser user, boolean userChat) {
 		return new String[]{"", "stop the bot (restarting it)"};
 	}
 

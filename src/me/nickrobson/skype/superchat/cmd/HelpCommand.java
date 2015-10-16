@@ -19,20 +19,20 @@ public class HelpCommand implements Command {
 	}
 
 	@Override
-	public String[] help(GroupUser user) {
+	public String[] help(GroupUser user, boolean userChat) {
 		return new String[]{"", "see this help message"};
 	}
 	
-	String getCmdHelp(Command cmd, GroupUser user) {
+	String getCmdHelp(Command cmd, GroupUser user, boolean userChat) {
 		String pre = SuperChatController.COMMAND_PREFIX;
 		String s = pre;
 		for (String n : cmd.names()) {
 			if (s.length() > pre.length()) s += ",";
 			s += n.trim();
 		}
-		String cmdHelp = cmd.help(user)[0];
+		String cmdHelp = cmd.help(user, userChat)[0];
 		if (cmdHelp.length() > 0)
-			s += " " + cmd.help(user)[0];
+			s += " " + cmd.help(user, userChat)[0];
 		return s;
 	}
 	
@@ -53,16 +53,16 @@ public class HelpCommand implements Command {
 		});
 		AtomicInteger maxLen = new AtomicInteger(0);
 		cmds.forEach(c -> {
-			String cmdHelp = getCmdHelp(c, user);
+			String cmdHelp = getCmdHelp(c, user, group.isUserChat());
 			if (c.role() == Role.USER && cmdHelp.length() > maxLen.get())
 				maxLen.set(cmdHelp.length());
 		});
 		List<String> strings = new ArrayList<>(SuperChatController.COMMANDS.size());
 		StringBuilder builder = new StringBuilder();
 		cmds.forEach(c -> {
-			String[] help = c.help(user);
+			String[] help = c.help(user, group.isUserChat());
 			if (c.role() == Role.USER)
-				strings.add("\n" + pad(getCmdHelp(c, user), maxLen.get()) + " - " + help[1]);
+				strings.add("\n" + pad(getCmdHelp(c, user, group.isUserChat()), maxLen.get()) + " - " + help[1]);
 		});
 		if (SuperChatController.HELP_IGNORE_WHITESPACE)
 			strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
