@@ -8,6 +8,8 @@ import xyz.gghost.jskype.user.GroupUser;
 
 public interface Command {
 	
+	default void init() {}
+	
 	String[] names();
 	
 	default GroupUser.Role role() {

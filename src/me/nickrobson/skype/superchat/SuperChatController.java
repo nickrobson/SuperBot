@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import me.nickrobson.skype.superchat.cmd.Command;
+import me.nickrobson.skype.superchat.cmd.ConvertCommand;
 import me.nickrobson.skype.superchat.cmd.GitCommand;
 import me.nickrobson.skype.superchat.cmd.HangmanCommand;
 import me.nickrobson.skype.superchat.cmd.HelpCommand;
@@ -87,6 +88,7 @@ public class SuperChatController {
 	private static void register(Command cmd) {
 		for (String name : cmd.names())
 			COMMANDS.put(name, cmd);
+		cmd.init();
 	}
 	
 	private static void commands() {
@@ -100,6 +102,7 @@ public class SuperChatController {
 		register(new ViewingOrderCommand());
 		register(new WhoCommand());
 		register(new HangmanCommand());
+		register(new ConvertCommand());
 	}
 
 	public static void load() {
