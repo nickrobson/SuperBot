@@ -34,9 +34,11 @@ public class SuperChatListener implements EventListener {
 	
 	public void loaded(APILoadedEvent event) {
 		SuperChatController.skype.updateStatus(OnlineStatus.ONLINE);
-		Group g = SuperChatController.getChatGroup();
-		if (g != null)
-			g.sendMessage(new MessageBuilder().setItalic(true).addText("SuperBot activated!").build());
+		SuperChatController.skype.getGroups().forEach(gr -> {
+			GroupConfiguration cfg = SuperChatController.GCONFIGS.get(gr.getLongId());
+			if (cfg != null && cfg.isAnnounceInitialization())
+				gr.sendMessage(new MessageBuilder().setItalic(true).addText("SuperBot activated!").build());
+		});
 		
 		try {
 			for (User user : SuperChatController.skype.getContactRequests())
@@ -45,11 +47,10 @@ public class SuperChatListener implements EventListener {
 	}
 	
 	public void join(UserJoinEvent event) {
-		sendMessage(event.getGroup(), FormatUtils.bold(FormatUtils.encodeRawText(String.format(SuperChatController.WELCOME_MESSAGE_JOIN, event.getUser().getDisplayName()))) + "\n" +
-				FormatUtils.encodeRawText("I'm tracking everyone's progress through common TV shows through commands.\n" +
-				"Only discuss episodes that everyone has seen! (Earliest in the progress command)\n" +
-				"You can see episodic progress through `~progress` and `~progress [show]`\n" +
-				"You can set your progress through `~me [show] [episode]`, in format S1E2 / S2E15\n"), false);
+		GroupConfiguration cfg = SuperChatController.GCONFIGS.get(event.getGroup().getLongId());
+		if (cfg != null && cfg.isShowJoinMessage())
+			sendMessage(event.getGroup(), FormatUtils.bold(FormatUtils.encodeRawText(String.format(SuperChatController.WELCOME_MESSAGE_JOIN, event.getUser().getDisplayName(), event.getGroup().getTopic()))) + "\n" +
+				FormatUtils.encodeRawText("You can access my help menu by typing `" + SuperChatController.COMMAND_PREFIX + "help`"), false);
 	}
 	
 	public void leave(UserLeaveEvent event) {
@@ -89,6 +90,10 @@ public class SuperChatListener implements EventListener {
 		Command cmd = SuperChatController.COMMANDS.get(cmdName);
 		
 		if (cmd == null)
+			return;
+		
+		GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
+		if (cfg != null && !cfg.isCommandEnabled(cmd))
 			return;
 		
 		String[] args = new String[words.length - 1];

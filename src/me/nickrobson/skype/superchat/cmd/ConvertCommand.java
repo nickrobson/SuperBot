@@ -15,13 +15,15 @@ public class ConvertCommand implements Command {
 	private final Table<String, String, Conversion> conversions = HashBasedTable.create();
 	
 	public void init() {
-		conversions.put("C", "F", new Conversion("Celsius", "Fahrenheit", true, s -> {
+		conversions.put("C", "F", new Conversion("Celsius", "Fahrenheit", true, true, s -> {
 			double a = Double.parseDouble(s);
-			return String.valueOf(32 + a * 9.0 / 5.0);
+			double d = 32 + a * 9.0 / 5.0;
+			return Math.abs(d-(int)d) < 0.000001 ? Integer.toString((int)d) : Double.toString(d);
 		}));
-		conversions.put("F", "C", new Conversion("Fahrenheit", "Celsius", true, s -> {
+		conversions.put("F", "C", new Conversion("Fahrenheit", "Celsius", true, true, s -> {
 			double a = Double.parseDouble(s);
-			return String.valueOf((a - 32) * 5.0 / 9.0);
+			double d = (a - 32) * 5.0 / 9.0;
+			return Math.abs(d-(int)d) < 0.000001 ? Integer.toString((int)d) : Double.toString(d);
 		}));
 	}
 	
@@ -32,7 +34,7 @@ public class ConvertCommand implements Command {
 
 	@Override
 	public String[] help(GroupUser user, boolean userChat) {
-		return new String[]{ "(list | [from] [to] [input...])", "gets a list of conversions or converts [input] from [from] to [to]" };
+		return new String[]{ "[from] [to] [input...]", "converts [input] : [from] => [to]" };
 	}
 
 	@Override
@@ -68,8 +70,11 @@ public class ConvertCommand implements Command {
 					}
 				}
 				try {
-					String res = conversions.get(from, to).func.apply(input);
-					sendMessage(group, encode("[Convert] ") + encode(String.format("(%s => %s) %s => %s", from, to, input, res)), false);
+					String res = conv.func.apply(input);
+					if (conv.appendSymbol)
+						sendMessage(group, encode("[Convert] ") + encode(String.format("%s%s => %s%s", input, from, res, to)), false);
+					else
+						sendMessage(group, encode("[Convert] ") + encode(String.format("(%s => %s) %s => %s", from, to, input, res)), false);
 				} catch (Throwable t) {
 					sendMessage(group, encode("[Convert] An error occurred while converting : " + t.getClass().getSimpleName()) + "\n" + encode(t.getMessage()));
 				}
@@ -82,13 +87,14 @@ public class ConvertCommand implements Command {
 	public static class Conversion {
 		
 		private final String from, to;
-		private final boolean numbers;
+		private final boolean numbers, appendSymbol;
 		private final Function<String, String> func;
 		
-		public Conversion(String from, String to, boolean numbers, Function<String, String> func) {
+		public Conversion(String from, String to, boolean numbers, boolean appendSymbol, Function<String, String> func) {
 			this.from = from;
 			this.to = to;
 			this.numbers = numbers;
+			this.appendSymbol = appendSymbol;
 			this.func = func;
 		}
 		

@@ -20,7 +20,7 @@ public class WhoCommand implements Command {
 
 	@Override
 	public String[] help(GroupUser user, boolean userChat) {
-		return new String[] { "(username)", "gets information about which shows someone watches" };
+		return new String[] { "(username)", "gets (username)'s progress on all shows" };
 	}
 	
 	String pad(String s, int len) {

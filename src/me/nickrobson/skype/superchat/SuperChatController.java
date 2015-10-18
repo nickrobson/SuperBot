@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import me.nickrobson.skype.superchat.cmd.Command;
 import me.nickrobson.skype.superchat.cmd.ConvertCommand;
+import me.nickrobson.skype.superchat.cmd.GIDCommand;
 import me.nickrobson.skype.superchat.cmd.GitCommand;
 import me.nickrobson.skype.superchat.cmd.HangmanCommand;
 import me.nickrobson.skype.superchat.cmd.HelpCommand;
@@ -35,13 +37,17 @@ import xyz.gghost.jskype.internal.packet.packets.GroupInfoPacket;
  */
 public class SuperChatController {
 	
+	public static final Map<String, GroupConfiguration> GCONFIGS = new HashMap<>();
+	
 	public static final Map<String, Command> COMMANDS = new HashMap<>();
 	public static final Map<String, Map<String, String>> PROGRESS = new TreeMap<>();
 	
+	public static final List<String> HANGMAN_PHRASES = new LinkedList<>();
+	
 	public static final String COMMAND_PREFIX = "~";
 	
-	public static final String WELCOME_MESSAGE = "Welcome to the SuperChat";
-	public static final String WELCOME_MESSAGE_JOIN = "Welcome, %s, to the SuperChat";
+	public static final String WELCOME_MESSAGE = "Welcome to %s";
+	public static final String WELCOME_MESSAGE_JOIN = "Welcome, %s, to %s";
 	
 	public static boolean HELP_IGNORE_WHITESPACE = false;
 	public static boolean HELP_WELCOME_CENTRED = true;
@@ -69,6 +75,8 @@ public class SuperChatController {
 			
 			load();
 			commands();
+			loadGroups();
+			loadHangmanWords();
 
 			HELP_IGNORE_WHITESPACE = properties.getOrDefault("help.whitespace", "false").equalsIgnoreCase("true");
 			HELP_WELCOME_CENTRED = properties.getOrDefault("help.welcome.centred", "false").equalsIgnoreCase("true");
@@ -84,7 +92,20 @@ public class SuperChatController {
 			ex.printStackTrace();
 		}
 	}
-	
+
+	private static void loadHangmanWords() {
+		File f = new File("hangman.txt");
+		if (f.exists()) {
+			try (BufferedReader reader = Files.newBufferedReader(f.toPath())) {
+				String line;
+				while ((line = reader.readLine()) != null)
+					if (!line.startsWith("Chapter"))
+						HANGMAN_PHRASES.add(line.toUpperCase());
+				HANGMAN_PHRASES.sort((s1, s2) -> s1.substring(3, 5).compareTo(s2.substring(3, 5)));
+			} catch (IOException ex) {}
+		}
+	}
+
 	private static void register(Command cmd) {
 		for (String name : cmd.names())
 			COMMANDS.put(name, cmd);
@@ -103,6 +124,7 @@ public class SuperChatController {
 		register(new WhoCommand());
 		register(new HangmanCommand());
 		register(new ConvertCommand());
+		register(new GIDCommand());
 	}
 
 	public static void load() {
@@ -143,6 +165,18 @@ public class SuperChatController {
 				writer.close();
 			} catch (IOException ex) {
 				ex.printStackTrace();
+			}
+		}
+	}
+	
+	public static void loadGroups() {
+		File dir = new File("groups");
+		if (!dir.exists())
+			dir.mkdir();
+		for (File f : dir.listFiles()) {
+			GroupConfiguration cfg = new GroupConfiguration(f);
+			if (cfg.getLongGroupId() != null) {
+				GCONFIGS.put(cfg.getLongGroupId(), cfg);
 			}
 		}
 	}

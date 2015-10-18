@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import me.nickrobson.skype.superchat.GroupConfiguration;
 import me.nickrobson.skype.superchat.SuperChatController;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.FormatUtils;
@@ -51,6 +52,15 @@ public class HelpCommand implements Command {
 				if (c == cmd) go = false;
 			if (go) cmds.add(cmd);
 		});
+		GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
+		if (cfg != null)
+			cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd));
+		else
+			cmds.clear();
+		if (cmds.isEmpty()) {
+			sendMessage(group, "It looks like there are no commands enabled in this chat.");
+			return;
+		}
 		AtomicInteger maxLen = new AtomicInteger(0);
 		cmds.forEach(c -> {
 			String cmdHelp = getCmdHelp(c, user, group.isUserChat());
@@ -68,7 +78,7 @@ public class HelpCommand implements Command {
 			strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
 		else
 			strings.sort(null);
-		String welcome = SuperChatController.WELCOME_MESSAGE;
+		String welcome = String.format(SuperChatController.WELCOME_MESSAGE, group.getTopic());
 		int mid = welcome.length() / 2;
 		String wel = pad(welcome.substring(0, mid), maxLen.get());
 		String come = welcome.substring(mid);
