@@ -30,7 +30,7 @@ import me.nickrobson.skype.superchat.cmd.WhoCommand;
 import me.nickrobson.skype.superchat.cmd.WipeCommand;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.SkypeAPI;
-import xyz.gghost.jskype.internal.packet.packets.GroupInfoPacket;
+import xyz.gghost.jskype.internal.packet.requests.GroupMetaRequest;
 
 /**
  * @author Nick Robson
@@ -246,7 +246,7 @@ public class SuperChatController {
 	}
 
 	public static Group getChatGroup() {
-		return new GroupInfoPacket(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");
+		return new GroupMetaRequest(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");
 	}
 
 }

@@ -1,5 +1,6 @@
 package me.nickrobson.skype.superchat.cmd;
 
+import me.nickrobson.skype.superchat.MessageBuilder;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.Message;
 import xyz.gghost.jskype.user.GroupUser;
@@ -18,7 +19,8 @@ public class GitCommand implements Command {
 
 	@Override
 	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
-		group.sendMessage("<a href=\"http://github.com/nickrobson/SuperChat/\">http://github.com/nickrobson/SuperChat/</a>");
+		group.sendMessage(new MessageBuilder().link("http://github.com/nickrobson/SuperChat").html("Click here for the GitHub repo link!").build());
+		//group.sendMessage("<a href=\"http://github.com/nickrobson/SuperChat/\">http://github.com/nickrobson/SuperChat/</a>");
 	}
 
 }

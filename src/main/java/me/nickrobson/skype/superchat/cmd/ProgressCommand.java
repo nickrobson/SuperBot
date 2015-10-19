@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatController;
 import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import xyz.gghost.jskype.Group;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.message.MessageBuilder;
 import xyz.gghost.jskype.user.GroupUser;
 
 public class ProgressCommand implements Command {
@@ -49,9 +49,9 @@ public class ProgressCommand implements Command {
 			for (int i = 0; i < argz.size(); i++) {
 				Show show = SuperChatShows.getShow(argz.get(i));
 				if (i > 0)
-					builder.addHtml("\n");
+					builder.html("\n");
 				if (show == null)
-					builder = builder.addText("Invalid show: " + argz.get(i));
+					builder = builder.text("Invalid show: " + argz.get(i));
 				else {
 					builder = show(show.getMainName(), builder, all_eps);
 				}
@@ -78,18 +78,18 @@ public class ProgressCommand implements Command {
 			if (!epz.contains(e))
 				epz.add(e);
 		});
-		builder.addHtml(FormatUtils.bold(FormatUtils.encodeRawText("Episode progress: " + SuperChatShows.getShow(show).getDisplay())));
+		builder.bold(true).text("Episode progress: " + SuperChatShows.getShow(show).getDisplay()).bold(false);
 		if (epz.size() > 0) {
 			if (all_eps) {
 				for (String ep : epz) {
-					builder.addText("\n- " + ep.toUpperCase() + ": " + SuperChatController.getUsersOn(show, ep));
+					builder.newLine().text("- " + ep.toUpperCase() + ": " + SuperChatController.getUsersOn(show, ep));
 				}
 			} else {
-				builder.addText("\n- Earliest: " + epz.get(0) + " (" + SuperChatController.getUsersOn(show, epz.get(0)) + ")");
-				builder.addText("\n- Latest:   " + epz.get(epz.size() - 1) + " (" + SuperChatController.getUsersOn(show, epz.get(epz.size() - 1)) + ")");
+				builder.newLine().text("- Earliest: " + epz.get(0) + " (" + SuperChatController.getUsersOn(show, epz.get(0)) + ")");
+				builder.newLine().text("- Latest:   " + epz.get(epz.size() - 1) + " (" + SuperChatController.getUsersOn(show, epz.get(epz.size() - 1)) + ")");
 			}
 		} else {
-			builder.addText("\nNo progress submitted.");
+			builder.newLine().text("No progress submitted.");
 		}
 		return builder;
 	}

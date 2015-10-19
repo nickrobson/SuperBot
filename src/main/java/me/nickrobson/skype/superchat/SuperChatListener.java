@@ -14,7 +14,6 @@ import xyz.gghost.jskype.events.UserPendingContactRequestEvent;
 import xyz.gghost.jskype.internal.impl.GroupImpl;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.message.MessageBuilder;
 import xyz.gghost.jskype.user.GroupUser;
 import xyz.gghost.jskype.user.OnlineStatus;
 import xyz.gghost.jskype.user.User;
@@ -22,14 +21,9 @@ import xyz.gghost.jskype.user.User;
 public class SuperChatListener implements EventListener {
 	
 	public static void sendMessage(Group group, String message, boolean encode) {
-		String[] lines = message.split("\\n");
-		String fin = "";
-		for (String line : lines) {
-			if (encode)
-				line = FormatUtils.encodeRawText(line);
-			fin += (fin.length() > 0 ? "\n" : "") + line;
-		}
-		group.sendMessage(fin.replaceAll("\\\\n", "\n"));
+		if (encode)
+			message = FormatUtils.encodeRawText(message);
+		group.sendMessage(message);
 	}
 	
 	public void loaded(APILoadedEvent event) {
@@ -37,7 +31,7 @@ public class SuperChatListener implements EventListener {
 		SuperChatController.skype.getGroups().forEach(gr -> {
 			GroupConfiguration cfg = SuperChatController.GCONFIGS.get(gr.getLongId());
 			if (cfg != null && cfg.isAnnounceInitialization())
-				gr.sendMessage(new MessageBuilder().setItalic(true).addText("SuperBot activated!").build());
+				gr.sendMessage(new MessageBuilder().italic(true).text("SuperBot activated!").build());
 		});
 		
 		try {
