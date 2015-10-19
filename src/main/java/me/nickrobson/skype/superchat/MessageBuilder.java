@@ -36,6 +36,11 @@ public class MessageBuilder {
 		return this;
 	}
 	
+	public MessageBuilder emoji(String emoji) {
+        msg += "<ss type=\"" + emoji.replaceAll("[\\(\\)]", "") + "\">" + emoji + "</ss>";
+        return this;
+    }
+	
 	public MessageBuilder link(String url) {
 		boolean on = url != null;
 		if (link != on) {
