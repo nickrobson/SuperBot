@@ -25,6 +25,7 @@ import me.nickrobson.skype.superchat.cmd.ProgressCommand;
 import me.nickrobson.skype.superchat.cmd.SetProgressCommand;
 import me.nickrobson.skype.superchat.cmd.ShowsCommand;
 import me.nickrobson.skype.superchat.cmd.StopCommand;
+import me.nickrobson.skype.superchat.cmd.TimetableCommand;
 import me.nickrobson.skype.superchat.cmd.ViewingOrderCommand;
 import me.nickrobson.skype.superchat.cmd.WhoCommand;
 import me.nickrobson.skype.superchat.cmd.WipeCommand;
@@ -125,6 +126,7 @@ public class SuperChatController {
 		register(new HangmanCommand());
 		register(new ConvertCommand());
 		register(new GIDCommand());
+		register(new TimetableCommand());
 	}
 
 	public static void load() {
