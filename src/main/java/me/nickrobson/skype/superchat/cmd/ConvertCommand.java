@@ -1,5 +1,6 @@
 package me.nickrobson.skype.superchat.cmd;
 
+import java.math.BigDecimal;
 import java.util.function.Function;
 
 import com.google.common.collect.HashBasedTable;
@@ -16,14 +17,22 @@ public class ConvertCommand implements Command {
 	
 	public void init() {
 		conversions.put("C", "F", new Conversion("Celsius", "Fahrenheit", true, true, s -> {
-			double a = Double.parseDouble(s);
-			double d = 32 + a * 9.0 / 5.0;
-			return Math.abs(d-(int)d) < 0.000001 ? Integer.toString((int)d) : Double.toString(d);
+			BigDecimal a = new BigDecimal(s);
+			BigDecimal d = a.multiply(BigDecimal.valueOf(9.0/5.0)).add(BigDecimal.valueOf(32));
+			try {
+				return d.toBigIntegerExact().toString();
+			} catch (Exception ex) {
+				return d.toString();
+			}
 		}));
 		conversions.put("F", "C", new Conversion("Fahrenheit", "Celsius", true, true, s -> {
-			double a = Double.parseDouble(s);
-			double d = (a - 32) * 5.0 / 9.0;
-			return Math.abs(d-(int)d) < 0.000001 ? Integer.toString((int)d) : Double.toString(d);
+			BigDecimal a = new BigDecimal(s);
+			BigDecimal d = a.subtract(BigDecimal.valueOf(32)).multiply(BigDecimal.valueOf(5.0/9.0));
+			try {
+				return d.toBigIntegerExact().toString();
+			} catch (Exception ex) {
+				return d.toString();
+			}
 		}));
 	}
 	
@@ -63,7 +72,7 @@ public class ConvertCommand implements Command {
 				Conversion conv = conversions.get(from, to);
 				if (conv.numbers) {
 					try {
-						Double.parseDouble(input);
+						new BigDecimal(input);
 					} catch (Exception ex) {
 						sendMessage(group, "[Convert] The conversion between " + from + " and " + to + " requires a number to be input.", true);
 						return;
