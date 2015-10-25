@@ -19,24 +19,26 @@ public class SuperChatShows {
 		// you only need the first two strings ("Display Name" and "main"), the others are optional!
 		// Please keep the "main" string to only contain lowercase english letters (as it is used for file names)!
 		// register(new Show("Display Name", "main", "other_name", "any_other_name", "blah"));
-		register(new Show("Arrow", "arrow", "thearrow"));
-		register(new Show("The Flash", "flash", "theflash"));
-		register(new Show("Agents of SHIELD", "aos", "agentsofshield"));
-		register(new Show("Agent Carter", "ac", "agentcarter"));
-		register(new Show("Jessica Jones", "jj", "jessicajones"));
-		register(new Show("Daredevil", "dd", "daredevil"));
-		register(new Show("Supergirl", "sg", "supergirl"));
-		register(new Show("Gotham", "gotham", "goth"));
-		register(new Show("Constantine", "const", "constantine"));
-		register(new Show("Narcos", "narcos", "narc"));
-		register(new Show("Mr. Robot", "robot", "mrrobot"));
-		register(new Show("sense8", "sensate", "sense8", "s8"));
-		register(new Show("SleepyHollow", "sh", "sleho"));
-		register(new Show("Grimm", "grimm", "gr"));
-		register(new Show("The Walking Dead", "twd", "thewalkingdead"));
-		register(new Show("Heroes", "heroes", "her"));
-		register(new Show("Doctor Who", "dw", "doctorwho"));
-		register(new Show("The Tomorrow People", "ttp", "tmp", "tomorrowpeople"));
+		register(new Show("Arrow", "Wednesday", "arrow", "thearrow"));
+		register(new Show("The Flash", "Tuesday", "flash", "theflash"));
+		register(new Show("Agents of SHIELD", "Tuesday", "aos", "agents"));
+		register(new Show("Agent Carter", null, "ac", "agentcarter"));
+		register(new Show("Jessica Jones", "Netflix", "jj", "jessicajones"));
+		register(new Show("Daredevil", "Netflix", "dd", "daredevil"));
+		register(new Show("Supergirl", "Monday", "sg", "supergirl"));
+		register(new Show("Gotham", "Monday", "gotham", "goth"));
+		register(new Show("Constantine", null, "const", "constantine"));
+		register(new Show("Narcos", "Netflix", "narcos", "narc"));
+		register(new Show("Mr. Robot", null, "robot", "mrrobot"));
+		register(new Show("sense8", "Netflix", "sensate", "sense8", "s8"));
+		register(new Show("SleepyHollow", "Thursday", "sh", "sleho"));
+		register(new Show("Grimm", "Friday", "grimm", "gr"));
+		register(new Show("The Walking Dead", "Monday", "twd", "walkingdead"));
+		register(new Show("Heroes",	null, "heroes", "her"));
+		register(new Show("Doctor Who", "Sunday", "dw", "doctorwho"));
+		register(new Show("The Tomorrow People", null, "ttp", "tmp"));
+		register(new Show("The Messengers", null, "tmsg", "messengers"));
+		register(new Show("Limitless", "Tuesday", "limitless", "lmtl"));
 	}
 	
 	public static void register(Show show) {
@@ -51,11 +53,13 @@ public class SuperChatShows {
 	
 	public static final class Show {
 		
-		String display;
-		String[] names;
+		public final String display;
+		public final String[] names;
+		public final String day;
 		
-		public Show(String display, String... names) {
+		public Show(String display, String day, String... names) {
 			this.display = display;
+			this.day = day;
 			this.names = names;
 		}
 		

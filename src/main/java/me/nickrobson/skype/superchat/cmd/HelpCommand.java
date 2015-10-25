@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import me.nickrobson.skype.superchat.GroupConfiguration;
 import me.nickrobson.skype.superchat.SuperChatController;
 import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
 import xyz.gghost.jskype.user.GroupUser;
 import xyz.gghost.jskype.user.GroupUser.Role;
@@ -55,8 +54,6 @@ public class HelpCommand implements Command {
 		GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
 		if (cfg != null)
 			cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd));
-		else
-			cmds.clear();
 		if (cmds.isEmpty()) {
 			sendMessage(group, "It looks like there are no commands enabled in this chat.");
 			return;
@@ -72,7 +69,7 @@ public class HelpCommand implements Command {
 		cmds.forEach(c -> {
 			String[] help = c.help(user, group.isUserChat());
 			if (c.role() == Role.USER)
-				strings.add("\n" + pad(getCmdHelp(c, user, group.isUserChat()), maxLen.get()) + " - " + help[1]);
+				strings.add(pad(getCmdHelp(c, user, group.isUserChat()), maxLen.get()) + " - " + help[1]);
 		});
 		if (SuperChatController.HELP_IGNORE_WHITESPACE)
 			strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
@@ -86,10 +83,10 @@ public class HelpCommand implements Command {
 		strings.forEach(s -> {
 			if (s.length() > maxLen.get())
 				maxLen.set(s.length());
-			builder.append(s);
+			builder.append("\n" + encode(s));
 		});
 		String spaces = SuperChatController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
-		sendMessage(group, FormatUtils.code(FormatUtils.encodeRawText(spaces.substring(1))) + FormatUtils.bold(FormatUtils.encodeRawText(wel.trim() + come)) + FormatUtils.code(FormatUtils.encodeRawText(builder.toString())), false);
+		sendMessage(group, code(encode(spaces)) + bold(encode(wel.trim() + come)) + code(builder.toString()), false);
 	}
 	
 

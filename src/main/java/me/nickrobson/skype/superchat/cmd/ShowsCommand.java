@@ -3,10 +3,10 @@ package me.nickrobson.skype.superchat.cmd;
 import java.util.LinkedList;
 import java.util.List;
 
+import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
 import xyz.gghost.jskype.user.GroupUser;
 
@@ -33,16 +33,25 @@ public class ShowsCommand implements Command {
 				sb.append(s);
 			}
 			if (sb.length() > 0)
-				send.add(FormatUtils.bold(FormatUtils.encodeRawText(show.getDisplay() + ": ")) + FormatUtils.encodeRawText(sb.toString()));
+				send.add(code(encode("[[ " + show.getDisplay() + " ]]: ")) + code(encode(sb.toString())));
 		}
 		send.sort(String.CASE_INSENSITIVE_ORDER);
-		String toSend = "";
-		for (String s : send) {
-			if (toSend.length() > 0)
-				toSend += "\n";
-			toSend += s;
+		int rows = (send.size() / 2) + (send.size() % 2);
+		int maxLen1 = 0;
+		for (int i = 0; i < rows; i++)
+			maxLen1 = Math.max(maxLen1, send.get(i).length());
+		MessageBuilder builder = new MessageBuilder();
+		for (int i = 0; i < rows; i++) {
+			String spaces = "";
+			for (int j = send.get(i).length(); j < maxLen1; j++)
+				spaces += ' ';
+			builder.html(send.get(i) + code(spaces));
+			if (send.size() > rows+i) {
+				builder.html(encode("    ") + send.get(rows+i));
+			}
+			builder.newLine();
 		}
-		sendMessage(group, toSend, false);
+		sendMessage(group, builder.build());
 	}
 
 }

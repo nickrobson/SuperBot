@@ -13,6 +13,15 @@ public class MessageBuilder {
 		msg = initial;
 	}
 	
+	public int length() {
+		return msg.length();
+	}
+	
+	@Override
+	public String toString() {
+		return build();
+	}
+	
 	public String build() {
 		link(null).strikethrough(false)
 			.italic(false).blink(false)
