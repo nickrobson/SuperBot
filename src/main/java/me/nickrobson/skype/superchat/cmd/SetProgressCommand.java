@@ -36,7 +36,7 @@ public class SetProgressCommand implements Command {
 				prg.remove(user.getUser().getUsername());
 				SuperChatController.PROGRESS.put(show.getMainName(), prg);
 				sendMessage(group, "Removed " + user.getUser().getDisplayName() + "'s progress on " + show.getDisplay(), true);
-				SuperChatController.save();
+				SuperChatController.saveProgress();
 			} else if (!SuperChatShows.EPISODE_PATTERN.matcher(ep).matches()) {
 				sendMessage(group, "Invalid episode: " + ep + " (doesn't match SxEyy format)", true);
 			} else {
@@ -44,7 +44,7 @@ public class SetProgressCommand implements Command {
 				prg.put(user.getUser().getUsername(), ep);
 				SuperChatController.PROGRESS.put(show.getMainName(), prg);
 				sendMessage(group, "Set " + user.getUser().getDisplayName() + "'s progress on " + show.getDisplay() + " to " + ep, true);
-				SuperChatController.save();
+				SuperChatController.saveProgress();
 			}
 		}
 	}

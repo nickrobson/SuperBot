@@ -74,7 +74,7 @@ public class SuperChatController {
 			
 			SuperChatShows.setup();
 			
-			load();
+			loadProgress();
 			commands();
 			loadGroups();
 			loadHangmanWords();
@@ -129,7 +129,7 @@ public class SuperChatController {
 		register(new TimetableCommand());
 	}
 
-	public static void load() {
+	public static void loadProgress() {
 		File dir = new File("superchat_data");
 		if (!dir.exists())
 			dir.mkdir();
@@ -151,7 +151,7 @@ public class SuperChatController {
 		}
  	}
 
-	public static void save() {
+	public static void saveProgress() {
 		Map<String, Map<String, String>> map = PROGRESS;
 		File dir = new File("superchat_data");
 		if (!dir.exists())

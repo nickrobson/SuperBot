@@ -25,7 +25,7 @@ public class StopCommand implements Command {
 	@Override
 	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
 		sendMessage(group, "Goodbye!", true);
-		SuperChatController.save();
+		SuperChatController.saveProgress();
 		System.exit(0);
 	}
 

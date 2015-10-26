@@ -32,7 +32,7 @@ public class WipeCommand implements Command {
 		AtomicBoolean wiped = SuperChatController.wipe(toRemove);
 		if (wiped.get()) {
 			sendMessage(group, "Wiped " + toRemove, true);
-			SuperChatController.save();
+			SuperChatController.saveProgress();
 		} else {
 			sendMessage(group, "No data to wipe on " + toRemove, true);
 		}
