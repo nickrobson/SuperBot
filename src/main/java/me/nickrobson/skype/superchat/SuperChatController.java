@@ -88,6 +88,15 @@ public class SuperChatController {
 			skype.login();
 			skype.getEventManager().registerListener(new SuperChatListener());
 			
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						Thread.sleep(1000 * 60 * 60 * 8);
+					} catch (InterruptedException e) {}
+					System.exit(0);
+				}
+			}).start();
+			
 			while (true) {}
 		} catch (Exception ex) {
 			ex.printStackTrace();
