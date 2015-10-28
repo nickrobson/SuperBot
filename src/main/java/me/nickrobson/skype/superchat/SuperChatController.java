@@ -197,8 +197,7 @@ public class SuperChatController {
 	
 	public static AtomicBoolean wipe(String toRemove) {
 		AtomicBoolean wiped = new AtomicBoolean(false);
-		PROGRESS.keySet().forEach(s -> {
-			Map<String, String> prg = PROGRESS.get(s);
+		PROGRESS.forEach((s, prg) -> {
 			if (prg.containsKey(toRemove)) {
 				prg.remove(toRemove);
 				wiped.set(true);
@@ -212,10 +211,11 @@ public class SuperChatController {
 		if (!SuperChatShows.EPISODE_PATTERN.matcher(ep).matches())
 			return null;
 		
-		List<String> users = getProgress(show).entrySet().stream()
-			.filter(e -> e.getValue().equals(ep))
-			.map(e -> e.getKey())
-			.collect(Collectors.toList());
+		List<String> users = getProgress(show).entrySet()
+				.stream()
+				.filter(e -> e.getValue().equals(ep))
+				.map(e -> e.getKey())
+				.collect(Collectors.toList());
 		
 		StringBuilder sb = new StringBuilder();
 		for (String s : users) {

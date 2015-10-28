@@ -37,9 +37,10 @@ public class ShowsCommand implements Command {
 		}
 		send.sort(String.CASE_INSENSITIVE_ORDER);
 		int rows = (send.size() / 2) + (send.size() % 2);
-		int maxLen1 = 0;
-		for (int i = 0; i < rows; i++)
-			maxLen1 = Math.max(maxLen1, send.get(i).length());
+		int maxLen1 = send.subList(0, rows)
+				.stream()
+				.max((s1, s2) -> s1.length() - s2.length())
+				.orElse("").length();
 		MessageBuilder builder = new MessageBuilder();
 		for (int i = 0; i < rows; i++) {
 			String spaces = "";

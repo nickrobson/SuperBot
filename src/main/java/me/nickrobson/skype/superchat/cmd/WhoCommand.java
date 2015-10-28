@@ -38,14 +38,16 @@ public class WhoCommand implements Command {
 		progress.forEach((show, ep) -> {
 			shows.add(show.getDisplay() + "    (" + ep + ")");
 		});
-		shows.sort(String.CASE_INSENSITIVE_ORDER);
 		int rows = (shows.size() / 2) + (shows.size() % 2);
-		int maxLen1 = 0;
-		for (int i = 0; i < rows; i++)
-			maxLen1 = Math.max(maxLen1, shows.get(i).length());
-		int maxLen2 = 0;
-		for (int i = rows; i < shows.size(); i++)
-			maxLen2 = Math.max(maxLen2, shows.get(i).length());
+		shows.sort(String.CASE_INSENSITIVE_ORDER);
+		int maxLen1 = shows.subList(0, rows)
+				.stream()
+				.max((s1, s2) -> s1.length() - s2.length())
+				.orElse("").length();
+		int maxLen2 = shows.subList(rows, shows.size())
+				.stream()
+				.max((s1, s2) -> s1.length() - s2.length())
+				.orElse("").length();
 		String s = "";
 		for (int i = 0; i < rows; i++) {
 			if (shows.size() > i) {
