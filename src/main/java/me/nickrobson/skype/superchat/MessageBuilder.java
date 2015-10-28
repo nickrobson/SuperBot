@@ -109,7 +109,7 @@ public class MessageBuilder {
 		boolean on = s > 0;
 		if (size != on) {
 			size = on;
-			msg.append(on ? "<font size=\"" + true + "\">" : "</font>");
+			msg.append(on ? "<font size=\"" + s + "\">" : "</font>");
 		}
 		return this;
 	}
