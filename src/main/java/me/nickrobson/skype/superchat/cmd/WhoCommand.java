@@ -36,7 +36,8 @@ public class WhoCommand implements Command {
 		List<String> shows = new ArrayList<>();
 		Map<Show, String> progress = SuperChatController.getUserProgress(username);
 		progress.forEach((show, ep) -> {
-			shows.add(show.getDisplay() + "    (" + ep + ")");
+			if (show != null)
+				shows.add(show.getDisplay() + "    (" + ep + ")");
 		});
 		int rows = (shows.size() / 2) + (shows.size() % 2);
 		shows.sort(String.CASE_INSENSITIVE_ORDER);

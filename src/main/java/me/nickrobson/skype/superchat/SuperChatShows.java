@@ -31,14 +31,15 @@ public class SuperChatShows {
 		register(new Show("Narcos", "Netflix", "narcos", "narc"));
 		register(new Show("Mr. Robot", null, "robot", "mrrobot"));
 		register(new Show("sense8", "Netflix", "sensate", "sense8", "s8"));
-		register(new Show("SleepyHollow", "Thursday", "sh", "sleho"));
-		register(new Show("Grimm", "Friday", "grimm", "gr"));
+		register(new Show("SleepyHollow", "Thursday", "sho", "sleho"));
+		register(new Show("Grimm", "Friday", "grimm", "gri"));
 		register(new Show("The Walking Dead", "Monday", "twd", "walkingdead"));
 		register(new Show("Heroes",	null, "heroes", "her"));
 		register(new Show("Doctor Who", "Sunday", "dw", "doctorwho"));
 		register(new Show("The Tomorrow People", null, "ttp", "tmp"));
 		register(new Show("The Messengers", null, "tmsg", "messengers"));
 		register(new Show("Limitless", "Tuesday", "limitless", "lmtl"));
+		register(new Show("iZombie", "Tuesday", "izombie", "izo"));
 	}
 	
 	public static void register(Show show) {
