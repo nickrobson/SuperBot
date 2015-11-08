@@ -57,11 +57,11 @@ public class WhoCommand implements Command {
                 }
                 s += encode(t);
                 if (i != rows - 1)
-                    s += '\n';
+                    s += "\n   ";
             }
         }
         if (shows.size() > 0)
-            sendMessage(group, bold(encode("Shows " + username + " is watching:")) + "\n" + code(s));
+            sendMessage(group, bold(encode("Shows " + username + " is watching:")) + "\n" + code("   " + s));
         else
             sendMessage(group, bold(encode("Error: ")) + encode("It doesn't look like " + username + " uses me. :("));
     }

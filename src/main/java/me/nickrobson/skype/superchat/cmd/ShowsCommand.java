@@ -50,7 +50,8 @@ public class ShowsCommand implements Command {
 			if (send.size() > rows+i) {
 				builder.html(encode("    ") + send.get(rows+i));
 			}
-			builder.newLine();
+			if (i != rows-1)
+			    builder.newLine();
 		}
 		sendMessage(group, builder.build());
 	}

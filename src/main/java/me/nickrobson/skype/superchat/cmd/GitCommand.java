@@ -20,7 +20,6 @@ public class GitCommand implements Command {
 	@Override
 	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
 		group.sendMessage(new MessageBuilder().link("http://github.com/nickrobson/SuperChat").html("Click here for the GitHub repo link!").build());
-		//group.sendMessage("<a href=\"http://github.com/nickrobson/SuperChat/\">http://github.com/nickrobson/SuperChat/</a>");
 	}
 
 }

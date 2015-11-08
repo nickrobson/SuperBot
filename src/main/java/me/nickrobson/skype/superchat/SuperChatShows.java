@@ -39,7 +39,8 @@ public class SuperChatShows {
 		register(new Show("The Tomorrow People", null, "ttp", "tmp"));
 		register(new Show("The Messengers", null, "tmsg", "messengers"));
 		register(new Show("Limitless", "Tuesday", "limitless", "lmtl"));
-		register(new Show("iZombie", "Tuesday", "izombie", "izo"));
+        register(new Show("iZombie", "Tuesday", "izombie", "izo"));
+        register(new Show("Blindspot", "Monday", "blindspot", "blind", "bli"));
 	}
 	
 	public static void register(Show show) {
