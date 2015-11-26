@@ -16,6 +16,10 @@ public interface Command {
     default GroupUser.Role role() {
         return GroupUser.Role.USER;
     }
+    
+    default boolean userchat() {
+        return false;
+    }
 
     String[] help(GroupUser user, boolean userChat);
 
@@ -62,6 +66,10 @@ public interface Command {
 
     default String size(String s, int size) {
         return FormatUtils.size(s, size);
+    }
+
+    default boolean alwaysEnabled() {
+        return false;
     }
 
 }

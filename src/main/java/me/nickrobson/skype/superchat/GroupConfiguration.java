@@ -14,7 +14,6 @@ public class GroupConfiguration {
 	private String groupId = null;
 	private boolean everythingOn = false;
 	private boolean showJoinMessage = false;
-	private boolean announceInitialization = false;
 	private final Set<String> enabledCommands = new HashSet<>();
 	
 	public GroupConfiguration(File file) {
@@ -27,8 +26,6 @@ public class GroupConfiguration {
 					everythingOn = true;
 				} else if (line.startsWith("join-message")) {
 					showJoinMessage = true;
-				} else if (line.startsWith("announce-init")) {
-					announceInitialization = true;
 				} else if (line.startsWith("groupId=")) {
 					groupId = line.substring(8);
 				}
@@ -49,10 +46,6 @@ public class GroupConfiguration {
 	
 	public boolean isShowJoinMessage() {
 		return everythingOn || showJoinMessage;
-	}
-	
-	public boolean isAnnounceInitialization() {
-		return everythingOn || announceInitialization;
 	}
 
 }

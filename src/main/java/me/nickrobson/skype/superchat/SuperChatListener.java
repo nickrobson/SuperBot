@@ -11,6 +11,7 @@ import xyz.gghost.jskype.events.UserChatEvent;
 import xyz.gghost.jskype.events.UserJoinEvent;
 import xyz.gghost.jskype.events.UserLeaveEvent;
 import xyz.gghost.jskype.events.UserPendingContactRequestEvent;
+import xyz.gghost.jskype.internal.impl.GroupImpl;
 import xyz.gghost.jskype.message.FormatUtils;
 import xyz.gghost.jskype.message.Message;
 import xyz.gghost.jskype.user.GroupUser;
@@ -21,11 +22,6 @@ public class SuperChatListener implements EventListener {
 
     public void loaded(APILoadedEvent event) {
         SuperChatController.skype.updateStatus(OnlineStatus.ONLINE);
-        SuperChatController.skype.getGroups().forEach(gr -> {
-            GroupConfiguration cfg = SuperChatController.GCONFIGS.get(gr.getLongId());
-            if (cfg != null && cfg.isAnnounceInitialization())
-                gr.sendMessage(new MessageBuilder().italic(true).text("SuperBot activated!").build());
-        });
 
         try {
             for (User user : SuperChatController.skype.getContactRequests())
@@ -82,30 +78,26 @@ public class SuperChatListener implements EventListener {
             return;
 
         GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
-        if (cfg != null && !cfg.isCommandEnabled(cmd))
+        if (cfg != null)
+            if (!cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled())
+                return;
+        else if (group.isUserChat())
+            if (!cmd.userchat() && !cmd.alwaysEnabled())
+                return;
+        else
             return;
-
+        
         String[] args = new String[words.length - 1];
         for (int i = 1; i < words.length; i++)
             args[i - 1] = words[i];
 
         GroupUser guser = group.getUserByUsername(user.getUsername());
-        /*
-        if (group.isUserChat())
-            if (cmd.role() == GroupUser.Role.MASTER)
-                try {
-                    guser = SuperChatController.getChatGroup().getClients().stream().filter(c -> c.getUser().getUsername().equals(user.getUsername())).findFirst().orElse(null);
-                } catch (Exception ex) {
-                    guser = null;
-                }
-            else
-                guser = new GroupUser(user, GroupUser.Role.USER, (GroupImpl) group);
-        else
-            guser = group.getClients().stream().filter(c -> c.getUser().getUsername().equals(user.getUsername())).findFirst().orElse(null);
-         */
-        if (guser != null)
+        if (guser != null || group.isUserChat()) {
+            if (group.isUserChat())
+                guser = new GroupUser(user, GroupUser.Role.MASTER, (GroupImpl) group);
             if (cmd.role() == GroupUser.Role.USER || guser.role == GroupUser.Role.MASTER)
                 cmd.exec(guser, group, cmdName, args, message);
+        }
     }
 
 }
