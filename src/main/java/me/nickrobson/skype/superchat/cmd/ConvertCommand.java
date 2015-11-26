@@ -1,6 +1,8 @@
 package me.nickrobson.skype.superchat.cmd;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.function.Function;
 
 import com.google.common.collect.HashBasedTable;
@@ -20,6 +22,7 @@ public class ConvertCommand implements Command {
         conversions.put("C", "F", new Conversion("Celsius", "Fahrenheit", true, true, s -> {
             BigDecimal a = new BigDecimal(s);
             BigDecimal d = a.multiply(BigDecimal.valueOf(9.0 / 5.0)).add(BigDecimal.valueOf(32));
+            d = d.round(new MathContext(7, RoundingMode.HALF_UP));
             try {
                 return d.toBigIntegerExact().toString();
             } catch (Exception ex) {
@@ -29,12 +32,16 @@ public class ConvertCommand implements Command {
         conversions.put("F", "C", new Conversion("Fahrenheit", "Celsius", true, true, s -> {
             BigDecimal a = new BigDecimal(s);
             BigDecimal d = a.subtract(BigDecimal.valueOf(32)).multiply(BigDecimal.valueOf(5.0 / 9.0));
+            d = d.round(new MathContext(7, RoundingMode.HALF_UP));
             try {
                 return d.toBigIntegerExact().toString();
             } catch (Exception ex) {
                 return d.toString();
             }
         }));
+        NumberConversion kmmi = new NumberConversion("Kilometres", "Miles", true, 0.6214);
+        conversions.put("km", "mi", kmmi);
+        conversions.put("mi", "km", kmmi.reverse());
     }
 
     @Override
@@ -45,6 +52,11 @@ public class ConvertCommand implements Command {
     @Override
     public String[] help(GroupUser user, boolean userChat) {
         return new String[] { "[from] [to] [input...]", "converts [input] : [from] => [to]" };
+    }
+    
+    @Override
+    public boolean userchat() {
+        return true;
     }
 
     @Override
@@ -66,8 +78,8 @@ public class ConvertCommand implements Command {
                     sb.append(" ");
                 sb.append(args[i]);
             }
-            String from = args[0].toUpperCase();
-            String to = args[1].toUpperCase();
+            String from = args[0];
+            String to = args[1];
             String input = sb.toString();
             if (conversions.contains(from, to)) {
                 Conversion conv = conversions.get(from, to);
@@ -96,9 +108,9 @@ public class ConvertCommand implements Command {
 
     public static class Conversion {
 
-        private final String from, to;
-        private final boolean numbers, appendSymbol;
-        private final Function<String, String> func;
+        final String from, to;
+        final boolean numbers, appendSymbol;
+        final Function<String, String> func;
 
         public Conversion(String from, String to, boolean numbers, boolean appendSymbol, Function<String, String> func) {
             this.from = from;
@@ -108,6 +120,30 @@ public class ConvertCommand implements Command {
             this.func = func;
         }
 
+    }
+    
+    public static class NumberConversion extends Conversion {
+        
+        double multiplier;
+        
+        public NumberConversion(String from, String to, boolean appendSymbol, double multiplier) {
+            super(from, to, true, appendSymbol, s -> {
+                BigDecimal a = new BigDecimal(s);
+                BigDecimal d = a.multiply(BigDecimal.valueOf(multiplier));
+                d = d.round(new MathContext(7, RoundingMode.HALF_UP));
+                try {
+                    return d.toBigIntegerExact().toString();
+                } catch (Exception ex) {
+                    return d.toString();
+                }
+            });
+            this.multiplier = multiplier;
+        }
+        
+        public NumberConversion reverse() {
+            return new NumberConversion(to, from, appendSymbol, 1.0/multiplier);
+        }
+        
     }
 
 }

@@ -22,6 +22,11 @@ public class HelpCommand implements Command {
     public String[] help(GroupUser user, boolean userChat) {
         return new String[] { "", "see this help message" };
     }
+    
+    @Override
+    public boolean userchat() {
+        return true;
+    }
 
     String getCmdHelp(Command cmd, GroupUser user, boolean userChat) {
         String pre = SuperChatController.COMMAND_PREFIX;
@@ -56,7 +61,11 @@ public class HelpCommand implements Command {
         });
         GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
         if (cfg != null)
-            cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd));
+            cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled());
+        else if (group.isUserChat())
+            cmds.removeIf(cmd -> !cmd.userchat() && !cmd.alwaysEnabled());
+        else
+            cmds.clear();
         if (cmds.isEmpty()) {
             sendMessage(group, "It looks like there are no commands enabled in this chat.");
             return;
@@ -90,6 +99,11 @@ public class HelpCommand implements Command {
         });
         String spaces = SuperChatController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
         sendMessage(group, code(encode(spaces)) + bold(encode(wel.trim() + come)) + code(builder.toString()));
+    }
+
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
     }
 
 }
