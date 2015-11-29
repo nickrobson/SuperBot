@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Joiner;
-
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
@@ -34,7 +32,7 @@ public class TimetableCommand implements Command {
             builder.newLine();
         List<String> names = set.stream().map(s -> s.display).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
-        builder.bold(true).text(day + ": ").bold(false).text(Joiner.on(", ").join(names));
+        builder.bold(true).text(day + ": ").bold(false).text(MessageBuilder.join(", ", names));
     }
 
     @Override

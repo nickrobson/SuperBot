@@ -3,11 +3,9 @@ package me.nickrobson.skype.superchat.cmd;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import com.google.common.collect.Table.Cell;
 
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
@@ -15,11 +13,19 @@ import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 
 public class ConvertCommand implements Command {
 
-    private final Table<String, String, Conversion> conversions = HashBasedTable.create();
+    private final Map<String, Map<String, Conversion>> conversions = new HashMap<>();
 
+    private void register(String row, String col, Conversion con) {
+        Map<String, Conversion> map = conversions.get(row);
+        if (map == null)
+            map = new HashMap<>();
+        map.put(col, con);
+        conversions.put(row, map);
+    }
+    
     @Override
     public void init() {
-        conversions.put("C", "F", new Conversion("Celsius", "Fahrenheit", true, true, s -> {
+        register("C", "F", new Conversion("Celsius", "Fahrenheit", true, true, s -> {
             BigDecimal a = new BigDecimal(s);
             BigDecimal d = a.multiply(BigDecimal.valueOf(9.0 / 5.0)).add(BigDecimal.valueOf(32));
             d = d.round(new MathContext(7, RoundingMode.HALF_UP));
@@ -29,7 +35,7 @@ public class ConvertCommand implements Command {
                 return d.toString();
             }
         }));
-        conversions.put("F", "C", new Conversion("Fahrenheit", "Celsius", true, true, s -> {
+        register("F", "C", new Conversion("Fahrenheit", "Celsius", true, true, s -> {
             BigDecimal a = new BigDecimal(s);
             BigDecimal d = a.subtract(BigDecimal.valueOf(32)).multiply(BigDecimal.valueOf(5.0 / 9.0));
             d = d.round(new MathContext(7, RoundingMode.HALF_UP));
@@ -40,8 +46,8 @@ public class ConvertCommand implements Command {
             }
         }));
         MultiplierConversion kmmi = new MultiplierConversion("Kilometres", "Miles", true, 0.6214);
-        conversions.put("km", "mi", kmmi);
-        conversions.put("mi", "km", kmmi.reverse());
+        register("km", "mi", kmmi);
+        register("mi", "km", kmmi.reverse());
     }
 
     @Override
@@ -63,11 +69,13 @@ public class ConvertCommand implements Command {
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             StringBuilder builder = new StringBuilder();
-            for (Cell<String, String, Conversion> cell : conversions.cellSet()) {
+            for (Map.Entry<String, Map<String, Conversion>> cell : conversions.entrySet()) {
+                for (Map.Entry<String, Conversion> sub : cell.getValue().entrySet()) {
                 if (builder.length() > 0)
-                    builder.append("\n");
-                builder.append(encode(String.format("%s => %s (%s => %s)", cell.getRowKey(), cell.getColumnKey(),
-                        cell.getValue().from, cell.getValue().to)));
+                        builder.append("\n");
+                    builder.append(encode(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(),
+                            sub.getValue().from, sub.getValue().to)));
+                }
             }
             group.sendMessage(builder.toString());
         } else if (args.length < 3) {
@@ -82,8 +90,8 @@ public class ConvertCommand implements Command {
             String from = args[0];
             String to = args[1];
             String input = sb.toString();
-            if (conversions.contains(from, to)) {
-                Conversion conv = conversions.get(from, to);
+            if (conversions.containsKey(from) && conversions.get(from).containsKey(to)) {
+                Conversion conv = conversions.get(from).get(to);
                 if (conv.numbers) {
                     try {
                         new BigDecimal(input);
