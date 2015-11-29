@@ -1,10 +1,11 @@
 package me.nickrobson.skype.superchat.cmd;
 
+import in.kyle.ezskypeezlife.Chat;
+import in.kyle.ezskypeezlife.api.SkypeUserRole;
+import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
+import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.MessageBuilder;
-import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.FormatUtils;
-import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.GroupUser;
 
 public interface Command {
 
@@ -13,59 +14,55 @@ public interface Command {
 
     String[] names();
 
-    default GroupUser.Role role() {
-        return GroupUser.Role.USER;
+    default SkypeUserRole role() {
+        return SkypeUserRole.USER;
     }
-    
+
     default boolean userchat() {
         return false;
     }
 
-    String[] help(GroupUser user, boolean userChat);
+    String[] help(SkypeUser user, boolean userChat);
 
-    void exec(GroupUser user, Group group, String used, String[] args, Message message);
+    void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message);
 
     /* UTILITY FUNCTIONS */
 
-    default void sendMessage(Group group, String message) {
-        group.sendMessage(message);
-    }
-
     default String bold(String s) {
-        return FormatUtils.bold(s);
+        return Chat.bold(s);
     }
 
     default String encode(String s) {
-        // return FormatUtils.encodeRawText(s);
+        // return Chat.encodeRawText(s);
         return MessageBuilder.html_escape(s);
     }
 
     default String code(String s) {
-        return FormatUtils.code(s);
+        return Chat.code(s);
     }
 
     default String blink(String s) {
-        return FormatUtils.blink(s);
+        return Chat.blink(s);
     }
 
     default String italic(String s) {
-        return FormatUtils.italic(s);
+        return Chat.italic(s);
     }
 
-    default String link(String s) {
-        return FormatUtils.link(s);
+    default String link(String text, String url) {
+        return Chat.link(text, url);
     }
 
     default String strike(String s) {
-        return FormatUtils.strikethrough(s);
+        return Chat.strikeThrough(s);
     }
 
     default String under(String s) {
-        return FormatUtils.underline(s);
+        return Chat.underline(s);
     }
 
     default String size(String s, int size) {
-        return FormatUtils.size(s, size);
+        return Chat.size(s, size);
     }
 
     default boolean alwaysEnabled() {

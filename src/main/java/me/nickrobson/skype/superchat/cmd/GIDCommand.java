@@ -1,30 +1,30 @@
 package me.nickrobson.skype.superchat.cmd;
 
-import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.GroupUser;
+import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
+import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 
-public class GIDCommand implements Command {
+public class GidCommand implements Command {
 
-	@Override
-	public String[] names() {
-		return new String[]{ "gid" };
-	}
+    @Override
+    public String[] names() {
+        return new String[] { "gid" };
+    }
 
-	@Override
-	public String[] help(GroupUser user, boolean userChat) {
-		return new String[]{ "", "gets the group's longId" };
-	}
-    
+    @Override
+    public String[] help(SkypeUser user, boolean userChat) {
+        return new String[] { "", "gets the group's longId" };
+    }
+
     @Override
     public boolean userchat() {
         return true;
     }
 
-	@Override
-	public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
-		sendMessage(group, encode("This group's longId is: ") + bold(encode(group.getLongId())));
-	}
+    @Override
+    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+        group.sendMessage(encode("This group's longId is: ") + bold(encode(group.getLongId())));
+    }
 
     @Override
     public boolean alwaysEnabled() {

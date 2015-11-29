@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
+import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatController;
 import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
-import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.GroupUser;
 
 public class ProgressCommand implements Command {
 
@@ -23,12 +23,12 @@ public class ProgressCommand implements Command {
     }
 
     @Override
-    public String[] help(GroupUser user, boolean userChat) {
+    public String[] help(SkypeUser user, boolean userChat) {
         return new String[] { "[-a] [shows...]", "see progress on all or provided shows" };
     }
 
     @Override
-    public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
+    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         MessageBuilder builder = new MessageBuilder();
         boolean sent = false;
         boolean all_eps = false;
@@ -56,22 +56,22 @@ public class ProgressCommand implements Command {
                 }
             }
         } else {
-            sendMessage(group, bold(encode("Usage: ")) + encode(SuperChatController.COMMAND_PREFIX + "progress [show...]"));
+            group.sendMessage(
+                    bold(encode("Usage: ")) + encode(SuperChatController.COMMAND_PREFIX + "progress [show...]"));
             return;
         }
         if (sent) {
-            sendMessage(group, builder.build());
+            group.sendMessage(builder.build());
         } else {
-            sendMessage(group, encode("No progress submitted for any show."));
+            group.sendMessage(encode("No progress submitted for any show."));
         }
     }
 
     MessageBuilder show(String show, MessageBuilder builder, boolean all_eps) {
         Map<String, String> prg = SuperChatController.getProgress(show);
-        List<String> eps = prg.values().stream()
-            .filter(s -> SuperChatShows.EPISODE_PATTERN.matcher(s).matches())
-            .sorted((e1, e2) -> SuperChatController.whichEarlier(e1, e2).equals(e1) ? -1 : 1)
-            .collect(Collectors.toList());
+        List<String> eps = prg.values().stream().filter(s -> SuperChatShows.EPISODE_PATTERN.matcher(s).matches())
+                .sorted((e1, e2) -> SuperChatController.whichEarlier(e1, e2).equals(e1) ? -1 : 1)
+                .collect(Collectors.toList());
         List<String> epz = new LinkedList<>();
         eps.forEach(e -> {
             if (!epz.contains(e))
@@ -84,8 +84,10 @@ public class ProgressCommand implements Command {
                     builder.newLine().text("- " + ep.toUpperCase() + ": " + SuperChatController.getUsersOn(show, ep));
                 }
             } else {
-                builder.newLine().text("- Earliest: " + epz.get(0) + " (" + SuperChatController.getUsersOn(show, epz.get(0)) + ")");
-                builder.newLine().text("- Latest:   " + epz.get(epz.size() - 1) + " (" + SuperChatController.getUsersOn(show, epz.get(epz.size() - 1)) + ")");
+                builder.newLine().text(
+                        "- Earliest: " + epz.get(0) + " (" + SuperChatController.getUsersOn(show, epz.get(0)) + ")");
+                builder.newLine().text("- Latest:   " + epz.get(epz.size() - 1) + " ("
+                        + SuperChatController.getUsersOn(show, epz.get(epz.size() - 1)) + ")");
             }
         } else {
             builder.newLine().text("No progress submitted.");

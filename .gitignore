@@ -1,5 +1,6 @@
 /bin/
 /out/
+/logs/
 /target/
 /.settings/
 .classpath

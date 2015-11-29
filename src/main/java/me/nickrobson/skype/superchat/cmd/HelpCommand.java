@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import in.kyle.ezskypeezlife.api.SkypeConversationType;
+import in.kyle.ezskypeezlife.api.SkypeUserRole;
+import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
+import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.GroupConfiguration;
 import me.nickrobson.skype.superchat.SuperChatController;
-import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.GroupUser;
-import xyz.gghost.jskype.user.GroupUser.Role;
 
 public class HelpCommand implements Command {
 
@@ -19,16 +20,16 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public String[] help(GroupUser user, boolean userChat) {
+    public String[] help(SkypeUser user, boolean userChat) {
         return new String[] { "", "see this help message" };
     }
-    
+
     @Override
     public boolean userchat() {
         return true;
     }
 
-    String getCmdHelp(Command cmd, GroupUser user, boolean userChat) {
+    String getCmdHelp(Command cmd, SkypeUser user, boolean userChat) {
         String pre = SuperChatController.COMMAND_PREFIX;
         String s = pre;
         for (String n : cmd.names()) {
@@ -49,7 +50,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
+    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         List<Command> cmds = new ArrayList<>(SuperChatController.COMMANDS.size());
         SuperChatController.COMMANDS.forEach((name, cmd) -> {
             boolean go = true;
@@ -62,26 +63,27 @@ public class HelpCommand implements Command {
         GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
         if (cfg != null)
             cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled());
-        else if (group.isUserChat())
+        else if (group.getConversationType() == SkypeConversationType.USER)
             cmds.removeIf(cmd -> !cmd.userchat() && !cmd.alwaysEnabled());
         else
             cmds.clear();
         if (cmds.isEmpty()) {
-            sendMessage(group, "It looks like there are no commands enabled in this chat.");
+            group.sendMessage("It looks like there are no commands enabled in this chat.");
             return;
         }
         AtomicInteger maxLen = new AtomicInteger(0);
         cmds.forEach(c -> {
-            String cmdHelp = getCmdHelp(c, user, group.isUserChat());
-            if (c.role() == Role.USER && cmdHelp.length() > maxLen.get())
+            String cmdHelp = getCmdHelp(c, user, group.getConversationType() == SkypeConversationType.USER);
+            if (c.role() == SkypeUserRole.USER && cmdHelp.length() > maxLen.get())
                 maxLen.set(cmdHelp.length());
         });
         List<String> strings = new ArrayList<>(SuperChatController.COMMANDS.size());
         StringBuilder builder = new StringBuilder();
         cmds.forEach(c -> {
-            String[] help = c.help(user, group.isUserChat());
-            if (c.role() == Role.USER)
-                strings.add(pad(getCmdHelp(c, user, group.isUserChat()), maxLen.get()) + " - " + help[1]);
+            String[] help = c.help(user, group.getConversationType() == SkypeConversationType.USER);
+            if (c.role() == SkypeUserRole.USER)
+                strings.add(pad(getCmdHelp(c, user, group.getConversationType() == SkypeConversationType.USER),
+                        maxLen.get()) + " - " + help[1]);
         });
         if (SuperChatController.HELP_IGNORE_WHITESPACE)
             strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
@@ -97,8 +99,9 @@ public class HelpCommand implements Command {
                 maxLen.set(s.length());
             builder.append("\n" + encode(s));
         });
-        String spaces = SuperChatController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
-        sendMessage(group, code(encode(spaces)) + bold(encode(wel.trim() + come)) + code(builder.toString()));
+        String spaces = SuperChatController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "")
+                : wel.replaceAll("\\S+", "");
+        group.sendMessage(code(encode(spaces)) + bold(encode(wel.trim() + come)) + code(builder.toString()));
     }
 
     @Override

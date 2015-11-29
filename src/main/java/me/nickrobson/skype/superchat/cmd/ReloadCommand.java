@@ -6,16 +6,16 @@ import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.SuperChatController;
 
-public class StopCommand implements Command {
+public class ReloadCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "stop" };
+        return new String[]{ "reload" };
     }
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[] { "", "stop the bot (restarting it)" };
+        return new String[]{ "", "reloads the groups" };
     }
 
     @Override
@@ -30,9 +30,13 @@ public class StopCommand implements Command {
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        group.sendMessage(encode("Goodbye!"));
+        group.sendMessage(encode("Reloading!"));
         SuperChatController.saveProgress();
-        System.exit(0);
+        SuperChatController.loadProgress();
+        SuperChatController.loadGroups();
+        SuperChatController.loadHangmanWords();
+        SuperChatController.loadCommands();
+        group.sendMessage(encode("Done reloading!"));
     }
 
 }

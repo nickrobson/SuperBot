@@ -17,8 +17,8 @@ public class MessageBuilder {
     }
 
     private final StringBuilder msg;
-    private boolean link = false, bold = false, italic = false, underline = false, code = false,
-            blink = false, size = false, strikethrough = false;
+    private boolean link = false, bold = false, italic = false, underline = false, code = false, blink = false,
+            size = false, strikethrough = false;
 
     public MessageBuilder() {
         this("");
@@ -38,10 +38,7 @@ public class MessageBuilder {
     }
 
     public String build() {
-        link(null).strikethrough(false)
-            .italic(false).blink(false)
-            .underline(false).code(false)
-            .size(0).bold(false);
+        link(null).strikethrough(false).italic(false).blink(false).underline(false).code(false).size(0).bold(false);
         return msg.toString();
     }
 

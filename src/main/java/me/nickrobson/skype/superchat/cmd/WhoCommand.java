@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
+import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.SuperChatController;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
-import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.GroupUser;
 
 public class WhoCommand implements Command {
 
@@ -18,7 +18,7 @@ public class WhoCommand implements Command {
     }
 
     @Override
-    public String[] help(GroupUser user, boolean userChat) {
+    public String[] help(SkypeUser user, boolean userChat) {
         return new String[] { "(username)", "gets (username)'s progress on all shows" };
     }
 
@@ -30,8 +30,8 @@ public class WhoCommand implements Command {
     }
 
     @Override
-    public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
-        String username = args.length > 0 ? args[0].toLowerCase() : user.getUser().getUsername();
+    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+        String username = args.length > 0 ? args[0].toLowerCase() : user.getUsername();
         List<String> shows = new ArrayList<>();
         Map<Show, String> progress = SuperChatController.getUserProgress(username);
         progress.forEach((show, ep) -> {
@@ -40,14 +40,9 @@ public class WhoCommand implements Command {
         });
         int rows = (shows.size() / 2) + (shows.size() % 2);
         shows.sort(String.CASE_INSENSITIVE_ORDER);
-        int maxLen1 = shows.subList(0, rows)
-            .stream()
-            .max((s1, s2) -> s1.length() - s2.length())
-            .orElse("").length();
-        int maxLen2 = shows.subList(rows, shows.size())
-            .stream()
-            .max((s1, s2) -> s1.length() - s2.length())
-            .orElse("").length();
+        int maxLen1 = shows.subList(0, rows).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
+        int maxLen2 = shows.subList(rows, shows.size()).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("")
+                .length();
         String s = "";
         for (int i = 0; i < rows; i++) {
             if (shows.size() > i) {
@@ -61,9 +56,9 @@ public class WhoCommand implements Command {
             }
         }
         if (shows.size() > 0)
-            sendMessage(group, bold(encode("Shows " + username + " is watching:")) + "\n" + code("   " + s));
+            group.sendMessage(bold(encode("Shows " + username + " is watching:")) + "\n" + code("   " + s));
         else
-            sendMessage(group, bold(encode("Error: ")) + encode("It doesn't look like " + username + " uses me. :("));
+            group.sendMessage(bold(encode("Error: ")) + encode("It doesn't look like " + username + " uses me. :("));
     }
 
 }

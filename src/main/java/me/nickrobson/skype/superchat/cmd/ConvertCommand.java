@@ -9,9 +9,9 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
 
-import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.GroupUser;
+import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
+import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 
 public class ConvertCommand implements Command {
 
@@ -39,7 +39,7 @@ public class ConvertCommand implements Command {
                 return d.toString();
             }
         }));
-        NumberConversion kmmi = new NumberConversion("Kilometres", "Miles", true, 0.6214);
+        MultiplierConversion kmmi = new MultiplierConversion("Kilometres", "Miles", true, 0.6214);
         conversions.put("km", "mi", kmmi);
         conversions.put("mi", "km", kmmi.reverse());
     }
@@ -50,27 +50,28 @@ public class ConvertCommand implements Command {
     }
 
     @Override
-    public String[] help(GroupUser user, boolean userChat) {
+    public String[] help(SkypeUser user, boolean userChat) {
         return new String[] { "[from] [to] [input...]", "converts [input] : [from] => [to]" };
     }
-    
+
     @Override
     public boolean userchat() {
         return true;
     }
 
     @Override
-    public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
+    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             StringBuilder builder = new StringBuilder();
             for (Cell<String, String, Conversion> cell : conversions.cellSet()) {
                 if (builder.length() > 0)
                     builder.append("\n");
-                builder.append(encode(String.format("%s => %s (%s => %s)", cell.getRowKey(), cell.getColumnKey(), cell.getValue().from, cell.getValue().to)));
+                builder.append(encode(String.format("%s => %s (%s => %s)", cell.getRowKey(), cell.getColumnKey(),
+                        cell.getValue().from, cell.getValue().to)));
             }
-            sendMessage(group, builder.toString());
+            group.sendMessage(builder.toString());
         } else if (args.length < 3) {
-            sendMessage(group, bold(encode("Usage: ")) + encode("~convert [from] [to] [input...]"));
+            group.sendMessage(bold(encode("Usage: ")) + encode("~convert [from] [to] [input...]"));
         } else {
             StringBuilder sb = new StringBuilder();
             for (int i = 2; i < args.length; i++) {
@@ -87,21 +88,26 @@ public class ConvertCommand implements Command {
                     try {
                         new BigDecimal(input);
                     } catch (Exception ex) {
-                        sendMessage(group, encode("[Convert] The conversion between " + from + " and " + to + " requires a number to be input."));
+                        group.sendMessage(encode("[Convert] The conversion between " + from + " and " + to
+                                + " requires a number to be input."));
                         return;
                     }
                 }
                 try {
                     String res = conv.func.apply(input);
                     if (conv.appendSymbol)
-                        sendMessage(group, encode("[Convert] ") + encode(String.format("%s%s => %s%s", input, from, res, to)));
+                        group.sendMessage(
+                                encode("[Convert] ") + encode(String.format("%s%s => %s%s", input, from, res, to)));
                     else
-                        sendMessage(group, encode("[Convert] ") + encode(String.format("(%s => %s) %s => %s", from, to, input, res)));
+                        group.sendMessage(encode("[Convert] ")
+                                + encode(String.format("(%s => %s) %s => %s", from, to, input, res)));
                 } catch (Throwable t) {
-                    sendMessage(group, encode("[Convert] An error occurred while converting : " + t.getClass().getSimpleName()) + "\n" + encode(t.getMessage()));
+                    group.sendMessage(
+                            encode("[Convert] An error occurred while converting : " + t.getClass().getSimpleName())
+                                    + "\n" + encode(t.getMessage()));
                 }
             } else {
-                sendMessage(group, encode("[Convert] No conversion found between " + from + " and " + to + "!"));
+                group.sendMessage(encode("[Convert] No conversion found between " + from + " and " + to + "!"));
             }
         }
     }
@@ -112,7 +118,8 @@ public class ConvertCommand implements Command {
         final boolean numbers, appendSymbol;
         final Function<String, String> func;
 
-        public Conversion(String from, String to, boolean numbers, boolean appendSymbol, Function<String, String> func) {
+        public Conversion(String from, String to, boolean numbers, boolean appendSymbol,
+                Function<String, String> func) {
             this.from = from;
             this.to = to;
             this.numbers = numbers;
@@ -121,12 +128,12 @@ public class ConvertCommand implements Command {
         }
 
     }
-    
-    public static class NumberConversion extends Conversion {
-        
+
+    public static class MultiplierConversion extends Conversion {
+
         double multiplier;
-        
-        public NumberConversion(String from, String to, boolean appendSymbol, double multiplier) {
+
+        public MultiplierConversion(String from, String to, boolean appendSymbol, double multiplier) {
             super(from, to, true, appendSymbol, s -> {
                 BigDecimal a = new BigDecimal(s);
                 BigDecimal d = a.multiply(BigDecimal.valueOf(multiplier));
@@ -139,11 +146,35 @@ public class ConvertCommand implements Command {
             });
             this.multiplier = multiplier;
         }
-        
-        public NumberConversion reverse() {
-            return new NumberConversion(to, from, appendSymbol, 1.0/multiplier);
+
+        public MultiplierConversion reverse() {
+            return new MultiplierConversion(to, from, appendSymbol, 1.0 / multiplier);
         }
-        
+
+    }
+
+    public static class AdderConversion extends Conversion {
+
+        double add;
+
+        public AdderConversion(String from, String to, boolean appendSymbol, double add) {
+            super(from, to, true, appendSymbol, s -> {
+                BigDecimal a = new BigDecimal(s);
+                BigDecimal d = a.add(BigDecimal.valueOf(add));
+                d = d.round(new MathContext(7, RoundingMode.HALF_UP));
+                try {
+                    return d.toBigIntegerExact().toString();
+                } catch (Exception ex) {
+                    return d.toString();
+                }
+            });
+            this.add = add;
+        }
+
+        public AdderConversion reverse() {
+            return new AdderConversion(to, from, appendSymbol, -add);
+        }
+
     }
 
 }

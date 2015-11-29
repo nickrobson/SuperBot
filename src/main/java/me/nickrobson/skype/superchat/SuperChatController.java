@@ -10,14 +10,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import in.kyle.ezskypeezlife.EzSkype;
+import in.kyle.ezskypeezlife.api.SkypeStatus;
+import in.kyle.ezskypeezlife.api.captcha.SkypeCaptcha;
+import in.kyle.ezskypeezlife.api.captcha.SkypeErrorHandler;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import me.nickrobson.skype.superchat.cmd.Command;
 import me.nickrobson.skype.superchat.cmd.ConvertCommand;
-import me.nickrobson.skype.superchat.cmd.GIDCommand;
+import me.nickrobson.skype.superchat.cmd.CurrencyCommand;
+import me.nickrobson.skype.superchat.cmd.GidCommand;
 import me.nickrobson.skype.superchat.cmd.GitCommand;
 import me.nickrobson.skype.superchat.cmd.HangmanCommand;
 import me.nickrobson.skype.superchat.cmd.HelpCommand;
@@ -29,14 +35,11 @@ import me.nickrobson.skype.superchat.cmd.TimetableCommand;
 import me.nickrobson.skype.superchat.cmd.ViewingOrderCommand;
 import me.nickrobson.skype.superchat.cmd.WhoCommand;
 import me.nickrobson.skype.superchat.cmd.WipeCommand;
-import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.SkypeAPI;
-import xyz.gghost.jskype.internal.packet.requests.GroupMetaRequest;
 
 /**
  * @author Nick Robson
  */
-public class SuperChatController {
+public class SuperChatController implements SkypeErrorHandler {
 
     public static final Map<String, GroupConfiguration> GCONFIGS = new HashMap<>();
 
@@ -53,7 +56,7 @@ public class SuperChatController {
     public static boolean HELP_IGNORE_WHITESPACE = false;
     public static boolean HELP_WELCOME_CENTRED = true;
 
-    public static SkypeAPI skype;
+    public static EzSkype skype;
 
     public static void main(String[] args) {
         try {
@@ -76,19 +79,19 @@ public class SuperChatController {
             SuperChatShows.setup();
 
             loadProgress();
-            commands();
+            loadCommands();
             loadGroups();
             loadHangmanWords();
 
             HELP_IGNORE_WHITESPACE = properties.getOrDefault("help.whitespace", "false").equalsIgnoreCase("true");
             HELP_WELCOME_CENTRED = properties.getOrDefault("help.welcome.centred", "false").equalsIgnoreCase("true");
 
-            System.out.println("Logging in with " + properties.get("username") + " : ********");
-
-            skype = new SkypeAPI(properties.get("username"), properties.get("password"));
+            skype = new EzSkype(properties.get("username"), properties.get("password"));
+            skype.setErrorHandler(new SuperChatController());
             skype.login();
+            skype.setStatus(SkypeStatus.ONLINE);
             SuperChatListener listener = new SuperChatListener();
-            skype.getEventManager().registerListener(listener);
+            skype.getEventManager().registerEvents(listener);
 
             new Thread(new Runnable() {
                 @Override
@@ -108,7 +111,8 @@ public class SuperChatController {
         }
     }
 
-    private static void loadHangmanWords() {
+    public static void loadHangmanWords() {
+        HANGMAN_PHRASES.clear();
         File f = new File("hangman.txt");
         if (f.exists()) {
             try (BufferedReader reader = Files.newBufferedReader(f.toPath())) {
@@ -122,26 +126,28 @@ public class SuperChatController {
         }
     }
 
-    private static void register(Command cmd) {
+    public static void register(Command cmd) {
         for (String name : cmd.names())
             COMMANDS.put(name, cmd);
         cmd.init();
     }
 
-    private static void commands() {
+    public static void loadCommands() {
+        COMMANDS.clear();
+        register(new ConvertCommand());
+        register(new CurrencyCommand());
+        register(new GidCommand());
+        register(new GitCommand());
+        register(new HangmanCommand());
         register(new HelpCommand());
         register(new ProgressCommand());
         register(new SetProgressCommand());
         register(new ShowsCommand());
         register(new StopCommand());
-        register(new WipeCommand());
-        register(new GitCommand());
+        register(new TimetableCommand());
         register(new ViewingOrderCommand());
         register(new WhoCommand());
-        register(new HangmanCommand());
-        register(new ConvertCommand());
-        register(new GIDCommand());
-        register(new TimetableCommand());
+        register(new WipeCommand());
     }
 
     public static void loadProgress() {
@@ -190,6 +196,7 @@ public class SuperChatController {
         File dir = new File("groups");
         if (!dir.exists())
             dir.mkdir();
+        GCONFIGS.clear();
         for (File f : dir.listFiles()) {
             GroupConfiguration cfg = new GroupConfiguration(f);
             if (cfg.getLongGroupId() != null) {
@@ -228,11 +235,8 @@ public class SuperChatController {
         if (!SuperChatShows.EPISODE_PATTERN.matcher(ep).matches())
             return null;
 
-        List<String> users = getProgress(show).entrySet()
-            .stream()
-            .filter(e -> e.getValue().equals(ep))
-            .map(e -> e.getKey())
-            .collect(Collectors.toList());
+        List<String> users = getProgress(show).entrySet().stream().filter(e -> e.getValue().equals(ep))
+                .map(e -> e.getKey()).collect(Collectors.toList());
 
         StringBuilder sb = new StringBuilder();
         for (String s : users) {
@@ -265,8 +269,25 @@ public class SuperChatController {
         return prg;
     }
 
-    public static Group getChatGroup() {
-        return new GroupMetaRequest(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");
+    @Override
+    public String setNewPassword() {
+        System.out.println("You need to set a new password!!");
+        return null;
     }
+
+    @Override
+    public String solve(SkypeCaptcha captcha) {
+        System.out.println("Enter captcha ( " + captcha.getUrl() + " )");
+        try (Scanner sc = new Scanner(System.in)) {
+            return sc.nextLine();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    // public static SkypeGroup getChatGroup() {
+    // return new
+    // GroupMetaRequest(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");
+    // }
 
 }

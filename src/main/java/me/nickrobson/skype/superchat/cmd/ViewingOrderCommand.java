@@ -4,11 +4,10 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
+import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.MessageBuilder;
-import xyz.gghost.jskype.Group;
-import xyz.gghost.jskype.message.FormatUtils;
-import xyz.gghost.jskype.message.Message;
-import xyz.gghost.jskype.user.GroupUser;
 
 public class ViewingOrderCommand implements Command {
 
@@ -18,12 +17,12 @@ public class ViewingOrderCommand implements Command {
     }
 
     @Override
-    public String[] help(GroupUser user, boolean userChat) {
+    public String[] help(SkypeUser user, boolean userChat) {
         return new String[] { "[mcu,af]", "shows the advised viewing order for the show" };
     }
 
     @Override
-    public void exec(GroupUser user, Group group, String used, String[] args, Message message) {
+    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         try {
             MessageBuilder builder = new MessageBuilder();
             if (args.length == 0)
@@ -40,19 +39,19 @@ public class ViewingOrderCommand implements Command {
                         builder.html("\n");
                         String s = "";
                         if (line.startsWith("**"))
-                            s = FormatUtils.bold(FormatUtils.encodeRawText(line.substring(2)));
+                            s = bold(encode(line.substring(2)));
                         else if (line.startsWith("//"))
-                            s = FormatUtils.italic(FormatUtils.encodeRawText(line.substring(2)));
+                            s = italic(encode(line.substring(2)));
                         else
-                            s = FormatUtils.encodeRawText(line);
+                            s = encode(line);
                         builder.html(s);
                     }
                     reader.close();
                 }
             }
-            sendMessage(group, builder.build());
+            group.sendMessage(builder.build());
         } catch (Exception ex) {
-            sendMessage(group, encode("Looks like an error occurred!"));
+            group.sendMessage(encode("Looks like an error occurred!"));
             ex.printStackTrace();
         }
     }

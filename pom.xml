@@ -3,20 +3,24 @@
   <groupId>me.nickrobson</groupId>
   <artifactId>SuperChat</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
   <repositories>
     <repository>
-      <id>xyz.gghost</id>
-      <url>http://gghost.xyz/maven/</url>
+        <id>EzSkype-mvn-repo</id>
+        <url>https://raw.github.com/AkHo1ic/EzSkype/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
     </repository>
   </repositories>
   
   <dependencies>
     <dependency>
-	  <groupId>xyz.gghost</groupId>
-	  <artifactId>jskype</artifactId>
-	  <version>4.2-BETA</version>
-	  <scope>compile</scope>
-	</dependency>
+      <groupId>in.kyle</groupId>
+      <artifactId>EzSkypeEzLife</artifactId>
+      <version>1.2.8-SNAPSHOT</version>
+    </dependency>
 	<dependency>
 	  <groupId>com.google.guava</groupId>
 	  <artifactId>guava</artifactId>
