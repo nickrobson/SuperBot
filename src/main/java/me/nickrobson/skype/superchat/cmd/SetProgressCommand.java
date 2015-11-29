@@ -35,7 +35,7 @@ public class SetProgressCommand implements Command {
                 Map<String, String> prg = SuperChatController.getProgress(show);
                 prg.remove(user.getUsername());
                 SuperChatController.PROGRESS.put(show.getMainName(), prg);
-                group.sendMessage(encode("Removed " + user.getDisplayName() + "'s progress on ")
+                group.sendMessage(encode("Removed " + user.getDisplayName().orElse(user.getUsername()) + "'s progress on ")
                         + bold(encode(show.getDisplay())));
                 SuperChatController.saveProgress();
             } else if (!SuperChatShows.EPISODE_PATTERN.matcher(ep).matches()) {
@@ -44,7 +44,7 @@ public class SetProgressCommand implements Command {
                 Map<String, String> prg = SuperChatController.getProgress(show);
                 prg.put(user.getUsername(), ep);
                 SuperChatController.PROGRESS.put(show.getMainName(), prg);
-                group.sendMessage(encode("Set " + user.getDisplayName() + "'s progress on ")
+                group.sendMessage(encode("Set " + user.getDisplayName().orElse(user.getUsername()) + "'s progress on ")
                         + bold(encode(show.getDisplay())) + encode(" to " + ep));
                 SuperChatController.saveProgress();
             }
