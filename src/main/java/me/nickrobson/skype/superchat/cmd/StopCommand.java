@@ -10,12 +10,12 @@ public class StopCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "stop" };
+        return new String[] { "stop", "restart" };
     }
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[] { "", "stop the bot (restarting it)" };
+        return new String[] { "", "stops the bot (restarting through a script)" };
     }
 
     @Override
