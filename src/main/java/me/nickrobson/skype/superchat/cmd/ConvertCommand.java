@@ -10,6 +10,7 @@ import java.util.function.Function;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
+import me.nickrobson.skype.superchat.MessageBuilder;
 
 public class ConvertCommand implements Command {
 
@@ -67,19 +68,20 @@ public class ConvertCommand implements Command {
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+        MessageBuilder builder = new MessageBuilder();
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-            StringBuilder builder = new StringBuilder();
             for (Map.Entry<String, Map<String, Conversion>> cell : conversions.entrySet()) {
                 for (Map.Entry<String, Conversion> sub : cell.getValue().entrySet()) {
                 if (builder.length() > 0)
-                        builder.append("\n");
-                    builder.append(encode(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(),
-                            sub.getValue().from, sub.getValue().to)));
+                        builder.newLine();
+                    builder.text(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(),
+                            sub.getValue().from, sub.getValue().to));
                 }
             }
             group.sendMessage(builder.toString());
         } else if (args.length < 3) {
-            group.sendMessage(bold(encode("Usage: ")) + encode("~convert [from] [to] [input...]"));
+            builder.bold(true).text("Usage: ").bold(false).text("~convert [from] [to] [input...]");
+            group.sendMessage(builder.toString());
         } else {
             StringBuilder sb = new StringBuilder();
             for (int i = 2; i < args.length; i++) {
@@ -104,15 +106,11 @@ public class ConvertCommand implements Command {
                 try {
                     String res = conv.func.apply(input);
                     if (conv.appendSymbol)
-                        group.sendMessage(
-                                encode("[Convert] ") + encode(String.format("%s%s => %s%s", input, from, res, to)));
+                        group.sendMessage(encode("[Convert] " + String.format("%s%s => %s%s", input, from, res, to)));
                     else
-                        group.sendMessage(encode("[Convert] ")
-                                + encode(String.format("(%s => %s) %s => %s", from, to, input, res)));
+                        group.sendMessage(encode("[Convert] " + String.format("(%s => %s) %s => %s", from, to, input, res)));
                 } catch (Throwable t) {
-                    group.sendMessage(
-                            encode("[Convert] An error occurred while converting : " + t.getClass().getSimpleName())
-                                    + "\n" + encode(t.getMessage()));
+                    group.sendMessage(encode("[Convert] An error occurred while converting : " + t.getClass().getSimpleName() + "\n" + t.getMessage()));
                 }
             } else {
                 group.sendMessage(encode("[Convert] No conversion found between " + from + " and " + to + "!"));
