@@ -31,7 +31,7 @@ public class VersionCommand implements Command {
         for (int i = 0; i < SuperChatController.GIT_COMMIT_ID.length; i++) {
             String id = SuperChatController.GIT_COMMIT_ID[i];
             String msg = SuperChatController.GIT_COMMIT_MESSAGE[i];
-            builder.newLine().text(msg).bold(true).text("(" + id + ")").bold(false);
+            builder.newLine().text(msg).italic(true).text(" (" + id + ")").italic(false);
         }
         group.sendMessage(builder.toString());
     }
