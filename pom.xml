@@ -1,35 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<groupId>me.nickrobson</groupId>
 	<artifactId>SuperChat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
-	<repositories>
-		<repository>
-			<id>EzSkype-mvn-repo</id>
-			<url>https://raw.github.com/AkHo1ic/EzSkype/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<dependencies>
-		<dependency>
-			<groupId>in.kyle</groupId>
-			<artifactId>EzSkypeEzLife</artifactId>
-			<version>1.2.8-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.16.6</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
@@ -56,7 +32,8 @@
 	          <configuration>
 	            <archive>
 	              <manifest>
-	                <addClasspath>true</addClasspath>
+	                <addClasspath>false</addClasspath>
+	                <classpathPrefix>SuperChat_lib/</classpathPrefix>
 	                <mainClass>me.nickrobson.skype.superchat.SuperChatController</mainClass>
 	              </manifest>
 	            </archive>
@@ -64,4 +41,29 @@
 		    </plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>EzSkype-mvn-repo</id>
+			<url>https://raw.github.com/AkHo1ic/EzSkype/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>in.kyle</groupId>
+			<artifactId>EzSkypeEzLife</artifactId>
+			<version>1.2.8-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.6</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 </project>
