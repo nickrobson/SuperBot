@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,6 +18,11 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import in.kyle.ezskypeezlife.EzSkype;
 import in.kyle.ezskypeezlife.api.SkypeStatus;
@@ -62,6 +69,8 @@ public class SuperChatController implements SkypeErrorHandler {
 
     public static String VERSION = "Unknown";
     public static int BUILD_NUMBER = 0;
+    public static String[] GIT_COMMIT_ID = new String[]{ "Unknown" };
+    public static String[] GIT_COMMIT_MESSAGE = new String[]{ "Unknown" };
 
     static {
         try {
@@ -69,6 +78,17 @@ public class SuperChatController implements SkypeErrorHandler {
             Manifest mf = new Manifest(is);
             VERSION = mf.getMainAttributes().getValue("MavenVersion");
             BUILD_NUMBER = Integer.parseInt(mf.getMainAttributes().getValue("JenkinsBuild"));
+            URL changesUrl = new URL("http://ci.nickr.xyz/job/SuperChat/" + BUILD_NUMBER + "/api/json?pretty=true&tree=changeSet[items[comment,commitId]]");
+            BufferedReader changesReader = new BufferedReader(new InputStreamReader(changesUrl.openStream()));
+            Gson gson = new GsonBuilder().create();
+            JsonObject obj = gson.fromJson(changesReader, JsonObject.class);
+            JsonArray details = obj.getAsJsonObject("changeSet").getAsJsonArray("items");
+            GIT_COMMIT_ID = new String[details.size()];
+            GIT_COMMIT_MESSAGE = new String[details.size()];
+            for (int i = 0; i < details.size(); i++) {
+                GIT_COMMIT_ID[i] = details.get(i).getAsJsonObject().get("commitId").getAsString().trim();
+                GIT_COMMIT_MESSAGE[i] = details.get(i).getAsJsonObject().get("comment").getAsString().trim();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
