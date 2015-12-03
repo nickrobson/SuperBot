@@ -60,9 +60,9 @@ public class SuperChatController implements SkypeErrorHandler {
     public static boolean HELP_IGNORE_WHITESPACE = false;
     public static boolean HELP_WELCOME_CENTRED = true;
 
-    public static int BUILD_NUMBER = 0;
     public static String VERSION = "Unknown";
-    
+    public static int BUILD_NUMBER = 0;
+
     static {
         try {
             InputStream is = SuperChatController.class.getResourceAsStream("/META-INF/MANIFEST.MF");
@@ -92,6 +92,7 @@ public class SuperChatController implements SkypeErrorHandler {
                     }
                 }
             } catch (IOException ex) {
+                ex.printStackTrace();
             }
 
             SuperChatShows.setup();
@@ -108,18 +109,16 @@ public class SuperChatController implements SkypeErrorHandler {
             skype.setErrorHandler(new SuperChatController());
             skype.login();
             skype.setStatus(SkypeStatus.ONLINE);
-            SuperChatListener listener = new SuperChatListener();
-            skype.getEventManager().registerEvents(listener);
+            skype.getEventManager().registerEvents(new SuperChatListener());
 
             new Thread(() -> {
                 try {
                     Thread.sleep(1000 * 60 * 60 * 8); // 8 hours
-                } catch (InterruptedException e) {
-                }
+                } catch (Exception ex) {}
                 saveProgress();
                 System.exit(0);
             }, "SuperChat Sleepy Thread").start();
-            
+
             new Thread(() -> {
                 while (true) {
                     File file = new File(".jenkins-built");

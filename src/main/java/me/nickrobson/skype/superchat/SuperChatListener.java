@@ -1,7 +1,6 @@
 package me.nickrobson.skype.superchat;
 
 import in.kyle.ezskypeezlife.Chat;
-import in.kyle.ezskypeezlife.api.SkypeConversationType;
 import in.kyle.ezskypeezlife.api.SkypeUserRole;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
@@ -40,7 +39,7 @@ public class SuperChatListener {
     public synchronized void chat(SkypeMessageEditedEvent event) {
         cmd(event.getSkypeMessage());
     }
-    
+
     public synchronized void cmd(SkypeMessage message) {
         SkypeUser user = message.getSender();
         SkypeConversation group = message.getConversation();
@@ -61,15 +60,10 @@ public class SuperChatListener {
         if (cfg != null)
             if (!cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled())
                 return;
-            else if (group.getConversationType() == SkypeConversationType.USER)
-                if (!cmd.userchat() && !cmd.alwaysEnabled())
-                    return;
-                else
-                    return;
 
         String[] args = new String[words.length - 1];
         for (int i = 1; i < words.length; i++)
-            args[i - 1] = words[i];
+            args[i-1] = words[i];
 
         if (cmd.role() == SkypeUserRole.USER || group.isAdmin(user))
             cmd.exec(user, group, cmdName, args, message);
