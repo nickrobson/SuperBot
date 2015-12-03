@@ -46,7 +46,7 @@ public class SuperChatListener {
         String msg = message.getMessage().trim();
         String[] words = msg.split("\\s+");
 
-        if (words.length == 0 || !words[0].startsWith(SuperChatController.COMMAND_PREFIX)) {
+        if (msg.isEmpty() || words.length == 0 || !words[0].startsWith(SuperChatController.COMMAND_PREFIX)) {
             return;
         }
 
@@ -57,9 +57,8 @@ public class SuperChatListener {
             return;
 
         GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
-        if (cfg != null)
-            if (!cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled())
-                return;
+        if (cfg != null && !cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled())
+            return;
 
         String[] args = new String[words.length - 1];
         for (int i = 1; i < words.length; i++)

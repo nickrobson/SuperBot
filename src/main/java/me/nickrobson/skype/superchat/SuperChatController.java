@@ -89,9 +89,16 @@ public class SuperChatController implements SkypeErrorHandler {
             GIT_COMMIT_MESSAGE = new String[detailsLen];
             GIT_COMMIT_AUTHORS = new String[detailsLen];
             for (int i = 0; i < detailsLen; i++) {
-                GIT_COMMIT_ID[i] = details.get(i).getAsJsonObject().get("id").getAsString().trim();
-                GIT_COMMIT_MESSAGE[i] = details.get(i).getAsJsonObject().get("msg").getAsString().trim();
-                GIT_COMMIT_AUTHORS[i] = details.get(i).getAsJsonObject().getAsJsonObject("author").get("id").getAsString().trim();
+                GIT_COMMIT_ID[i] = GIT_COMMIT_MESSAGE[i] = GIT_COMMIT_AUTHORS[i] = "Unknown";
+                try {
+                    GIT_COMMIT_ID[i] = details.get(i).getAsJsonObject().get("id").getAsString().trim();
+                } catch (Exception ex) {}
+                try {
+                    GIT_COMMIT_MESSAGE[i] = details.get(i).getAsJsonObject().get("msg").getAsString().trim();
+                } catch (Exception ex) {}
+                try {
+                    GIT_COMMIT_AUTHORS[i] = details.get(i).getAsJsonObject().getAsJsonObject("author").get("id").getAsString().trim();
+                } catch (Exception ex) {}
             }
         } catch (Exception e) {
             e.printStackTrace();
