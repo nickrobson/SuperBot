@@ -28,6 +28,7 @@ public class VersionCommand implements Command {
             builder.text(Integer.toString(build));
         else
             builder.text("Unknown");
+        builder.newLine().bold(true).text("Commit Summary:").bold(false);
         for (int i = 0; i < SuperChatController.GIT_COMMIT_ID.length; i++) {
             String id = SuperChatController.GIT_COMMIT_ID[i];
             String msg = SuperChatController.GIT_COMMIT_MESSAGE[i];
