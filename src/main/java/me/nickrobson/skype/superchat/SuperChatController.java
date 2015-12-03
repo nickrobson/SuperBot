@@ -94,16 +94,28 @@ public class SuperChatController implements SkypeErrorHandler {
             SuperChatListener listener = new SuperChatListener();
             skype.getEventManager().registerEvents(listener);
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(1000 * 60 * 60 * 8);
-                    } catch (InterruptedException e) {
-                    }
-                    System.exit(0);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000 * 60 * 60 * 8); // 8 hours
+                } catch (InterruptedException e) {
                 }
-            }).start();
+                saveProgress();
+                System.exit(0);
+            }, "SuperChat Sleepy Thread").start();
+            
+            new Thread(() -> {
+                while (true) {
+                    File file = new File(".jenkins-built");
+                    if (file.exists()) {
+                        file.delete();
+                        saveProgress();
+                        System.exit(0);
+                    }
+                    try {
+                        Thread.sleep(10_000); // 10 seconds
+                    } catch (Exception ex) {}
+                }
+            }, "SuperChat FileWatch Thread").start();;
 
             while (true) {
             }
