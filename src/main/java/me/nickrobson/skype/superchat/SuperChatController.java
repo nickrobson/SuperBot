@@ -61,12 +61,14 @@ public class SuperChatController implements SkypeErrorHandler {
     public static boolean HELP_WELCOME_CENTRED = true;
 
     public static int BUILD_NUMBER = 0;
+    public static String VERSION = "Unknown";
     
     static {
         try {
             InputStream is = SuperChatController.class.getResourceAsStream("/META-INF/MANIFEST.MF");
             Manifest mf = new Manifest(is);
-            BUILD_NUMBER = Integer.parseInt(mf.getMainAttributes().getValue("jenkins"));
+            VERSION = mf.getMainAttributes().getValue("MavenVersion");
+            BUILD_NUMBER = Integer.parseInt(mf.getMainAttributes().getValue("JenkinsBuild"));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -15,12 +15,15 @@ public class VersionCommand implements Command {
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[]{ "", "" };
+        return new String[]{ "", "shows version info" };
     }
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        MessageBuilder builder = new MessageBuilder().bold(true).text("Build Number: ").bold(false);
+        MessageBuilder builder = new MessageBuilder();
+        builder.bold(true).text("=== SuperChat ===").bold(false).newLine();
+        builder.bold(true).text("Version: ").bold(false).text(SuperChatController.VERSION).newLine();
+        builder.bold(true).text("Build Number: ").bold(false);
         int build = SuperChatController.BUILD_NUMBER;
         if (build > 0)
             builder.text(Integer.toString(build));

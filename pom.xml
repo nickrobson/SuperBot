@@ -4,7 +4,7 @@
 	
 	<groupId>me.nickrobson</groupId>
 	<artifactId>SuperChat</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -31,6 +31,7 @@
 	      	<version>2.2</version>
 	      	<configuration>
 	          <manifestEntries>
+	          	<mvn-version>${project.version}</mvn-version>
 		        <jenkins>${build.number}</jenkins>
 		      </manifestEntries>
 			</configuration>
@@ -48,7 +49,8 @@
 		          <mainClass>me.nickrobson.skype.superchat.SuperChatController</mainClass>
 		        </manifest>
 		        <manifestEntries>
-			      <jenkins>${build.number}</jenkins>
+			      <JenkinsBuild>${build.number}</JenkinsBuild>
+	          	  <MavenVersion>${project.version}</MavenVersion>
 			    </manifestEntries>
 		      </archive>
 		    </configuration>
