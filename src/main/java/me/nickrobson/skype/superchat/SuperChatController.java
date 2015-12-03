@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
 import in.kyle.ezskypeezlife.EzSkype;
@@ -56,6 +58,18 @@ public class SuperChatController implements SkypeErrorHandler {
 
     public static boolean HELP_IGNORE_WHITESPACE = false;
     public static boolean HELP_WELCOME_CENTRED = true;
+
+    public static int BUILD_NUMBER = 0;
+    
+    static {
+        try {
+            InputStream is = SuperChatController.class.getResourceAsStream("/META-INF/MANIFEST.MF");
+            Manifest mf = new Manifest(is);
+            BUILD_NUMBER = Integer.parseInt(mf.getMainAttributes().getValue("jenkins"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static EzSkype skype;
 
