@@ -39,7 +39,7 @@ import me.nickrobson.skype.superchat.cmd.WipeCommand;
 /**
  * @author Nick Robson
  */
-public class SuperChatController implements SkypeErrorHandler { 
+public class SuperChatController implements SkypeErrorHandler {
 
     public static final Map<String, GroupConfiguration> GCONFIGS = new HashMap<>();
 
