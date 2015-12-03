@@ -35,7 +35,7 @@ public class VersionCommand implements Command {
             String msg = SuperChatController.GIT_COMMIT_MESSAGE[i];
             String author = SuperChatController.GIT_COMMIT_AUTHORS[i];
             String txt = new MessageBuilder()
-                    .bold(true).text(author).bold(false)
+                    .bold(true).text(author + " ").bold(false)
                     .text(msg)
                     .italic(true).text(" (" + id + ")").italic(false)
                     .build();
