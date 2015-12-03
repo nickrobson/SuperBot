@@ -21,7 +21,6 @@ public class VersionCommand implements Command {
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         MessageBuilder builder = new MessageBuilder();
-        builder.bold(true).text("=== SuperChat ===").bold(false).newLine();
         builder.bold(true).text("Version: ").bold(false).text(SuperChatController.VERSION).newLine();
         builder.bold(true).text("Build Number: ").bold(false);
         int build = SuperChatController.BUILD_NUMBER;
@@ -30,6 +29,16 @@ public class VersionCommand implements Command {
         else
             builder.text("Unknown");
         group.sendMessage(builder.toString());
+    }
+
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean userchat() {
+        return true;
     }
 
 }

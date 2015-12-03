@@ -12,14 +12,18 @@ public interface Command {
     default void init() {
     }
 
-    String[] names();
-
-    default SkypeUserRole role() {
-        return SkypeUserRole.USER;
+    default boolean alwaysEnabled() {
+        return false;
     }
 
     default boolean userchat() {
         return false;
+    }
+
+    String[] names();
+
+    default SkypeUserRole role() {
+        return SkypeUserRole.USER;
     }
 
     String[] help(SkypeUser user, boolean userChat);
@@ -63,10 +67,6 @@ public interface Command {
 
     default String size(String s, int size) {
         return Chat.size(s, size);
-    }
-
-    default boolean alwaysEnabled() {
-        return false;
     }
 
 }
