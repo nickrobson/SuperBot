@@ -235,8 +235,11 @@ public class SuperChatController implements SkypeErrorHandler {
         if (!SuperChatShows.EPISODE_PATTERN.matcher(ep).matches())
             return null;
 
-        List<String> users = getProgress(show).entrySet().stream().filter(e -> e.getValue().equals(ep))
-                .map(e -> e.getKey()).collect(Collectors.toList());
+        List<String> users = getProgress(show).entrySet()
+                .stream()
+                .filter(e -> e.getValue().equals(ep))
+                .map(e -> e.getKey())
+                .collect(Collectors.toList());
 
         StringBuilder sb = new StringBuilder();
         for (String s : users) {
@@ -254,10 +257,7 @@ public class SuperChatController implements SkypeErrorHandler {
     public static Map<String, String> getProgress(String show) {
         if (show == null)
             return null;
-        Map<String, String> prg = PROGRESS.get(show);
-        if (prg == null)
-            prg = new HashMap<>();
-        return prg;
+        return PROGRESS.computeIfAbsent(show, s -> new HashMap<>());
     }
 
     public static Map<Show, String> getUserProgress(String username) {
@@ -284,10 +284,5 @@ public class SuperChatController implements SkypeErrorHandler {
             return null;
         }
     }
-
-    // public static SkypeGroup getChatGroup() {
-    // return new
-    // GroupMetaRequest(skype).getGroup("19:c0cbadc10ca4415bac6be16bcec01450@thread.skype");
-    // }
 
 }
