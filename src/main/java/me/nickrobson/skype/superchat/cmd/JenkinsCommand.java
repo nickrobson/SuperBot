@@ -19,7 +19,7 @@ public class JenkinsCommand implements Command {
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        group.sendMessage(new MessageBuilder().link("http://ci.nickr.xyz/view/SuperChat/").text("Click here for the Jenkins").link(null).build());
+        group.sendMessage(new MessageBuilder().link("http://ci.nickr.xyz/view/SuperChat/").text("http://ci.nickr.xyz/view/SuperChat/").link(null).build());
     }
 
 }
