@@ -18,10 +18,14 @@ public class SuperChatListener {
         GroupConfiguration cfg = SuperChatController.GCONFIGS.get(event.getConversation().getLongId());
         if (cfg != null && cfg.isShowJoinMessage())
             event.getConversation().sendMessage(
-                    Chat.bold(MessageBuilder.html_escape(String.format(SuperChatController.WELCOME_MESSAGE_JOIN,
-                        event.getUser().getDisplayName(), event.getConversation().getTopic())))
-                        + "\n" + MessageBuilder.html_escape("You can access my help menu by typing `"
-                        + SuperChatController.COMMAND_PREFIX + "help`"));
+                    Chat.bold(
+                        MessageBuilder.html_escape(
+                            String.format(SuperChatController.WELCOME_MESSAGE_JOIN, event.getUser().getDisplayName(), event.getConversation().getTopic())
+                        )
+                    )
+                    + "\n" + MessageBuilder.html_escape("You can access my help menu by typing `"
+                    + SuperChatController.COMMAND_PREFIX + "help`")
+            );
     }
 
     public void leave(SkypeConversationUserLeaveEvent event) {
@@ -52,7 +56,6 @@ public class SuperChatListener {
 
         String cmdName = words[0].substring(SuperChatController.COMMAND_PREFIX.length()).toLowerCase();
         Command cmd = SuperChatController.COMMANDS.get(cmdName);
-
         if (cmd == null)
             return;
 
