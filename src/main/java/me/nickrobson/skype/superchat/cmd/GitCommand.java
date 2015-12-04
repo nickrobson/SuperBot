@@ -24,8 +24,7 @@ public class GitCommand implements Command {
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        group.sendMessage(new MessageBuilder().link("http://github.com/nickrobson/SuperChat")
-                .html("http://github.com/nickrobson/SuperChat").build());
+        group.sendMessage(new MessageBuilder().link("http://github.com/nickrobson/SuperChat").html("http://github.com/nickrobson/SuperChat").build());
     }
 
 }
