@@ -1,3 +1,7 @@
+// Arrow S1 & S2
+Arrow (S1, E1-23)
+Arrow (S2, E1-23)
+// Arrow S3 & Flash S1
 The Flash (S1, E1-7) & Arrow (S3, E1-7)
 **The Flash (S1, E8)
 **Arrow (S3, E8)
@@ -6,3 +10,7 @@ Vixen (S1, E1-6)
 The Flash (S1, E15-17)
 **The Flash (S1, E18)
 The Flash (S1, E19-23) & Arrow (S3, E16-23)
+// Arrow S4 & Flash S2
+The Flash (S2, E1-7) & Arrow (S4, E1-7)
+**The Flash (S2, E8)
+**Arrow (S4, E8)
