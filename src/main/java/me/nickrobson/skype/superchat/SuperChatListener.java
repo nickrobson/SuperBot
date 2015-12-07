@@ -20,7 +20,7 @@ public class SuperChatListener {
             event.getConversation().sendMessage(
                     Chat.bold(
                         MessageBuilder.html_escape(
-                            String.format(SuperChatController.WELCOME_MESSAGE_JOIN, event.getUser().getDisplayName(), event.getConversation().getTopic())
+                            String.format(SuperChatController.WELCOME_MESSAGE_JOIN, event.getUser().getUsername(), event.getConversation().getTopic())
                         )
                     )
                     + "\n" + MessageBuilder.html_escape("You can access my help menu by typing `"

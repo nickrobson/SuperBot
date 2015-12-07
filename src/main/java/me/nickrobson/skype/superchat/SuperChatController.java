@@ -25,7 +25,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import in.kyle.ezskypeezlife.EzSkype;
-import in.kyle.ezskypeezlife.api.SkypeStatus;
 import in.kyle.ezskypeezlife.api.captcha.SkypeCaptcha;
 import in.kyle.ezskypeezlife.api.captcha.SkypeErrorHandler;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
@@ -139,7 +138,6 @@ public class SuperChatController implements SkypeErrorHandler {
             skype = new EzSkype(properties.get("username"), properties.get("password"));
             skype.setErrorHandler(new SuperChatController());
             skype.login();
-            skype.setStatus(SkypeStatus.ONLINE);
             skype.getEventManager().registerEvents(new SuperChatListener());
 
             new Thread(() -> {
