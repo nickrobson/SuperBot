@@ -47,6 +47,7 @@ public class SuperChatShows {
         register(new Show("Blindspot", "Monday", "blindspot", "blind", "bli"));
         register(new Show("Empire", "Wednesday", "empire", "emp"));
         register(new Show("Continuum", null, "cont"));
+        register(new Show("Supernatural", null, "supnat", "sn"));
     }
 
     public static void register(Show show) {

@@ -44,7 +44,7 @@ public class HangmanCommand implements Command {
                 group.sendMessage(encode("[Hangman] There is already a game in progress.") + "\n"
                         + encode("[Hangman] To take a guess, send a message in a group."));
             else if (args.length == 0)
-                group.sendMessage(bold(encode("Usage: ")) + encode("~hangman [phrase]"));
+                group.sendMessage(bold(encode("Usage: ")) + encode(SuperChatController.COMMAND_PREFIX + "hangman [phrase]"));
             else if (args[0].equalsIgnoreCase("random"))
                 if (SuperChatController.HANGMAN_PHRASES.isEmpty())
                     group.sendMessage(encode("Sorry, you can't do random phrases (file missing)."));
@@ -75,7 +75,7 @@ public class HangmanCommand implements Command {
             }
         else if (currentPhrase == null)
             group.sendMessage(encode("[Hangman] There is no game in progress currently!") + "\n"
-                    + encode("[Hangman] To set the phrase, PM me!"));
+                    + encode("[Hangman] To set the phrase, PM me `" + SuperChatController.COMMAND_PREFIX + "hangman [phrase]`!"));
         else if (args.length != 1)
             group.sendMessage(bold(encode("Usage: ")) + encode("~hangman [guess]")
                     + (currentPhrase != null ? "\n" + encode("Phrase so far: ") + code(encode(found)) : ""));
