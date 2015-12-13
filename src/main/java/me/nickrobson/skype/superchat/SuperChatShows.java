@@ -36,18 +36,19 @@ public class SuperChatShows {
         register(new Show("Mr. Robot", null, "robot", "mrrobot"));
         register(new Show("sense8", "Netflix", "sensate", "sense8", "s8"));
         register(new Show("SleepyHollow", "Thursday", "sho", "sleho"));
-        register(new Show("Grimm", "Friday", "grimm", "gri"));
+        register(new Show("Grimm", "Friday", "grimm"));
         register(new Show("The Walking Dead", "Monday", "twd", "walkingdead"));
-        register(new Show("Heroes", null, "heroes", "her"));
+        register(new Show("Heroes", null, "heroes"));
         register(new Show("Doctor Who", "Sunday", "dw", "doctorwho"));
-        register(new Show("The Tomorrow People", null, "ttp", "tmp"));
+        register(new Show("The Tomorrow People", null, "ttp"));
         register(new Show("The Messengers", null, "tmsg", "messengers"));
-        register(new Show("Limitless", "Tuesday", "limitless", "lmtl"));
-        register(new Show("iZombie", "Tuesday", "izombie", "izo"));
-        register(new Show("Blindspot", "Monday", "blindspot", "blind", "bli"));
-        register(new Show("Empire", "Wednesday", "empire", "emp"));
-        register(new Show("Continuum", null, "cont"));
+        register(new Show("Limitless", "Tuesday", "limitless"));
+        register(new Show("iZombie", "Tuesday", "izombie"));
+        register(new Show("Blindspot", "Monday", "blindspot", "blind"));
+        register(new Show("Empire", "Wednesday", "empire"));
+        register(new Show("Continuum", null, "cont", "continuum"));
         register(new Show("Supernatural", null, "supnat", "sn"));
+        register(new Show("Suits", null, "suits"));
     }
 
     public static void register(Show show) {
