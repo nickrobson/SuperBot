@@ -142,7 +142,7 @@ public class SuperChatController implements SkypeErrorHandler {
 
             new Thread(() -> {
                 try {
-                    Thread.sleep(1000 * 60 * 60 * 8); // 8 hours
+                    Thread.sleep(1000 * 60 * 60 * 2); // 2 hours
                 } catch (Exception ex) {}
                 saveProgress();
                 System.exit(0);
