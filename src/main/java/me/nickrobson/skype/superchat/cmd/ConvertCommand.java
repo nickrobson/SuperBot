@@ -23,7 +23,7 @@ public class ConvertCommand implements Command {
         map.put(col, con);
         conversions.put(row, map);
     }
-    
+
     @Override
     public void init() {
         register("C", "F", new Conversion("Celsius", "Fahrenheit", true, true, s -> {
@@ -72,10 +72,9 @@ public class ConvertCommand implements Command {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             for (Map.Entry<String, Map<String, Conversion>> cell : conversions.entrySet()) {
                 for (Map.Entry<String, Conversion> sub : cell.getValue().entrySet()) {
-                if (builder.length() > 0)
+                    if (builder.length() > 0)
                         builder.newLine();
-                    builder.text(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(),
-                            sub.getValue().from, sub.getValue().to));
+                    builder.text(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(), sub.getValue().from, sub.getValue().to));
                 }
             }
             group.sendMessage(builder.toString());
@@ -98,8 +97,7 @@ public class ConvertCommand implements Command {
                     try {
                         new BigDecimal(input);
                     } catch (Exception ex) {
-                        group.sendMessage(encode("[Convert] The conversion between " + from + " and " + to
-                                + " requires a number to be input."));
+                        group.sendMessage(encode("[Convert] The conversion between " + from + " and " + to + " requires a number to be input."));
                         return;
                     }
                 }
@@ -120,12 +118,11 @@ public class ConvertCommand implements Command {
 
     public static class Conversion {
 
-        final String from, to;
-        final boolean numbers, appendSymbol;
+        final String                   from, to;
+        final boolean                  numbers, appendSymbol;
         final Function<String, String> func;
 
-        public Conversion(String from, String to, boolean numbers, boolean appendSymbol,
-                Function<String, String> func) {
+        public Conversion(String from, String to, boolean numbers, boolean appendSymbol, Function<String, String> func) {
             this.from = from;
             this.to = to;
             this.numbers = numbers;

@@ -10,12 +10,12 @@ public class ReloadCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "reload" };
+        return new String[] { "reload" };
     }
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[]{ "", "reloads the groups" };
+        return new String[] { "", "reloads the groups" };
     }
 
     @Override

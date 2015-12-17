@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
+import me.nickrobson.skype.superchat.Joiner;
 import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
@@ -32,7 +33,7 @@ public class TimetableCommand implements Command {
             builder.newLine();
         List<String> names = set.stream().map(s -> s.display).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
-        builder.bold(true).text(day + ": ").bold(false).text(MessageBuilder.join(", ", names));
+        builder.bold(true).text(day + ": ").bold(false).text(Joiner.join(", ", names));
     }
 
     @Override
@@ -47,8 +48,7 @@ public class TimetableCommand implements Command {
         });
         MessageBuilder builder = new MessageBuilder();
         // days.forEach((day, set) -> {
-        for (String day : Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-                "Netflix", "Not airing")) {
+        for (String day : Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Netflix", "Not airing")) {
             Set<Show> set = days.get(day.toLowerCase());
             if (set != null)
                 append(day, set, builder);

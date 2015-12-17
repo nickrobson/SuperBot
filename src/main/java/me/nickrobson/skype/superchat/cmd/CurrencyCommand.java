@@ -12,8 +12,8 @@ import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 
 public class CurrencyCommand implements Command {
-    
-    public static final Pattern CURRENCY_PATTERN = Pattern.compile("[A-Z]{3}");
+
+    public static final Pattern CURRENCY_PATTERN   = Pattern.compile("[A-Z]{3}");
     public static final Pattern CONVERSION_PATTERN = Pattern.compile("<span class=\"?bld\"?>([0-9]+(?:\\.[0-9]+)? [A-Z]{3})</span>");
 
     @Override
@@ -32,13 +32,13 @@ public class CurrencyCommand implements Command {
     }
 
     @Override
-	public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-		if (args.length < 3) {
-		    group.sendMessage(bold(encode("Usage: ")) + encode("~currency [from] [to] [amount]"));
-		} else {
-			String from = args[0].toUpperCase();
-			String to = args[1].toUpperCase();
-			double amount = -1;
+    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+        if (args.length < 3) {
+            group.sendMessage(bold(encode("Usage: ")) + encode("~currency [from] [to] [amount]"));
+        } else {
+            String from = args[0].toUpperCase();
+            String to = args[1].toUpperCase();
+            double amount = -1;
             if (!CURRENCY_PATTERN.matcher(from).matches()) {
                 group.sendMessage(encode(from + " is not a valid currency name. Must be 3 uppercase latin characters."));
                 return;
@@ -47,18 +47,18 @@ public class CurrencyCommand implements Command {
                 group.sendMessage(encode(to + " is not a valid currency name. Must be 3 uppercase latin characters."));
                 return;
             }
-			try {
-				amount = Double.parseDouble(args[2]);
-			} catch (NumberFormatException ex) {
-			    group.sendMessage(encode(args[2] + " is not a valid number."));
-			    return;
-			}
-			if (amount <= 0) {
-			    group.sendMessage(encode("Conversion amount must be > 0. (" + amount + ")"));
+            try {
+                amount = Double.parseDouble(args[2]);
+            } catch (NumberFormatException ex) {
+                group.sendMessage(encode(args[2] + " is not a valid number."));
                 return;
-			}
-			String queryURL = String.format("https://www.google.co.uk/finance/converter?from=%s&to=%s&a=%s", from, to, String.valueOf(amount));
-			try {
+            }
+            if (amount <= 0) {
+                group.sendMessage(encode("Conversion amount must be > 0. (" + amount + ")"));
+                return;
+            }
+            String queryURL = String.format("https://www.google.co.uk/finance/converter?from=%s&to=%s&a=%s", from, to, String.valueOf(amount));
+            try {
                 URL url = new URL(queryURL);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
                 String line;
@@ -75,7 +75,7 @@ public class CurrencyCommand implements Command {
             } catch (IOException e) {
                 group.sendMessage(encode("Something went wrong!") + "\n" + encode(e.getClass().getSimpleName() + " : " + e.getMessage()));
             }
-		}
-	}
+        }
+    }
 
 }

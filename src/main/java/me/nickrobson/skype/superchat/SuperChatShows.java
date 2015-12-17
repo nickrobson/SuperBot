@@ -8,9 +8,9 @@ import java.util.regex.Pattern;
 
 public class SuperChatShows {
 
-    public static final List<Show> TRACKED_SHOWS = new ArrayList<>();
-    public static final Map<String, Show> SHOWS_BY_NAME = new HashMap<>();
-    public static final Pattern EPISODE_PATTERN = Pattern.compile("S[1-9][0-9]?E[1-9][0-9]?");
+    public static final List<Show>        TRACKED_SHOWS   = new ArrayList<>();
+    public static final Map<String, Show> SHOWS_BY_NAME   = new HashMap<>();
+    public static final Pattern           EPISODE_PATTERN = Pattern.compile("S[1-9][0-9]?E[1-9][0-9]?");
 
     public static void setup() {
         if (TRACKED_SHOWS.size() > 0)
@@ -64,9 +64,9 @@ public class SuperChatShows {
 
     public static final class Show {
 
-        public final String display;
+        public final String   display;
         public final String[] names;
-        public final String day;
+        public final String   day;
 
         public Show(String display, String day, String... names) {
             this.display = display;

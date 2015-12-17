@@ -10,12 +10,12 @@ public class VersionCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "version" };
+        return new String[] { "version" };
     }
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[]{ "", "shows version info" };
+        return new String[] { "", "shows version info" };
     }
 
     @Override
@@ -34,11 +34,7 @@ public class VersionCommand implements Command {
             String id = SuperChatController.GIT_COMMIT_ID[i].substring(0, 8);
             String msg = SuperChatController.GIT_COMMIT_MESSAGE[i];
             String author = SuperChatController.GIT_COMMIT_AUTHORS[i];
-            String txt = new MessageBuilder()
-                    .italic(true).text(author + " ").italic(false)
-                    .text(msg)
-                    .italic(true).text(" (" + id + ")").italic(false)
-                    .build();
+            String txt = new MessageBuilder().italic(true).text(author + " ").italic(false).text(msg).italic(true).text(" (" + id + ")").italic(false).build();
             builder.newLine().html(txt);
         }
         group.sendMessage(builder.toString());

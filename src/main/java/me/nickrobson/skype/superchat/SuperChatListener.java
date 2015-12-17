@@ -15,17 +15,15 @@ import me.nickrobson.skype.superchat.cmd.Command;
 public class SuperChatListener {
 
     public void join(SkypeConversationUserJoinEvent event) {
-        GroupConfiguration cfg = SuperChatController.GCONFIGS.get(event.getConversation().getLongId());
-        if (cfg != null && cfg.isShowJoinMessage())
-            event.getConversation().sendMessage(
-                    Chat.bold(
-                        MessageBuilder.html_escape(
-                            String.format(SuperChatController.WELCOME_MESSAGE_JOIN, event.getUser().getUsername(), event.getConversation().getTopic())
-                        )
-                    )
-                    + "\n" + MessageBuilder.html_escape("You can access my help menu by typing `"
-                    + SuperChatController.COMMAND_PREFIX + "help`")
-            );
+        SkypeUser user = event.getUser();
+        SkypeConversation convo = event.getConversation();
+        GroupConfiguration cfg = SuperChatController.GCONFIGS.get(convo.getLongId());
+        if (cfg != null && cfg.isShowJoinMessage()) {
+            String welcome = String.format(SuperChatController.WELCOME_MESSAGE_JOIN, user.getUsername(), convo.getTopic());
+            String help = "You can access my help menu by typing `" + SuperChatController.COMMAND_PREFIX + "help`";
+            String message = MessageBuilder.html_escape(Chat.bold(welcome)) + "\n" + MessageBuilder.html_escape(help);
+            convo.sendMessage(message);
+        }
     }
 
     public void leave(SkypeConversationUserLeaveEvent event) {
@@ -65,7 +63,7 @@ public class SuperChatListener {
 
         String[] args = new String[words.length - 1];
         for (int i = 1; i < words.length; i++)
-            args[i-1] = words[i];
+            args[i - 1] = words[i];
 
         if (cmd.role() == SkypeUserRole.USER || group.isAdmin(user))
             cmd.exec(user, group, cmdName, args, message);

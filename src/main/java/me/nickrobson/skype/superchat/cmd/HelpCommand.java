@@ -82,8 +82,7 @@ public class HelpCommand implements Command {
         cmds.forEach(c -> {
             String[] help = c.help(user, group.getConversationType() == SkypeConversationType.USER);
             if (c.role() == SkypeUserRole.USER)
-                strings.add(pad(getCmdHelp(c, user, group.getConversationType() == SkypeConversationType.USER),
-                        maxLen.get()) + " - " + help[1]);
+                strings.add(pad(getCmdHelp(c, user, group.getConversationType() == SkypeConversationType.USER), maxLen.get()) + " - " + help[1]);
         });
         if (SuperChatController.HELP_IGNORE_WHITESPACE)
             strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
@@ -99,8 +98,7 @@ public class HelpCommand implements Command {
                 maxLen.set(s.length());
             builder.append("\n" + encode(s));
         });
-        String spaces = SuperChatController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "")
-                : wel.replaceAll("\\S+", "");
+        String spaces = SuperChatController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
         group.sendMessage(code(encode(spaces)) + bold(encode(wel.trim() + come)) + code(builder.toString()));
     }
 

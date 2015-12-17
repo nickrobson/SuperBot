@@ -11,10 +11,11 @@ import me.nickrobson.skype.superchat.cmd.Command;
 
 public class GroupConfiguration {
 
-    private String groupId = null;
-    private boolean everythingOn = false;
-    private boolean showJoinMessage = false;
     private final Set<String> enabledCommands = new HashSet<>();
+
+    private String            groupId         = null;
+    private boolean           everythingOn    = false;
+    private boolean           showJoinMessage = false;
 
     public GroupConfiguration(File file) {
         try (BufferedReader reader = Files.newBufferedReader(file.toPath())) {

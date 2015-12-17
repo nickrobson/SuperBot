@@ -9,8 +9,7 @@ import me.nickrobson.skype.superchat.MessageBuilder;
 
 public interface Command {
 
-    default void init() {
-    }
+    default void init() {}
 
     default boolean alwaysEnabled() {
         return false;
@@ -37,7 +36,6 @@ public interface Command {
     }
 
     default String encode(String s) {
-        // return Chat.encodeRawText(s);
         return MessageBuilder.html_escape(s);
     }
 

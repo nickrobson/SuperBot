@@ -51,26 +51,26 @@ import me.nickrobson.skype.superchat.cmd.WipeCommand;
  */
 public class SuperChatController implements SkypeErrorHandler {
 
-    public static final Map<String, GroupConfiguration> GCONFIGS = new HashMap<>();
+    public static final Map<String, GroupConfiguration>  GCONFIGS               = new HashMap<>();
 
-    public static final Map<String, Command> COMMANDS = new HashMap<>();
-    public static final Map<String, Map<String, String>> PROGRESS = new TreeMap<>();
+    public static final Map<String, Command>             COMMANDS               = new HashMap<>();
+    public static final Map<String, Map<String, String>> PROGRESS               = new TreeMap<>();
 
-    public static final List<String> HANGMAN_PHRASES = new LinkedList<>();
+    public static final List<String>                     HANGMAN_PHRASES        = new LinkedList<>();
 
-    public static final String COMMAND_PREFIX = "~";
+    public static final String                           COMMAND_PREFIX         = "~";
 
-    public static final String WELCOME_MESSAGE = "Welcome to %s";
-    public static final String WELCOME_MESSAGE_JOIN = "Welcome, %s, to %s";
+    public static final String                           WELCOME_MESSAGE        = "Welcome to %s";
+    public static final String                           WELCOME_MESSAGE_JOIN   = "Welcome, %s, to %s";
 
-    public static boolean HELP_IGNORE_WHITESPACE = false;
-    public static boolean HELP_WELCOME_CENTRED = true;
+    public static boolean                                HELP_IGNORE_WHITESPACE = false;
+    public static boolean                                HELP_WELCOME_CENTRED   = true;
 
-    public static String VERSION = "Unknown";
-    public static int BUILD_NUMBER = 0;
-    public static String[] GIT_COMMIT_ID = new String[]{ "Unknown" };
-    public static String[] GIT_COMMIT_MESSAGE = new String[]{ "Unknown" };
-    public static String[] GIT_COMMIT_AUTHORS = new String[]{ "Unknown" };
+    public static String                                 VERSION                = "Unknown";
+    public static int                                    BUILD_NUMBER           = 0;
+    public static String[]                               GIT_COMMIT_ID          = new String[] { "Unknown" };
+    public static String[]                               GIT_COMMIT_MESSAGE     = new String[] { "Unknown" };
+    public static String[]                               GIT_COMMIT_AUTHORS     = new String[] { "Unknown" };
 
     static {
         try {
@@ -146,7 +146,7 @@ public class SuperChatController implements SkypeErrorHandler {
                 } catch (Exception ex) {}
                 saveProgress();
                 System.exit(0);
-            }, "SuperChat Sleepy Thread").start();
+            } , "SuperChat Sleepy Thread").start();
 
             new Thread(() -> {
                 while (true) {
@@ -160,10 +160,9 @@ public class SuperChatController implements SkypeErrorHandler {
                         Thread.sleep(10_000); // 10 seconds
                     } catch (Exception ex) {}
                 }
-            }, "SuperChat FileWatch Thread").start();;
+            } , "SuperChat FileWatch Thread").start();;
 
-            while (true) {
-            }
+            while (true) {}
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -179,8 +178,7 @@ public class SuperChatController implements SkypeErrorHandler {
                     if (!line.startsWith("Chapter"))
                         HANGMAN_PHRASES.add(line.toUpperCase());
                 HANGMAN_PHRASES.sort((s1, s2) -> s1.substring(3, 5).compareTo(s2.substring(3, 5)));
-            } catch (IOException ex) {
-            }
+            } catch (IOException ex) {}
         }
     }
 
@@ -295,11 +293,7 @@ public class SuperChatController implements SkypeErrorHandler {
         if (!SuperChatShows.EPISODE_PATTERN.matcher(ep).matches())
             return null;
 
-        List<String> users = getProgress(show).entrySet()
-                .stream()
-                .filter(e -> e.getValue().equals(ep))
-                .map(e -> e.getKey())
-                .collect(Collectors.toList());
+        List<String> users = getProgress(show).entrySet().stream().filter(e -> e.getValue().equals(ep)).map(e -> e.getKey()).collect(Collectors.toList());
 
         StringBuilder sb = new StringBuilder();
         for (String s : users) {

@@ -9,12 +9,12 @@ public class JenkinsCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "jenkins" };
+        return new String[] { "jenkins" };
     }
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[]{ "", "gets a link to the jenkins" };
+        return new String[] { "", "gets a link to the jenkins" };
     }
 
     @Override

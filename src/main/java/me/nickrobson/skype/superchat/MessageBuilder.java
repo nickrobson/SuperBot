@@ -1,44 +1,26 @@
 package me.nickrobson.skype.superchat;
 
 public class MessageBuilder {
-    
-    public static String join(String sep, Object[] strings) {
-        String s = "";
-        for (Object z : strings) {
-            if (!s.isEmpty())
-                s += sep;
-            s += z.toString();
-        }
-        return s;
-    }
-    
-    public static String join(String sep, Iterable<?> strings) {
-        String s = "";
-        for (Object z : strings) {
-            if (!s.isEmpty())
-                s += sep;
-            s += z.toString();
-        }
-        return s;
-    }
 
-    // ' is replaced with &apos;
-    // " is replaced with &quot;
-    // & is replaced with &amp;
-    // < is replaced with &lt;
-    // > is replaced with &gt;
     public static String html_escape(String text) {
-        text = text.replace("&", "&amp;");
-        text = text.replace("'", "&apos;");
-        text = text.replace("\"", "&quot;");
-        text = text.replace("<", "&lt;");
-        text = text.replace(">", "&gt;");
+        text = text.replace("&", "&amp;"); // & is replaced with &amp;
+        text = text.replace("'", "&apos;"); // ' is replaced with &apos;
+        text = text.replace("\"", "&quot;"); // " is replaced with &quot;
+        text = text.replace("<", "&lt;"); // < is replaced with &lt;
+        text = text.replace(">", "&gt;"); // > is replaced with &gt;
         return text;
     }
 
     private final StringBuilder msg;
-    private boolean link = false, bold = false, italic = false, underline = false, code = false, blink = false,
-            size = false, strikethrough = false;
+
+    private boolean             link          = false;
+    private boolean             bold          = false;
+    private boolean             italic        = false;
+    private boolean             underline     = false;
+    private boolean             code          = false;
+    private boolean             blink         = false;
+    private boolean             size          = false;
+    private boolean             strikethrough = false;
 
     public MessageBuilder() {
         this("");
