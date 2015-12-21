@@ -28,11 +28,11 @@ public class VersionCommand implements Command {
             builder.text(Integer.toString(build));
         else
             builder.text("Unknown");
-        if (SuperChatController.GIT_COMMIT_ID.length > 0)
+        if (SuperChatController.GIT_COMMIT_IDS.length > 0)
             builder.newLine().bold(true).text("Commit Summary:").bold(false);
-        for (int i = 0; i < SuperChatController.GIT_COMMIT_ID.length; i++) {
-            String id = SuperChatController.GIT_COMMIT_ID[i].substring(0, 8);
-            String msg = SuperChatController.GIT_COMMIT_MESSAGE[i];
+        for (int i = 0; i < SuperChatController.GIT_COMMIT_IDS.length; i++) {
+            String id = SuperChatController.GIT_COMMIT_IDS[i].substring(0, 8);
+            String msg = SuperChatController.GIT_COMMIT_MESSAGES[i];
             String author = SuperChatController.GIT_COMMIT_AUTHORS[i];
             String txt = new MessageBuilder().italic(true).text(author + " ").italic(false).text(msg).italic(true).text(" (" + id + ")").italic(false).build();
             builder.newLine().html(txt);

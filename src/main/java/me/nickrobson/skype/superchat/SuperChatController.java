@@ -68,8 +68,8 @@ public class SuperChatController implements SkypeErrorHandler {
 
     public static String                                 VERSION                = "Unknown";
     public static int                                    BUILD_NUMBER           = 0;
-    public static String[]                               GIT_COMMIT_ID          = new String[] { "Unknown" };
-    public static String[]                               GIT_COMMIT_MESSAGE     = new String[] { "Unknown" };
+    public static String[]                               GIT_COMMIT_IDS         = new String[] { "Unknown" };
+    public static String[]                               GIT_COMMIT_MESSAGES    = new String[] { "Unknown" };
     public static String[]                               GIT_COMMIT_AUTHORS     = new String[] { "Unknown" };
 
     static {
@@ -84,16 +84,16 @@ public class SuperChatController implements SkypeErrorHandler {
             JsonObject obj = gson.fromJson(changesReader, JsonObject.class);
             JsonArray details = obj.getAsJsonObject("changeSet").getAsJsonArray("items");
             int detailsLen = details.size();
-            GIT_COMMIT_ID = new String[detailsLen];
-            GIT_COMMIT_MESSAGE = new String[detailsLen];
+            GIT_COMMIT_IDS = new String[detailsLen];
+            GIT_COMMIT_MESSAGES = new String[detailsLen];
             GIT_COMMIT_AUTHORS = new String[detailsLen];
             for (int i = 0; i < detailsLen; i++) {
-                GIT_COMMIT_ID[i] = GIT_COMMIT_MESSAGE[i] = GIT_COMMIT_AUTHORS[i] = "Unknown";
+                GIT_COMMIT_IDS[i] = GIT_COMMIT_MESSAGES[i] = GIT_COMMIT_AUTHORS[i] = "Unknown";
                 try {
-                    GIT_COMMIT_ID[i] = details.get(i).getAsJsonObject().get("id").getAsString().trim();
+                    GIT_COMMIT_IDS[i] = details.get(i).getAsJsonObject().get("id").getAsString().trim();
                 } catch (Exception ex) {}
                 try {
-                    GIT_COMMIT_MESSAGE[i] = details.get(i).getAsJsonObject().get("msg").getAsString().trim();
+                    GIT_COMMIT_MESSAGES[i] = details.get(i).getAsJsonObject().get("msg").getAsString().trim();
                 } catch (Exception ex) {}
                 try {
                     GIT_COMMIT_AUTHORS[i] = details.get(i).getAsJsonObject().getAsJsonObject("author").get("id").getAsString().trim();

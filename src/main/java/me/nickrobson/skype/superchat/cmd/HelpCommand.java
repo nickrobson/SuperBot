@@ -89,6 +89,8 @@ public class HelpCommand implements Command {
         else
             strings.sort(null);
         String welcome = String.format(SuperChatController.WELCOME_MESSAGE, group.getTopic());
+        if (group.getConversationType() == SkypeConversationType.USER)
+            welcome = "Welcome, " + user.getUsername();
         int mid = welcome.length() / 2;
         String wel = pad(welcome.substring(0, mid), maxLen.get());
         String come = welcome.substring(mid);
