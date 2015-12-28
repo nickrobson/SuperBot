@@ -39,7 +39,7 @@ public class SuperChatShows {
         register(new Show("Grimm", "Friday", "grimm"));
         register(new Show("The Walking Dead", "Monday", "twd", "walkingdead"));
         register(new Show("Heroes", null, "heroes"));
-        register(new Show("Doctor Who", "Sunday", "dw", "doctorwho"));
+        register(new Show("Doctor Who", "Saturday", "dw", "doctorwho"));
         register(new Show("The Tomorrow People", null, "ttp"));
         register(new Show("The Messengers", null, "tmsg", "messengers"));
         register(new Show("Limitless", "Tuesday", "limitless"));
