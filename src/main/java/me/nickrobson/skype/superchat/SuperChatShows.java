@@ -51,6 +51,7 @@ public class SuperChatShows {
         register(new Show("Suits", null, "suits"));
         register(new Show("Star Wars: Rebels", null, "swr", "rebels"));
         register(new Show("Breaking Bad", null, "bb", "breaking"));
+        register(new Show("24", null, "twentyfour", "24"));
     }
 
     public static void register(Show show) {
