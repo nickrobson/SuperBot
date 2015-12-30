@@ -1,6 +1,7 @@
 package me.nickrobson.skype.superchat;
 
 import in.kyle.ezskypeezlife.Chat;
+import in.kyle.ezskypeezlife.api.SkypeConversationType;
 import in.kyle.ezskypeezlife.api.SkypeUserRole;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
@@ -39,6 +40,18 @@ public class SuperChatListener {
     }
 
     public synchronized void chat(SkypeMessageEditedEvent event) {
+        SkypeConversation convo = event.getSkypeMessage().getConversation();
+        GroupConfiguration conf = SuperChatController.GCONFIGS.get(convo.getLongId());
+        boolean isGroup = convo.getConversationType() == SkypeConversationType.GROUP;
+        if (isGroup && conf != null && conf.isShowEditedMessages()) {
+            MessageBuilder mb = new MessageBuilder();
+            mb.bold(true).text("( " + event.getSkypeUser().getUsername() + " )").bold(false);
+            mb.text("Edited their message:").newLine();
+            mb.text(event.getContentOld()).newLine();
+            mb.text("Became:").newLine();
+            mb.text(event.getContentNew());
+            convo.sendMessage(mb.build());
+        }
         cmd(event.getSkypeMessage());
     }
 

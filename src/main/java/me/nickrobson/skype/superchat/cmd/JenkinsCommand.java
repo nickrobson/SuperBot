@@ -14,7 +14,17 @@ public class JenkinsCommand implements Command {
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[] { "", "gets a link to the jenkins" };
+        return new String[] { "", "tells you the bot's jenkins" };
+    }
+
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
     }
 
     @Override

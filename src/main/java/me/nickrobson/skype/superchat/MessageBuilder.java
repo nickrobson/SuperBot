@@ -1,5 +1,7 @@
 package me.nickrobson.skype.superchat;
 
+import in.kyle.ezskypeezlife.api.obj.SkypeUser;
+
 public class MessageBuilder {
 
     public static String html_escape(String text) {
@@ -47,6 +49,10 @@ public class MessageBuilder {
     public MessageBuilder newLine() {
         msg.append("\n");
         return this;
+    }
+
+    public MessageBuilder name(SkypeUser user) {
+        return text(user.getDisplayName().orElse(user.getUsername()));
     }
 
     public MessageBuilder text(String text) {

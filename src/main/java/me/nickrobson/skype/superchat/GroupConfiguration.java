@@ -16,6 +16,7 @@ public class GroupConfiguration {
     private String            groupId         = null;
     private boolean           everythingOn    = false;
     private boolean           showJoinMessage = false;
+    private boolean           showEdited      = false;
 
     public GroupConfiguration(File file) {
         try (BufferedReader reader = Files.newBufferedReader(file.toPath())) {
@@ -27,6 +28,8 @@ public class GroupConfiguration {
                     everythingOn = true;
                 } else if (line.startsWith("join-message")) {
                     showJoinMessage = true;
+                } else if (line.startsWith("show-edited")) {
+                    showEdited = true;
                 } else if (line.startsWith("groupId=")) {
                     groupId = line.substring(8);
                 }
@@ -47,6 +50,10 @@ public class GroupConfiguration {
 
     public boolean isShowJoinMessage() {
         return everythingOn || showJoinMessage;
+    }
+
+    public boolean isShowEditedMessages() {
+        return showEdited;
     }
 
 }
