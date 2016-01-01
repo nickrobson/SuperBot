@@ -58,7 +58,7 @@ public class SuperChatController implements SkypeErrorHandler {
 
     public static final List<String>                     HANGMAN_PHRASES        = new LinkedList<>();
 
-    public static final String                           COMMAND_PREFIX         = "~";
+    public static final String                           COMMAND_PREFIX         = "+";
 
     public static final String                           WELCOME_MESSAGE        = "Welcome to %s";
     public static final String                           WELCOME_MESSAGE_JOIN   = "Welcome, %s, to %s";
