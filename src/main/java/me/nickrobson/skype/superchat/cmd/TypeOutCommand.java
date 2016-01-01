@@ -27,7 +27,7 @@ public class TypeOutCommand implements Command {
                 try {
                     Thread.sleep(100);
                 } catch (Exception e) {}
-                msg.edit(encode(str.substring(0, c)));
+                msg.edit(encode(str.substring(0, ++c)));
             }
         }, "TypeOut Thread").start();
     }
