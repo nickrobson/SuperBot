@@ -37,10 +37,12 @@ import me.nickrobson.skype.superchat.cmd.HangmanCommand;
 import me.nickrobson.skype.superchat.cmd.HelpCommand;
 import me.nickrobson.skype.superchat.cmd.JenkinsCommand;
 import me.nickrobson.skype.superchat.cmd.ProgressCommand;
+import me.nickrobson.skype.superchat.cmd.ReloadCommand;
 import me.nickrobson.skype.superchat.cmd.SetProgressCommand;
 import me.nickrobson.skype.superchat.cmd.ShowsCommand;
 import me.nickrobson.skype.superchat.cmd.StopCommand;
 import me.nickrobson.skype.superchat.cmd.TimetableCommand;
+import me.nickrobson.skype.superchat.cmd.TypeOutCommand;
 import me.nickrobson.skype.superchat.cmd.VersionCommand;
 import me.nickrobson.skype.superchat.cmd.ViewingOrderCommand;
 import me.nickrobson.skype.superchat.cmd.WhoCommand;
@@ -146,7 +148,7 @@ public class SuperChatController implements SkypeErrorHandler {
                 } catch (Exception ex) {}
                 saveProgress();
                 System.exit(0);
-            } , "SuperChat Sleepy Thread").start();
+            }, "SuperChat Sleepy Thread").start();
 
             new Thread(() -> {
                 while (true) {
@@ -160,7 +162,7 @@ public class SuperChatController implements SkypeErrorHandler {
                         Thread.sleep(10_000); // 10 seconds
                     } catch (Exception ex) {}
                 }
-            } , "SuperChat FileWatch Thread").start();;
+            }, "SuperChat FileWatch Thread").start();;
 
             while (true) {}
         } catch (Exception ex) {
@@ -198,10 +200,12 @@ public class SuperChatController implements SkypeErrorHandler {
         register(new HelpCommand());
         register(new JenkinsCommand());
         register(new ProgressCommand());
+        register(new ReloadCommand());
         register(new SetProgressCommand());
         register(new ShowsCommand());
         register(new StopCommand());
         register(new TimetableCommand());
+        register(new TypeOutCommand());
         register(new VersionCommand());
         register(new ViewingOrderCommand());
         register(new WhoCommand());

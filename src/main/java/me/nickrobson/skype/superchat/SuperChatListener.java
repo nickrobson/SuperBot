@@ -80,7 +80,9 @@ public class SuperChatListener {
         for (int i = 1; i < words.length; i++)
             args[i - 1] = words[i];
 
-        if (cmd.role() == SkypeUserRole.USER || group.isAdmin(user))
+        boolean userchat = group.getConversationType() == SkypeConversationType.USER && cmd.userchat();
+
+        if (cmd.role() == SkypeUserRole.USER || group.isAdmin(user) || userchat)
             cmd.exec(user, group, cmdName, args, message);
     }
 
