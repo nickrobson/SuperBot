@@ -20,17 +20,16 @@ public class TypeOutCommand implements Command {
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         String str = Joiner.join(" ", args);
-        int c = 0;
         SkypeMessage msg = group.sendMessage(" ");
-        while (c != str.length()) {
-            final int x = ++c;
-            new Thread(() -> {
+        new Thread(() -> {
+            int c = 0;
+            while (c != str.length()) {
                 try {
-                    Thread.sleep(x * 100);
+                    Thread.sleep(100);
                 } catch (Exception e) {}
-                msg.edit(str.substring(0, x));
-            }, "TypeOut Thread").start();
-        }
+                msg.edit(str.substring(0, c));
+            }
+        }, "TypeOut Thread").start();
     }
 
 }
