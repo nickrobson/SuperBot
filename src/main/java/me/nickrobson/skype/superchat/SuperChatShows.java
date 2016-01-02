@@ -2,8 +2,9 @@ package me.nickrobson.skype.superchat;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -115,7 +116,7 @@ public class SuperChatShows {
         try {
             File f = new File(fname);
             if (f.exists()) {
-                SuperChatController.GSON.toJson(arr, new FileWriter(f));
+                SuperChatController.GSON.toJson(arr, Files.newBufferedWriter(f.toPath(), StandardOpenOption.CREATE));
                 return true;
             }
         } catch (IOException ex) {
