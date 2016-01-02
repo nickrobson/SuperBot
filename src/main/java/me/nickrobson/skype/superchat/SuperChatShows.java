@@ -41,15 +41,17 @@ public class SuperChatShows {
             if (el != null && el.isJsonObject()) {
                 JsonObject obj = el.getAsJsonObject();
                 if (obj.has("aliases")) {
+                    String display = obj.get("showname").getAsString();
+                    String day = obj.get("day").getAsString();
                     JsonArray aliases = obj.getAsJsonArray("aliases");
                     int size = aliases.size();
-                    String[] showAliases = new String[size];
+                    String[] names = new String[size];
                     for (int i = 0; i < size; i++) {
-                        showAliases[x] = aliases.get(x).getAsString();
+                        names[x] = aliases.get(x).getAsString();
                     }
-                    String showName = obj.get("showname").getAsString();
-                    String showDay = obj.get("day").getAsString();
-                    register(new Show(showName, showDay, showAliases));
+                    System.out.println(display + " : " + day);
+                    System.out.println(Arrays.asList(names));
+                    register(new Show(display, day, names));
                 }
             }
         }
