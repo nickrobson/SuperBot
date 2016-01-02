@@ -37,6 +37,7 @@ import me.nickrobson.skype.superchat.cmd.GitCommand;
 import me.nickrobson.skype.superchat.cmd.HangmanCommand;
 import me.nickrobson.skype.superchat.cmd.HelpCommand;
 import me.nickrobson.skype.superchat.cmd.JenkinsCommand;
+import me.nickrobson.skype.superchat.cmd.NumberwangCommand;
 import me.nickrobson.skype.superchat.cmd.ProgressCommand;
 import me.nickrobson.skype.superchat.cmd.ReloadCommand;
 import me.nickrobson.skype.superchat.cmd.RemoveShowCommand;
@@ -203,6 +204,7 @@ public class SuperChatController implements SkypeErrorHandler {
         register(new HangmanCommand());
         register(new HelpCommand());
         register(new JenkinsCommand());
+        register(new NumberwangCommand());
         register(new ProgressCommand());
         register(new ReloadCommand());
         register(new RemoveShowCommand());
