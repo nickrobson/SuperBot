@@ -36,7 +36,7 @@ public class SuperChatShows {
 
     public static void loadShows() {
         JsonArray jsonArray = readJson();
-        for (int x = 0; x < jsonArray.size(); x++) {
+        for (int x = 0, arrsize = jsonArray.size(); x < arrsize; x++) {
             JsonElement el = jsonArray.get(x);
             if (el != null && el.isJsonObject()) {
                 JsonObject obj = el.getAsJsonObject();
@@ -49,8 +49,6 @@ public class SuperChatShows {
                     for (int i = 0; i < size; i++) {
                         names[i] = aliases.get(i).getAsString();
                     }
-                    System.out.println(display + " : " + day);
-                    System.out.println(Arrays.asList(names));
                     register(new Show(display, day, names));
                 }
             }
