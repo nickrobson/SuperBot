@@ -71,7 +71,7 @@ public class SuperChatListener {
             return;
 
         GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
-        if (cfg != null && !cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled())
+        if (cfg != null && (cfg.isDisabled() || !cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled()))
             return;
         if (cfg == null && !cmd.alwaysEnabled())
             return;

@@ -19,6 +19,7 @@ public class GroupConfiguration {
     private boolean           everythingOn    = false;
     private boolean           showJoinMessage = false;
     private boolean           showEdited      = false;
+    private boolean           disabled        = false;
 
     private File              file;
 
@@ -35,6 +36,8 @@ public class GroupConfiguration {
                     showJoinMessage = true;
                 } else if (line.startsWith("show-edited")) {
                     showEdited = true;
+                } else if (line.startsWith("disabled")) {
+                    disabled = true;
                 } else if (line.startsWith("groupId=")) {
                     groupId = line.substring(8);
                 }
@@ -52,16 +55,20 @@ public class GroupConfiguration {
                 writer.write("groupId=" + groupId);
                 writer.newLine();
             }
-            if (showEdited) {
-                writer.write("show-edited");
-                writer.newLine();
-            }
             if (everythingOn) {
                 writer.write("everything-on");
                 writer.newLine();
             }
             if (showJoinMessage) {
                 writer.write("join-message");
+                writer.newLine();
+            }
+            if (showEdited) {
+                writer.write("show-edited");
+                writer.newLine();
+            }
+            if (disabled) {
+                writer.write("disabled");
                 writer.newLine();
             }
             enabledCommands.forEach(c -> {
@@ -91,6 +98,10 @@ public class GroupConfiguration {
 
     public boolean isShowEditedMessages() {
         return showEdited;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
     }
 
 }
