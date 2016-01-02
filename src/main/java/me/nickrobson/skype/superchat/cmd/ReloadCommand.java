@@ -15,7 +15,7 @@ public class ReloadCommand implements Command {
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[] { "", "reloads the groups" };
+        return new String[] { "", "reloads the bot" };
     }
 
     @Override
@@ -30,13 +30,16 @@ public class ReloadCommand implements Command {
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        group.sendMessage(encode("Reloading!"));
+        SkypeMessage msg = group.sendMessage(encode("Reloading"));
         SuperChatController.saveProgress();
+        msg.edit(encode("Reloading."));
         SuperChatController.loadProgress();
+        msg.edit(encode("Reloading.."));
         SuperChatController.loadGroups();
         SuperChatController.loadHangmanWords();
+        msg.edit(encode("Reloading..."));
         SuperChatController.loadCommands();
-        group.sendMessage(encode("Done reloading!"));
+        msg.edit(encode("Reloading... Done!"));
     }
 
 }

@@ -29,6 +29,11 @@ public class HelpCommand implements Command {
         return true;
     }
 
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
     String getCmdHelp(Command cmd, SkypeUser user, boolean userChat) {
         String pre = SuperChatController.COMMAND_PREFIX;
         String s = pre;
@@ -66,7 +71,7 @@ public class HelpCommand implements Command {
         else if (group.getConversationType() == SkypeConversationType.USER)
             cmds.removeIf(cmd -> !cmd.userchat() && !cmd.alwaysEnabled());
         else
-            cmds.clear();
+            cmds.removeIf(cmd -> !cmd.alwaysEnabled());
         if (cmds.isEmpty()) {
             group.sendMessage("It looks like there are no commands enabled in this chat.");
             return;
@@ -102,11 +107,6 @@ public class HelpCommand implements Command {
         });
         String spaces = SuperChatController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
         group.sendMessage(code(encode(spaces)) + bold(encode(wel.trim() + come)) + code(builder.toString()));
-    }
-
-    @Override
-    public boolean alwaysEnabled() {
-        return true;
     }
 
 }

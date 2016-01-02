@@ -29,6 +29,11 @@ public class StopCommand implements Command {
     }
 
     @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
+    @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         group.sendMessage(encode("Goodbye!"));
         SuperChatController.saveProgress();

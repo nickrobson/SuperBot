@@ -29,6 +29,7 @@ public class SuperChatShows {
         // others are optional!
         // Please keep the "main" string to only contain lowercase english
         // letters (as it is used for file names)!
+<<<<<<< HEAD
         loadShows();
     }
 
@@ -112,6 +113,38 @@ public class SuperChatShows {
             return null;
         }
         return jsonElement;
+=======
+        register(new Show("Arrow", "Wednesday", "arrow", "thearrow"));
+        register(new Show("The Flash", "Tuesday", "flash", "theflash"));
+        register(new Show("Agents of SHIELD", "Tuesday", "aos", "agents"));
+        register(new Show("Agent Carter", null, "ac", "agentcarter"));
+        register(new Show("Jessica Jones", "Netflix", "jj", "jessicajones"));
+        register(new Show("Daredevil", "Netflix", "dd", "daredevil"));
+        register(new Show("Supergirl", "Monday", "sg", "supergirl"));
+        register(new Show("Gotham", "Monday", "gotham", "goth"));
+        register(new Show("Constantine", null, "const", "constantine"));
+        register(new Show("Narcos", "Netflix", "narcos", "narc"));
+        register(new Show("Mr. Robot", null, "robot", "mrrobot"));
+        register(new Show("sense8", "Netflix", "sensate", "sense8", "s8"));
+        register(new Show("SleepyHollow", "Thursday", "sho", "sleho"));
+        register(new Show("Grimm", "Friday", "grimm"));
+        register(new Show("The Walking Dead", "Monday", "twd", "walkingdead"));
+        register(new Show("Heroes", null, "heroes"));
+        register(new Show("Doctor Who", "Saturday", "dw", "doctorwho"));
+        register(new Show("The Tomorrow People", null, "ttp"));
+        register(new Show("The Messengers", null, "tmsg", "messengers"));
+        register(new Show("Limitless", "Tuesday", "limitless"));
+        register(new Show("iZombie", "Tuesday", "izombie"));
+        register(new Show("Blindspot", "Monday", "blindspot", "blind"));
+        register(new Show("Empire", "Wednesday", "empire"));
+        register(new Show("Continuum", null, "cont", "continuum"));
+        register(new Show("Supernatural", null, "sn", "supnat"));
+        register(new Show("Suits", null, "suits"));
+        register(new Show("Star Wars: Rebels", null, "swr", "rebels"));
+        register(new Show("Breaking Bad", null, "bb", "breaking"));
+        register(new Show("24", null, "twentyfour", "24"));
+        register(new Show("Once upon a time", "Wednesday", "out", "ot"));
+>>>>>>> refs/remotes/nickrobson/master
     }
 
     public static void register(Show show) {
