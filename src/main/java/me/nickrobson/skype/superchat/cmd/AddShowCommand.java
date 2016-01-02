@@ -38,7 +38,7 @@ public class AddShowCommand implements Command {
         if (args.length < 3) {
             group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "addshow [display] [day] [aliases...]"));
         } else {
-            String showName = args[0], day = args[1];
+            String showName = args[0].replace("___", " "), day = args[1];
             String[] aliases = new String[args.length-2];
             for (int i = 2; i < args.length; i++)
                 aliases[i-2] = args[i].toLowerCase();
