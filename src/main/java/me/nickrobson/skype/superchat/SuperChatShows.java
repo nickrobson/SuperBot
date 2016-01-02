@@ -47,7 +47,7 @@ public class SuperChatShows {
                     int size = aliases.size();
                     String[] names = new String[size];
                     for (int i = 0; i < size; i++) {
-                        names[x] = aliases.get(x).getAsString();
+                        names[i] = aliases.get(i).getAsString();
                     }
                     System.out.println(display + " : " + day);
                     System.out.println(Arrays.asList(names));
