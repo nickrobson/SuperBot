@@ -28,6 +28,7 @@ import in.kyle.ezskypeezlife.EzSkype;
 import in.kyle.ezskypeezlife.api.captcha.SkypeCaptcha;
 import in.kyle.ezskypeezlife.api.captcha.SkypeErrorHandler;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
+import me.nickrobson.skype.superchat.cmd.AddShowCommand;
 import me.nickrobson.skype.superchat.cmd.Command;
 import me.nickrobson.skype.superchat.cmd.ConvertCommand;
 import me.nickrobson.skype.superchat.cmd.CurrencyCommand;
@@ -38,6 +39,7 @@ import me.nickrobson.skype.superchat.cmd.HelpCommand;
 import me.nickrobson.skype.superchat.cmd.JenkinsCommand;
 import me.nickrobson.skype.superchat.cmd.ProgressCommand;
 import me.nickrobson.skype.superchat.cmd.ReloadCommand;
+import me.nickrobson.skype.superchat.cmd.RemoveShowCommand;
 import me.nickrobson.skype.superchat.cmd.SetProgressCommand;
 import me.nickrobson.skype.superchat.cmd.ShowsCommand;
 import me.nickrobson.skype.superchat.cmd.StopCommand;
@@ -192,6 +194,7 @@ public class SuperChatController implements SkypeErrorHandler {
 
     public static void loadCommands() {
         COMMANDS.clear();
+        register(new AddShowCommand());
         register(new ConvertCommand());
         register(new CurrencyCommand());
         register(new GidCommand());
@@ -201,6 +204,7 @@ public class SuperChatController implements SkypeErrorHandler {
         register(new JenkinsCommand());
         register(new ProgressCommand());
         register(new ReloadCommand());
+        register(new RemoveShowCommand());
         register(new SetProgressCommand());
         register(new ShowsCommand());
         register(new StopCommand());

@@ -1,0 +1,228 @@
+[
+  {
+    "showname": "Arrow",
+    "day": "Wednesday",
+    "aliases": [
+      "arrow",
+      "thearrow"
+    ]
+  },
+  {
+    "showname": "The Flash",
+    "day": "Tuesday",
+    "aliases": [
+      "flash",
+      "theflash"
+    ]
+  },
+  {
+    "showname": "Agents of SHIELD",
+    "day": "Tuesday",
+    "aliases": [
+      "aos",
+      "agents"
+    ]
+  },
+  {
+    "showname": "Agent Carter",
+    "day": "",
+    "aliases": [
+      "ac",
+      "agentcarter"
+    ]
+  },
+  {
+    "showname": "Jessica Jones",
+    "day": "Netflix",
+    "aliases": [
+      "jj",
+      "jessicajones"
+    ]
+  },
+  {
+    "showname": "Daredevil",
+    "day": "Netflix",
+    "aliases": [
+      "dd",
+      "daredevil"
+    ]
+  },
+  {
+    "showname": "Supergirl",
+    "day": "Monday",
+    "aliases": [
+      "sg",
+      "supergirl"
+    ]
+  },
+  {
+    "showname": "Gotham",
+    "day": "Monday",
+    "aliases": [
+      "gotham",
+      "goth"
+    ]
+  },
+  {
+    "showname": "Constantine",
+    "day": "",
+    "aliases": [
+      "const",
+      "constantine"
+    ]
+  },
+  {
+    "showname": "Narcos",
+    "day": "Netflix",
+    "aliases": [
+      "narcos",
+      "narc"
+    ]
+  },
+  {
+    "showname": "Mr. Robot",
+    "day": "",
+    "aliases": [
+      "robot",
+      "mrrobot"
+    ]
+  },
+  {
+    "showname": "sense8",
+    "day": "Netflix",
+    "aliases": [
+      "sensate",
+      "sense8",
+      "s8"
+    ]
+  },
+  {
+    "showname": "SleepyHallow",
+    "day": "Thursday",
+    "aliases": [
+      "sho",
+      "sleho"
+    ]
+  },
+  {
+    "showname": "Grimm",
+    "day": "Friday",
+    "aliases": [
+      "grimm"
+    ]
+  },
+  {
+    "showname": "The Walking Dead",
+    "day": "Monday",
+    "aliases": [
+      "twd",
+      "walkingdead"
+    ]
+  },
+  {
+    "showname": "Heroes",
+    "day": "",
+    "aliases": [
+      "heroes"
+    ]
+  },
+  {
+    "showname": "Doctor Who",
+    "day": "Saturday",
+    "aliases": [
+      "dw",
+      "doctorwho"
+    ]
+  },
+  {
+    "showname": "The Tomorrow People",
+    "day": "",
+    "aliases": [
+      "tpp"
+    ]
+  },
+  {
+    "showname": "The Messengers",
+    "day": "",
+    "aliases": [
+      "tmsg",
+      "messengers"
+    ]
+  },
+  {
+    "showname": "Limitless",
+    "day": "Tuesday",
+    "aliases": [
+      "limitless"
+    ]
+  },
+  {
+    "showname": "iZombie",
+    "day": "Tuesday",
+    "aliases": [
+      "izombie"
+    ]
+  },
+  {
+    "showname": "Blindspot",
+    "day": "Monday",
+    "aliases": [
+      "blindspot",
+      "blind"
+    ]
+  },
+  {
+    "showname": "Empire",
+    "day": "Wednesday",
+    "aliases": [
+      "empire"
+    ]
+  },
+  {
+    "showname": "Continuum",
+    "day": "",
+    "aliases": [
+      "cont",
+      "continuum"
+    ]
+  },
+  {
+    "showname": "Supernatural",
+    "day": "",
+    "aliases": [
+      "sn",
+      "supnat"
+    ]
+  },
+  {
+    "showname": "Suits",
+    "day": "",
+    "aliases": [
+      "suits"
+    ]
+  },
+  {
+    "showname": "Star Wars: Rebels",
+    "day": "",
+    "aliases": [
+      "swr",
+      "rebels"
+    ]
+  },
+  {
+    "showname": "Breaking Bad",
+    "day": "",
+    "aliases": [
+      "bb",
+      "breaking"
+    ]
+  },
+  {
+    "showname": "Once upon a time",
+    "day": "Wednesday",
+    "aliases": [
+      "out",
+      "ot"
+    ]
+  }
+]
