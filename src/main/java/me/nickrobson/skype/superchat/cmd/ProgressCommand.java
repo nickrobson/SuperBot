@@ -56,7 +56,7 @@ public class ProgressCommand implements Command {
                 }
             }
         } else {
-            group.sendMessage(bold(encode("Usage: ")) + encode(SuperChatController.COMMAND_PREFIX + "progress [show...]"));
+            group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "progress [show...]"));
             return;
         }
         if (sent) {

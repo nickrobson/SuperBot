@@ -67,6 +67,8 @@ public class SuperChatController implements SkypeErrorHandler {
     public static final String                           WELCOME_MESSAGE        = "Welcome to %s";
     public static final String                           WELCOME_MESSAGE_JOIN   = "Welcome, %s, to %s";
 
+    public static final Gson                             GSON                   = new GsonBuilder().setPrettyPrinting().create();
+
     public static boolean                                HELP_IGNORE_WHITESPACE = false;
     public static boolean                                HELP_WELCOME_CENTRED   = true;
 
@@ -84,8 +86,7 @@ public class SuperChatController implements SkypeErrorHandler {
             BUILD_NUMBER = Integer.parseInt(mf.getMainAttributes().getValue("JenkinsBuild"));
             URL changesUrl = new URL("http://ci.nickr.xyz/job/SuperChat/" + BUILD_NUMBER + "/api/json?pretty=true&tree=changeSet[items[id,msg,author[id]]]");
             BufferedReader changesReader = new BufferedReader(new InputStreamReader(changesUrl.openStream()));
-            Gson gson = new GsonBuilder().create();
-            JsonObject obj = gson.fromJson(changesReader, JsonObject.class);
+            JsonObject obj = GSON.fromJson(changesReader, JsonObject.class);
             JsonArray details = obj.getAsJsonObject("changeSet").getAsJsonArray("items");
             int detailsLen = details.size();
             GIT_COMMIT_IDS = new String[detailsLen];

@@ -42,7 +42,7 @@ public class HangmanCommand implements Command {
             if (currentPhrase != null)
                 group.sendMessage(encode("[Hangman] There is already a game in progress.") + "\n" + encode("[Hangman] To take a guess, send a message in a group."));
             else if (args.length == 0)
-                group.sendMessage(bold(encode("Usage: ")) + encode(SuperChatController.COMMAND_PREFIX + "hangman [phrase]"));
+                group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "hangman [phrase]"));
             else if (args[0].equalsIgnoreCase("random"))
                 if (SuperChatController.HANGMAN_PHRASES.isEmpty())
                     group.sendMessage(encode("Sorry, you can't do random phrases (file missing)."));
@@ -109,7 +109,7 @@ public class HangmanCommand implements Command {
                                 stats.bold(true).text(player.getKey() + ": ").bold(false);
                                 stats.text(player.getValue().toString() + "/" + curr.length() + " (" + (ps.length() > 5 ? ps.substring(0, 5) : ps) + "%)");
                             }
-                            group.sendMessage(encode("[Hangman] Congratulations! You've uncovered the phrase!") + "\n" + encode("It was: ") + code(encode(currentPhrase)) + (stats.length() > 0 ? ("\n" + stats) : ""));
+                            group.sendMessage(encode("[Hangman] Congratulations! You've uncovered the phrase!") + "\n" + encode("It was: ") + code(encode(currentPhrase)) + (stats.length() > 0 ? "\n" + stats : ""));
                             currentPhrase = null;
                             found = null;
                             guessed = null;

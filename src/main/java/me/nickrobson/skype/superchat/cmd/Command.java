@@ -6,8 +6,11 @@ import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.MessageBuilder;
+import me.nickrobson.skype.superchat.SuperChatController;
 
 public interface Command {
+
+    static final String PREFIX = SuperChatController.COMMAND_PREFIX;
 
     default void init() {}
 

@@ -1,17 +1,27 @@
 package me.nickrobson.skype.superchat;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+/**
+ * Contains all logic pertaining to the different shows the bot tracks.
+ *
+ * @author Nick Robson
+ * @author Horrgs
+ */
 public class SuperChatShows {
 
     public static final List<Show>        TRACKED_SHOWS   = new ArrayList<>();
@@ -21,99 +31,99 @@ public class SuperChatShows {
     public static void setup() {
         if (TRACKED_SHOWS.size() > 0)
             return;
-        // Format:
-        // register(new Show("Display Name", "main", "other_name",
-        // "any_other_name", "blah"));
-        // Note:
-        // You only need the first two strings ("Display Name" and "main"), the
-        // others are optional!
-        // Please keep the "main" string to only contain lowercase english
-        // letters (as it is used for file names)!
         loadShows();
     }
 
     public static void loadShows() {
-        JsonArray jsonArray = (JsonArray) parseJson("shows.json");
-        String[] showAliases = null;
-        for(int x = 0; x < jsonArray.size(); x++) {
-            JsonObject showSection = jsonArray.get(x).getAsJsonObject();
-            if(showSection != null) {
-                if(showSection.get("aliases") != null) {
-                    int length = showSection.get("aliases").getAsJsonArray().size();
-                    if(length > 1) {
-                        showAliases = new String[length];
-                        for(int i = 0; i < showSection.get("aliases").getAsJsonArray().size(); i++) {
-                            showAliases[x] = showSection.get("aliases").getAsJsonArray().get(x).getAsString();
+        JsonArray jsonArray = readJson();
+        for (int x = 0; x < jsonArray.size(); x++) {
+            JsonElement showElement = jsonArray.get(x);
+            if (showElement != null && showElement.isJsonObject()) {
+                JsonObject showSection = showElement.getAsJsonObject();
+                if (showSection.get("aliases") != null) {
+                    JsonArray aliases = showSection.get("aliases").getAsJsonArray();
+                    int size = aliases.size();
+                    String[] showAliases = new String[size];
+                    if (size > 0) {
+                        for (int i = 0; i < size; i++) {
+                            showAliases[x] = aliases.get(x).getAsString();
                         }
-                    } else {
-                        showAliases = new String[1];
-                        showAliases[0] = showSection.get("aliases").getAsJsonArray().get(0).getAsString();
                     }
+                    String showName = showSection.get("showname").getAsString();
+                    String showDay = showSection.get("day").getAsString();
+                    register(new Show(showName, showDay, showAliases));
                 }
-                String showName = showSection.get("showname").getAsString();
-                String showDay = showSection.get("day").getAsString();
-                register(new Show(showName, showDay, showAliases));
             }
         }
     }
 
-    public static void addShow(Show show) {
-        JsonArray jsonArray = (JsonArray) parseJson("shows.json");
-        try {
-            if(jsonArray != null) {
-                JsonObject showDetails = new JsonObject();
-                jsonArray.add(showDetails);
-                showDetails.addProperty("showname", show.getDisplay());
-                showDetails.addProperty("day", show.day);
-                JsonArray aliases = new JsonArray();
-                for(String str : show.getNames()) {
-                    aliases.add(str.replace(" ", ""));
-                }
-                showDetails.add("aliases", aliases);
-                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("shows.json", true));
-                bufferedWriter.write(jsonArray.toString());
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                register(show);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+    public static boolean addShow(Show show) {
+        if (show == null)
+            return false;
+        JsonArray arr = readJson();
+        if (arr != null) {
+            register(show);
+            JsonObject showDetails = new JsonObject();
+            JsonArray aliases = new JsonArray();
+            Arrays.asList(show.names).forEach(aliases::add);
+            showDetails.addProperty("showname", show.display);
+            showDetails.addProperty("day", show.day);
+            showDetails.add("aliases", aliases);
+            arr.add(showDetails);
+            return writeJson(arr);
         }
+        return false;
     }
 
-    public static void removeShow(String showName) {
-        JsonArray jsonArray = (JsonArray) parseJson("shows.json");
-        JsonArray newJsonArray  = new JsonArray();
-        try {
-            for(int x = 0; x < jsonArray.size(); x++) {
-                if(!jsonArray.get(x).getAsJsonObject().get("showname").getAsString().equals(showName)) {
-                    newJsonArray.add(jsonArray.get(x));
-                }
+    public static boolean removeShow(String showName) {
+        if (showName == null)
+            return false;
+        Show show = getShow(showName);
+        if (show == null)
+            return false;
+        unregister(show);
+        JsonArray arr = readJson();
+        for (Iterator<JsonElement> it = arr.iterator(); it.hasNext();) {
+            JsonElement el = it.next();
+            if (!el.isJsonObject()) {
+                it.remove();
+                continue;
             }
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("shows.json", false));
-            bufferedWriter.write(jsonArray.toString());
-            bufferedWriter.flush();
-            bufferedWriter.close();
-            unregister(getShow(showName));
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            JsonObject obj = el.getAsJsonObject();
+            if (!obj.has("showname"))
+                it.remove();
+            else if (obj.get("showname").getAsString().equals(show.display)) {
+                it.remove();
+            }
         }
+        return writeJson(arr);
     }
 
-    public static JsonElement parseJson(String fileName) {
-        JsonParser jsonParser = new JsonParser();
-        JsonElement jsonElement = null;
+    public static JsonArray readJson() {
+        String fname = "shows.json";
         try {
-            if (new File(fileName).exists()) {
-                Object obj = jsonParser.parse(new FileReader(new File(fileName)));
-                jsonElement = (JsonElement) obj;
-                System.out.println("Parsing " + fileName + ".json ....");
+            File f = new File(fname);
+            if (f.exists()) {
+                return SuperChatController.GSON.fromJson(new FileReader(f), JsonArray.class);
             }
         } catch (IOException ex) {
             ex.printStackTrace();
-            return null;
         }
-        return jsonElement;
+        return null;
+    }
+
+    public static boolean writeJson(JsonArray arr) {
+        String fname = "shows.json";
+        try {
+            File f = new File(fname);
+            if (f.exists()) {
+                SuperChatController.GSON.toJson(arr, new FileWriter(f));
+                return true;
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     public static void register(Show show) {
