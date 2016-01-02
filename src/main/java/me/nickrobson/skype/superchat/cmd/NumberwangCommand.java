@@ -34,7 +34,7 @@ public class NumberwangCommand implements Command {
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length == 0)
             group.sendMessage(encode("You need to guess a number!"));
-        else if (random.nextInt(random.nextInt(7)+1) == 0)
+        else if (random.nextInt(8) == random.nextInt(8))
             group.sendMessage(encode("That's numberwang!"));
         else
             group.sendMessage(encode("Sorry, that's not numberwang!"));
