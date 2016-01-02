@@ -50,10 +50,10 @@ public class AddShowCommand implements Command {
             if (show == null) {
                 show = new SuperChatShows.Show(showName, day, aliases);
                 if (SuperChatShows.addShow(show)) {
-                    group.sendMessage(encode("Added a new Show! Let's review the info:" +
-                        "\nDisplay Name: " + show.display +
-                        "\nDay of the Week: " + show.day +
-                        "\nAliases: " + Arrays.asList(show.names)));
+                    group.sendMessage(italic(encode("Let's review the info:"))
+                              + bold(encode("\nDisplay Name: ")) + encode(show.display)
+                              + bold(encode("\nDay of the Week: ")) + encode(show.day)
+                              + bold(encode("\nAliases: ")) + encode(Arrays.asList(show.names).toString()));
                 } else {
                     group.sendMessage(encode("Something went wrong."));
                 }
