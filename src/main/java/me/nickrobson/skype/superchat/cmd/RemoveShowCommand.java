@@ -37,7 +37,7 @@ public class RemoveShowCommand implements Command {
             Show show = SuperChatShows.getShow(args[0]);
             if (show != null) {
                 if (SuperChatShows.removeShow(args[0])) {
-                    group.sendMessage(encode("Removed show: ") + bold(encode(show.display)));
+                    group.sendMessage(bold(encode("Removed show: ")) + encode(show.display));
                 } else {
                     group.sendMessage(encode("Something went wrong."));
                 }
