@@ -74,7 +74,7 @@ public class HangmanCommand implements Command {
         else if (currentPhrase == null)
             group.sendMessage(encode("[Hangman] There is no game in progress currently!") + "\n" + encode("[Hangman] To set the phrase, PM me `" + SuperChatController.COMMAND_PREFIX + "hangman [phrase]`!"));
         else if (args.length != 1)
-            group.sendMessage(bold(encode("Usage: ")) + encode("~hangman [guess]") + (currentPhrase != null ? "\n" + encode("Phrase so far: ") + code(encode(found)) : ""));
+            group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "hangman [guess]") + (currentPhrase != null ? "\n" + encode("Phrase so far: ") + code(encode(found)) : ""));
         else {
             char first = args[0].trim().toUpperCase().charAt(0);
             if (args[0].trim().length() != 1)
