@@ -79,37 +79,6 @@ public class SuperChatController implements SkypeErrorHandler {
     public static String[]                               GIT_COMMIT_MESSAGES    = new String[] { "Unknown" };
     public static String[]                               GIT_COMMIT_AUTHORS     = new String[] { "Unknown" };
 
-    static {
-        try {
-            InputStream is = SuperChatController.class.getResourceAsStream("/META-INF/MANIFEST.MF");
-            Manifest mf = new Manifest(is);
-            VERSION = mf.getMainAttributes().getValue("MavenVersion");
-            BUILD_NUMBER = Integer.parseInt(mf.getMainAttributes().getValue("JenkinsBuild"));
-            URL changesUrl = new URL("http://ci.nickr.xyz/job/SuperChat/" + BUILD_NUMBER + "/api/json?pretty=true&tree=changeSet[items[id,msg,author[id]]]");
-            BufferedReader changesReader = new BufferedReader(new InputStreamReader(changesUrl.openStream()));
-            JsonObject obj = GSON.fromJson(changesReader, JsonObject.class);
-            JsonArray details = obj.getAsJsonObject("changeSet").getAsJsonArray("items");
-            int detailsLen = details.size();
-            GIT_COMMIT_IDS = new String[detailsLen];
-            GIT_COMMIT_MESSAGES = new String[detailsLen];
-            GIT_COMMIT_AUTHORS = new String[detailsLen];
-            for (int i = 0; i < detailsLen; i++) {
-                GIT_COMMIT_IDS[i] = GIT_COMMIT_MESSAGES[i] = GIT_COMMIT_AUTHORS[i] = "Unknown";
-                try {
-                    GIT_COMMIT_IDS[i] = details.get(i).getAsJsonObject().get("id").getAsString().trim();
-                } catch (Exception ex) {}
-                try {
-                    GIT_COMMIT_MESSAGES[i] = details.get(i).getAsJsonObject().get("msg").getAsString().trim();
-                } catch (Exception ex) {}
-                try {
-                    GIT_COMMIT_AUTHORS[i] = details.get(i).getAsJsonObject().getAsJsonObject("author").get("id").getAsString().trim();
-                } catch (Exception ex) {}
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static EzSkype skype;
 
     public static void main(String[] args) {
@@ -347,6 +316,37 @@ public class SuperChatController implements SkypeErrorHandler {
             return sc.nextLine();
         } catch (Exception ex) {
             return null;
+        }
+    }
+
+    static {
+        try {
+            InputStream is = SuperChatController.class.getResourceAsStream("/META-INF/MANIFEST.MF");
+            Manifest mf = new Manifest(is);
+            VERSION = mf.getMainAttributes().getValue("MavenVersion");
+            BUILD_NUMBER = Integer.parseInt(mf.getMainAttributes().getValue("JenkinsBuild"));
+            URL changesUrl = new URL("http://ci.nickr.xyz/job/SuperChat/" + BUILD_NUMBER + "/api/json?pretty=true&tree=changeSet[items[id,msg,author[id]]]");
+            BufferedReader changesReader = new BufferedReader(new InputStreamReader(changesUrl.openStream()));
+            JsonObject obj = GSON.fromJson(changesReader, JsonObject.class);
+            JsonArray details = obj.getAsJsonObject("changeSet").getAsJsonArray("items");
+            int detailsLen = details.size();
+            GIT_COMMIT_IDS = new String[detailsLen];
+            GIT_COMMIT_MESSAGES = new String[detailsLen];
+            GIT_COMMIT_AUTHORS = new String[detailsLen];
+            for (int i = 0; i < detailsLen; i++) {
+                GIT_COMMIT_IDS[i] = GIT_COMMIT_MESSAGES[i] = GIT_COMMIT_AUTHORS[i] = "Unknown";
+                try {
+                    GIT_COMMIT_IDS[i] = details.get(i).getAsJsonObject().get("id").getAsString().trim();
+                } catch (Exception ex) {}
+                try {
+                    GIT_COMMIT_MESSAGES[i] = details.get(i).getAsJsonObject().get("msg").getAsString().trim();
+                } catch (Exception ex) {}
+                try {
+                    GIT_COMMIT_AUTHORS[i] = details.get(i).getAsJsonObject().getAsJsonObject("author").get("id").getAsString().trim();
+                } catch (Exception ex) {}
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

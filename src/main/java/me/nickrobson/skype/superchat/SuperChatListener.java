@@ -71,9 +71,12 @@ public class SuperChatListener {
             return;
 
         GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
-        if (cfg != null && (cfg.isDisabled() || !cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled()))
-            return;
-        if (cfg == null && !cmd.alwaysEnabled())
+        if (group.getConversationType() == SkypeConversationType.GROUP) {
+            if (cfg != null && (cfg.isDisabled() || !cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled()))
+                return;
+            if (cfg == null && !cmd.alwaysEnabled())
+                return;
+        } else if (!cmd.userchat() && !cmd.alwaysEnabled())
             return;
 
         String[] args = new String[words.length - 1];
