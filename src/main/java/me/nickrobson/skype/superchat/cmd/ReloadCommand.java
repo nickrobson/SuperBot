@@ -36,9 +36,8 @@ public class ReloadCommand implements Command {
         SuperChatController.loadProgress();
         msg.edit(encode("Reloading.."));
         SuperChatController.loadGroups();
-        SuperChatController.loadHangmanWords();
         msg.edit(encode("Reloading..."));
-        SuperChatController.loadCommands();
+        SuperChatController.loadHangmanWords();
         msg.edit(encode("Reloading... Done!"));
     }
 
