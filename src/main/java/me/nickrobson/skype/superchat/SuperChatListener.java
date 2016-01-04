@@ -40,11 +40,11 @@ public class SuperChatListener {
 
     public synchronized void chat(SkypeMessageEditedEvent event) {
         SkypeConversation convo = event.getSkypeMessage().getConversation();
-        GroupConfiguration conf = SuperChatController.getGroupConfiguration(convo);
+        GroupConfiguration conf = SuperChatController.getGroupConfiguration(convo, false);
         boolean isGroup = convo.getConversationType() == SkypeConversationType.GROUP;
         if (isGroup && conf != null && conf.isShowEditedMessages()) {
             MessageBuilder mb = new MessageBuilder();
-            mb.bold(true).text("( " + event.getSkypeUser().getUsername() + " )").bold(false);
+            mb.bold(true).text("( " + event.getSkypeUser().getUsername() + " ) ").bold(false).newLine();
             mb.text("Edited their message:").newLine();
             mb.text(event.getContentOld()).newLine();
             mb.text("Became:").newLine();
