@@ -46,7 +46,7 @@ public class GroupConfiguration {
     }
 
     public String get(String option) {
-        return get(option, null);
+        return options.getOrDefault(option, null);
     }
 
     public String get(String option, Object def) {
