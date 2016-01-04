@@ -21,7 +21,7 @@ public class HelpCommand implements Command {
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[] { "{search}", "see the help menu, or only matching lines" };
+        return new String[] { "(search)", "see the help menu, or only matching lines" };
     }
 
     @Override
