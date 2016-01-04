@@ -36,7 +36,7 @@ public class GroupConfiguration {
             while ((line = reader.readLine()) != null) {
                 if (line.contains("=")) {
                     String[] spl = line.split("=", 2);
-                    options.put(spl[0].trim().toLowerCase(), spl[1]);
+                    options.put(spl[0].trim(), spl[1]);
                 }
             }
             reader.close();
