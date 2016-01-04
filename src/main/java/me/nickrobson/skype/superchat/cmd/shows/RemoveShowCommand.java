@@ -1,11 +1,13 @@
-package me.nickrobson.skype.superchat.cmd;
+package me.nickrobson.skype.superchat.cmd.shows;
 
-import in.kyle.ezskypeezlife.api.SkypeUserRole;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
+import me.nickrobson.skype.superchat.cmd.Command;
+import me.nickrobson.skype.superchat.perm.Permission;
+import me.nickrobson.skype.superchat.perm.StringPermission;
 
 /**
  * Created by Horrgs on 1/1/2016.
@@ -20,8 +22,8 @@ public class RemoveShowCommand implements Command {
     }
 
     @Override
-    public SkypeUserRole role() {
-        return SkypeUserRole.ADMIN;
+    public Permission perm() {
+        return new StringPermission("shows.remove");
     }
 
     @Override

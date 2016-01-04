@@ -1,10 +1,11 @@
-package me.nickrobson.skype.superchat.cmd;
+package me.nickrobson.skype.superchat.cmd.fun;
 
 import java.util.Random;
 
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
+import me.nickrobson.skype.superchat.cmd.Command;
 
 public class NumberwangCommand implements Command {
 

@@ -2,7 +2,6 @@ package me.nickrobson.skype.superchat;
 
 import in.kyle.ezskypeezlife.Chat;
 import in.kyle.ezskypeezlife.api.SkypeConversationType;
-import in.kyle.ezskypeezlife.api.SkypeUserRole;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
@@ -85,7 +84,12 @@ public class SuperChatListener {
 
         boolean userchat = group.getConversationType() == SkypeConversationType.USER && cmd.userchat();
 
-        if (cmd.role() == SkypeUserRole.USER || group.isAdmin(user) || userchat)
+        if (!cmd.perm().has(group, user)) {
+            MessageBuilder mb = new MessageBuilder();
+            mb.bold(true).text("Error: ").bold(false);
+            mb.text("You don't have permission to use " + SuperChatController.COMMAND_PREFIX + cmdName + "!");
+            group.sendMessage(mb.toString());
+        } else if (group.getConversationType() == SkypeConversationType.GROUP || userchat)
             cmd.exec(user, group, cmdName, args, message);
     }
 

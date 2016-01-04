@@ -1,4 +1,4 @@
-package me.nickrobson.skype.superchat.cmd;
+package me.nickrobson.skype.superchat.cmd.shows;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +15,7 @@ import me.nickrobson.skype.superchat.Joiner;
 import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
+import me.nickrobson.skype.superchat.cmd.Command;
 
 public class TimetableCommand implements Command {
 

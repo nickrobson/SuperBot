@@ -1,12 +1,13 @@
 package me.nickrobson.skype.superchat.cmd;
 
 import in.kyle.ezskypeezlife.Chat;
-import in.kyle.ezskypeezlife.api.SkypeUserRole;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatController;
+import me.nickrobson.skype.superchat.perm.Permission;
+import me.nickrobson.skype.superchat.perm.UserPermission;
 
 public interface Command {
 
@@ -24,8 +25,8 @@ public interface Command {
 
     String[] names();
 
-    default SkypeUserRole role() {
-        return SkypeUserRole.USER;
+    default Permission perm() {
+        return new UserPermission();
     }
 
     String[] help(SkypeUser user, boolean userChat);

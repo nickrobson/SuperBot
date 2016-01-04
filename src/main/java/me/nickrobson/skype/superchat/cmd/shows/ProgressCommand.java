@@ -1,4 +1,4 @@
-package me.nickrobson.skype.superchat.cmd;
+package me.nickrobson.skype.superchat.cmd.shows;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -14,6 +14,7 @@ import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatController;
 import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
+import me.nickrobson.skype.superchat.cmd.Command;
 
 public class ProgressCommand implements Command {
 

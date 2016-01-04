@@ -8,14 +8,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
@@ -28,28 +31,30 @@ import in.kyle.ezskypeezlife.EzSkype;
 import in.kyle.ezskypeezlife.api.captcha.SkypeCaptcha;
 import in.kyle.ezskypeezlife.api.captcha.SkypeErrorHandler;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
-import me.nickrobson.skype.superchat.cmd.AddShowCommand;
 import me.nickrobson.skype.superchat.cmd.Command;
-import me.nickrobson.skype.superchat.cmd.ConvertCommand;
-import me.nickrobson.skype.superchat.cmd.CurrencyCommand;
-import me.nickrobson.skype.superchat.cmd.GidCommand;
-import me.nickrobson.skype.superchat.cmd.GitCommand;
-import me.nickrobson.skype.superchat.cmd.HangmanCommand;
 import me.nickrobson.skype.superchat.cmd.HelpCommand;
-import me.nickrobson.skype.superchat.cmd.JenkinsCommand;
-import me.nickrobson.skype.superchat.cmd.NumberwangCommand;
-import me.nickrobson.skype.superchat.cmd.ProgressCommand;
 import me.nickrobson.skype.superchat.cmd.ReloadCommand;
-import me.nickrobson.skype.superchat.cmd.RemoveShowCommand;
-import me.nickrobson.skype.superchat.cmd.SetProgressCommand;
-import me.nickrobson.skype.superchat.cmd.ShowsCommand;
 import me.nickrobson.skype.superchat.cmd.StopCommand;
-import me.nickrobson.skype.superchat.cmd.TimetableCommand;
 import me.nickrobson.skype.superchat.cmd.TypeOutCommand;
-import me.nickrobson.skype.superchat.cmd.VersionCommand;
-import me.nickrobson.skype.superchat.cmd.ViewingOrderCommand;
-import me.nickrobson.skype.superchat.cmd.WhoCommand;
-import me.nickrobson.skype.superchat.cmd.WipeCommand;
+import me.nickrobson.skype.superchat.cmd.fun.HangmanCommand;
+import me.nickrobson.skype.superchat.cmd.fun.NumberwangCommand;
+import me.nickrobson.skype.superchat.cmd.perm.AddPermCommand;
+import me.nickrobson.skype.superchat.cmd.perm.DelPermCommand;
+import me.nickrobson.skype.superchat.cmd.shows.AddShowCommand;
+import me.nickrobson.skype.superchat.cmd.shows.ProgressCommand;
+import me.nickrobson.skype.superchat.cmd.shows.RemoveShowCommand;
+import me.nickrobson.skype.superchat.cmd.shows.SetProgressCommand;
+import me.nickrobson.skype.superchat.cmd.shows.ShowsCommand;
+import me.nickrobson.skype.superchat.cmd.shows.TimetableCommand;
+import me.nickrobson.skype.superchat.cmd.shows.ViewingOrderCommand;
+import me.nickrobson.skype.superchat.cmd.shows.WhoCommand;
+import me.nickrobson.skype.superchat.cmd.shows.WipeCommand;
+import me.nickrobson.skype.superchat.cmd.util.ConvertCommand;
+import me.nickrobson.skype.superchat.cmd.util.CurrencyCommand;
+import me.nickrobson.skype.superchat.cmd.util.GidCommand;
+import me.nickrobson.skype.superchat.cmd.util.GitCommand;
+import me.nickrobson.skype.superchat.cmd.util.JenkinsCommand;
+import me.nickrobson.skype.superchat.cmd.util.VersionCommand;
 
 /**
  * @author Nick Robson
@@ -102,10 +107,7 @@ public class SuperChatController implements SkypeErrorHandler {
 
             SuperChatShows.setup();
 
-            loadProgress();
-            loadCommands();
-            loadGroups();
-            loadHangmanWords();
+            load(null);
 
             HELP_IGNORE_WHITESPACE = properties.getOrDefault("help.whitespace", "false").equalsIgnoreCase("true");
             HELP_WELCOME_CENTRED = properties.getOrDefault("help.welcome.centred", "false").equalsIgnoreCase("true");
@@ -143,6 +145,55 @@ public class SuperChatController implements SkypeErrorHandler {
         }
     }
 
+    public static void load(Consumer<String> callback) {
+        if (callback == null)
+            callback = s -> {};
+        callback.accept("0/5");
+        loadProgress();
+        callback.accept("1/5");
+        loadGroups();
+        callback.accept("2/5");
+        loadPermissions();
+        callback.accept("3/5");
+        loadHangmanWords();
+        callback.accept("4/5");
+        loadCommands();
+        callback.accept("5/5");
+    }
+
+    public static void loadPermissions() {
+        SuperChatPermissions.clear();
+        File permsFolder = new File("permissions");
+        if (!permsFolder.exists())
+            permsFolder.mkdirs();
+        else {
+            for (File f : permsFolder.listFiles(f -> f.getName().toLowerCase().equals(f.getName()))) {
+                try {
+                    String username = f.getName();
+                    Files.readAllLines(f.toPath()).forEach(s -> SuperChatPermissions.set(username, s, true, false));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void savePermissions() {
+        File permsFolder = new File("permissions");
+        if (!permsFolder.exists())
+            permsFolder.mkdirs();
+        for (Entry<String, Set<String>> entry : SuperChatPermissions.permissions.entrySet()) {
+            if (entry.getKey() != null && entry.getValue() != null) {
+                File f = new File(permsFolder, entry.getKey().toLowerCase());
+                try {
+                    Files.write(f.toPath(), entry.getValue(), StandardOpenOption.CREATE);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
     public static void loadHangmanWords() {
         HANGMAN_PHRASES.clear();
         File f = new File("hangman.txt");
@@ -165,9 +216,11 @@ public class SuperChatController implements SkypeErrorHandler {
 
     public static void loadCommands() {
         COMMANDS.clear();
+        register(new AddPermCommand());
         register(new AddShowCommand());
         register(new ConvertCommand());
         register(new CurrencyCommand());
+        register(new DelPermCommand());
         register(new GidCommand());
         register(new GitCommand());
         register(new HangmanCommand());

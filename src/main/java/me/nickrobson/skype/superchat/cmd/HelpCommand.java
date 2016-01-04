@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import in.kyle.ezskypeezlife.api.SkypeConversationType;
-import in.kyle.ezskypeezlife.api.SkypeUserRole;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.GroupConfiguration;
 import me.nickrobson.skype.superchat.SuperChatController;
+import me.nickrobson.skype.superchat.perm.UserPermission;
 
 public class HelpCommand implements Command {
 
@@ -79,14 +79,14 @@ public class HelpCommand implements Command {
         AtomicInteger maxLen = new AtomicInteger(0);
         cmds.forEach(c -> {
             String cmdHelp = getCmdHelp(c, user, group.getConversationType() == SkypeConversationType.USER);
-            if (c.role() == SkypeUserRole.USER && cmdHelp.length() > maxLen.get())
+            if (c.perm() instanceof UserPermission && cmdHelp.length() > maxLen.get())
                 maxLen.set(cmdHelp.length());
         });
         List<String> strings = new ArrayList<>(SuperChatController.COMMANDS.size());
         StringBuilder builder = new StringBuilder();
         cmds.forEach(c -> {
             String[] help = c.help(user, group.getConversationType() == SkypeConversationType.USER);
-            if (c.role() == SkypeUserRole.USER)
+            if (c.perm() instanceof UserPermission)
                 strings.add(pad(getCmdHelp(c, user, group.getConversationType() == SkypeConversationType.USER), maxLen.get()) + " - " + help[1]);
         });
         if (SuperChatController.HELP_IGNORE_WHITESPACE)

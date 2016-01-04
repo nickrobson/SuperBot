@@ -1,4 +1,4 @@
-package me.nickrobson.skype.superchat.cmd;
+package me.nickrobson.skype.superchat.cmd.fun;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +13,7 @@ import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatController;
+import me.nickrobson.skype.superchat.cmd.Command;
 
 public class HangmanCommand implements Command {
 

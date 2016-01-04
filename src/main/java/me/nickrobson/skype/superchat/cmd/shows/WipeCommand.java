@@ -1,12 +1,14 @@
-package me.nickrobson.skype.superchat.cmd;
+package me.nickrobson.skype.superchat.cmd.shows;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import in.kyle.ezskypeezlife.api.SkypeUserRole;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.SuperChatController;
+import me.nickrobson.skype.superchat.cmd.Command;
+import me.nickrobson.skype.superchat.perm.Permission;
+import me.nickrobson.skype.superchat.perm.StringPermission;
 
 public class WipeCommand implements Command {
 
@@ -16,13 +18,13 @@ public class WipeCommand implements Command {
     }
 
     @Override
-    public SkypeUserRole role() {
-        return SkypeUserRole.ADMIN;
+    public String[] help(SkypeUser user, boolean userChat) {
+        return new String[] { "[user]", "wipe [user]'s progress" };
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
-        return new String[] { "[user]", "wipe [user]'s progress" };
+    public Permission perm() {
+        return new StringPermission("admin.wipe");
     }
 
     @Override

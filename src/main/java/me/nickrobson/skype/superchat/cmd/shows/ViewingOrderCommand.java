@@ -1,4 +1,4 @@
-package me.nickrobson.skype.superchat.cmd;
+package me.nickrobson.skype.superchat.cmd.shows;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -8,6 +8,7 @@ import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.MessageBuilder;
+import me.nickrobson.skype.superchat.cmd.Command;
 
 public class ViewingOrderCommand implements Command {
 

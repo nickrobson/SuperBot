@@ -1,10 +1,11 @@
 package me.nickrobson.skype.superchat.cmd;
 
-import in.kyle.ezskypeezlife.api.SkypeUserRole;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.SuperChatController;
+import me.nickrobson.skype.superchat.perm.Permission;
+import me.nickrobson.skype.superchat.perm.StringPermission;
 
 public class ReloadCommand implements Command {
 
@@ -19,8 +20,8 @@ public class ReloadCommand implements Command {
     }
 
     @Override
-    public SkypeUserRole role() {
-        return SkypeUserRole.ADMIN;
+    public Permission perm() {
+        return new StringPermission("admin.reload");
     }
 
     @Override

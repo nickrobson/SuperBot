@@ -1,4 +1,4 @@
-package me.nickrobson.skype.superchat.cmd;
+package me.nickrobson.skype.superchat.cmd.shows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.SuperChatController;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
+import me.nickrobson.skype.superchat.cmd.Command;
 
 public class WhoCommand implements Command {
 
