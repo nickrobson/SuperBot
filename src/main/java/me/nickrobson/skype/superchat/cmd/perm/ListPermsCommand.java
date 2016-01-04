@@ -38,7 +38,7 @@ public class ListPermsCommand implements Command {
         }
         Set<String> perms = SuperChatPermissions.get(username);
         MessageBuilder mb = new MessageBuilder();
-        mb.bold(true).text(username + " has the following permissions:").bold(false);
+        mb.bold(true).text(username + " has the following permissions:").bold(false).newLine();
         mb.text(Joiner.join(", ", perms));
         group.sendMessage(mb.toString());
     }
