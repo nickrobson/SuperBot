@@ -36,9 +36,9 @@ public class DelPermCommand implements Command {
             group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "delperm [username] [perm]"));
         } else {
             if (SuperChatPermissions.set(args[0], args[1], false)) {
-                group.sendMessage(encode(args[0] + " no longer has: " + args[1]));
+                group.sendMessage(bold(encode(args[0])) + encode(" no longer has: ") + bold(encode(args[1])));
             } else {
-                group.sendMessage(encode(args[0] + " doesn't have: " + args[1]));
+                group.sendMessage(bold(encode(args[0])) + encode(" doesn't have: ") + bold(encode(args[1])));
             }
         }
     }
