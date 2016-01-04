@@ -35,12 +35,11 @@ public class ShowConfigCommand implements Command {
             group.sendMessage(encode("There is no config for this group!"));
         else {
             MessageBuilder mb = new MessageBuilder();
-            mb.italic(true).text("Configuration settings:").italic(false).newLine();
+            mb.bold(true).text("Configuration settings:").bold(false);
             cfg.get().forEach((opt, val) -> {
-                mb.bold(true).text(opt).bold(false);
-                mb.text(" = ");
-                mb.bold(true).text(val).bold(false);
                 mb.newLine();
+                mb.italic(true).text(opt).italic(false);
+                mb.text(" = " + val);
             });
             group.sendMessage(mb.toString());
         }
