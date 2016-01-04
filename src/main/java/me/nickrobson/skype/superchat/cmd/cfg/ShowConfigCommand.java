@@ -1,5 +1,6 @@
 package me.nickrobson.skype.superchat.cmd.cfg;
 
+import in.kyle.ezskypeezlife.api.SkypeConversationType;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
@@ -21,13 +22,20 @@ public class ShowConfigCommand implements Command {
     }
 
     @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
+    @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         GroupConfiguration cfg = SuperChatController.getGroupConfiguration(group, false);
-        if (cfg == null)
+        if (group.getConversationType() == SkypeConversationType.USER)
+            group.sendMessage(encode("User chats don't have configurations."));
+        else if (cfg == null)
             group.sendMessage(encode("There is no config for this group!"));
         else {
             MessageBuilder mb = new MessageBuilder();
-            mb.italic(true).text("Config settings:").italic(false).newLine();
+            mb.italic(true).text("Configuration settings:").italic(false).newLine();
             cfg.get().forEach((opt, val) -> {
                 mb.bold(true).text(opt).bold(false);
                 mb.text(" = ");
