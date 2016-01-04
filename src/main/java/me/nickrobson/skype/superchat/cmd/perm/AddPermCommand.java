@@ -26,6 +26,11 @@ public class AddPermCommand implements Command {
     }
 
     @Override
+    public boolean userchat() {
+        return true;
+    }
+
+    @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length < 2) {
             group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "addperm [username] [perm]"));
