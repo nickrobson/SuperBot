@@ -21,7 +21,7 @@ public class HelpCommand implements Command {
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[] { "", "see this help message" };
+        return new String[] { "{search}", "see the help menu, or only matching lines" };
     }
 
     @Override
@@ -93,9 +93,15 @@ public class HelpCommand implements Command {
             strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
         else
             strings.sort(null);
+        if (args.length > 0)
+            strings.removeIf(s -> !s.contains(args[0]));
         String welcome = String.format(SuperChatController.WELCOME_MESSAGE, group.getTopic());
         if (group.getConversationType() == SkypeConversationType.USER)
             welcome = "Welcome, " + user.getUsername();
+        if (strings.isEmpty()) {
+            group.sendMessage(bold(encode(welcome)));
+            return;
+        }
         int mid = welcome.length() / 2;
         String wel = pad(welcome.substring(0, mid), maxLen.get());
         String come = welcome.substring(mid);
