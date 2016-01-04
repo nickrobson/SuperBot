@@ -39,7 +39,6 @@ public class GroupConfiguration {
                     options.put(spl[0].trim(), spl[1]);
                 }
             }
-            reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

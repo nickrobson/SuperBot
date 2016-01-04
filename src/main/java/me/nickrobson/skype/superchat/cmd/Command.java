@@ -37,6 +37,10 @@ public interface Command {
 
     /* UTILITY FUNCTIONS */
 
+    default String name(SkypeUser user) {
+        return user.getDisplayName().orElse(user.getUsername());
+    }
+
     default SkypeMessage sendUsage(SkypeUser user, SkypeConversation group) {
         String[] help = help(user, group.getConversationType() == SkypeConversationType.USER);
         String h = help != null && help[0] != null && !help[0].isEmpty() ? " " + help[0] : "";
