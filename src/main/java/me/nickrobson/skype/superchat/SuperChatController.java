@@ -185,6 +185,8 @@ public class SuperChatController implements SkypeErrorHandler {
         for (Entry<String, Set<String>> entry : SuperChatPermissions.permissions.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
                 File f = new File(permsFolder, entry.getKey().toLowerCase());
+                if (f.exists())
+                    f.delete();
                 try {
                     Files.write(f.toPath(), entry.getValue(), StandardOpenOption.CREATE);
                 } catch (IOException ex) {
