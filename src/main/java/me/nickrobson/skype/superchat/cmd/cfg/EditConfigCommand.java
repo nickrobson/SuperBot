@@ -44,6 +44,7 @@ public class EditConfigCommand implements Command {
         }
         GroupConfiguration cfg = SuperChatController.getGroupConfiguration(group);
         String prev = cfg.set(args[0], args[1]);
+        cfg.save();
         group.sendMessage(bold(encode(args[0])) + " is now " + bold(encode(args[1])) + (prev != null ? " (was " + bold(encode(prev)) + ")" : "") + ".");
     }
 
