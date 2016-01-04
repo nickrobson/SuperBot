@@ -73,7 +73,7 @@ public class SuperChatListener {
         if (group.getConversationType() == SkypeConversationType.GROUP) {
             if (cfg.isDisabled() || !cfg.isCommandEnabled(cmd))
                 return;
-        } else if (!cmd.userchat() && !cmd.alwaysEnabled())
+        } else if (!cmd.userchat())
             return;
 
         String[] args = new String[words.length - 1];

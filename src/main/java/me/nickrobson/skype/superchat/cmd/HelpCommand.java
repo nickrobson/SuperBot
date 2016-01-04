@@ -68,7 +68,7 @@ public class HelpCommand implements Command {
         if (cfg != null)
             cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd));
         else if (group.getConversationType() == SkypeConversationType.USER)
-            cmds.removeIf(cmd -> !cmd.userchat() && !cmd.alwaysEnabled());
+            cmds.removeIf(cmd -> !cmd.userchat());
         else
             cmds.removeIf(cmd -> !cmd.alwaysEnabled());
         if (cmds.isEmpty()) {
