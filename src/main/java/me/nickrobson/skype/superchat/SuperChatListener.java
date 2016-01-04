@@ -21,7 +21,7 @@ public class SuperChatListener {
         if (cfg != null && cfg.isShowJoinMessage()) {
             String welcome = String.format(SuperChatController.WELCOME_MESSAGE_JOIN, user.getUsername(), convo.getTopic());
             String help = "You can access my help menu by typing `" + SuperChatController.COMMAND_PREFIX + "help`";
-            String message = MessageBuilder.html_escape(Chat.bold(welcome)) + "\n" + MessageBuilder.html_escape(help);
+            String message = Chat.bold(MessageBuilder.html_escape(welcome)) + "\n" + MessageBuilder.html_escape(help);
             convo.sendMessage(message);
         }
     }
