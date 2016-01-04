@@ -35,8 +35,11 @@ public class AddPermCommand implements Command {
         if (args.length < 2) {
             group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "addperm [username] [perm]"));
         } else {
-            SuperChatPermissions.set(args[0], args[1], true);
-            group.sendMessage(encode(args[0] + " now has: " + args[1]));
+            if (SuperChatPermissions.set(args[0], args[1], true)) {
+                group.sendMessage(encode(args[0] + " now has: " + args[1]));
+            } else {
+                group.sendMessage(encode(args[0] + " already has: " + args[1]));
+            }
         }
     }
 
