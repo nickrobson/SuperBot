@@ -120,13 +120,12 @@ public class SuperChatShows {
         try {
             File f = new File(fname);
             if (f.exists()) {
-                BufferedWriter writer = Files.newBufferedWriter(f.toPath(), StandardOpenOption.CREATE);
-                SuperChatController.GSON.toJson(arr, writer);
-                writer.close();
-                return true;
-            } else {
-                throw new FileNotFoundException("shows.json is missing");
+                f.delete();
             }
+            BufferedWriter writer = Files.newBufferedWriter(f.toPath(), StandardOpenOption.CREATE);
+            SuperChatController.GSON.toJson(arr, writer);
+            writer.close();
+            return true;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
