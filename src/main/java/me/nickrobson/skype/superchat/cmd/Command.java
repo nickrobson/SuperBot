@@ -29,7 +29,7 @@ public interface Command {
         return new UserPermission();
     }
 
-    String[] help(SkypeUser user, boolean userChat);
+    String[] help(SkypeUser user, boolean userchat);
 
     void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message);
 

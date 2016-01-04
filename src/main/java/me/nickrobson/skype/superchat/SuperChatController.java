@@ -40,6 +40,7 @@ import me.nickrobson.skype.superchat.cmd.fun.NumberwangCommand;
 import me.nickrobson.skype.superchat.cmd.fun.TypeOutCommand;
 import me.nickrobson.skype.superchat.cmd.perm.AddPermCommand;
 import me.nickrobson.skype.superchat.cmd.perm.DelPermCommand;
+import me.nickrobson.skype.superchat.cmd.perm.ListPermsCommand;
 import me.nickrobson.skype.superchat.cmd.shows.AddShowCommand;
 import me.nickrobson.skype.superchat.cmd.shows.ProgressCommand;
 import me.nickrobson.skype.superchat.cmd.shows.RemoveShowCommand;
@@ -218,29 +219,35 @@ public class SuperChatController implements SkypeErrorHandler {
 
     public static void loadCommands() {
         COMMANDS.clear();
-        register(new AddPermCommand());
-        register(new AddShowCommand());
-        register(new ConvertCommand());
-        register(new CurrencyCommand());
-        register(new DelPermCommand());
-        register(new GidCommand());
-        register(new GitCommand());
-        register(new HangmanCommand());
+
         register(new HelpCommand());
-        register(new JenkinsCommand());
-        register(new NumberwangCommand());
-        register(new ProgressCommand());
         register(new ReloadCommand());
+        register(new StopCommand());
+
+        register(new AddPermCommand());
+        register(new DelPermCommand());
+        register(new ListPermsCommand());
+
+        register(new AddShowCommand());
+        register(new ProgressCommand());
         register(new RemoveShowCommand());
         register(new SetProgressCommand());
         register(new ShowsCommand());
-        register(new StopCommand());
         register(new TimetableCommand());
-        register(new TypeOutCommand());
-        register(new VersionCommand());
         register(new ViewingOrderCommand());
         register(new WhoCommand());
         register(new WipeCommand());
+
+        register(new HangmanCommand());
+        register(new NumberwangCommand());
+        register(new TypeOutCommand());
+
+        register(new ConvertCommand());
+        register(new CurrencyCommand());
+        register(new GidCommand());
+        register(new GitCommand());
+        register(new JenkinsCommand());
+        register(new VersionCommand());
     }
 
     public static void loadProgress() {

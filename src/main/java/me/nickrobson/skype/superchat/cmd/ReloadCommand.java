@@ -37,7 +37,7 @@ public class ReloadCommand implements Command {
         new Thread(() -> {
             SuperChatController.load(s -> {
                 try {
-                    Thread.sleep(250);
+                    Thread.sleep(500);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
