@@ -11,7 +11,7 @@ public class StopCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "stop", "restart" };
+        return new String[] { "stop", "restart", "kys" };
     }
 
     @Override
@@ -36,7 +36,10 @@ public class StopCommand implements Command {
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        group.sendMessage(encode("Goodbye!"));
+        if (used.equalsIgnoreCase("kys"))
+            group.sendMessage(encode("ded"));
+        else
+            group.sendMessage(encode("Goodbye!"));
         SuperChatController.saveProgress();
         System.exit(0);
     }
