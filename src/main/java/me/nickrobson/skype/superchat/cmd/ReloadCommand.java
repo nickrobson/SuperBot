@@ -30,6 +30,11 @@ public class ReloadCommand implements Command {
     }
 
     @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
+    @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         SkypeMessage msg = group.sendMessage(encode(" "));
         SuperChatController.saveProgress();
