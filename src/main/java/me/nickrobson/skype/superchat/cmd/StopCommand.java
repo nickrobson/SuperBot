@@ -21,7 +21,7 @@ public class StopCommand implements Command {
 
     @Override
     public Permission perm() {
-        return new StringPermission("admin.restart");
+        return new StringPermission("admin.stop");
     }
 
     @Override
