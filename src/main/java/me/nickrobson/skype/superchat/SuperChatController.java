@@ -323,7 +323,7 @@ public class SuperChatController implements SkypeErrorHandler {
         GroupConfiguration cfg = GCONFIGS.get(longId);
         if (cfg == null) {
             cfg = newGroupConfiguration();
-            cfg.set("groupId", longId);
+            cfg.set(GroupConfiguration.KEY_GROUP_ID, longId);
             cfg.save();
             GCONFIGS.put(longId, cfg);
         }
