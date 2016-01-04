@@ -45,6 +45,26 @@ public class GroupConfiguration {
         }
     }
 
+    public void save() {
+        try {
+            BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.CREATE);
+            options.forEach((opt,val) -> {
+                try {
+                    writer.write(opt + "=" + val);
+                    writer.newLine();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public Map<String, String> get() {
+        return new HashMap<>(options);
+    }
+
     public String get(String option) {
         return options.getOrDefault(option, null);
     }
@@ -63,22 +83,6 @@ public class GroupConfiguration {
 
     public String set(String option, String value) {
         return options.put(option, value);
-    }
-
-    public void save() {
-        try {
-            BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.CREATE);
-            options.forEach((opt,val) -> {
-                try {
-                    writer.write(opt + "=" + val);
-                    writer.newLine();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
     public String getGroupId() {
