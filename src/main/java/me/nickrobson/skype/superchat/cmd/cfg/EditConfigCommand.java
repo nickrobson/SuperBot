@@ -36,16 +36,14 @@ public class EditConfigCommand implements Command {
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (group.getConversationType() == SkypeConversationType.USER) {
             group.sendMessage(encode("User chats don't have configurations."));
-            return;
-        }
-        if (args.length < 2) {
+        } else if (args.length < 2) {
             sendUsage(user, group);
-            return;
+        } else {
+            GroupConfiguration cfg = SuperChatController.getGroupConfiguration(group);
+            String prev = cfg.set(args[0], args[1]);
+            cfg.save();
+            group.sendMessage(bold(encode(args[0])) + " is now " + bold(encode(args[1])) + (prev != null ? " (was " + bold(encode(prev)) + ")" : "") + ".");
         }
-        GroupConfiguration cfg = SuperChatController.getGroupConfiguration(group);
-        String prev = cfg.set(args[0], args[1]);
-        cfg.save();
-        group.sendMessage(bold(encode(args[0])) + " is now " + bold(encode(args[1])) + (prev != null ? " (was " + bold(encode(prev)) + ")" : "") + ".");
     }
 
 }

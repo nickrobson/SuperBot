@@ -45,7 +45,7 @@ public class GroupConfiguration {
         }
     }
 
-    public void save() {
+    public GroupConfiguration save() {
         try {
             BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.CREATE);
             options.forEach((opt,val) -> {
@@ -59,6 +59,7 @@ public class GroupConfiguration {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        return this;
     }
 
     public Map<String, String> get() {
