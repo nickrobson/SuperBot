@@ -1,16 +1,16 @@
 package me.nickrobson.skype.superchat;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public final class SuperChatPermissions {
 
     static final Map<String, Set<String>> permissions = new HashMap<>();
 
     public static Set<String> get(String username) {
-        return permissions.computeIfAbsent(username.toLowerCase(), k -> new HashSet<>());
+        return permissions.computeIfAbsent(username.toLowerCase(), k -> new TreeSet<>());
     }
 
     public static boolean has(String username, String permission) {

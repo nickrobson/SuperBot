@@ -31,15 +31,19 @@ public class ReloadCommand implements Command {
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        SkypeMessage msg = group.sendMessage(encode("Reloading"));
+        SkypeMessage msg = group.sendMessage(encode(" "));
         SuperChatController.saveProgress();
-        msg.edit(encode("Reloading."));
-        SuperChatController.loadProgress();
-        msg.edit(encode("Reloading.."));
-        SuperChatController.loadGroups();
-        msg.edit(encode("Reloading..."));
-        SuperChatController.loadHangmanWords();
-        msg.edit(encode("Reloading... Done!"));
+        SuperChatController.savePermissions();
+        new Thread(() -> {
+            SuperChatController.load(s -> {
+                try {
+                    Thread.sleep(250);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                msg.edit("Reloading... " + s);
+            });
+        }, "Reload Thread").start();
     }
 
 }
