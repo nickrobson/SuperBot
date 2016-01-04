@@ -35,7 +35,7 @@ public class CurrencyCommand implements Command {
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length < 3) {
-            group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "currency [from] [to] [amount]"));
+            sendUsage(user, group);
         } else {
             String from = args[0].toUpperCase();
             String to = args[1].toUpperCase();

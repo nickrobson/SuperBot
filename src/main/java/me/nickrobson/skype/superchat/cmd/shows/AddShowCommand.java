@@ -38,7 +38,7 @@ public class AddShowCommand implements Command {
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length < 3) {
-            group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "addshow [display] [day] [aliases...]"));
+            sendUsage(user, group);
         } else {
             String showName = args[0].replace("___", " "), day = args[1];
             String[] aliases = new String[args.length-2];

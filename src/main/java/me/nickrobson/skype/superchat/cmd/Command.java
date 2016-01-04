@@ -1,17 +1,29 @@
 package me.nickrobson.skype.superchat.cmd;
 
 import in.kyle.ezskypeezlife.Chat;
+import in.kyle.ezskypeezlife.api.SkypeConversationType;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatController;
 import me.nickrobson.skype.superchat.perm.Permission;
-import me.nickrobson.skype.superchat.perm.UserPermission;
 
 public interface Command {
 
     static final String PREFIX = SuperChatController.COMMAND_PREFIX;
+
+    static final Permission DEFAULT_PERMISSION = (c, u) -> true;
+
+    String[] names();
+
+    default Permission perm() {
+        return DEFAULT_PERMISSION;
+    }
+
+    String[] help(SkypeUser user, boolean userchat);
+
+    void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message);
 
     default void init() {}
 
@@ -23,17 +35,17 @@ public interface Command {
         return false;
     }
 
-    String[] names();
+    /* UTILITY FUNCTIONS */
 
-    default Permission perm() {
-        return new UserPermission();
+    default SkypeMessage sendUsage(SkypeUser user, SkypeConversation group) {
+        String[] help = help(user, group.getConversationType() == SkypeConversationType.USER);
+        String h = help != null && help[0] != null && !help[0].isEmpty() ? " " + help[0] : "";
+        return group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + names()[0] + h));
     }
 
-    String[] help(SkypeUser user, boolean userchat);
-
-    void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message);
-
-    /* UTILITY FUNCTIONS */
+    default Permission adminperm() {
+        return (c, u) -> c.isAdmin(u);
+    }
 
     default String bold(String s) {
         return Chat.bold(s);

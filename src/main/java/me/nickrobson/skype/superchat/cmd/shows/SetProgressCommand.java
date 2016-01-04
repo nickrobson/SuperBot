@@ -25,7 +25,7 @@ public class SetProgressCommand implements Command {
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length < 2) {
-            group.sendMessage(encode("Incorrect usage: `" + PREFIX + "me [show] [episode]`"));
+            sendUsage(user, group);
         } else {
             Show show = SuperChatShows.getShow(args[0]);
             String ep = args[1].toUpperCase();

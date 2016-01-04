@@ -13,34 +13,30 @@ import me.nickrobson.skype.superchat.cmd.Command;
 
 public class GroupConfiguration {
 
-    private final Map<String, Boolean> enabledCommands = new HashMap<>();
+    public static final String KEY_GROUP_ID = "groupId";
+    public static final String KEY_EVERYTHING_ON = "everythingOn";
+    public static final String KEY_SHOW_JOINS = "showJoins";
+    public static final String KEY_SHOW_EDITS = "showEdits";
+    public static final String KEY_IS_DISABLED = "disabled";
 
-    private String            groupId         = null;
-    private boolean           everythingOn    = false;
-    private boolean           showJoinMessage = false;
-    private boolean           showEdited      = false;
-    private boolean           disabled        = false;
-
-    private File              file;
+    private final Map<String, String> options = new HashMap<>();
+    private final File                file;
 
     public GroupConfiguration(File file) {
         this.file = file;
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
         try (BufferedReader reader = Files.newBufferedReader(file.toPath())) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith("cmd.")) {
-                    String[] spl = line.split("=");
-                    enabledCommands.put(spl[0].substring(4).trim().toLowerCase(), Boolean.parseBoolean(spl[1]));
-                } else if (line.startsWith("everything-on")) {
-                    everythingOn = true;
-                } else if (line.startsWith("join-message")) {
-                    showJoinMessage = true;
-                } else if (line.startsWith("show-edited")) {
-                    showEdited = true;
-                } else if (line.startsWith("disabled")) {
-                    disabled = true;
-                } else if (line.startsWith("groupId=")) {
-                    groupId = line.substring(8);
+                if (line.contains("=")) {
+                    String[] spl = line.split("=", 2);
+                    options.put(spl[0].trim().toLowerCase(), spl[1]);
                 }
             }
             reader.close();
@@ -49,32 +45,32 @@ public class GroupConfiguration {
         }
     }
 
+    public String get(String option) {
+        return get(option, null);
+    }
+
+    public String get(String option, Object def) {
+        return options.getOrDefault(option, def.toString());
+    }
+
+    public boolean getBoolean(String option) {
+        return Boolean.parseBoolean(get(option));
+    }
+
+    public boolean getBoolean(String option, boolean def) {
+        return Boolean.parseBoolean(get(option, def));
+    }
+
+    public String set(String option, String value) {
+        return options.put(option, value);
+    }
+
     public void save() {
         try {
             BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.CREATE);
-            if (groupId != null) {
-                writer.write("groupId=" + groupId);
-                writer.newLine();
-            }
-            if (everythingOn) {
-                writer.write("everything-on");
-                writer.newLine();
-            }
-            if (showJoinMessage) {
-                writer.write("join-message");
-                writer.newLine();
-            }
-            if (showEdited) {
-                writer.write("show-edited");
-                writer.newLine();
-            }
-            if (disabled) {
-                writer.write("disabled");
-                writer.newLine();
-            }
-            enabledCommands.forEach((c,m) -> {
+            options.forEach((opt,val) -> {
                 try {
-                    writer.write("cmd." + c + "=" + m);
+                    writer.write(opt + "=" + val);
                     writer.newLine();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -85,24 +81,28 @@ public class GroupConfiguration {
         }
     }
 
-    public String getLongGroupId() {
-        return groupId;
+    public String getGroupId() {
+        return get(KEY_GROUP_ID);
+    }
+
+    public boolean isEverythingOn() {
+        return Boolean.parseBoolean(get(KEY_EVERYTHING_ON));
     }
 
     public boolean isCommandEnabled(Command cmd) {
-        return everythingOn || enabledCommands.getOrDefault(cmd.names()[0].toLowerCase(), cmd.alwaysEnabled());
+        return isEverythingOn() || getBoolean("cmd." + cmd.names()[0].toLowerCase(), cmd.alwaysEnabled());
     }
 
     public boolean isShowJoinMessage() {
-        return everythingOn || showJoinMessage;
+        return isEverythingOn() || getBoolean(KEY_SHOW_JOINS);
     }
 
     public boolean isShowEditedMessages() {
-        return showEdited;
+        return getBoolean(KEY_SHOW_EDITS);
     }
 
     public boolean isDisabled() {
-        return disabled;
+        return getBoolean(KEY_IS_DISABLED);
     }
 
 }

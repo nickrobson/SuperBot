@@ -18,7 +18,7 @@ public class NumberwangCommand implements Command {
 
     @Override
     public String[] help(SkypeUser user, boolean userChat) {
-        return new String[]{ "", "guess a number" };
+        return new String[]{ "[number]", "guess a number" };
     }
 
     @Override
@@ -34,7 +34,7 @@ public class NumberwangCommand implements Command {
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length == 0)
-            group.sendMessage(encode("You need to guess a number!"));
+            sendUsage(user, group);
         else if (random.nextInt(8) == random.nextInt(8))
             group.sendMessage(encode("That's numberwang!"));
         else

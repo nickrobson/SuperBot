@@ -33,7 +33,7 @@ public class DelPermCommand implements Command {
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length < 2) {
-            group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "delperm [username] [perm]"));
+            sendUsage(user, group);
         } else {
             if (SuperChatPermissions.set(args[0], args[1], false)) {
                 group.sendMessage(bold(encode(args[0])) + encode(" no longer has: ") + bold(encode(args[1])));

@@ -20,6 +20,10 @@ public class TypeOutCommand implements Command {
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+        if (args.length == 0) {
+            sendUsage(user, group);
+            return;
+        }
         String str = Joiner.join(" ", args);
         SkypeMessage msg = group.sendMessage(" ");
         new Thread(() -> {

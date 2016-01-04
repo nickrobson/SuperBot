@@ -34,7 +34,7 @@ public class RemoveShowCommand implements Command {
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         if (args.length == 0) {
-            group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "removeshow"));
+            sendUsage(user, group);
         } else {
             Show show = SuperChatShows.getShow(args[0]);
             if (show != null) {

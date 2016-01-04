@@ -17,7 +17,7 @@ public class SuperChatListener {
     public void join(SkypeConversationUserJoinEvent event) {
         SkypeUser user = event.getUser();
         SkypeConversation convo = event.getConversation();
-        GroupConfiguration cfg = SuperChatController.GCONFIGS.get(convo.getLongId());
+        GroupConfiguration cfg = SuperChatController.getGroupConfiguration(convo);
         if (cfg != null && cfg.isShowJoinMessage()) {
             String welcome = String.format(SuperChatController.WELCOME_MESSAGE_JOIN, user.getUsername(), convo.getTopic());
             String help = "You can access my help menu by typing `" + SuperChatController.COMMAND_PREFIX + "help`";
@@ -40,7 +40,7 @@ public class SuperChatListener {
 
     public synchronized void chat(SkypeMessageEditedEvent event) {
         SkypeConversation convo = event.getSkypeMessage().getConversation();
-        GroupConfiguration conf = SuperChatController.GCONFIGS.get(convo.getLongId());
+        GroupConfiguration conf = SuperChatController.getGroupConfiguration(convo);
         boolean isGroup = convo.getConversationType() == SkypeConversationType.GROUP;
         if (isGroup && conf != null && conf.isShowEditedMessages()) {
             MessageBuilder mb = new MessageBuilder();
@@ -69,11 +69,9 @@ public class SuperChatListener {
         if (cmd == null)
             return;
 
-        GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
+        GroupConfiguration cfg = SuperChatController.getGroupConfiguration(group);
         if (group.getConversationType() == SkypeConversationType.GROUP) {
-            if (cfg != null && (cfg.isDisabled() || !cfg.isCommandEnabled(cmd)))
-                return;
-            if (cfg == null && !cmd.alwaysEnabled())
+            if (cfg.isDisabled() || !cfg.isCommandEnabled(cmd))
                 return;
         } else if (!cmd.userchat() && !cmd.alwaysEnabled())
             return;

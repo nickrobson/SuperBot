@@ -28,13 +28,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import in.kyle.ezskypeezlife.EzSkype;
+import in.kyle.ezskypeezlife.api.SkypeConversationType;
 import in.kyle.ezskypeezlife.api.captcha.SkypeCaptcha;
 import in.kyle.ezskypeezlife.api.captcha.SkypeErrorHandler;
+import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import me.nickrobson.skype.superchat.cmd.Command;
 import me.nickrobson.skype.superchat.cmd.HelpCommand;
 import me.nickrobson.skype.superchat.cmd.ReloadCommand;
 import me.nickrobson.skype.superchat.cmd.StopCommand;
+import me.nickrobson.skype.superchat.cmd.cfg.EditConfigCommand;
 import me.nickrobson.skype.superchat.cmd.fun.HangmanCommand;
 import me.nickrobson.skype.superchat.cmd.fun.NumberwangCommand;
 import me.nickrobson.skype.superchat.cmd.fun.TypeOutCommand;
@@ -62,7 +65,7 @@ import me.nickrobson.skype.superchat.cmd.util.VersionCommand;
  */
 public class SuperChatController implements SkypeErrorHandler {
 
-    public static final Map<String, GroupConfiguration>  GCONFIGS               = new HashMap<>();
+    private static final Map<String, GroupConfiguration> GCONFIGS               = new HashMap<>();
 
     public static final Map<String, Command>             COMMANDS               = new HashMap<>();
     public static final Map<String, Map<String, String>> PROGRESS               = new TreeMap<>();
@@ -224,6 +227,8 @@ public class SuperChatController implements SkypeErrorHandler {
         register(new ReloadCommand());
         register(new StopCommand());
 
+        register(new EditConfigCommand());
+
         register(new AddPermCommand());
         register(new DelPermCommand());
         register(new ListPermsCommand());
@@ -299,10 +304,36 @@ public class SuperChatController implements SkypeErrorHandler {
         GCONFIGS.clear();
         for (File f : dir.listFiles()) {
             GroupConfiguration cfg = new GroupConfiguration(f);
-            if (cfg.getLongGroupId() != null) {
-                GCONFIGS.put(cfg.getLongGroupId(), cfg);
+            if (cfg.getGroupId() != null) {
+                GCONFIGS.put(cfg.getGroupId(), cfg);
             }
         }
+    }
+
+    public static GroupConfiguration getGroupConfiguration(SkypeConversation group) {
+        return getGroupConfiguration(group, true);
+    }
+
+    public static GroupConfiguration getGroupConfiguration(SkypeConversation group, boolean create) {
+        if (group.getConversationType() == SkypeConversationType.USER)
+            return null;
+        String longId = group.getLongId();
+        GroupConfiguration cfg = GCONFIGS.get(longId);
+        if (cfg == null) {
+            cfg = newGroupConfiguration();
+            cfg.set("groupId", longId);
+            cfg.save();
+            GCONFIGS.put(longId, cfg);
+        }
+        return cfg;
+    }
+
+    public static GroupConfiguration newGroupConfiguration() {
+        File file = null, dir = new File("groups");
+        int n = 0;
+        while (file == null || file.exists())
+            file = new File(dir, n + ".cfg");
+        return new GroupConfiguration(file);
     }
 
     public static String whichEarlier(String a, String b) {

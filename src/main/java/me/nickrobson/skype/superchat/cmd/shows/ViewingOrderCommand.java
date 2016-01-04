@@ -27,7 +27,7 @@ public class ViewingOrderCommand implements Command {
         try {
             MessageBuilder builder = new MessageBuilder();
             if (args.length == 0)
-                builder.bold(true).text("Usage: ").bold(false).text(PREFIX + "vo [mcu,af]");
+                sendUsage(user, group);
             else {
                 InputStream stream = getClass().getResourceAsStream("/viewingorder/" + args[0].toLowerCase() + ".txt");
                 if (stream == null)

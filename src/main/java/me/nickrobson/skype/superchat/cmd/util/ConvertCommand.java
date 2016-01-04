@@ -80,8 +80,7 @@ public class ConvertCommand implements Command {
             }
             group.sendMessage(builder.toString());
         } else if (args.length < 3) {
-            builder.bold(true).text("Usage: ").bold(false).text(PREFIX + "convert [from] [to] [input...]");
-            group.sendMessage(builder.toString());
+            sendUsage(user, group);
         } else {
             StringBuilder sb = new StringBuilder();
             for (int i = 2; i < args.length; i++) {

@@ -10,7 +10,6 @@ import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.GroupConfiguration;
 import me.nickrobson.skype.superchat.SuperChatController;
-import me.nickrobson.skype.superchat.perm.UserPermission;
 
 public class HelpCommand implements Command {
 
@@ -65,7 +64,7 @@ public class HelpCommand implements Command {
             if (go)
                 cmds.add(cmd);
         });
-        GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
+        GroupConfiguration cfg = SuperChatController.getGroupConfiguration(group);
         if (cfg != null)
             cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd));
         else if (group.getConversationType() == SkypeConversationType.USER)
@@ -79,14 +78,14 @@ public class HelpCommand implements Command {
         AtomicInteger maxLen = new AtomicInteger(0);
         cmds.forEach(c -> {
             String cmdHelp = getCmdHelp(c, user, group.getConversationType() == SkypeConversationType.USER);
-            if (c.perm() instanceof UserPermission && cmdHelp.length() > maxLen.get())
+            if (c.perm() == Command.DEFAULT_PERMISSION && cmdHelp.length() > maxLen.get())
                 maxLen.set(cmdHelp.length());
         });
         List<String> strings = new ArrayList<>(SuperChatController.COMMANDS.size());
         StringBuilder builder = new StringBuilder();
         cmds.forEach(c -> {
             String[] help = c.help(user, group.getConversationType() == SkypeConversationType.USER);
-            if (c.perm() instanceof UserPermission)
+            if (c.perm() == Command.DEFAULT_PERMISSION)
                 strings.add(pad(getCmdHelp(c, user, group.getConversationType() == SkypeConversationType.USER), maxLen.get()) + " - " + help[1]);
         });
         if (SuperChatController.HELP_IGNORE_WHITESPACE)

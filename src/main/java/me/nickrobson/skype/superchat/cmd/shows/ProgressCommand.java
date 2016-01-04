@@ -57,7 +57,7 @@ public class ProgressCommand implements Command {
                 }
             }
         } else {
-            group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "progress [show...]"));
+            sendUsage(user, group);
             return;
         }
         if (sent) {
