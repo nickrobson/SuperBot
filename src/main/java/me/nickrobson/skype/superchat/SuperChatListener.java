@@ -46,9 +46,9 @@ public class SuperChatListener {
             MessageBuilder mb = new MessageBuilder();
             mb.bold(true).text("( " + event.getSkypeUser().getUsername() + " ) ").bold(false).newLine();
             mb.text("Edited their message:").newLine();
-            mb.text(event.getContentOld()).newLine();
+            mb.html(event.getContentOld()).newLine();
             mb.text("Became:").newLine();
-            mb.text(event.getContentNew());
+            mb.html(event.getContentNew());
             convo.sendMessage(mb.build());
         }
         cmd(event.getSkypeMessage());
