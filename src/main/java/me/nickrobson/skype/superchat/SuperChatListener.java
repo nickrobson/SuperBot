@@ -71,7 +71,7 @@ public class SuperChatListener {
 
         GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
         if (group.getConversationType() == SkypeConversationType.GROUP) {
-            if (cfg != null && (cfg.isDisabled() || !cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled()))
+            if (cfg != null && (cfg.isDisabled() || !cfg.isCommandEnabled(cmd)))
                 return;
             if (cfg == null && !cmd.alwaysEnabled())
                 return;

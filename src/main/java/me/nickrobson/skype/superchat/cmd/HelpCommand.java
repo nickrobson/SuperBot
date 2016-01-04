@@ -67,7 +67,7 @@ public class HelpCommand implements Command {
         });
         GroupConfiguration cfg = SuperChatController.GCONFIGS.get(group.getLongId());
         if (cfg != null)
-            cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd) && !cmd.alwaysEnabled());
+            cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd));
         else if (group.getConversationType() == SkypeConversationType.USER)
             cmds.removeIf(cmd -> !cmd.userchat() && !cmd.alwaysEnabled());
         else

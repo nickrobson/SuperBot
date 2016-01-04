@@ -6,14 +6,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import me.nickrobson.skype.superchat.cmd.Command;
 
 public class GroupConfiguration {
 
-    private final Set<String> enabledCommands = new HashSet<>();
+    private final Map<String, Boolean> enabledCommands = new HashMap<>();
 
     private String            groupId         = null;
     private boolean           everythingOn    = false;
@@ -29,7 +29,8 @@ public class GroupConfiguration {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("cmd.")) {
-                    enabledCommands.add(line.split("=")[0].substring(4).trim().toLowerCase());
+                    String[] spl = line.split("=");
+                    enabledCommands.put(spl[0].substring(4).trim().toLowerCase(), Boolean.parseBoolean(spl[1]));
                 } else if (line.startsWith("everything-on")) {
                     everythingOn = true;
                 } else if (line.startsWith("join-message")) {
@@ -71,9 +72,9 @@ public class GroupConfiguration {
                 writer.write("disabled");
                 writer.newLine();
             }
-            enabledCommands.forEach(c -> {
+            enabledCommands.forEach((c,m) -> {
                 try {
-                    writer.write("cmd." + c + "=true");
+                    writer.write("cmd." + c + "=" + m);
                     writer.newLine();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -89,7 +90,7 @@ public class GroupConfiguration {
     }
 
     public boolean isCommandEnabled(Command cmd) {
-        return everythingOn || enabledCommands.contains(cmd.names()[0].toLowerCase());
+        return everythingOn || enabledCommands.getOrDefault(cmd.names()[0].toLowerCase(), cmd.alwaysEnabled());
     }
 
     public boolean isShowJoinMessage() {
