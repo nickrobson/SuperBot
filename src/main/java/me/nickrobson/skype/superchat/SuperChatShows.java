@@ -1,5 +1,6 @@
 package me.nickrobson.skype.superchat;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -119,7 +120,9 @@ public class SuperChatShows {
         try {
             File f = new File(fname);
             if (f.exists()) {
-                SuperChatController.GSON.toJson(arr, Files.newBufferedWriter(f.toPath(), StandardOpenOption.CREATE));
+                BufferedWriter writer = Files.newBufferedWriter(f.toPath(), StandardOpenOption.CREATE);
+                SuperChatController.GSON.toJson(arr, writer);
+                writer.close();
                 return true;
             } else {
                 throw new FileNotFoundException("shows.json is missing");
