@@ -2,7 +2,6 @@ package me.nickrobson.skype.superchat.cmd.perm;
 
 import java.util.Set;
 
-import in.kyle.ezskypeezlife.api.SkypeConversationType;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
@@ -30,12 +29,7 @@ public class ListPermsCommand implements Command {
 
     @Override
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        String username;
-        if (args.length == 0 || group.getConversationType() == SkypeConversationType.USER) {
-            username = user.getUsername();
-        } else {
-            username = args[0];
-        }
+        String username = args.length == 0 ? user.getUsername() : args[0];
         Set<String> perms = SuperChatPermissions.get(username);
         MessageBuilder mb = new MessageBuilder();
         if (perms.isEmpty()) {
