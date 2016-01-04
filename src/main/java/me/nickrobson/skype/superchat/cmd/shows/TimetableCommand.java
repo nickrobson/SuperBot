@@ -41,11 +41,11 @@ public class TimetableCommand implements Command {
     public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
         Map<String, Set<Show>> days = new HashMap<>();
         SuperChatShows.TRACKED_SHOWS.forEach(s -> {
-            Set<Show> set = days.get(s.day == null ? "not airing" : s.day.toLowerCase());
+            Set<Show> set = days.get(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase());
             if (set == null)
                 set = new HashSet<>();
             set.add(s);
-            days.put(s.day == null ? "not airing" : s.day.toLowerCase(), set);
+            days.put(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase(), set);
         });
         MessageBuilder builder = new MessageBuilder();
         // days.forEach((day, set) -> {
