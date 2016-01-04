@@ -119,9 +119,8 @@ public class SuperChatShows {
         String fname = "shows.json";
         try {
             File f = new File(fname);
-            if (f.exists()) {
+            if (f.exists())
                 f.delete();
-            }
             BufferedWriter writer = Files.newBufferedWriter(f.toPath(), StandardOpenOption.CREATE);
             SuperChatController.GSON.toJson(arr, writer);
             writer.close();

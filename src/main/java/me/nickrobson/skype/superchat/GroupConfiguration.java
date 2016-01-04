@@ -46,8 +46,9 @@ public class GroupConfiguration {
     }
 
     public GroupConfiguration save() {
-        try {
-            BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.CREATE);
+        if (file.exists())
+            file.delete();
+        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.CREATE)) {
             options.forEach((opt,val) -> {
                 try {
                     writer.write(opt + "=" + val);
