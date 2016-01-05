@@ -3,23 +3,22 @@ package me.nickrobson.skype.superchat;
 public class Joiner {
 
     public static String join(String sep, Object[] strings) {
-        String s = "";
+        StringBuilder builder = new StringBuilder();
         for (Object z : strings) {
-            if (!s.isEmpty())
-                s += sep;
-            s += z.toString();
+            if (builder.length() > 0)
+                builder.append(sep);
+            builder.append(z);
         }
-        return s;
+        return builder.toString();
     }
 
     public static String join(String sep, Iterable<?> strings) {
-        String s = "";
+        StringBuilder builder = new StringBuilder();
         for (Object z : strings) {
-            if (!s.isEmpty())
-                s += sep;
-            s += z.toString();
+            if (builder.length() > 0)
+                builder.append(sep);
+            builder.append(z);
         }
-        return s;
+        return builder.toString();
     }
-
 }
