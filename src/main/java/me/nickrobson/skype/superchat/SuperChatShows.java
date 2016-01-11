@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,12 +103,20 @@ public class SuperChatShows {
 
     public static JsonArray readJson() {
         String fname = "shows.json";
+        File f = new File(fname);
+        File bk = new File(fname + ".bak");
+        JsonArray arr = readJson(f);
+        if (arr == null)
+            arr = readJson(bk);
+        return arr;
+    }
+
+    private static JsonArray readJson(File f) {
         try {
-            File f = new File(fname);
             if (f.exists()) {
                 return SuperChatController.GSON.fromJson(new FileReader(f), JsonArray.class);
             } else {
-                throw new FileNotFoundException("shows.json is missing");
+                throw new FileNotFoundException(f.getName() + " is missing");
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -117,16 +126,22 @@ public class SuperChatShows {
 
     public static boolean writeJson(JsonArray arr) {
         String fname = "shows.json";
+        File f = new File(fname);
+        File bk = new File(fname + ".bak");
         try {
-            File f = new File(fname);
             if (f.exists())
-                f.delete();
+                f.renameTo(bk);
             BufferedWriter writer = Files.newBufferedWriter(f.toPath(), StandardOpenOption.CREATE);
             SuperChatController.GSON.toJson(arr, writer);
             writer.close();
             return true;
         } catch (IOException ex) {
             ex.printStackTrace();
+            try {
+                Files.copy(bk.toPath(), f.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }
