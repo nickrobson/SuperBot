@@ -7,7 +7,7 @@ import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.MessageBuilder;
 import me.nickrobson.skype.superchat.SuperChatController;
-import me.nickrobson.skype.superchat.perm.Permission;
+import me.nickrobson.skype.superchat.SuperChatPermissions;
 
 public interface Command {
 
@@ -47,8 +47,12 @@ public interface Command {
         return group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + names()[0] + h));
     }
 
-    default Permission adminperm() {
+    default Permission admin() {
         return (c, u) -> c.isAdmin(u);
+    }
+
+    default Permission string(String perm) {
+        return (c, u) -> SuperChatPermissions.has(u.getUsername(), perm);
     }
 
     default String bold(String s) {

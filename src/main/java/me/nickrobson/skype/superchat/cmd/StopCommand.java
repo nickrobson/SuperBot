@@ -4,8 +4,6 @@ import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.SuperChatController;
-import me.nickrobson.skype.superchat.perm.Permission;
-import me.nickrobson.skype.superchat.perm.StringPermission;
 
 public class StopCommand implements Command {
 
@@ -21,7 +19,7 @@ public class StopCommand implements Command {
 
     @Override
     public Permission perm() {
-        return new StringPermission("admin.stop");
+        return string("admin.stop");
     }
 
     @Override

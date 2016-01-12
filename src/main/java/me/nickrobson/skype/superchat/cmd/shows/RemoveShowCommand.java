@@ -6,8 +6,7 @@ import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.SuperChatShows;
 import me.nickrobson.skype.superchat.SuperChatShows.Show;
 import me.nickrobson.skype.superchat.cmd.Command;
-import me.nickrobson.skype.superchat.perm.Permission;
-import me.nickrobson.skype.superchat.perm.StringPermission;
+import me.nickrobson.skype.superchat.cmd.Permission;
 
 /**
  * Created by Horrgs on 1/1/2016.
@@ -23,7 +22,7 @@ public class RemoveShowCommand implements Command {
 
     @Override
     public Permission perm() {
-        return new StringPermission("shows.remove");
+        return string("shows.remove");
     }
 
     @Override

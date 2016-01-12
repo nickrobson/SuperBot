@@ -1,4 +1,4 @@
-package me.nickrobson.skype.superchat.perm;
+package me.nickrobson.skype.superchat.cmd;
 
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;

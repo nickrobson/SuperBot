@@ -5,8 +5,7 @@ import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
 import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.SuperChatPermissions;
 import me.nickrobson.skype.superchat.cmd.Command;
-import me.nickrobson.skype.superchat.perm.Permission;
-import me.nickrobson.skype.superchat.perm.StringPermission;
+import me.nickrobson.skype.superchat.cmd.Permission;
 
 public class AddPermCommand implements Command {
 
@@ -22,7 +21,7 @@ public class AddPermCommand implements Command {
 
     @Override
     public Permission perm() {
-        return new StringPermission("permissions.modify");
+        return string("permissions.modify");
     }
 
     @Override

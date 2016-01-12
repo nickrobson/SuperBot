@@ -7,8 +7,7 @@ import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import me.nickrobson.skype.superchat.GroupConfiguration;
 import me.nickrobson.skype.superchat.SuperChatController;
 import me.nickrobson.skype.superchat.cmd.Command;
-import me.nickrobson.skype.superchat.perm.Permission;
-import me.nickrobson.skype.superchat.perm.StringPermission;
+import me.nickrobson.skype.superchat.cmd.Permission;
 
 public class EditConfigCommand implements Command {
 
@@ -24,7 +23,7 @@ public class EditConfigCommand implements Command {
 
     @Override
     public Permission perm() {
-        return new StringPermission("cfg.edit");
+        return string("cfg.edit");
     }
 
     @Override
