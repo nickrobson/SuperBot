@@ -39,6 +39,7 @@ import me.nickrobson.skype.superchat.cmd.ReloadCommand;
 import me.nickrobson.skype.superchat.cmd.StopCommand;
 import me.nickrobson.skype.superchat.cmd.cfg.EditConfigCommand;
 import me.nickrobson.skype.superchat.cmd.cfg.ShowConfigCommand;
+import me.nickrobson.skype.superchat.cmd.fun.DefineCommand;
 import me.nickrobson.skype.superchat.cmd.fun.HangmanCommand;
 import me.nickrobson.skype.superchat.cmd.fun.NumberwangCommand;
 import me.nickrobson.skype.superchat.cmd.fun.TypeOutCommand;
@@ -248,6 +249,7 @@ public class SuperChatController implements SkypeErrorHandler {
         register(new HangmanCommand());
         register(new NumberwangCommand());
         register(new TypeOutCommand());
+        register(new DefineCommand());
 
         register(new ConvertCommand());
         register(new CurrencyCommand());
