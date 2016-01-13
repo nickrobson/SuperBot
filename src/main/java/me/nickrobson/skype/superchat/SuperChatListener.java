@@ -1,5 +1,7 @@
 package me.nickrobson.skype.superchat;
 
+import java.util.regex.Pattern;
+
 import in.kyle.ezskypeezlife.Chat;
 import in.kyle.ezskypeezlife.api.SkypeConversationType;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
@@ -13,6 +15,8 @@ import in.kyle.ezskypeezlife.events.user.SkypeContactRequestEvent;
 import me.nickrobson.skype.superchat.cmd.Command;
 
 public class SuperChatListener {
+
+    public static final Pattern START_OF_LINE = Pattern.compile("^", Pattern.MULTILINE);
 
     public void join(SkypeConversationUserJoinEvent event) {
         SkypeUser user = event.getUser();
@@ -46,8 +50,8 @@ public class SuperChatListener {
             MessageBuilder mb = new MessageBuilder();
             mb.bold(true).text(event.getSkypeUser().getUsername()).bold(false);
             mb.text(" edited their message:").newLine();
-            mb.html(event.getContentOld().replaceAll("^", "&gt; ")).newLine().newLine();
-            mb.html(event.getContentNew().replaceAll("^", "&gt; "));
+            mb.html(START_OF_LINE.matcher(event.getContentOld()).replaceAll("&gt; ")).newLine().newLine();
+            mb.html(START_OF_LINE.matcher(event.getContentNew()).replaceAll("&gt; "));
             convo.sendMessage(mb.build());
         }
         cmd(event.getSkypeMessage());
