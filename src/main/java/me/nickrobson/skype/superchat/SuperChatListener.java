@@ -44,11 +44,10 @@ public class SuperChatListener {
         boolean isGroup = convo.getConversationType() == SkypeConversationType.GROUP;
         if (isGroup && conf != null && conf.isShowEditedMessages()) {
             MessageBuilder mb = new MessageBuilder();
-            mb.bold(true).text("( " + event.getSkypeUser().getUsername() + " ) ").bold(false).newLine();
-            mb.text("Edited their message:").newLine();
-            mb.html(event.getContentOld()).newLine();
-            mb.text("Became:").newLine();
-            mb.html(event.getContentNew());
+            mb.bold(true).text(event.getSkypeUser().getUsername()).bold(false);
+            mb.text(" edited their message:").newLine();
+            mb.html(event.getContentOld().replaceAll("^", "&gt; ")).newLine().newLine();
+            mb.html(event.getContentNew().replaceAll("^", "&gt; "));
             convo.sendMessage(mb.build());
         }
         cmd(event.getSkypeMessage());
