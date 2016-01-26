@@ -1,0 +1,40 @@
+package xyz.nickr.superchat.cmd.fun;
+
+import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
+import in.kyle.ezskypeezlife.api.obj.SkypeUser;
+import xyz.nickr.superchat.Joiner;
+import xyz.nickr.superchat.cmd.Command;
+
+public class TypeOutCommand implements Command {
+
+    @Override
+    public String[] names() {
+        return new String[]{ "typeout" };
+    }
+
+    @Override
+    public String[] help(SkypeUser user, boolean userChat) {
+        return new String[]{ "[message]", "slowly types a message out" };
+    }
+
+    @Override
+    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+        if (args.length == 0) {
+            sendUsage(user, group);
+            return;
+        }
+        String str = Joiner.join(" ", args);
+        SkypeMessage msg = group.sendMessage(" ");
+        new Thread(() -> {
+            int c = 0;
+            while (c < str.length()) {
+                try {
+                    Thread.sleep(250);
+                } catch (Exception e) {}
+                msg.edit(encode(str.substring(0, ++c)));
+            }
+        }, "TypeOut Thread").start();
+    }
+
+}
