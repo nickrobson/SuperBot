@@ -13,11 +13,11 @@ import me.nickrobson.skype.superchat.cmd.Command;
 
 public class GroupConfiguration {
 
-    public static final String KEY_GROUP_ID = "groupId";
+    public static final String KEY_GROUP_ID      = "groupId";
+    public static final String KEY_IS_DISABLED   = "disabled";
+    public static final String KEY_SHOW_JOINS    = "showJoins";
+    public static final String KEY_SHOW_EDITS    = "showEdits";
     public static final String KEY_EVERYTHING_ON = "everythingOn";
-    public static final String KEY_SHOW_JOINS = "showJoins";
-    public static final String KEY_SHOW_EDITS = "showEdits";
-    public static final String KEY_IS_DISABLED = "disabled";
 
     private final Map<String, String> options = new HashMap<>();
     private final File                file;

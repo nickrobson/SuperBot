@@ -35,7 +35,7 @@ public class SuperChatListener {
     }
 
     public void contactRequest(SkypeContactRequestEvent event) {
-        event.getSkypeUser().setContact(true);
+        event.getUser().setContact(true);
     }
 
     public synchronized void chat(SkypeMessageReceivedEvent event) {
@@ -43,18 +43,18 @@ public class SuperChatListener {
     }
 
     public synchronized void chat(SkypeMessageEditedEvent event) {
-        SkypeConversation convo = event.getSkypeMessage().getConversation();
+        SkypeConversation convo = event.getMessage().getConversation();
         GroupConfiguration conf = SuperChatController.getGroupConfiguration(convo, false);
         boolean isGroup = convo.getConversationType() == SkypeConversationType.GROUP;
         if (isGroup && conf != null && conf.isShowEditedMessages()) {
             MessageBuilder mb = new MessageBuilder();
-            mb.bold(true).text(event.getSkypeUser().getUsername()).bold(false);
+            mb.bold(true).text(event.getUser().getUsername()).bold(false);
             mb.text(" edited their message:").newLine();
             mb.html(START_OF_LINE.matcher(event.getContentOld()).replaceAll("&gt; ")).newLine().newLine();
             mb.html(START_OF_LINE.matcher(event.getContentNew()).replaceAll("&gt; "));
             convo.sendMessage(mb.build());
         }
-        cmd(event.getSkypeMessage());
+        cmd(event.getMessage());
     }
 
     public synchronized void cmd(SkypeMessage message) {
