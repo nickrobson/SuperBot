@@ -47,7 +47,7 @@ public class ShowsCommand implements Command {
                 spaces += ' ';
             builder.html(send.get(i)).code(true).text(spaces);
             if (send.size() > rows + i) {
-                builder.text("    ").html(send.get(rows + i));
+                builder.code(true).text("    ").code(false).html(send.get(rows + i));
             }
             if (i != rows - 1)
                 builder.newLine();
