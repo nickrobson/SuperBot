@@ -21,10 +21,9 @@ public class SkypeSys implements Sys {
     public SkypeSys(String username, String password) {
         try {
             SkypeListener listener = new SkypeListener(this);
-
             skype = new EzSkype(username, password);
-            skype.login();
             skype.setErrorHandler(listener);
+            skype.login();
             skype.getEventManager().registerEvents(listener);
         } catch (Exception e) {
             e.printStackTrace();
