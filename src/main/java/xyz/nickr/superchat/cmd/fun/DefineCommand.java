@@ -1,9 +1,10 @@
 package xyz.nickr.superchat.cmd.fun;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import xyz.nickr.superchat.cmd.Command;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class DefineCommand implements Command {
 
@@ -13,13 +14,13 @@ public class DefineCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userchat) {
+    public String[] help(User user, boolean userchat) {
         return new String[]{ "[phrase]", "defines [phrase]" };
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        group.sendMessage(encode("Do I look like a fucking dictionary to you?"));
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+        conv.sendMessage(sys.message().text("Do I look like a fucking dictionary to you?"));
     }
 
 }

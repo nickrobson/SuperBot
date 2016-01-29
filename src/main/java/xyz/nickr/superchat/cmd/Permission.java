@@ -1,10 +1,10 @@
 package xyz.nickr.superchat.cmd;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.User;
 
 public interface Permission {
 
-    boolean has(SkypeConversation convo, SkypeUser user);
+    boolean has(Group convo, User user);
 
 }

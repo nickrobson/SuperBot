@@ -7,11 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
-import xyz.nickr.superchat.MessageBuilder;
 import xyz.nickr.superchat.cmd.Command;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.MessageBuilder;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class ConvertCommand implements Command {
 
@@ -58,7 +59,7 @@ public class ConvertCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[] { "[from] [to] [input...]", "converts [input] : [from] => [to]" };
     }
 
@@ -68,8 +69,8 @@ public class ConvertCommand implements Command {
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        MessageBuilder builder = new MessageBuilder();
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
+        MessageBuilder<?> builder = sys.message();
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             for (Map.Entry<String, Map<String, Conversion>> cell : conversions.entrySet()) {
                 for (Map.Entry<String, Conversion> sub : cell.getValue().entrySet()) {
@@ -80,7 +81,7 @@ public class ConvertCommand implements Command {
             }
             group.sendMessage(builder.toString());
         } else if (args.length < 3) {
-            sendUsage(user, group);
+            sendUsage(null, user, group);
         } else {
             StringBuilder sb = new StringBuilder();
             for (int i = 2; i < args.length; i++) {
@@ -97,21 +98,21 @@ public class ConvertCommand implements Command {
                     try {
                         new BigDecimal(input);
                     } catch (Exception ex) {
-                        group.sendMessage(encode("[Convert] The conversion between " + from + " and " + to + " requires a number to be input."));
+                        group.sendMessage(sys.message().text("[Convert] The conversion between " + from + " and " + to + " requires a number to be input."));
                         return;
                     }
                 }
                 try {
                     String res = conv.func.apply(input);
                     if (conv.appendSymbol)
-                        group.sendMessage(encode("[Convert] " + String.format("%s%s => %s%s", input, from, res, to)));
+                        group.sendMessage(sys.message().text("[Convert] " + String.format("%s%s => %s%s", input, from, res, to)));
                     else
-                        group.sendMessage(encode("[Convert] " + String.format("(%s => %s) %s => %s", from, to, input, res)));
+                        group.sendMessage(sys.message().text("[Convert] " + String.format("(%s => %s) %s => %s", from, to, input, res)));
                 } catch (Throwable t) {
-                    group.sendMessage(encode("[Convert] An error occurred while converting : " + t.getClass().getSimpleName() + "\n" + t.getMessage()));
+                    group.sendMessage(sys.message().text("[Convert] An error occurred while converting : " + t.getClass().getSimpleName() + "\n" + t.getMessage()));
                 }
             } else {
-                group.sendMessage(encode("[Convert] No conversion found between " + from + " and " + to + "!"));
+                group.sendMessage(sys.message().text("[Convert] No conversion found between " + from + " and " + to + "!"));
             }
         }
     }

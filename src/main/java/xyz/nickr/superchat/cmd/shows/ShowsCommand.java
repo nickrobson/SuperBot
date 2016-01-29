@@ -3,13 +3,14 @@ package xyz.nickr.superchat.cmd.shows;
 import java.util.LinkedList;
 import java.util.List;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
-import xyz.nickr.superchat.MessageBuilder;
 import xyz.nickr.superchat.SuperChatShows;
 import xyz.nickr.superchat.SuperChatShows.Show;
 import xyz.nickr.superchat.cmd.Command;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.MessageBuilder;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class ShowsCommand implements Command {
 
@@ -19,12 +20,12 @@ public class ShowsCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[] { "", "see which shows are being tracked" };
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
         List<String> send = new LinkedList<>();
         for (Show show : SuperChatShows.TRACKED_SHOWS) {
             StringBuilder sb = new StringBuilder();
@@ -34,24 +35,24 @@ public class ShowsCommand implements Command {
                 sb.append(s);
             }
             if (sb.length() > 0)
-                send.add(code(encode("[" + show.getDisplay() + "] ")) + code(encode(sb.toString())));
+                send.add(sys.message().code(true).text("[" + show.getDisplay() + "] " + sb.toString()).build());
         }
         send.sort(String.CASE_INSENSITIVE_ORDER);
         int rows = send.size() / 2 + send.size() % 2;
         int maxLen1 = send.subList(0, rows).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
-        MessageBuilder builder = new MessageBuilder();
+        MessageBuilder<?> builder = sys.message();
         for (int i = 0; i < rows; i++) {
             String spaces = "";
             for (int j = send.get(i).length(); j < maxLen1; j++)
                 spaces += ' ';
-            builder.html(send.get(i) + code(spaces));
+            builder.html(send.get(i)).code(true).text(spaces);
             if (send.size() > rows + i) {
-                builder.html(encode("    ") + send.get(rows + i));
+                builder.text("    ").html(send.get(rows + i));
             }
             if (i != rows - 1)
                 builder.newLine();
         }
-        group.sendMessage(builder.build());
+        conv.sendMessage(builder.build());
     }
 
 }

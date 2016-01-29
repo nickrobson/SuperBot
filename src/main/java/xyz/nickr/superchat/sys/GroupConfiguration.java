@@ -1,4 +1,4 @@
-package xyz.nickr.superchat;
+package xyz.nickr.superchat.sys;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,7 +13,8 @@ import xyz.nickr.superchat.cmd.Command;
 
 public class GroupConfiguration {
 
-    public static final String KEY_GROUP_ID      = "groupId";
+    public static final String KEY_PROVIDER      = "provider";
+    public static final String KEY_UNIQUE_ID     = "uniqueId";
     public static final String KEY_IS_DISABLED   = "disabled";
     public static final String KEY_SHOW_JOINS    = "showJoins";
     public static final String KEY_SHOW_EDITS    = "showEdits";
@@ -86,8 +87,12 @@ public class GroupConfiguration {
         return options.put(option, value);
     }
 
-    public String getGroupId() {
-        return get(KEY_GROUP_ID);
+    public String getProvider() {
+        return get(KEY_PROVIDER);
+    }
+
+    public String getUniqueId() {
+        return get(KEY_UNIQUE_ID);
     }
 
     public boolean isEverythingOn() {

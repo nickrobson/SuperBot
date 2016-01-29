@@ -1,10 +1,10 @@
 package xyz.nickr.superchat.cmd.util;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
-import xyz.nickr.superchat.MessageBuilder;
 import xyz.nickr.superchat.cmd.Command;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class GitCommand implements Command {
 
@@ -14,7 +14,7 @@ public class GitCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[] { "", "tells you the bot's git repo" };
     }
 
@@ -29,8 +29,8 @@ public class GitCommand implements Command {
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        group.sendMessage(new MessageBuilder().link("http://github.com/nickrobson/SuperChat").html("http://github.com/nickrobson/SuperChat").build());
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+        conv.sendMessage(sys.message().link("http://github.com/nickrobson/SuperChat").html("http://github.com/nickrobson/SuperChat").build());
     }
 
 }

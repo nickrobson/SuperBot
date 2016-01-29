@@ -7,13 +7,14 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import in.kyle.ezskypeezlife.api.SkypeConversationType;
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
-import xyz.nickr.superchat.MessageBuilder;
 import xyz.nickr.superchat.SuperChatController;
 import xyz.nickr.superchat.cmd.Command;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.GroupType;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.MessageBuilder;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class HangmanCommand implements Command {
 
@@ -28,7 +29,7 @@ public class HangmanCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[] { userChat ? "[phrase]" : "[guess]", userChat ? "start a hangman game with phrase [phrase]" : "take a guess at a letter" };
     }
 
@@ -38,15 +39,16 @@ public class HangmanCommand implements Command {
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        if (group.getConversationType() == SkypeConversationType.USER)
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+        MessageBuilder<?> mb = sys.message();
+        if (conv.getType() == GroupType.USER)
             if (currentPhrase != null)
-                group.sendMessage(encode("[Hangman] There is already a game in progress.") + "\n" + encode("[Hangman] To take a guess, send a message in a group."));
+                conv.sendMessage(mb.text("[Hangman] There is already a game in progress.").newLine().text("[Hangman] To take a guess, send a message in a group."));
             else if (args.length == 0)
-                sendUsage(user, group);
+                sendUsage(null, user, conv);
             else if (args[0].equalsIgnoreCase("random"))
                 if (SuperChatController.HANGMAN_PHRASES.isEmpty())
-                    group.sendMessage(encode("Sorry, you can't do random phrases (file missing)."));
+                    conv.sendMessage(mb.text("Sorry, you can't do random phrases (file missing)."));
                 else {
                     int n = new Random().nextInt(SuperChatController.HANGMAN_PHRASES.size());
                     String s = SuperChatController.HANGMAN_PHRASES.get(n).toUpperCase();
@@ -55,7 +57,7 @@ public class HangmanCommand implements Command {
                         found = currentPhrase.replaceAll("[A-Za-z]", "_");
                         guessed = "";
                         numCorrect = new HashMap<>();
-                        group.sendMessage(encode("[Hangman] The phrase has been set to: ") + code(encode(found)));
+                        conv.sendMessage(mb.text("[Hangman] The phrase has been set to: ").code(true).text(found));
                     }
                 }
             else {
@@ -70,23 +72,23 @@ public class HangmanCommand implements Command {
                 found = currentPhrase.replaceAll("[A-Za-z]", "_");
                 guessed = "";
                 numCorrect = new HashMap<>();
-                group.sendMessage(encode("[Hangman] The phrase has been set to: ") + code(encode(currentPhrase)));
+                conv.sendMessage(mb.text("[Hangman] The phrase has been set to: ").code(true).text(currentPhrase));
             }
         else if (currentPhrase == null)
-            group.sendMessage(encode("[Hangman] There is no game in progress currently!") + "\n" + encode("[Hangman] To set the phrase, PM me `" + SuperChatController.COMMAND_PREFIX + "hangman [phrase]`!"));
+            conv.sendMessage(mb.text("[Hangman] There is no game in progress currently!").newLine().text("[Hangman] To set the phrase, PM me `" + SuperChatController.COMMAND_PREFIX + "hangman [phrase]`!"));
         else if (args.length != 1)
-            group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + "hangman [guess]") + (currentPhrase != null ? "\n" + encode("Phrase so far: ") + code(encode(found)) : ""));
+            conv.sendMessage(mb.bold(true).text("Usage: ").bold(false).text(PREFIX + "hangman [guess]").html(currentPhrase != null ? sys.message().newLine().text("Phrase so far: ").code(true).text(found).build() : ""));
         else {
             char first = args[0].trim().toUpperCase().charAt(0);
             if (args[0].trim().length() != 1)
-                group.sendMessage(encode("[Hangman] You can only guess one letter!"));
+                conv.sendMessage(mb.text("[Hangman] You can only guess one letter!"));
             else if (!('A' <= first && first <= 'Z'))
-                group.sendMessage(encode("[Hangman] You can only guess letters!"));
+                conv.sendMessage(mb.text("[Hangman] You can only guess letters!"));
             else {
                 if (found.indexOf(first) != -1)
-                    group.sendMessage(encode("[Hangman] " + first + " has already been guessed and found."));
+                    conv.sendMessage(mb.text("[Hangman] " + first + " has already been guessed and found."));
                 else if (guessed.indexOf(first) != -1)
-                    group.sendMessage(encode("[Hangman] " + first + " has already been guessed and was not found."));
+                    conv.sendMessage(mb.text("[Hangman] " + first + " has already been guessed and was not found."));
                 else {
                     if (currentPhrase.indexOf(first) != -1) {
                         StringBuilder sb = new StringBuilder(found);
@@ -100,7 +102,7 @@ public class HangmanCommand implements Command {
                         numCorrect.put(user.getUsername(), numCorrect.getOrDefault(user.getUsername(), 0) + numChanged);
                         found = sb.toString();
                         if (currentPhrase.equals(found)) {
-                            MessageBuilder stats = new MessageBuilder();
+                            MessageBuilder<?> stats = sys.message();
                             List<Entry<String, Integer>> contrib = numCorrect.entrySet().stream().sorted((e1, e2) -> e2.getValue() - e1.getValue()).collect(Collectors.toList());
                             String curr = currentPhrase.replaceAll("[^A-Za-z]", "");
                             for (Entry<String, Integer> player : contrib) {
@@ -110,16 +112,16 @@ public class HangmanCommand implements Command {
                                 stats.bold(true).text(player.getKey() + ": ").bold(false);
                                 stats.text(player.getValue().toString() + "/" + curr.length() + " (" + (ps.length() > 5 ? ps.substring(0, 5) : ps) + "%)");
                             }
-                            group.sendMessage(encode("[Hangman] Congratulations! You've uncovered the phrase!") + "\n" + encode("It was: ") + code(encode(currentPhrase)) + (stats.length() > 0 ? "\n" + stats : ""));
+                            conv.sendMessage(mb.text("[Hangman] Congratulations! You've uncovered the phrase!").newLine().text("It was: ").code(true).text(currentPhrase).code(false).html(stats.length() > 0 ? "\n" + stats.build() : ""));
                             currentPhrase = null;
                             found = null;
                             guessed = null;
                             numCorrect = null;
                         } else
-                            group.sendMessage(encode("[Hangman] Congratulations! " + first + " is in the phrase!") + "\n" + encode("Phrase so far: ") + code(encode(found)));
+                            conv.sendMessage(mb.text("[Hangman] Congratulations! " + first + " is in the phrase!").newLine().text("Phrase so far: ").code(true).text(found));
                     } else {
                         guessed += first;
-                        group.sendMessage(encode("[Hangman] Sorry, " + first + " isn't in the phrase!") + "\n" + encode("Phrase so far: ") + code(encode(found)));
+                        conv.sendMessage(mb.text("[Hangman] Sorry, " + first + " isn't in the phrase!").newLine().text("Phrase so far: ").code(true).text(found));
                     }
                 }
             }

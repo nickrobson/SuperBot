@@ -2,10 +2,11 @@ package xyz.nickr.superchat.cmd.fun;
 
 import java.util.Random;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import xyz.nickr.superchat.cmd.Command;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class NumberwangCommand implements Command {
 
@@ -17,7 +18,7 @@ public class NumberwangCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[]{ "[number]", "guess a number" };
     }
 
@@ -32,13 +33,13 @@ public class NumberwangCommand implements Command {
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
         if (args.length == 0)
-            sendUsage(user, group);
+            sendUsage(null, user, conv);
         else if (random.nextInt(8) == random.nextInt(8))
-            group.sendMessage(encode("That's numberwang!"));
+            conv.sendMessage(sys.message().text("That's numberwang!"));
         else
-            group.sendMessage(encode("Sorry, that's not numberwang!"));
+            conv.sendMessage(sys.message().text("Sorry, that's not numberwang!"));
     }
 
 }

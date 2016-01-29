@@ -8,14 +8,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import xyz.nickr.superchat.Joiner;
-import xyz.nickr.superchat.MessageBuilder;
 import xyz.nickr.superchat.SuperChatShows;
 import xyz.nickr.superchat.SuperChatShows.Show;
 import xyz.nickr.superchat.cmd.Command;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.MessageBuilder;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class TimetableCommand implements Command {
 
@@ -25,11 +26,11 @@ public class TimetableCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[] { "", "see what days each show is on" };
     }
 
-    void append(String day, Set<Show> set, MessageBuilder builder) {
+    void append(String day, Set<Show> set, MessageBuilder<?> builder) {
         if (builder.length() > 0)
             builder.newLine();
         List<String> names = set.stream().map(s -> s.display).collect(Collectors.toList());
@@ -38,7 +39,7 @@ public class TimetableCommand implements Command {
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
         Map<String, Set<Show>> days = new HashMap<>();
         SuperChatShows.TRACKED_SHOWS.forEach(s -> {
             Set<Show> set = days.get(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase());
@@ -47,7 +48,7 @@ public class TimetableCommand implements Command {
             set.add(s);
             days.put(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase(), set);
         });
-        MessageBuilder builder = new MessageBuilder();
+        MessageBuilder<?> builder = sys.message();
         // days.forEach((day, set) -> {
         for (String day : Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Netflix", "Not airing")) {
             Set<Show> set = days.get(day.toLowerCase());
@@ -55,9 +56,9 @@ public class TimetableCommand implements Command {
                 append(day, set, builder);
         }
         if (builder.length() > 0) {
-            group.sendMessage(builder.build());
+            conv.sendMessage(builder.build());
         } else {
-            group.sendMessage(bold(encode("Something went wrong!")));
+            conv.sendMessage(builder.text("Something went wrong!"));
         }
     }
 

@@ -1,13 +1,12 @@
 package xyz.nickr.superchat.cmd;
 
-import in.kyle.ezskypeezlife.Chat;
-import in.kyle.ezskypeezlife.api.SkypeConversationType;
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
-import xyz.nickr.superchat.MessageBuilder;
 import xyz.nickr.superchat.SuperChatController;
 import xyz.nickr.superchat.SuperChatPermissions;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.GroupType;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public interface Command {
 
@@ -21,9 +20,9 @@ public interface Command {
         return DEFAULT_PERMISSION;
     }
 
-    String[] help(SkypeUser user, boolean userchat);
+    String[] help(User user, boolean userchat);
 
-    void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message);
+    void exec(Sys sys, User user, Group conv, String used, String[] args, Message message);
 
     default void init() {}
 
@@ -37,14 +36,10 @@ public interface Command {
 
     /* UTILITY FUNCTIONS */
 
-    default String name(SkypeUser user) {
-        return user.getDisplayName().orElse(user.getUsername());
-    }
-
-    default SkypeMessage sendUsage(SkypeUser user, SkypeConversation group) {
-        String[] help = help(user, group.getConversationType() == SkypeConversationType.USER);
+    default Message sendUsage(Sys sys, User user, Group group) {
+        String[] help = help(user, group.getType() == GroupType.USER);
         String h = help != null && help[0] != null && !help[0].isEmpty() ? " " + help[0] : "";
-        return group.sendMessage(bold(encode("Usage: ")) + encode(PREFIX + names()[0] + h));
+        return group.sendMessage(sys.message().bold(true).text("Usage: ").bold(false).text(PREFIX + names()[0] + h));
     }
 
     default Permission admin() {
@@ -53,42 +48,6 @@ public interface Command {
 
     default Permission string(String perm) {
         return (c, u) -> SuperChatPermissions.has(u.getUsername(), perm);
-    }
-
-    default String bold(String s) {
-        return Chat.bold(s);
-    }
-
-    default String encode(String s) {
-        return MessageBuilder.html_escape(s);
-    }
-
-    default String code(String s) {
-        return Chat.code(s);
-    }
-
-    default String blink(String s) {
-        return Chat.blink(s);
-    }
-
-    default String italic(String s) {
-        return Chat.italic(s);
-    }
-
-    default String link(String text, String url) {
-        return Chat.link(text, url);
-    }
-
-    default String strike(String s) {
-        return Chat.strikeThrough(s);
-    }
-
-    default String under(String s) {
-        return Chat.underline(s);
-    }
-
-    default String size(String s, int size) {
-        return Chat.size(s, size);
     }
 
 }

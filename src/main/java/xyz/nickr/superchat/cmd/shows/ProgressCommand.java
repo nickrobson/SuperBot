@@ -7,14 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
-import xyz.nickr.superchat.MessageBuilder;
 import xyz.nickr.superchat.SuperChatController;
 import xyz.nickr.superchat.SuperChatShows;
 import xyz.nickr.superchat.SuperChatShows.Show;
 import xyz.nickr.superchat.cmd.Command;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.MessageBuilder;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class ProgressCommand implements Command {
 
@@ -24,13 +25,13 @@ public class ProgressCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[] { "(-a) [shows...]", "see progress on all or provided shows" };
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
-        MessageBuilder builder = new MessageBuilder();
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+        MessageBuilder<?> builder = sys.message();
         boolean sent = false;
         boolean all_eps = false;
 
@@ -57,17 +58,17 @@ public class ProgressCommand implements Command {
                 }
             }
         } else {
-            sendUsage(user, group);
+            sendUsage(null, user, conv);
             return;
         }
         if (sent) {
-            group.sendMessage(builder.build());
+            conv.sendMessage(builder.build());
         } else {
-            group.sendMessage(encode("No progress submitted for any show."));
+            conv.sendMessage(sys.message().text("No progress submitted for any show."));
         }
     }
 
-    MessageBuilder show(String show, MessageBuilder builder, boolean all_eps) {
+    MessageBuilder<?> show(String show, MessageBuilder<?> builder, boolean all_eps) {
         Map<String, String> prg = SuperChatController.getProgress(show);
         List<String> eps = prg.values().stream().filter(s -> SuperChatShows.EPISODE_PATTERN.matcher(s).matches()).sorted((e1, e2) -> SuperChatController.whichEarlier(e1, e2).equals(e1) ? -1 : 1).collect(Collectors.toList());
         List<String> epz = new LinkedList<>();

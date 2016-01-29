@@ -1,9 +1,10 @@
 package xyz.nickr.superchat.cmd;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import xyz.nickr.superchat.SuperChatController;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class StopCommand implements Command {
 
@@ -13,7 +14,7 @@ public class StopCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[] { "", "stops the bot (restarting through a script)" };
     }
 
@@ -33,11 +34,11 @@ public class StopCommand implements Command {
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
         if (used.equalsIgnoreCase("kys"))
-            group.sendMessage(encode("ded"));
+            conv.sendMessage(sys.message().text("ded"));
         else
-            group.sendMessage(encode("Goodbye!"));
+            conv.sendMessage(sys.message().text("Goodbye!"));
         SuperChatController.saveProgress();
         System.exit(0);
     }

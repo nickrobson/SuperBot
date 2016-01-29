@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,11 +26,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import in.kyle.ezskypeezlife.EzSkype;
-import in.kyle.ezskypeezlife.api.SkypeConversationType;
-import in.kyle.ezskypeezlife.api.captcha.SkypeCaptcha;
-import in.kyle.ezskypeezlife.api.captcha.SkypeErrorHandler;
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import xyz.nickr.superchat.SuperChatShows.Show;
 import xyz.nickr.superchat.cmd.Command;
 import xyz.nickr.superchat.cmd.HelpCommand;
@@ -57,17 +51,22 @@ import xyz.nickr.superchat.cmd.shows.WhoCommand;
 import xyz.nickr.superchat.cmd.shows.WipeCommand;
 import xyz.nickr.superchat.cmd.util.ConvertCommand;
 import xyz.nickr.superchat.cmd.util.CurrencyCommand;
-import xyz.nickr.superchat.cmd.util.GidCommand;
+import xyz.nickr.superchat.cmd.util.UidCommand;
 import xyz.nickr.superchat.cmd.util.GitCommand;
 import xyz.nickr.superchat.cmd.util.JenkinsCommand;
 import xyz.nickr.superchat.cmd.util.VersionCommand;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.GroupConfiguration;
+import xyz.nickr.superchat.sys.GroupType;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.skype.SkypeSys;
 
 /**
  * @author Nick Robson
  */
-public class SuperChatController implements SkypeErrorHandler {
+public class SuperChatController {
 
-    private static final Map<String, GroupConfiguration> GCONFIGS               = new HashMap<>();
+    public static final Map<String, Sys>                 PROVIDERS              = new HashMap<>();
 
     public static final Map<String, Command>             COMMANDS               = new HashMap<>();
     public static final Map<String, Map<String, String>> PROGRESS               = new TreeMap<>();
@@ -90,8 +89,6 @@ public class SuperChatController implements SkypeErrorHandler {
     public static String[]                               GIT_COMMIT_MESSAGES    = new String[] { "Unknown" };
     public static String[]                               GIT_COMMIT_AUTHORS     = new String[] { "Unknown" };
 
-    public static EzSkype skype;
-
     public static void main(String[] args) {
         try {
             File config = new File("config.cfg");
@@ -111,17 +108,13 @@ public class SuperChatController implements SkypeErrorHandler {
                 ex.printStackTrace();
             }
 
+            register(new SkypeSys(properties.get("username"), properties.get("password")));
             SuperChatShows.setup();
 
             load(null);
 
             HELP_IGNORE_WHITESPACE = properties.getOrDefault("help.whitespace", "false").equalsIgnoreCase("true");
             HELP_WELCOME_CENTRED = properties.getOrDefault("help.welcome.centred", "false").equalsIgnoreCase("true");
-
-            skype = new EzSkype(properties.get("username"), properties.get("password"));
-            skype.setErrorHandler(new SuperChatController());
-            skype.login();
-            skype.getEventManager().registerEvents(new SuperChatListener());
 
             new Thread(() -> {
                 try {
@@ -149,6 +142,10 @@ public class SuperChatController implements SkypeErrorHandler {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static void register(Sys sys) {
+        PROVIDERS.put(sys.getProviderName(), sys);
     }
 
     public static void load(Consumer<String> callback) {
@@ -253,7 +250,7 @@ public class SuperChatController implements SkypeErrorHandler {
 
         register(new ConvertCommand());
         register(new CurrencyCommand());
-        register(new GidCommand());
+        register(new UidCommand());
         register(new GitCommand());
         register(new JenkinsCommand());
         register(new VersionCommand());
@@ -305,29 +302,32 @@ public class SuperChatController implements SkypeErrorHandler {
         File dir = new File("groups");
         if (!dir.exists())
             dir.mkdir();
-        GCONFIGS.clear();
         for (File f : dir.listFiles()) {
             GroupConfiguration cfg = new GroupConfiguration(f);
-            if (cfg.getGroupId() != null) {
-                GCONFIGS.put(cfg.getGroupId(), cfg);
+            if (cfg.getProvider() != null && cfg.getUniqueId() != null) {
+                Sys provider = PROVIDERS.get(cfg.getProvider());
+                if (provider != null)
+                    provider.addGroupConfiguration(cfg);
             }
         }
     }
 
-    public static GroupConfiguration getGroupConfiguration(SkypeConversation group) {
+    public static GroupConfiguration getGroupConfiguration(Group group) {
         return getGroupConfiguration(group, true);
     }
 
-    public static GroupConfiguration getGroupConfiguration(SkypeConversation group, boolean create) {
-        if (group.getConversationType() == SkypeConversationType.USER)
+    public static GroupConfiguration getGroupConfiguration(Group group, boolean create) {
+        if (group.getType() != GroupType.GROUP)
             return null;
-        String longId = group.getLongId();
-        GroupConfiguration cfg = GCONFIGS.get(longId);
+        String longId = group.getUniqueId();
+        Sys provider = group.getProvider();
+        GroupConfiguration cfg = provider.getGroupConfiguration(longId);
         if (cfg == null) {
             cfg = newGroupConfiguration();
-            cfg.set(GroupConfiguration.KEY_GROUP_ID, longId);
+            cfg.set(GroupConfiguration.KEY_PROVIDER, provider.getProviderName());
+            cfg.set(GroupConfiguration.KEY_UNIQUE_ID, longId);
             cfg.save();
-            GCONFIGS.put(longId, cfg);
+            provider.addGroupConfiguration(cfg);
         }
         return cfg;
     }
@@ -398,22 +398,6 @@ public class SuperChatController implements SkypeErrorHandler {
                 prg.put(SuperChatShows.getShow(s), m.get(username));
         });
         return prg;
-    }
-
-    @Override
-    public String setNewPassword() {
-        System.out.println("You need to set a new password!!");
-        return null;
-    }
-
-    @Override
-    public String solve(SkypeCaptcha captcha) {
-        System.out.println("Enter captcha ( " + captcha.getUrl() + " )");
-        try (Scanner sc = new Scanner(System.in)) {
-            return sc.nextLine();
-        } catch (Exception ex) {
-            return null;
-        }
     }
 
     static {

@@ -6,16 +6,16 @@ import xyz.nickr.superchat.sys.Message;
 import xyz.nickr.superchat.sys.Sys;
 import xyz.nickr.superchat.sys.User;
 
-public class JenkinsCommand implements Command {
+public class UidCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "jenkins" };
+        return new String[] { "uid", "gid" };
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "", "tells you the bot's jenkins" };
+        return new String[] { "", "gets the group's unique id" };
     }
 
     @Override
@@ -24,13 +24,13 @@ public class JenkinsCommand implements Command {
     }
 
     @Override
-    public boolean alwaysEnabled() {
-        return true;
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+        conv.sendMessage(sys.message().text("This group's longId is: ").bold(true).text(conv.getUniqueId()));
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
-        conv.sendMessage(sys.message().link("http://ci.nickr.xyz/view/SuperChat/").text("http://ci.nickr.xyz/view/SuperChat/").build());
+    public boolean alwaysEnabled() {
+        return true;
     }
 
 }

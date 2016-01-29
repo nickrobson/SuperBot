@@ -1,11 +1,13 @@
 package xyz.nickr.superchat.cmd.perm;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
 import xyz.nickr.superchat.SuperChatPermissions;
 import xyz.nickr.superchat.cmd.Command;
 import xyz.nickr.superchat.cmd.Permission;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.MessageBuilder;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class DelPermCommand implements Command {
 
@@ -15,7 +17,7 @@ public class DelPermCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[]{ "[username] [perm]", "removes [perm] from [username]" };
     }
 
@@ -30,15 +32,17 @@ public class DelPermCommand implements Command {
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
         if (args.length < 2) {
-            sendUsage(user, group);
+            sendUsage(null, user, conv);
         } else {
+            MessageBuilder<?> mb = sys.message().bold(true).text(args[0]).bold(false);
             if (SuperChatPermissions.set(args[0], args[1], false)) {
-                group.sendMessage(bold(encode(args[0])) + encode(" no longer has: ") + bold(encode(args[1])));
+                mb.text(" no longer has: ");
             } else {
-                group.sendMessage(bold(encode(args[0])) + encode(" doesn't have: ") + bold(encode(args[1])));
+                mb.text(" doesn't have: ");
             }
+            conv.sendMessage(mb.bold(true).text(args[1]).bold(false));
         }
     }
 

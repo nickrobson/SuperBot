@@ -4,11 +4,12 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
-import xyz.nickr.superchat.MessageBuilder;
 import xyz.nickr.superchat.cmd.Command;
+import xyz.nickr.superchat.sys.Group;
+import xyz.nickr.superchat.sys.Message;
+import xyz.nickr.superchat.sys.MessageBuilder;
+import xyz.nickr.superchat.sys.Sys;
+import xyz.nickr.superchat.sys.User;
 
 public class ViewingOrderCommand implements Command {
 
@@ -18,41 +19,39 @@ public class ViewingOrderCommand implements Command {
     }
 
     @Override
-    public String[] help(SkypeUser user, boolean userChat) {
+    public String[] help(User user, boolean userChat) {
         return new String[] { "[mcu,af]", "shows the advised viewing order for the show(s)" };
     }
 
     @Override
-    public void exec(SkypeUser user, SkypeConversation group, String used, String[] args, SkypeMessage message) {
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+        MessageBuilder<?> mb = sys.message();
         try {
-            MessageBuilder builder = new MessageBuilder();
             if (args.length == 0)
-                sendUsage(user, group);
+                sendUsage(null, user, conv);
             else {
                 InputStream stream = getClass().getResourceAsStream("/viewingorder/" + args[0].toLowerCase() + ".txt");
                 if (stream == null)
-                    builder.text("No viewing order found with name " + args[0].toLowerCase());
+                    mb.text("No viewing order found with name " + args[0].toLowerCase());
                 else {
-                    builder.bold(true).text("Viewing order for " + args[0].toLowerCase() + ":").bold(false);
+                    mb.bold(true).text("Viewing order for " + args[0].toLowerCase() + ":").bold(false);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        builder.html("\n");
-                        String s = "";
+                        mb.html("\n");
                         if (line.startsWith("**"))
-                            s = bold(encode(line.substring(2)));
+                            mb.bold(true).text(line.substring(2)).bold(false);
                         else if (line.startsWith("//"))
-                            s = italic(encode(line.substring(2)));
+                            mb.italic(true).text(line.substring(2)).italic(false);
                         else
-                            s = encode(line);
-                        builder.html(s);
+                            mb.text(line);
                     }
                     reader.close();
                 }
             }
-            group.sendMessage(builder.build());
+            conv.sendMessage(mb.build());
         } catch (Exception ex) {
-            group.sendMessage(encode("Looks like an error occurred!"));
+            conv.sendMessage(mb.text("Looks like an error occurred!"));
             ex.printStackTrace();
         }
     }
