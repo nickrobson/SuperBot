@@ -65,6 +65,7 @@ public class SkypeListener implements SkypeErrorHandler {
     }
 
     public synchronized void cmd(SkypeMessage message) {
+        System.out.println(message.getMessage());
         SkypeUser user = message.getSender();
         SkypeConversation group = message.getConversation();
         String msg = message.getMessage().trim();

@@ -1,9 +1,9 @@
 package xyz.nickr.superchat.sys;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
@@ -32,16 +32,15 @@ public class GroupConfiguration {
                 ex.printStackTrace();
             }
         }
-        try (BufferedReader reader = Files.newBufferedReader(file.toPath())) {
-            String line;
-            while ((line = reader.readLine()) != null) {
+        try {
+            Files.lines(file.toPath(), StandardCharsets.US_ASCII).forEach(line -> {
                 if (line.contains("=")) {
                     String[] spl = line.split("=", 2);
                     options.put(spl[0].trim(), spl[1]);
                 }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
