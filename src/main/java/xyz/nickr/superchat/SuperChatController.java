@@ -3,6 +3,7 @@ package xyz.nickr.superchat;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,9 +53,9 @@ import xyz.nickr.superchat.cmd.shows.WhoCommand;
 import xyz.nickr.superchat.cmd.shows.WipeCommand;
 import xyz.nickr.superchat.cmd.util.ConvertCommand;
 import xyz.nickr.superchat.cmd.util.CurrencyCommand;
-import xyz.nickr.superchat.cmd.util.UidCommand;
 import xyz.nickr.superchat.cmd.util.GitCommand;
 import xyz.nickr.superchat.cmd.util.JenkinsCommand;
+import xyz.nickr.superchat.cmd.util.UidCommand;
 import xyz.nickr.superchat.cmd.util.VersionCommand;
 import xyz.nickr.superchat.sys.Group;
 import xyz.nickr.superchat.sys.GroupConfiguration;
@@ -93,28 +95,17 @@ public class SuperChatController {
         try {
             File config = new File("config.cfg");
 
-            Map<String, String> properties = new HashMap<>();
+            Properties properties = new Properties();
+            properties.load(new FileInputStream(config));
 
-            try {
-                BufferedReader reader = Files.newBufferedReader(config.toPath());
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.contains("=")) {
-                        String[] data = line.split("=", 2);
-                        properties.put(data[0], data[1]);
-                    }
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            register(new SkypeSys(properties.getProperty("username"), properties.getProperty("password")));
 
-            register(new SkypeSys(properties.get("username"), properties.get("password")));
             SuperChatShows.setup();
 
             load(null);
 
-            HELP_IGNORE_WHITESPACE = properties.getOrDefault("help.whitespace", "false").equalsIgnoreCase("true");
-            HELP_WELCOME_CENTRED = properties.getOrDefault("help.welcome.centred", "false").equalsIgnoreCase("true");
+            HELP_IGNORE_WHITESPACE = properties.getProperty("help.whitespace", "false").equalsIgnoreCase("true");
+            HELP_WELCOME_CENTRED = properties.getProperty("help.welcome.centred", "false").equalsIgnoreCase("true");
 
             new Thread(() -> {
                 try {
