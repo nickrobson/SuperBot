@@ -1,13 +1,10 @@
 package xyz.nickr.superchat.sys;
 
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 
 import xyz.nickr.superchat.cmd.Command;
 
@@ -20,8 +17,8 @@ public class GroupConfiguration {
     public static final String KEY_SHOW_EDITS    = "showEdits";
     public static final String KEY_EVERYTHING_ON = "everythingOn";
 
-    private final Map<String, String> options = new HashMap<>();
-    private final File                file;
+    private final File file;
+    private Properties options;
 
     public GroupConfiguration(File file) {
         this.file = file;
@@ -33,12 +30,8 @@ public class GroupConfiguration {
             }
         }
         try {
-            Files.lines(file.toPath(), StandardCharsets.US_ASCII).forEach(line -> {
-                if (line.contains("=")) {
-                    String[] spl = line.split("=", 2);
-                    options.put(spl[0].trim(), spl[1]);
-                }
-            });
+            options = new Properties();
+            options.load(new FileInputStream(file));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,31 +40,24 @@ public class GroupConfiguration {
     public GroupConfiguration save() {
         if (file.exists())
             file.delete();
-        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardOpenOption.CREATE)) {
-            options.forEach((opt,val) -> {
-                try {
-                    writer.write(opt + "=" + val);
-                    writer.newLine();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
+        try {
+            options.store(new FileOutputStream(file), "");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         return this;
     }
 
-    public Map<String, String> get() {
-        return new HashMap<>(options);
+    public Properties get() {
+        return new Properties(options);
     }
 
     public String get(String option) {
-        return options.getOrDefault(option, null);
+        return options.getProperty(option, null);
     }
 
     public String get(String option, Object def) {
-        return options.getOrDefault(option, def.toString());
+        return options.getProperty(option, def.toString());
     }
 
     public boolean getBoolean(String option) {
@@ -83,7 +69,7 @@ public class GroupConfiguration {
     }
 
     public String set(String option, String value) {
-        return options.put(option, value);
+        return options.setProperty(option, value).toString();
     }
 
     public String getProvider() {

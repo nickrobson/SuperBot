@@ -39,7 +39,7 @@ public class ShowConfigCommand implements Command {
             mb.bold(true).text("Configuration settings:").bold(false);
             cfg.get().forEach((opt, val) -> {
                 mb.newLine();
-                mb.italic(true).text(opt).italic(false);
+                mb.italic(true).text(opt.toString()).italic(false);
                 mb.text(" = " + val);
             });
             conv.sendMessage(mb.toString());
