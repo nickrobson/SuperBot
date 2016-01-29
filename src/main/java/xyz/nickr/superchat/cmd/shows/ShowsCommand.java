@@ -34,10 +34,10 @@ public class ShowsCommand implements Command {
                 sb.append(s);
             }
             if (sb.length() > 0)
-                send.add(code(encode("[[ " + show.getDisplay() + " ]]: ")) + code(encode(sb.toString())));
+                send.add(code(encode("[" + show.getDisplay() + "] ")) + code(encode(sb.toString())));
         }
         send.sort(String.CASE_INSENSITIVE_ORDER);
-        int rows = (send.size() / 2) + (send.size() % 2);
+        int rows = send.size() / 2 + send.size() % 2;
         int maxLen1 = send.subList(0, rows).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
         MessageBuilder builder = new MessageBuilder();
         for (int i = 0; i < rows; i++) {
