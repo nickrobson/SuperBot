@@ -1,0 +1,51 @@
+package xyz.nickr.superbot.cmd.shows;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import xyz.nickr.superbot.SuperBotController;
+import xyz.nickr.superbot.cmd.Command;
+import xyz.nickr.superbot.cmd.Permission;
+import xyz.nickr.superbot.sys.Group;
+import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.Sys;
+import xyz.nickr.superbot.sys.User;
+
+public class WipeCommand implements Command {
+
+    @Override
+    public String[] names() {
+        return new String[] { "wipe", "clear" };
+    }
+
+    @Override
+    public String[] help(User user, boolean userChat) {
+        return new String[] { "[user]", "wipe [user]'s progress" };
+    }
+
+    @Override
+    public Permission perm() {
+        return string("admin.wipe");
+    }
+
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
+    @Override
+    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+        if (args.length == 0) {
+            sendUsage(null, user, conv);
+            return;
+        }
+        String toRemove = args[0];
+        AtomicBoolean wiped = SuperBotController.wipe(toRemove);
+        if (wiped.get()) {
+            conv.sendMessage(sys.message().text("Wiped " + toRemove));
+            SuperBotController.saveProgress();
+        } else {
+            conv.sendMessage(sys.message().text("No data to wipe on " + toRemove));
+        }
+    }
+
+}
