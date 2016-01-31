@@ -10,6 +10,7 @@ import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -84,7 +85,6 @@ public class HelpCommand implements Command {
                 maxLen.set(cmdHelp.length());
         });
         List<String> strings = new ArrayList<>(SuperBotCommands.COMMANDS.size());
-        StringBuilder builder = new StringBuilder();
         cmds.forEach(c -> {
             String[] help = c.help(user, group.getType() == GroupType.USER);
             if (c.perm() == Command.DEFAULT_PERMISSION)
@@ -106,14 +106,10 @@ public class HelpCommand implements Command {
         int mid = welcome.length() / 2;
         String wel = pad(welcome.substring(0, mid), maxLen.get());
         String come = welcome.substring(mid);
-        maxLen.set(0);
-        strings.forEach(s -> {
-            if (s.length() > maxLen.get())
-                maxLen.set(s.length());
-            builder.append("\n" + sys.message().text(s));
-        });
         String spaces = SuperBotController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
-        group.sendMessage(sys.message().code(true).text(spaces).code(false).bold(true).text(wel.trim() + come).bold(false).code(true).text(builder.toString()));
+        MessageBuilder<?> mb = sys.message().code(true).text(spaces).code(false).bold(true).text(wel.trim() + come).bold(false).code(true);
+        strings.forEach(s -> mb.newLine().text(s));
+        group.sendMessage(mb);
     }
 
 }
