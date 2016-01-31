@@ -34,7 +34,7 @@ public class GetProfileCommand implements Command {
                     mb.newLine().text("   " + acc.getKey() + ": " + acc.getValue());
                 }
             } else {
-                mb.text("You don't have a profile yet. Create one!");
+                sendNoProfile(sys, user, group);
             }
         } else {
             String s = sys.isUIDCaseSensitive() ? args[0] : args[0].toLowerCase();

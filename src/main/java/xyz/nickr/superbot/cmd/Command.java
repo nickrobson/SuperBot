@@ -42,6 +42,10 @@ public interface Command {
         return group.sendMessage(sys.message().bold(true).text("Usage: ").bold(false).text(PREFIX + names()[0] + h));
     }
 
+    default Message sendNoProfile(Sys sys, User user, Group group) {
+        return group.sendMessage(sys.message().text("You don't have a profile! Create one first."));
+    }
+
     default Permission admin() {
         return (s, c, u, p) -> c.isAdmin(u);
     }
