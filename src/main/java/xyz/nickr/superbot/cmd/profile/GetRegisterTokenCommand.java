@@ -16,7 +16,7 @@ public class GetRegisterTokenCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "gettoken" };
+        return new String[]{ "gettoken", "regtoken" };
     }
 
     @Override
