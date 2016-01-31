@@ -43,4 +43,14 @@ public class CreateProfileCommand implements Command {
         }
     }
 
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
 }

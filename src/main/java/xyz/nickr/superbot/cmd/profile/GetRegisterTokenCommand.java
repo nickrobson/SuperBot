@@ -47,4 +47,14 @@ public class GetRegisterTokenCommand implements Command {
         }
     }
 
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
 }

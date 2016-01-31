@@ -51,4 +51,14 @@ public class RegisterAccountCommand implements Command {
         group.sendMessage(mb);
     }
 
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
 }
