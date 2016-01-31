@@ -8,6 +8,8 @@ public interface Sys {
 
     String getName();
 
+    boolean isUIDCaseSensitive();
+
     MessageBuilder<?> message();
 
     GroupConfiguration getGroupConfiguration(String uniqueId);

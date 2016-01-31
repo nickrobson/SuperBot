@@ -34,19 +34,19 @@ public class EditConfigCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
-        if (conv.getType() == GroupType.USER) {
-            conv.sendMessage(sys.message().text("User chats don't have configurations."));
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
+        if (group.getType() == GroupType.USER) {
+            group.sendMessage(sys.message().text("User chats don't have configurations."));
         } else if (args.length < 2) {
-            sendUsage(null, user, conv);
+            sendUsage(sys, user, group);
         } else {
-            GroupConfiguration cfg = SuperBotController.getGroupConfiguration(conv);
+            GroupConfiguration cfg = SuperBotController.getGroupConfiguration(group);
             String prev = cfg.set(args[0], args[1]);
             cfg.save();
             MessageBuilder<?> mb = sys.message().bold(true).text(args[0]).bold(false).text(" is now ").bold(true).text(args[1]).bold(false);
             if (prev != null)
                 mb.text(" (was ").bold(true).text(prev).bold(false).text(")");
-            conv.sendMessage(mb.text("."));
+            group.sendMessage(mb.text("."));
         }
     }
 

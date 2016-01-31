@@ -20,13 +20,13 @@ public class TypeOutCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length == 0) {
-            sendUsage(null, user, conv);
+            sendUsage(sys, user, group);
             return;
         }
         String str = Joiner.join(" ", args);
-        Message msg = conv.sendMessage(" ");
+        Message msg = group.sendMessage(" ");
         new Thread(() -> {
             int c = 0;
             while (c < str.length()) {

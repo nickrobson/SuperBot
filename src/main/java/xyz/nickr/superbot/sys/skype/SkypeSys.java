@@ -36,6 +36,11 @@ public class SkypeSys implements Sys {
     }
 
     @Override
+    public boolean isUIDCaseSensitive() {
+        return false;
+    }
+
+    @Override
     public MessageBuilder<?> message() {
         return new HtmlMessageBuilder();
     }

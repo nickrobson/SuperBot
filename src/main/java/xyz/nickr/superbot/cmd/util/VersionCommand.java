@@ -21,7 +21,7 @@ public class VersionCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> builder = sys.message();
         builder.bold(true).text("Version: ").bold(false).text(SuperBotController.VERSION).newLine();
         builder.bold(true).text("Build Number: ").bold(false);
@@ -38,7 +38,7 @@ public class VersionCommand implements Command {
             String author = SuperBotController.GIT_COMMIT_AUTHORS[i];
             builder.newLine().italic(true).text(author + " ").italic(false).text(msg).italic(true).text(" (" + id + ")").italic(false).build();
         }
-        conv.sendMessage(builder.toString());
+        group.sendMessage(builder.toString());
     }
 
     @Override

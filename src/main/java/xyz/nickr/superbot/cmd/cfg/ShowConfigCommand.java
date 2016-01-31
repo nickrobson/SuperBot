@@ -28,13 +28,13 @@ public class ShowConfigCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> mb = sys.message();
-        GroupConfiguration cfg = SuperBotController.getGroupConfiguration(conv, false);
-        if (conv.getType() == GroupType.USER)
-            conv.sendMessage(mb.text("User chats don't have configurations."));
+        GroupConfiguration cfg = SuperBotController.getGroupConfiguration(group, false);
+        if (group.getType() == GroupType.USER)
+            group.sendMessage(mb.text("User chats don't have configurations."));
         else if (cfg == null)
-            conv.sendMessage(mb.text("There is no config for this group!"));
+            group.sendMessage(mb.text("There is no config for this group!"));
         else {
             mb.bold(true).text("Configuration settings:").bold(false);
             cfg.get().forEach((opt, val) -> {
@@ -42,7 +42,7 @@ public class ShowConfigCommand implements Command {
                 mb.italic(true).text(opt.toString()).italic(false);
                 mb.text(" = " + val);
             });
-            conv.sendMessage(mb.toString());
+            group.sendMessage(mb.toString());
         }
     }
 

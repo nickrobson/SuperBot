@@ -34,29 +34,29 @@ public class CurrencyCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 3) {
-            sendUsage(null, user, conv);
+            sendUsage(null, user, group);
         } else {
             String from = args[0].toUpperCase();
             String to = args[1].toUpperCase();
             double amount = -1;
             if (!CURRENCY_PATTERN.matcher(from).matches()) {
-                conv.sendMessage(sys.message().text(from + " is not a valid currency name. Must be 3 uppercase latin characters."));
+                group.sendMessage(sys.message().text(from + " is not a valid currency name. Must be 3 uppercase latin characters."));
                 return;
             }
             if (!CURRENCY_PATTERN.matcher(to).matches()) {
-                conv.sendMessage(sys.message().text(to + " is not a valid currency name. Must be 3 uppercase latin characters."));
+                group.sendMessage(sys.message().text(to + " is not a valid currency name. Must be 3 uppercase latin characters."));
                 return;
             }
             try {
                 amount = Double.parseDouble(args[2]);
             } catch (NumberFormatException ex) {
-                conv.sendMessage(sys.message().text(args[2] + " is not a valid number."));
+                group.sendMessage(sys.message().text(args[2] + " is not a valid number."));
                 return;
             }
             if (amount <= 0) {
-                conv.sendMessage(sys.message().text("Conversion amount must be > 0. (" + amount + ")"));
+                group.sendMessage(sys.message().text("Conversion amount must be > 0. (" + amount + ")"));
                 return;
             }
             String queryURL = String.format("https://www.google.co.uk/finance/converter?from=%s&to=%s&a=%s", from, to, String.valueOf(amount));
@@ -68,14 +68,14 @@ public class CurrencyCommand implements Command {
                 while ((line = reader.readLine()) != null) {
                     Matcher matcher = CONVERSION_PATTERN.matcher(line);
                     if (matcher.find()) {
-                        conv.sendMessage(sys.message().bold(true).text("Conversion Result: ").bold(false).text(matcher.group(1)));
+                        group.sendMessage(sys.message().bold(true).text("Conversion Result: ").bold(false).text(matcher.group(1)));
                         found = true;
                     }
                 }
                 if (!found)
-                    conv.sendMessage(sys.message().text("Something went wrong.. didn't find the span tag I was looking for!"));
+                    group.sendMessage(sys.message().text("Something went wrong.. didn't find the span tag I was looking for!"));
             } catch (IOException e) {
-                conv.sendMessage(sys.message().text("Something went wrong!").newLine().text(e.getClass().getSimpleName() + " : " + e.getMessage()));
+                group.sendMessage(sys.message().text("Something went wrong!").newLine().text(e.getClass().getSimpleName() + " : " + e.getMessage()));
             }
         }
     }

@@ -13,7 +13,7 @@ public interface User extends Conversable {
     }
 
     default Optional<Profile> getProfile() {
-        return Profile.get(getProvider().getName(), getUniqueId());
+        return Profile.get(getProvider(), this);
     }
 
 }

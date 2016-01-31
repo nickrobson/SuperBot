@@ -3,10 +3,14 @@ package xyz.nickr.superbot.sys;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+
+import xyz.nickr.superbot.SuperBotProfiles;
 
 public class Profile {
 
@@ -15,6 +19,18 @@ public class Profile {
 
     public static Optional<Profile> getProfile(String name) {
         return Optional.ofNullable(ALL.get(name.toLowerCase()));
+    }
+
+    public static Optional<Profile> get(Sys sys, User user) {
+        return get(sys.getName(), sys.isUIDCaseSensitive() ? user.getUniqueId() : user.getUniqueId().toLowerCase());
+    }
+
+    public static Optional<Profile> get(Sys sys, String uniqueId) {
+        return get(sys.getName(), sys.isUIDCaseSensitive() ? uniqueId : uniqueId.toLowerCase());
+    }
+
+    public static Optional<Profile> get(String provider, User user) {
+        return get(provider, user.getProvider().isUIDCaseSensitive() ? user.getUniqueId() : user.getUniqueId().toLowerCase());
     }
 
     public static Optional<Profile> get(String provider, String uniqueId) {
@@ -33,7 +49,7 @@ public class Profile {
     private final Properties props = new Properties();
 
     public Profile(String name, File file) {
-        this.name = name;
+        this.name = name.toLowerCase();
         this.file = file;
 
         load();
@@ -43,25 +59,38 @@ public class Profile {
     public Profile(File file) {
         this.file = file;
         load();
-        this.name = props.getProperty("name");
+        this.name = props.getProperty("name").toLowerCase();
+    }
+
+    public Profile(String name) {
+        this(name, SuperBotProfiles.fileOf(name));
     }
 
     public String getName() {
         return name;
     }
 
+    public Map<String, String> getAccounts() {
+        Map<String, String> accs = new HashMap<>();
+        for (String key : props.stringPropertyNames()) {
+            if (key.startsWith("acc."))
+                accs.put(key.substring(4), props.getProperty(key));
+        }
+        return accs;
+    }
+
     public Optional<String> getAccount(String provider) {
         return Optional.ofNullable(props.getProperty("acc." + provider));
+    }
+
+    public void setAccount(Sys sys, User user, boolean save) {
+        setAccount(sys.getName(), user.getUniqueId(), save);
     }
 
     public void setAccount(String provider, String uniqueId, boolean save) {
         props.setProperty(provider, uniqueId);
         if (save)
             save();
-    }
-
-    public void setAccount(String provider, String uniqueId) {
-        setAccount(provider, uniqueId, true);
     }
 
     public Profile register() {
@@ -78,8 +107,11 @@ public class Profile {
 
     public void save() {
         try {
-            file.delete();
-            props.store(Files.newBufferedWriter(file.toPath()), "");
+            Path tmp = Files.createTempFile("superbot-profile-" + name + "-" + System.nanoTime(), ".tmp");
+            props.store(Files.newBufferedWriter(tmp), "");
+            Files.copy(tmp, file.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            if (!tmp.toFile().delete())
+                tmp.toFile().deleteOnExit();
         } catch (IOException e) {
             e.printStackTrace();
         }

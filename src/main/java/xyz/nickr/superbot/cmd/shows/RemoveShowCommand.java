@@ -33,20 +33,20 @@ public class RemoveShowCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length == 0) {
-            sendUsage(null, user, conv);
+            sendUsage(sys, user, group);
         } else {
             MessageBuilder<?> mb = sys.message();
             Show show = SuperBotShows.getShow(args[0]);
             if (show != null) {
                 if (SuperBotShows.removeShow(args[0])) {
-                    conv.sendMessage(mb.bold(true).text("Removed show: ").bold(false).text(show.display));
+                    group.sendMessage(mb.bold(true).text("Removed show: ").bold(false).text(show.display));
                 } else {
-                    conv.sendMessage(mb.text("Something went wrong."));
+                    group.sendMessage(mb.text("Something went wrong."));
                 }
             } else {
-                conv.sendMessage(mb.text("I couldn't find a show with the name \"" + args[0] + "\""));
+                group.sendMessage(mb.text("I couldn't find a show with the name \"" + args[0] + "\""));
             }
         }
     }

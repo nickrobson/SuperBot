@@ -31,11 +31,11 @@ public class ListPermsCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> mb = sys.message();
         Optional<Profile> prof = user.getProfile();
         if (args.length == 0 && !prof.isPresent()) {
-            conv.sendMessage(mb.text("You don't have a profile! Create one first."));
+            group.sendMessage(mb.text("You don't have a profile! Create one first."));
             return;
         }
         String username = args.length == 0 ? prof.get().getName() : args[0];
@@ -46,7 +46,7 @@ public class ListPermsCommand implements Command {
             mb.bold(true).text("Profile " + username + " has the following permissions:").bold(false).newLine();
             mb.text(Joiner.join(", ", perms));
         }
-        conv.sendMessage(mb.toString());
+        group.sendMessage(mb.toString());
     }
 
 }

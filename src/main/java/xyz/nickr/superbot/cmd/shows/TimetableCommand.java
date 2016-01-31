@@ -39,7 +39,7 @@ public class TimetableCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         Map<String, Set<Show>> days = new HashMap<>();
         SuperBotShows.TRACKED_SHOWS.forEach(s -> {
             Set<Show> set = days.get(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase());
@@ -56,9 +56,9 @@ public class TimetableCommand implements Command {
                 append(day, set, builder);
         }
         if (builder.length() > 0) {
-            conv.sendMessage(builder.build());
+            group.sendMessage(builder.build());
         } else {
-            conv.sendMessage(builder.text("Something went wrong!"));
+            group.sendMessage(builder.text("Something went wrong!"));
         }
     }
 

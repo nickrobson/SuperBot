@@ -1,7 +1,9 @@
+
 package xyz.nickr.superbot;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.cmd.HelpCommand;
 import xyz.nickr.superbot.cmd.ReloadCommand;
@@ -15,6 +17,8 @@ import xyz.nickr.superbot.cmd.fun.TypeOutCommand;
 import xyz.nickr.superbot.cmd.perm.AddPermCommand;
 import xyz.nickr.superbot.cmd.perm.DelPermCommand;
 import xyz.nickr.superbot.cmd.perm.ListPermsCommand;
+import xyz.nickr.superbot.cmd.profile.CreateProfileCommand;
+import xyz.nickr.superbot.cmd.profile.GetProfileCommand;
 import xyz.nickr.superbot.cmd.shows.AddShowCommand;
 import xyz.nickr.superbot.cmd.shows.ProgressCommand;
 import xyz.nickr.superbot.cmd.shows.RemoveShowCommand;
@@ -62,6 +66,9 @@ public class SuperBotCommands {
         register(new AddPermCommand());
         register(new DelPermCommand());
         register(new ListPermsCommand());
+
+        register(new CreateProfileCommand());
+        register(new GetProfileCommand());
 
         register(new AddShowCommand());
         register(new ProgressCommand());

@@ -32,9 +32,9 @@ public class AddPermCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 2) {
-            sendUsage(null, user, conv);
+            sendUsage(sys, user, group);
         } else {
             MessageBuilder<?> mb = sys.message().bold(true).text(args[0]).bold(false);
             if (SuperBotPermissions.set(args[0], args[1], true)) {
@@ -42,7 +42,7 @@ public class AddPermCommand implements Command {
             } else {
                 mb.text(" already has: ");
             }
-            conv.sendMessage(mb.bold(true).text(args[1]).bold(false));
+            group.sendMessage(mb.bold(true).text(args[1]).bold(false));
         }
     }
 

@@ -37,9 +37,9 @@ public class AddShowCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 3) {
-            sendUsage(null, user, conv);
+            sendUsage(sys, user, group);
         } else {
             String showName = args[0].replace("___", " "), day = args[1];
             String[] aliases = new String[args.length-2];
@@ -58,12 +58,12 @@ public class AddShowCommand implements Command {
                     mb.bold(true).text("\nDisplay Name: ").bold(false).text(show.display);
                     mb.bold(true).text("\nDay of the Week: ").bold(false).text(show.day);
                     mb.bold(true).text("\nAliases: ").bold(false).text(Arrays.asList(show.names).toString());
-                    conv.sendMessage(mb);
+                    group.sendMessage(mb);
                 } else {
-                    conv.sendMessage(mb.text("Something went wrong."));
+                    group.sendMessage(mb.text("Something went wrong."));
                 }
             } else {
-                conv.sendMessage(mb.text("A show already exists with the name \"" + showName + "\""));
+                group.sendMessage(mb.text("A show already exists with the name \"" + showName + "\""));
             }
         }
     }

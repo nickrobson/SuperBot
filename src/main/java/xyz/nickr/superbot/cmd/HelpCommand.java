@@ -56,7 +56,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         List<Command> cmds = new ArrayList<>(SuperBotCommands.COMMANDS.size());
         SuperBotCommands.COMMANDS.forEach((name, cmd) -> {
             boolean go = true;
@@ -66,29 +66,29 @@ public class HelpCommand implements Command {
             if (go)
                 cmds.add(cmd);
         });
-        GroupConfiguration cfg = SuperBotController.getGroupConfiguration(conv);
+        GroupConfiguration cfg = SuperBotController.getGroupConfiguration(group);
         if (cfg != null)
             cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd));
-        else if (conv.getType() == GroupType.USER)
+        else if (group.getType() == GroupType.USER)
             cmds.removeIf(cmd -> !cmd.userchat());
         else
             cmds.removeIf(cmd -> !cmd.alwaysEnabled());
         if (cmds.isEmpty()) {
-            conv.sendMessage("It looks like there are no commands enabled in this chat.");
+            group.sendMessage("It looks like there are no commands enabled in this chat.");
             return;
         }
         AtomicInteger maxLen = new AtomicInteger(0);
         cmds.forEach(c -> {
-            String cmdHelp = getCmdHelp(c, user, conv.getType() == GroupType.USER);
+            String cmdHelp = getCmdHelp(c, user, group.getType() == GroupType.USER);
             if (c.perm() == Command.DEFAULT_PERMISSION && cmdHelp.length() > maxLen.get())
                 maxLen.set(cmdHelp.length());
         });
         List<String> strings = new ArrayList<>(SuperBotCommands.COMMANDS.size());
         StringBuilder builder = new StringBuilder();
         cmds.forEach(c -> {
-            String[] help = c.help(user, conv.getType() == GroupType.USER);
+            String[] help = c.help(user, group.getType() == GroupType.USER);
             if (c.perm() == Command.DEFAULT_PERMISSION)
-                strings.add(pad(getCmdHelp(c, user, conv.getType() == GroupType.USER), maxLen.get()) + " - " + help[1]);
+                strings.add(pad(getCmdHelp(c, user, group.getType() == GroupType.USER), maxLen.get()) + " - " + help[1]);
         });
         if (SuperBotController.HELP_IGNORE_WHITESPACE)
             strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
@@ -96,11 +96,11 @@ public class HelpCommand implements Command {
             strings.sort(null);
         if (args.length > 0)
             strings.removeIf(s -> !s.contains(args[0]));
-        String welcome = String.format(SuperBotController.WELCOME_MESSAGE, conv.getDisplayName());
-        if (conv.getType() == GroupType.USER)
+        String welcome = String.format(SuperBotController.WELCOME_MESSAGE, group.getDisplayName());
+        if (group.getType() == GroupType.USER)
             welcome = "Welcome, " + user.getUsername();
         if (strings.isEmpty()) {
-            conv.sendMessage(sys.message().bold(true).text(welcome));
+            group.sendMessage(sys.message().bold(true).text(welcome));
             return;
         }
         int mid = welcome.length() / 2;
@@ -113,7 +113,7 @@ public class HelpCommand implements Command {
             builder.append("\n" + sys.message().text(s));
         });
         String spaces = SuperBotController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
-        conv.sendMessage(sys.message().code(true).text(spaces).code(false).bold(true).text(wel.trim() + come).bold(false).code(true).text(builder.toString()));
+        group.sendMessage(sys.message().code(true).text(spaces).code(false).bold(true).text(wel.trim() + come).bold(false).code(true).text(builder.toString()));
     }
 
 }

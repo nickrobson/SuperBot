@@ -29,8 +29,8 @@ public class GitCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
-        conv.sendMessage(sys.message().link("http://github.com/nickrobson/SuperChat").html("http://github.com/nickrobson/SuperChat").build());
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
+        group.sendMessage(sys.message().link("http://github.com/nickrobson/SuperChat").html("http://github.com/nickrobson/SuperChat").build());
     }
 
 }

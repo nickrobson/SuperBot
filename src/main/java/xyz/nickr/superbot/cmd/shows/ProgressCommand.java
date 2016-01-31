@@ -30,7 +30,7 @@ public class ProgressCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> builder = sys.message();
         boolean sent = false;
         boolean all_eps = false;
@@ -58,13 +58,13 @@ public class ProgressCommand implements Command {
                 }
             }
         } else {
-            sendUsage(null, user, conv);
+            sendUsage(sys, user, group);
             return;
         }
         if (sent) {
-            conv.sendMessage(builder.build());
+            group.sendMessage(builder.build());
         } else {
-            conv.sendMessage(sys.message().text("No progress submitted for any show."));
+            group.sendMessage(sys.message().text("No progress submitted for any show."));
         }
     }
 

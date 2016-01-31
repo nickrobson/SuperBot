@@ -22,7 +22,7 @@ public interface Command {
 
     String[] help(User user, boolean userchat);
 
-    void exec(Sys sys, User user, Group conv, String used, String[] args, Message message);
+    void exec(Sys sys, User user, Group group, String used, String[] args, Message message);
 
     default void init() {}
 

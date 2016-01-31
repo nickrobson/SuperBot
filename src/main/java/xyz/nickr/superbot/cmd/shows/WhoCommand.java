@@ -33,7 +33,7 @@ public class WhoCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         String username = args.length > 0 ? args[0].toLowerCase() : user.getUsername();
         List<String> shows = new ArrayList<>();
         Map<Show, String> progress = SuperBotController.getUserProgress(username);
@@ -58,9 +58,9 @@ public class WhoCommand implements Command {
         }
         MessageBuilder<?> mb = sys.message();
         if (shows.size() > 0)
-            conv.sendMessage(mb.bold(true).text("Shows " + username + " is watching:").bold(false).html("\n").code(true).text("   " + s));
+            group.sendMessage(mb.bold(true).text("Shows " + username + " is watching:").bold(false).html("\n").code(true).text("   " + s));
         else
-            conv.sendMessage(mb.bold(true).text("Error: ").bold(false).text("It doesn't look like " + username + " uses me. :("));
+            group.sendMessage(mb.bold(true).text("Error: ").bold(false).text("It doesn't look like " + username + " uses me. :("));
     }
 
 }

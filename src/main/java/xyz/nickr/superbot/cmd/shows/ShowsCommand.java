@@ -25,7 +25,7 @@ public class ShowsCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         List<String> send = new LinkedList<>();
         for (Show show : SuperBotShows.TRACKED_SHOWS) {
             StringBuilder sb = new StringBuilder();
@@ -52,7 +52,7 @@ public class ShowsCommand implements Command {
             if (i != rows - 1)
                 builder.newLine();
         }
-        conv.sendMessage(builder.build());
+        group.sendMessage(builder.build());
     }
 
 }

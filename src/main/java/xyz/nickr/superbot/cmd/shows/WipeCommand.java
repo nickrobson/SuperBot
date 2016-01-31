@@ -33,18 +33,18 @@ public class WipeCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length == 0) {
-            sendUsage(null, user, conv);
+            sendUsage(sys, user, group);
             return;
         }
         String toRemove = args[0];
         AtomicBoolean wiped = SuperBotController.wipe(toRemove);
         if (wiped.get()) {
-            conv.sendMessage(sys.message().text("Wiped " + toRemove));
+            group.sendMessage(sys.message().text("Wiped " + toRemove));
             SuperBotController.saveProgress();
         } else {
-            conv.sendMessage(sys.message().text("No data to wipe on " + toRemove));
+            group.sendMessage(sys.message().text("No data to wipe on " + toRemove));
         }
     }
 

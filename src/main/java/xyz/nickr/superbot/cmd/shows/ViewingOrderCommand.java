@@ -24,11 +24,11 @@ public class ViewingOrderCommand implements Command {
     }
 
     @Override
-    public void exec(Sys sys, User user, Group conv, String used, String[] args, Message message) {
+    public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> mb = sys.message();
         try {
             if (args.length == 0)
-                sendUsage(null, user, conv);
+                sendUsage(sys, user, group);
             else {
                 InputStream stream = getClass().getResourceAsStream("/viewingorder/" + args[0].toLowerCase() + ".txt");
                 if (stream == null)
@@ -49,9 +49,9 @@ public class ViewingOrderCommand implements Command {
                     reader.close();
                 }
             }
-            conv.sendMessage(mb.build());
+            group.sendMessage(mb.build());
         } catch (Exception ex) {
-            conv.sendMessage(mb.text("Looks like an error occurred!"));
+            group.sendMessage(mb.text("Looks like an error occurred!"));
             ex.printStackTrace();
         }
     }
