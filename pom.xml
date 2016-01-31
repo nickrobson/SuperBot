@@ -60,7 +60,7 @@
 			        </descriptorRefs>
 			        <archive>
 				        <manifest>
-				            <mainClass>xyz.nickr.superchat.SuperChatController</mainClass>
+				            <mainClass>xyz.nickr.superbot.SuperBotController</mainClass>
 				        </manifest>
 				        <manifestEntries>
 					        <JenkinsBuild>${build.number}</JenkinsBuild>
