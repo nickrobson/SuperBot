@@ -12,7 +12,7 @@ public interface Command {
 
     static final String PREFIX = SuperBotCommands.COMMAND_PREFIX;
 
-    static final Permission DEFAULT_PERMISSION = (c, u) -> true;
+    static final Permission DEFAULT_PERMISSION = (s, c, u, p) -> true;
 
     String[] names();
 
@@ -43,11 +43,11 @@ public interface Command {
     }
 
     default Permission admin() {
-        return (c, u) -> c.isAdmin(u);
+        return (s, c, u, p) -> c.isAdmin(u);
     }
 
     default Permission string(String perm) {
-        return (c, u) -> SuperBotPermissions.has(u.getUsername(), perm);
+        return (s, c, u, p) -> p.isPresent() && SuperBotPermissions.has(p.get().getName(), perm);
     }
 
 }

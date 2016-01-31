@@ -2,7 +2,6 @@ package xyz.nickr.superbot;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.cmd.HelpCommand;
 import xyz.nickr.superbot.cmd.ReloadCommand;
@@ -88,7 +87,7 @@ public class SuperBotCommands {
     }
 
     public static void exec(Sys sys, Group g, User u, Message message) {
-        String msg = message.getMessage();
+        String msg = message.getMessage().trim();
         String[] words = msg.split("\\s+");
 
         if (msg.isEmpty() || words.length == 0 || !words[0].startsWith(COMMAND_PREFIX)) {
@@ -108,13 +107,12 @@ public class SuperBotCommands {
             return;
 
         String[] args = new String[words.length - 1];
-        for (int i = 1; i < words.length; i++)
-            args[i - 1] = words[i];
+        System.arraycopy(words, 1, args, 0, args.length);
 
         boolean userchat = g.getType() == GroupType.USER && cmd.userchat();
 
         if (g.getType() == GroupType.GROUP || userchat) {
-            if (!cmd.perm().has(g, u)) {
+            if (!cmd.perm().has(sys, g, u, u.getProfile())) {
                 MessageBuilder<?> mb = sys.message();
                 mb.bold(true).text("Error: ").bold(false);
                 mb.text("You don't have permission to use " + COMMAND_PREFIX + cmdName + "!");

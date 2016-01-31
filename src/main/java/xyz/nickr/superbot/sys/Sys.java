@@ -6,7 +6,7 @@ public interface Sys {
 
     final Pattern START_OF_LINE = Pattern.compile("^", Pattern.MULTILINE);
 
-    String getProviderName();
+    String getName();
 
     MessageBuilder<?> message();
 

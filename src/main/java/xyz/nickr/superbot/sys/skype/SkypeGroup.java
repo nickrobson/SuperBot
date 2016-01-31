@@ -1,5 +1,8 @@
 package xyz.nickr.superbot.sys.skype;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
@@ -33,6 +36,13 @@ public class SkypeGroup implements Group {
     }
 
     @Override
+    public Message sendMessage(String message) {
+        if (conv != null)
+            return sys.wrap(conv.sendMessage(message));
+        return null;
+    }
+
+    @Override
     public GroupType getType() {
         switch (conv.getConversationType()) {
             case USER:
@@ -45,10 +55,8 @@ public class SkypeGroup implements Group {
     }
 
     @Override
-    public Message sendMessage(String message) {
-        if (conv != null)
-            return sys.wrap(conv.sendMessage(message));
-        return null;
+    public Set<User> getUsers() {
+        return conv.getUsers().stream().map(u -> sys.wrap(u)).collect(Collectors.toSet());
     }
 
     @Override

@@ -18,7 +18,7 @@ public class DelPermCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[]{ "[username] [perm]", "removes [perm] from [username]" };
+        return new String[]{ "[profile] [perm]", "removes [perm] from [profile]" };
     }
 
     @Override

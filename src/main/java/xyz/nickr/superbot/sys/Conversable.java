@@ -4,6 +4,8 @@ public interface Conversable {
 
     Sys getProvider();
 
+    String getUniqueId();
+
     Message sendMessage(String message);
 
     default Message sendMessage(MessageBuilder<?> mb) {

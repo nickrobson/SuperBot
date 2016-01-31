@@ -12,4 +12,8 @@ public interface User extends Conversable {
         return getDisplayName().orElse(getUsername());
     }
 
+    default Optional<Profile> getProfile() {
+        return Profile.get(getProvider().getName(), getUniqueId());
+    }
+
 }

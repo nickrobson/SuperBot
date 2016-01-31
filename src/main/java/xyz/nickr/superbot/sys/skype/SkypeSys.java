@@ -31,7 +31,7 @@ public class SkypeSys implements Sys {
     }
 
     @Override
-    public String getProviderName() {
+    public String getName() {
         return "Skype";
     }
 

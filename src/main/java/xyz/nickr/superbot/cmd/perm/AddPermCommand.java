@@ -18,7 +18,7 @@ public class AddPermCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[]{ "[username] [perm]", "gives [perm] to [username]" };
+        return new String[]{ "[profile] [perm]", "gives [perm] to [profile]" };
     }
 
     @Override

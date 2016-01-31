@@ -22,6 +22,11 @@ public class SkypeUser implements User {
     }
 
     @Override
+    public String getUniqueId() {
+        return getUsername();
+    }
+
+    @Override
     public Message sendMessage(String message) {
         return sys.wrap(user.sendMessage(message));
     }

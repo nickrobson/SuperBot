@@ -104,7 +104,7 @@ public class SuperBotController {
     }
 
     public static void register(Sys sys) {
-        PROVIDERS.put(sys.getProviderName(), sys);
+        PROVIDERS.put(sys.getName(), sys);
     }
 
     public static void load(Consumer<String> callback) {
@@ -240,7 +240,7 @@ public class SuperBotController {
         GroupConfiguration cfg = provider.getGroupConfiguration(longId);
         if (cfg == null) {
             cfg = newGroupConfiguration();
-            cfg.set(GroupConfiguration.KEY_PROVIDER, provider.getProviderName());
+            cfg.set(GroupConfiguration.KEY_PROVIDER, provider.getName());
             cfg.set(GroupConfiguration.KEY_UNIQUE_ID, longId);
             cfg.save();
             provider.addGroupConfiguration(cfg);
