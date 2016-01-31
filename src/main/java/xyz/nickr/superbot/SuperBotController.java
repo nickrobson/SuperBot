@@ -110,17 +110,19 @@ public class SuperBotController {
     public static void load(Consumer<String> callback) {
         if (callback == null)
             callback = s -> {};
-        callback.accept("0/5");
+        callback.accept("0/6");
         loadProgress();
-        callback.accept("1/5");
+        callback.accept("1/6");
         loadGroups();
-        callback.accept("2/5");
+        callback.accept("2/6");
         loadPermissions();
-        callback.accept("3/5");
+        callback.accept("3/6");
         loadHangmanWords();
-        callback.accept("4/5");
+        callback.accept("4/6");
         SuperBotCommands.loadCommands();
-        callback.accept("5/5");
+        callback.accept("5/6");
+        SuperBotProfiles.loadProfiles();
+        callback.accept("6/6");
     }
 
     public static void loadPermissions() {
