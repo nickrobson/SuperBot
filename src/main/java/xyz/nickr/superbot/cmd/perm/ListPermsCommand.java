@@ -38,7 +38,7 @@ public class ListPermsCommand implements Command {
             if (args.length == 0)
                 sendNoProfile(sys, user, group);
             else
-                group.sendMessage(mb.text("There is no profile with name = " + args[0]));
+                group.sendMessage(mb.text("No profile with name = " + args[0].toLowerCase()));
             return;
         }
         String name = prof.get().getName();

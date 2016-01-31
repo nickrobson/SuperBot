@@ -78,6 +78,10 @@ public class Profile {
         return props.getProperty(key);
     }
 
+    public void remove(String key) {
+        props.remove(key);
+    }
+
     public void set(String key, String val) {
         props.setProperty(key, val);
     }

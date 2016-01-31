@@ -6,6 +6,7 @@ import xyz.nickr.superbot.cmd.Permission;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
+import xyz.nickr.superbot.sys.Profile;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -36,6 +37,10 @@ public class DelPermCommand implements Command {
         if (args.length < 2) {
             sendUsage(sys, user, group);
         } else {
+            if (!Profile.getProfile(args[0]).isPresent()) {
+                group.sendMessage(sys.message().text("No profile with name = " + args[0].toLowerCase()));
+                return;
+            }
             MessageBuilder<?> mb = sys.message().bold(true).text(args[0]).bold(false);
             if (SuperBotPermissions.set(args[0], args[1], false)) {
                 mb.text(" no longer has: ");
