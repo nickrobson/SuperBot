@@ -47,7 +47,7 @@ public class TelegramGroup implements Group {
 
     @Override
     public Set<User> getUsers() {
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     @Override
@@ -62,6 +62,6 @@ public class TelegramGroup implements Group {
 
     @Override
     public Message sendMessage(String message) {
-        return sys.wrap(sys.sendMessage(chat, message));
+        return sys.wrap(message, sys.sendMessage(chat, message));
     }
 }

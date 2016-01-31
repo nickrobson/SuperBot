@@ -41,6 +41,6 @@ public class TelegramUser implements User {
 
     @Override
     public Message sendMessage(String message) {
-        return sys.wrap(sys.sendMessage(TelegramBot.getChat(user.getId()), message));
+        return sys.wrap(message, sys.sendMessage(TelegramBot.getChat(user.getId()), message));
     }
 }

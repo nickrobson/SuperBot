@@ -69,7 +69,7 @@ public class GroupConfiguration {
     }
 
     public String set(String option, String value) {
-        return options.setProperty(option, value).toString();
+        return String.valueOf(options.setProperty(option, value));
     }
 
     public String getProvider() {

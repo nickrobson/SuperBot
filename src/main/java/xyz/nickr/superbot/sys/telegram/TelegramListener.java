@@ -26,7 +26,8 @@ public class TelegramListener implements Listener {
     public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
         Group g = sys.wrap(event.getChat());
         User u = sys.wrap(event.getMessage().getSender());
-        SuperBotCommands.exec(sys, g, u, sys.wrap(event.getMessage()));
+        String msg = SuperBotCommands.COMMAND_PREFIX + event.getCommand().trim() + " " + event.getArgsString().trim();
+        SuperBotCommands.exec(sys, g, u, sys.wrap(msg, event.getMessage()));
     }
 
     @Override

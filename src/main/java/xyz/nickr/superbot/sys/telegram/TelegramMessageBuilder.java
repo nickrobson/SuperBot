@@ -6,7 +6,7 @@ import xyz.nickr.superbot.sys.User;
 /**
  * Created by bo0tzz
  */
-public class TelegramMessageBuilder implements MessageBuilder {
+public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBuilder> {
 
     public static String html_escape(String text) {
         text = text.replace("&", "&amp;"); // & is replaced with &amp;

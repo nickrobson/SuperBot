@@ -237,15 +237,16 @@ public class SuperBotController {
     }
 
     public static GroupConfiguration getGroupConfiguration(Group group, boolean create) {
-        if (group.getType() != GroupType.GROUP)
+        if (group.getType() != GroupType.GROUP) {
             return null;
-        String longId = group.getUniqueId();
+        }
+        String uniqueId = group.getUniqueId();
         Sys provider = group.getProvider();
-        GroupConfiguration cfg = provider.getGroupConfiguration(longId);
+        GroupConfiguration cfg = provider.getGroupConfiguration(uniqueId);
         if (cfg == null) {
             cfg = newGroupConfiguration();
             cfg.set(GroupConfiguration.KEY_PROVIDER, provider.getName());
-            cfg.set(GroupConfiguration.KEY_UNIQUE_ID, longId);
+            cfg.set(GroupConfiguration.KEY_UNIQUE_ID, uniqueId);
             cfg.save();
             provider.addGroupConfiguration(cfg);
         }

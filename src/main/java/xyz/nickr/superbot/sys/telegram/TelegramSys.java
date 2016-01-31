@@ -58,8 +58,8 @@ public class TelegramSys implements Sys {
         return new TelegramUser(user, this);
     }
 
-    Message wrap(pro.zackpollard.telegrambot.api.chat.message.Message message) {
-        return new TelegramMessage(message, this);
+    Message wrap(String msg, pro.zackpollard.telegrambot.api.chat.message.Message message) {
+        return new TelegramMessage(this, msg, message);
     }
 
     public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, String message) {

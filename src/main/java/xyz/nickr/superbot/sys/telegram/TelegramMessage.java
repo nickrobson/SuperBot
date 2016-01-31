@@ -1,7 +1,5 @@
 package xyz.nickr.superbot.sys.telegram;
 
-import pro.zackpollard.telegrambot.api.chat.message.content.TextContent;
-import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.sys.Conversable;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.Sys;
@@ -11,12 +9,15 @@ import xyz.nickr.superbot.sys.User;
  * Created by bo0tzz
  */
 public class TelegramMessage implements Message {
+
     private final TelegramSys sys;
+    private final String strmsg;
     private final pro.zackpollard.telegrambot.api.chat.message.Message message;
 
-    public TelegramMessage(pro.zackpollard.telegrambot.api.chat.message.Message message, TelegramSys sys) {
-        this.message = message;
+    public TelegramMessage(TelegramSys sys, String strmsg, pro.zackpollard.telegrambot.api.chat.message.Message message) {
         this.sys = sys;
+        this.strmsg = strmsg;
+        this.message = message;
     }
 
     @Override
@@ -41,11 +42,7 @@ public class TelegramMessage implements Message {
 
     @Override
     public String getMessage() {
-        String content = ((TextContent)message.getContent()).getContent();
-        if (content.startsWith("/")) {
-            content.replaceFirst("/", SuperBotCommands.COMMAND_PREFIX);
-        }
-        return content;
+        return strmsg;
     }
 
     @Override
