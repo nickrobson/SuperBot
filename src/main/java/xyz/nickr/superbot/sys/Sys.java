@@ -10,10 +10,10 @@ public interface Sys {
 
     boolean isUIDCaseSensitive();
 
-    MessageBuilder<?> message();
+    xyz.nickr.superbot.sys.MessageBuilder<?> message();
 
-    GroupConfiguration getGroupConfiguration(String uniqueId);
+    xyz.nickr.superbot.sys.GroupConfiguration getGroupConfiguration(String uniqueId);
 
-    void addGroupConfiguration(GroupConfiguration cfg);
+    void addGroupConfiguration(xyz.nickr.superbot.sys.GroupConfiguration cfg);
 
 }

@@ -21,7 +21,7 @@ import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
-public class SkypeListener implements SkypeErrorHandler {
+public class    SkypeListener implements SkypeErrorHandler {
 
     private SkypeSys sys;
 
