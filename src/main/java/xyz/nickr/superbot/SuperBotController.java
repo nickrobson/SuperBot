@@ -81,7 +81,7 @@ public class SuperBotController {
                 } catch (Exception ex) {}
                 saveProgress();
                 System.exit(0);
-            }, "SuperChat Sleepy Thread").start();
+            }, "SuperBot Sleepy Thread").start();
 
             new Thread(() -> {
                 while (true) {
@@ -95,7 +95,7 @@ public class SuperBotController {
                         Thread.sleep(10_000); // 10 seconds
                     } catch (Exception ex) {}
                 }
-            }, "SuperChat FileWatch Thread").start();;
+            }, "SuperBot FileWatch Thread").start();
 
             while (true) {}
         } catch (Exception ex) {

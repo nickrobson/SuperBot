@@ -70,6 +70,18 @@ public class Profile {
         return name;
     }
 
+    public boolean has(String key) {
+        return props.containsKey(key);
+    }
+
+    public String get(String key) {
+        return props.getProperty(key);
+    }
+
+    public void set(String key, String val) {
+        props.setProperty(key, val);
+    }
+
     public Map<String, String> getAccounts() {
         Map<String, String> accs = new HashMap<>();
         for (String key : props.stringPropertyNames()) {
