@@ -94,7 +94,7 @@ public class Profile {
     }
 
     public Profile register() {
-        return ALL.putIfAbsent(name.toLowerCase(), this);
+        return ALL.computeIfAbsent(name.toLowerCase(), s -> this);
     }
 
     public void load() {
