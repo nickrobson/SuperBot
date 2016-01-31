@@ -88,7 +88,7 @@ public class Profile {
     }
 
     public void setAccount(String provider, String uniqueId, boolean save) {
-        props.setProperty(provider, uniqueId);
+        props.setProperty("acc." + provider, uniqueId);
         if (save)
             save();
     }
