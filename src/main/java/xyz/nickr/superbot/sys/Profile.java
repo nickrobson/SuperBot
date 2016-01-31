@@ -109,7 +109,7 @@ public class Profile {
         try {
             Path tmp = Files.createTempFile("superbot-profile-" + name + "-" + System.nanoTime(), ".tmp");
             props.store(Files.newBufferedWriter(tmp), "");
-            Files.copy(tmp, file.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            Files.copy(tmp, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             if (!tmp.toFile().delete())
                 tmp.toFile().deleteOnExit();
         } catch (IOException e) {
