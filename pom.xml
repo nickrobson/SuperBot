@@ -103,5 +103,10 @@
 			<version>1.16.6</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>pro.zackpollard.telegrambot.api</groupId>
+			<artifactId>jtelegram-botapi</artifactId>
+			<version>0.7.6</version>
+		</dependency>
 	</dependencies>
 </project>

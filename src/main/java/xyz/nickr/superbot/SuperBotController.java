@@ -34,6 +34,7 @@ import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.skype.SkypeSys;
+import xyz.nickr.superbot.sys.telegram.TelegramSys;
 
 /**
  * @author Nick Robson
@@ -67,6 +68,7 @@ public class SuperBotController {
             properties.load(new FileInputStream(config));
 
             register(new SkypeSys(properties.getProperty("username"), properties.getProperty("password")));
+            register(new TelegramSys(properties.getProperty()))
 
             SuperBotShows.setup();
 
