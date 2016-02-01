@@ -10,6 +10,8 @@ public interface Sys {
 
     boolean isUIDCaseSensitive();
 
+    boolean columns();
+
     MessageBuilder<?> message();
 
     GroupConfiguration getGroupConfiguration(String uniqueId);

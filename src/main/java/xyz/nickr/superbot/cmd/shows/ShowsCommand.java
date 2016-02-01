@@ -38,15 +38,16 @@ public class ShowsCommand implements Command {
                 send.add(sys.message().code(true).text("[" + show.getDisplay() + "] " + sb.toString()).build());
         }
         send.sort(String.CASE_INSENSITIVE_ORDER);
-        int rows = send.size() / 2 + send.size() % 2;
-        int maxLen1 = send.subList(0, rows).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
+        boolean cols = sys.columns();
+        int rows = cols ? send.size() / 2 + send.size() % 2 : send.size();
+        int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
         MessageBuilder<?> builder = sys.message();
         for (int i = 0; i < rows; i++) {
             String spaces = "";
             for (int j = send.get(i).length(); j < maxLen1; j++)
                 spaces += ' ';
             builder.html(send.get(i)).code(true).text(spaces);
-            if (send.size() > rows + i) {
+            if (cols && send.size() > rows + i) {
                 builder.code(true).text("    ").code(false).html(send.get(rows + i));
             }
             if (i != rows - 1)

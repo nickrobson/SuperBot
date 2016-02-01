@@ -36,6 +36,11 @@ public class TelegramSys implements Sys {
     }
 
     @Override
+    public boolean columns() {
+        return false;
+    }
+
+    @Override
     public MessageBuilder<?> message() {
         return new TelegramMessageBuilder();
     }

@@ -41,15 +41,16 @@ public class WhoCommand implements Command {
             if (show != null)
                 shows.add(show.getDisplay() + "    (" + ep + ")");
         });
-        int rows = shows.size() / 2 + shows.size() % 2;
+        boolean cols = sys.columns();
+        int rows = cols ? shows.size() / 2 + shows.size() % 2 : shows.size();
         shows.sort(String.CASE_INSENSITIVE_ORDER);
-        int maxLen1 = shows.subList(0, rows).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
-        int maxLen2 = shows.subList(rows, shows.size()).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
+        int maxLen1 = (cols ? shows.subList(0, rows) : shows).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
+        int maxLen2 = cols ? shows.subList(rows, shows.size()).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length() : 0;
         String s = "";
         for (int i = 0; i < rows; i++) {
             if (shows.size() > i) {
                 String t = pad(shows.get(i), maxLen1);
-                if (shows.size() > rows + i)
+                if (cols && shows.size() > rows + i)
                     t += "    |    " + pad(shows.get(rows + i), maxLen2);
                 s += sys.message().text(t).build();
                 if (i != rows - 1)

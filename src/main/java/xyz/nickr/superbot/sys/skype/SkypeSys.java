@@ -41,6 +41,11 @@ public class SkypeSys implements Sys {
     }
 
     @Override
+    public boolean columns() {
+        return true;
+    }
+
+    @Override
     public MessageBuilder<?> message() {
         return new HtmlMessageBuilder();
     }
