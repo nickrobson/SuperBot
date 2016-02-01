@@ -81,6 +81,7 @@ public class TelegramListener implements Listener {
     public void onInlineQueryReceived(InlineQueryReceivedEvent event) {
         InlineQuery query = event.getQuery();
         String q = query.getQuery().trim();
+        System.out.println("INLINE QUERY RECEIVED: " + q);
         String[] words = q.split("\\s+");
         if (words.length >= 1) {
             if (words[0].equalsIgnoreCase("convert")) {

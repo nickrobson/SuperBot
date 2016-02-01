@@ -89,14 +89,13 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>jcenter</id>
+			<url>http://jcenter.bintray.com/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>in.kyle</groupId>
-			<artifactId>EzSkypeEzLife</artifactId>
-			<version>1.2.9-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -104,9 +103,16 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>in.kyle</groupId>
+			<artifactId>EzSkypeEzLife</artifactId>
+			<version>1.2.9-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>pro.zackpollard.telegrambot.api</groupId>
 			<artifactId>jtelegram-botapi</artifactId>
 			<version>0.7.6</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>
