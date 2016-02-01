@@ -120,7 +120,7 @@ public class ConvertCommand implements Command {
 
     public static class Conversion {
 
-        final String                   from, to;
+        public final String            from, to;
         final boolean                  numbers, appendSymbol;
         final Function<String, String> func;
 

@@ -12,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -101,14 +102,24 @@ public class TelegramListener implements Listener {
         if (words.length >= 1) {
             if (words[0].equalsIgnoreCase("convert")) {
                 // convert [from] [to] [quantity]
+                Map<String, Map<String, Conversion>> convs = ConvertCommand.conversions;
                 if (words.length >= 4) {
                     String from = words[1], to = words[2], quant = words[3];
-                    Map<String, Map<String, Conversion>> convs = ConvertCommand.conversions;
                     Map<String, Conversion> map = convs.get(from);
                     if (convs.containsKey(from) && map.containsKey(to)) {
                         String out = map.get(to).apply(quant);
                         String text = "\\[Convert] " + quant + " " + from + " => " + to + " = " + out;
                         results.add(res(from + " => " + to, quant + " => " + out, text, false));
+                    }
+                } else {
+                    String un = bot.getBotUsername();
+                    for (Entry<String, Map<String, Conversion>> e : convs.entrySet()) {
+                        for (Entry<String, Conversion> f : e.getValue().entrySet()) {
+                            String title = "@" + un + " convert " + e.getKey() + " " + f.getKey() + " \\[quantity]";
+                            String desc = "Convert " + f.getValue().from + " to " + f.getValue().to;
+                            String text = "/convert@" + un + " " + e.getKey() + " " + f.getKey() + " 100";
+                            results.add(res(title, desc, text, false));
+                        }
                     }
                 }
             } else if (words[0].equalsIgnoreCase("convert")) {
@@ -133,8 +144,8 @@ public class TelegramListener implements Listener {
         }
         if (results.isEmpty()) {
             String un = bot.getBotUsername();
-            results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "Invalid conversion. :(", false));
-            results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "Invalid currency conversion. :(", false));
+            results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un, false));
+            results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "/currency@" + un, false));
         }
         InlineQueryResponse res = InlineQueryResponse.builder()
                                         .is_personal(false)
@@ -148,6 +159,7 @@ public class TelegramListener implements Listener {
     public void onInlineResultChosen(InlineResultChosenEvent event) {
     }
 
+    @SuppressWarnings("unused")
     private String getUniqueId(String out) {
         String uid = uids.getProperty(out);
         if (uid == null) {
