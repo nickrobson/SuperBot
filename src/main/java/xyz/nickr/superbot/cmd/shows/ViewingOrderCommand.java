@@ -20,7 +20,7 @@ public class ViewingOrderCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "[mcu,af]", "shows the advised viewing order for the show(s)" };
+        return new String[] { "[mcu,af]", "gets the show's advised viewing order" };
     }
 
     @Override
