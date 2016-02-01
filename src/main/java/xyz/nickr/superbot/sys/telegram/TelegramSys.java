@@ -88,16 +88,18 @@ public class TelegramSys implements Sys {
 
     User wrap(pro.zackpollard.telegrambot.api.user.User user) {
         String un = user.getUsername();
-        if (un != null)
-            usernameCache.setProperty(String.valueOf(user.getId()), un);
-        try {
-            Path tmp = Files.createTempFile("superbot-tguserscache-" + System.nanoTime(), ".tmp");
-            usernameCache.store(Files.newBufferedWriter(tmp), "Telegram Username Cache file");
-            Files.copy(tmp, new File("tgusers.cache").toPath(), StandardCopyOption.REPLACE_EXISTING);
-            if (!tmp.toFile().delete())
-                tmp.toFile().deleteOnExit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (un != null) {
+            if (!un.equals(usernameCache.setProperty(String.valueOf(user.getId()), un))) {
+                try {
+                    Path tmp = Files.createTempFile("superbot-tguserscache-" + System.nanoTime(), ".tmp");
+                    usernameCache.store(Files.newBufferedWriter(tmp), "Telegram Username Cache file");
+                    Files.copy(tmp, new File("tgusers.cache").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    if (!tmp.toFile().delete())
+                        tmp.toFile().deleteOnExit();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
         return new TelegramUser(user, this);
     }
