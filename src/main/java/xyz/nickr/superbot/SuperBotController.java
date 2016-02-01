@@ -67,7 +67,7 @@ public class SuperBotController {
             Properties properties = new Properties();
             properties.load(new FileInputStream(config));
 
-            register(new SkypeSys(properties.getProperty("username"), properties.getProperty("password")));
+            register(new SkypeSys(properties.getProperty("skype.username"), properties.getProperty("skype.password")));
             register(new TelegramSys(properties.getProperty("telegram.api")));
 
             SuperBotShows.setup();
