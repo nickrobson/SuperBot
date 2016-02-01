@@ -24,7 +24,7 @@ public class DeleteTokenCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        Optional<Profile> profile = Profile.getProfile(args[0]);
+        Optional<Profile> profile = user.getProfile();
         if (profile.isPresent()) {
             MessageBuilder<?> mb = sys.message();
             Profile prof = profile.get();
