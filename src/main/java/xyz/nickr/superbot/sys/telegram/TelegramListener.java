@@ -39,7 +39,7 @@ public class TelegramListener implements Listener {
             String help = "You can access my help menu by typing `" + sys.prefix() + "help`";
             String message = sys.message()
                     .bold(true)
-                    .text(TelegramMessageBuilder.markdown_escape(welcome) + "\n" + TelegramMessageBuilder.markdown_escape(help))
+                    .text(TelegramMessageBuilder.markdown_escape(welcome, false) + "\n" + TelegramMessageBuilder.markdown_escape(help, false))
                     .bold(false)
                     .build();
             convo.sendMessage(message);

@@ -8,10 +8,11 @@ import xyz.nickr.superbot.sys.User;
  */
 public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBuilder> {
 
-    public static String markdown_escape(String text) {
-        text = text.replace("*", "\\*"); // * is replaced with \*
-        text = text.replace("[", "\\["); // [ is replaced with \[
-        text = text.replace("]", "\\]"); // ] is replaced with \]
+    public static String markdown_escape(String text, boolean code) {
+        if (!code) {
+            text = text.replace("*", "\\*"); // * is replaced with \*
+            text = text.replace("[", "\\["); // [ is replaced with \[
+        }
         return text;
     }
 
@@ -58,7 +59,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
 
     @Override
     public TelegramMessageBuilder text(String text) {
-        msg.append(markdown_escape(text));
+        msg.append(markdown_escape(text, code));
         return this;
     }
 
@@ -78,7 +79,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
     public TelegramMessageBuilder bold(boolean on) {
         if (bold != on) {
             bold = on;
-            msg.append(on ? "**" : "**");
+            msg.append(on ? "*" : "*");
         }
         return this;
     }
@@ -87,7 +88,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
     public TelegramMessageBuilder italic(boolean on) {
         if (italic != on) {
             italic = on;
-            msg.append(on ? "*" : "*");
+            msg.append(on ? "_" : "_");
         }
         return this;
     }
