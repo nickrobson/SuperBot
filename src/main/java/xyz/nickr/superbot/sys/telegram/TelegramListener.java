@@ -112,7 +112,7 @@ public class TelegramListener implements Listener {
                         results.add(res(from + " => " + to, quant + " => " + out, text, false));
                     }
                 } else {
-                    String un = bot.getBotUsername();
+                    String un = bot.getBotUsername().replace("_", "\\_");
                     for (Entry<String, Map<String, Conversion>> e : convs.entrySet()) {
                         for (Entry<String, Conversion> f : e.getValue().entrySet()) {
                             String title = "@" + un + " convert " + e.getKey() + " " + f.getKey() + " \\[quantity]";
