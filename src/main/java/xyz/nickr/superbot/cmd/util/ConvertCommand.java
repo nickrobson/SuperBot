@@ -16,7 +16,7 @@ import xyz.nickr.superbot.sys.User;
 
 public class ConvertCommand implements Command {
 
-    private final Map<String, Map<String, Conversion>> conversions = new HashMap<>();
+    public static final Map<String, Map<String, Conversion>> conversions = new HashMap<>();
 
     private void register(String row, String col, Conversion con) {
         Map<String, Conversion> map = conversions.get(row);
@@ -28,6 +28,7 @@ public class ConvertCommand implements Command {
 
     @Override
     public void init() {
+        conversions.clear();
         register("C", "F", new Conversion("Celsius", "Fahrenheit", true, true, s -> {
             BigDecimal a = new BigDecimal(s);
             BigDecimal d = a.multiply(BigDecimal.valueOf(9.0 / 5.0)).add(BigDecimal.valueOf(32));
@@ -103,7 +104,7 @@ public class ConvertCommand implements Command {
                     }
                 }
                 try {
-                    String res = conv.func.apply(input);
+                    String res = conv.apply(input);
                     if (conv.appendSymbol)
                         group.sendMessage(sys.message().text("[Convert] " + String.format("%s%s => %s%s", input, from, res, to)));
                     else
@@ -129,6 +130,10 @@ public class ConvertCommand implements Command {
             this.numbers = numbers;
             this.appendSymbol = appendSymbol;
             this.func = func;
+        }
+
+        public String apply(String s) {
+            return func.apply(s);
         }
 
     }

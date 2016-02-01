@@ -34,7 +34,8 @@ public class TelegramSys implements Sys {
     public TelegramSys(String key) {
         bot = TelegramBot.login(key);
         bot.getEventsManager().register(new TelegramListener(bot, this));
-        bot.startUpdates(false);
+        bot.startUpdates(true);
+
         try {
             usernameCache.load(new FileInputStream(new File("tgusers.cache")));
         } catch (IOException e) {
