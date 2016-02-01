@@ -122,10 +122,10 @@ public class TelegramListener implements Listener {
                         }
                     }
                 }
-            } else if (words[0].equalsIgnoreCase("convert")) {
+            } else if (words[0].equalsIgnoreCase("currency")) {
                 // currency [from] [to] [quantity]
                 if (words.length >= 4) {
-                    String from = words[1], to = words[2], quant = words[3];
+                    String from = words[1].toUpperCase(), to = words[2].toUpperCase(), quant = words[3];
                     String queryURL = String.format("https://www.google.co.uk/finance/converter?from=%s&to=%s&a=%s", from, to, quant);
                     try {
                         URL url = new URL(queryURL);
@@ -134,7 +134,7 @@ public class TelegramListener implements Listener {
                         while ((line = reader.readLine()) != null && results.isEmpty()) {
                             Matcher matcher = CurrencyCommand.CONVERSION_PATTERN.matcher(line);
                             if (matcher.find()) {
-                                String out = "\\[Currency] " + quant + " " + from + " => " + to + " = " + matcher.group(1);
+                                String out = "\\[Currency] " + quant + " " + from + " => " + matcher.group(1) + " " + to;
                                 results.add(res(from + " => " + to, quant + " => " + matcher.group(1), out, false));
                             }
                         }
