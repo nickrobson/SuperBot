@@ -56,6 +56,11 @@ public class SkypeSys implements Sys {
     }
 
     @Override
+    public String getUserFriendlyName(String uniqueId) {
+        return uniqueId;
+    }
+
+    @Override
     public GroupConfiguration getGroupConfiguration(String uniqueId) {
         return configs.get(uniqueId);
     }

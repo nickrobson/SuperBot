@@ -10,6 +10,8 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
 
     public static String markdown_escape(String text) {
         text = text.replace("*", "\\*"); // * is replaced with \*
+        text = text.replace("[", "\\["); // [ is replaced with \[
+        text = text.replace("]", "\\]"); // ] is replaced with \]
         return text;
     }
 

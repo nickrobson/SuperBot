@@ -1,20 +1,27 @@
 package xyz.nickr.superbot.sys.telegram;
 
-import pro.zackpollard.telegrambot.api.TelegramBot;
-import pro.zackpollard.telegrambot.api.chat.Chat;
-import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
-import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
-import xyz.nickr.superbot.sys.*;
-import xyz.nickr.superbot.sys.Message;
-import xyz.nickr.superbot.sys.User;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.Chat;
+import pro.zackpollard.telegrambot.api.chat.GroupChat;
+import pro.zackpollard.telegrambot.api.chat.IndividualChat;
+import pro.zackpollard.telegrambot.api.chat.SuperGroupChat;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import xyz.nickr.superbot.sys.Group;
+import xyz.nickr.superbot.sys.GroupConfiguration;
+import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
+import xyz.nickr.superbot.sys.Sys;
+import xyz.nickr.superbot.sys.User;
 
 /**
  * Created by bo0tzz
  */
 public class TelegramSys implements Sys {
+
     private final TelegramBot bot;
 
     private final Map<String, GroupConfiguration> configs = new HashMap<>();
@@ -48,6 +55,19 @@ public class TelegramSys implements Sys {
     @Override
     public MessageBuilder<?> message() {
         return new TelegramMessageBuilder();
+    }
+
+    @Override
+    public String getUserFriendlyName(String uniqueId) {
+        Chat chat = TelegramBot.getChat(Long.parseLong(uniqueId));
+        if(chat instanceof GroupChat) {
+            return ((GroupChat) chat).getName();
+        } else if (chat instanceof SuperGroupChat) {
+            return ((SuperGroupChat) chat).getName();
+        } else if (chat instanceof IndividualChat) {
+            return ((IndividualChat) chat).getPartner().getUsername();
+        }
+        return uniqueId;
     }
 
     @Override

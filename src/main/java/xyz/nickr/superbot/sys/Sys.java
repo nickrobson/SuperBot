@@ -16,6 +16,8 @@ public interface Sys {
 
     MessageBuilder<?> message();
 
+    String getUserFriendlyName(String uniqueId);
+
     GroupConfiguration getGroupConfiguration(String uniqueId);
 
     void addGroupConfiguration(GroupConfiguration cfg);

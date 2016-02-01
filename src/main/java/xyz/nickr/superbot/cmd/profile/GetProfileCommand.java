@@ -3,6 +3,7 @@ package xyz.nickr.superbot.cmd.profile;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
@@ -31,7 +32,8 @@ public class GetProfileCommand implements Command {
             if (prof.isPresent()) {
                 mb.bold(true).text("Your profile (" + prof.get().getName() + "):").bold(false);
                 for (Entry<String, String> acc : prof.get().getAccounts().entrySet()) {
-                    mb.newLine().text("   " + acc.getKey() + ": " + acc.getValue());
+                    Sys sy = SuperBotController.PROVIDERS.get(acc.getKey());
+                    mb.newLine().text("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
                 sendNoProfile(sys, user, group);
@@ -42,10 +44,11 @@ public class GetProfileCommand implements Command {
             if (prof.isPresent()) {
                 mb.bold(true).text(" " + s + "'s profile (" + prof.get().getName() + "):").bold(false);
                 for (Entry<String, String> acc : prof.get().getAccounts().entrySet()) {
-                    mb.newLine().text("   " + acc.getKey() + ": " + acc.getValue());
+                    Sys sy = SuperBotController.PROVIDERS.get(acc.getKey());
+                    mb.newLine().text("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
-                mb.text(" " + s + " doesn't have a profile yet.");
+                mb.text("No profile with name = " + s);
             }
         }
         group.sendMessage(mb);
