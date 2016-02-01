@@ -115,7 +115,7 @@ public class TelegramListener implements Listener {
                     String un = bot.getBotUsername();
                     for (Entry<String, Map<String, Conversion>> e : convs.entrySet()) {
                         for (Entry<String, Conversion> f : e.getValue().entrySet()) {
-                            String title = "@" + un + " convert " + e.getKey() + " " + f.getKey() + " \\[quantity]";
+                            String title = "@" + un + " convert " + e.getKey() + " " + f.getKey() + " [quantity]";
                             String desc = "Convert " + f.getValue().from + " to " + f.getValue().to;
                             String text = "/convert@" + un.replace("_", "\\_") + " " + e.getKey() + " " + f.getKey() + " 100";
                             results.add(res(title, desc, text, false));
