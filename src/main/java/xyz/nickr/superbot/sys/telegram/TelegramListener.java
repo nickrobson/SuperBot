@@ -108,7 +108,7 @@ public class TelegramListener implements Listener {
                     Map<String, Conversion> map = convs.get(from);
                     if (convs.containsKey(from) && map.containsKey(to)) {
                         String out = map.get(to).apply(quant);
-                        String text = "\\[Convert] " + quant + " " + from + " => " + to + " = " + out;
+                        String text = "\\[Convert] " + quant + " " + from + " => " + out + " " + to;
                         results.add(res(from + " => " + to, quant + " => " + out, text, false));
                     }
                 } else {
