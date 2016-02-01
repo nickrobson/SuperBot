@@ -6,17 +6,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 import java.util.regex.Matcher;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
-import pro.zackpollard.telegrambot.api.chat.inline.InlineQuery;
+import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
+import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResult;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultArticle;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
@@ -38,7 +38,6 @@ public class TelegramListener implements Listener {
 
     private final TelegramBot bot;
     private final TelegramSys sys;
-    private final Random random = new Random();
     private final Properties uids = new Properties();
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
@@ -77,12 +76,22 @@ public class TelegramListener implements Listener {
         }
     }
 
+    private InlineQueryResultArticle res(String title, String desc, String text, boolean web) {
+        return InlineQueryResultArticle.builder()
+            .parseMode(ParseMode.MARKDOWN)
+            .title(title)
+            .description(desc)
+            .disableWebPagePreview(!web)
+            .messageText(text)
+            .build();
+    }
+
     @Override
     public void onInlineQueryReceived(InlineQueryReceivedEvent event) {
-        InlineQuery query = event.getQuery();
-        String q = query.getQuery().trim();
+        String q = event.getQuery().getQuery().trim();
         System.out.println("INLINE QUERY RECEIVED: " + q);
         String[] words = q.split("\\s+");
+        List<InlineQueryResult> results = new LinkedList<>();
         if (words.length >= 1) {
             if (words[0].equalsIgnoreCase("convert")) {
                 // convert [from] [to] [quantity]
@@ -92,7 +101,8 @@ public class TelegramListener implements Listener {
                     Map<String, Conversion> map = convs.get(from);
                     if (convs.containsKey(from) && map.containsKey(to)) {
                         String out = map.get(to).apply(quant);
-                        query.answer(bot, InlineQueryResultArticle.builder().id(getUniqueId(out)).title("").messageText(out).build());
+                        String text = "[Convert] " + quant + " " + from + " => " + to + " = " + out;
+                        results.add(res(from + " => " + to, quant + " => " + out, text, false));
                     }
                 }
             } else if (words[0].equalsIgnoreCase("convert")) {
@@ -104,44 +114,32 @@ public class TelegramListener implements Listener {
                         URL url = new URL(queryURL);
                         BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
                         String line;
-                        while ((line = reader.readLine()) != null) {
+                        while ((line = reader.readLine()) != null && results.isEmpty()) {
                             Matcher matcher = CurrencyCommand.CONVERSION_PATTERN.matcher(line);
                             if (matcher.find()) {
-                                String out = "[Currency] " + from + " => " + to + " = " + matcher.group(1);
-                                query.answer(bot, InlineQueryResultArticle.builder().id(getUniqueId(out)).title("").messageText(out).build());
-                                return;
+                                String out = "[Currency] " + quant + " " + from + " => " + to + " = " + matcher.group(1);
+                                results.add(res(from + " => " + to, quant + " => " + matcher.group(1), out, false));
                             }
                         }
                     } catch (IOException e) {}
                 }
             }
         }
+        if (results.isEmpty()) {
+            String un = bot.getBotUsername();
+            results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "", false));
+            results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "", false));
+        }
+        InlineQueryResponse res = InlineQueryResponse.builder()
+                                        .is_personal(false)
+                                        .results(results)
+                                        .cache_time(0)
+                                        .build();
+        event.getQuery().answer(bot, res);
     }
 
     @Override
     public void onInlineResultChosen(InlineResultChosenEvent event) {
-    }
-
-    private String getUniqueId(String out) {
-        String uid = uids.getProperty(out);
-        if (uid == null) {
-            uid = "";
-            String chars = "abcdefghijklmnopqrstuvwxyz";
-            chars += chars.toUpperCase() + "0123456789";
-            for (int i = 0; i < 8; i++)
-                uid += chars.charAt(random.nextInt(chars.length()));
-            uids.setProperty(out, uid);
-            try {
-                Path tmp = Files.createTempFile("superbot-tguidscache-" + System.nanoTime(), ".tmp");
-                uids.store(Files.newBufferedWriter(tmp), "Telegram Inline UIDs Cache file");
-                Files.copy(tmp, new File("tguids.cache").toPath(), StandardCopyOption.REPLACE_EXISTING);
-                if (!tmp.toFile().delete())
-                    tmp.toFile().deleteOnExit();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return uid;
     }
 
 }
