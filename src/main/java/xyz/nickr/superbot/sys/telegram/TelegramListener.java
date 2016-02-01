@@ -134,8 +134,8 @@ public class TelegramListener implements Listener {
                         while ((line = reader.readLine()) != null && results.isEmpty()) {
                             Matcher matcher = CurrencyCommand.CONVERSION_PATTERN.matcher(line);
                             if (matcher.find()) {
-                                String out = "\\[Currency] " + quant + " " + from + " => " + matcher.group(1) + " " + to;
-                                results.add(res(from + " => " + to, quant + " => " + matcher.group(1), out, false));
+                                String out = "\\[Currency] " + quant + " " + from + " => " + matcher.group(1);
+                                results.add(res(from + " => " + to, quant + " => " + matcher.group(1).split(" ")[0], out, false));
                             }
                         }
                     } catch (IOException e) {}
