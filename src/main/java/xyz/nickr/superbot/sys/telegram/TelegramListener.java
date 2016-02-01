@@ -112,12 +112,12 @@ public class TelegramListener implements Listener {
                         results.add(res(from + " => " + to, quant + " => " + out, text, false));
                     }
                 } else {
-                    String un = bot.getBotUsername().replace("_", "\\_");
+                    String un = bot.getBotUsername();
                     for (Entry<String, Map<String, Conversion>> e : convs.entrySet()) {
                         for (Entry<String, Conversion> f : e.getValue().entrySet()) {
                             String title = "@" + un + " convert " + e.getKey() + " " + f.getKey() + " \\[quantity]";
                             String desc = "Convert " + f.getValue().from + " to " + f.getValue().to;
-                            String text = "/convert@" + un + " " + e.getKey() + " " + f.getKey() + " 100";
+                            String text = "/convert@" + un.replace("_", "\\_") + " " + e.getKey() + " " + f.getKey() + " 100";
                             results.add(res(title, desc, text, false));
                         }
                     }
@@ -144,8 +144,8 @@ public class TelegramListener implements Listener {
         }
         if (results.isEmpty()) {
             String un = bot.getBotUsername();
-            results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un, false));
-            results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "/currency@" + un, false));
+            results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un.replace("_", "\\_"), false));
+            results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "/currency@" + un.replace("_", "\\_"), false));
         }
         InlineQueryResponse res = InlineQueryResponse.builder()
                                         .is_personal(false)
