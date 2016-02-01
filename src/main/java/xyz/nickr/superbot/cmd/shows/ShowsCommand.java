@@ -35,25 +35,25 @@ public class ShowsCommand implements Command {
                 sb.append(s);
             }
             if (sb.length() > 0)
-                send.add(sys.message().code(true).text("[" + show.getDisplay() + "] " + sb.toString()).build());
+                send.add(sys.message().text("[" + show.getDisplay() + "] " + sb.toString()).build());
         }
         send.sort(String.CASE_INSENSITIVE_ORDER);
         boolean cols = sys.columns();
         int rows = cols ? send.size() / 2 + send.size() % 2 : send.size();
         int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
-        MessageBuilder<?> builder = sys.message();
+        MessageBuilder<?> builder = sys.message().code(true);
         for (int i = 0; i < rows; i++) {
             String spaces = "";
             for (int j = send.get(i).length(); j < maxLen1; j++)
                 spaces += ' ';
-            builder.html(send.get(i)).code(true).text(spaces);
+            builder.html(send.get(i)).text(spaces);
             if (cols && send.size() > rows + i) {
-                builder.code(true).text("    ").code(false).html(send.get(rows + i));
+                builder.text("    ").html(send.get(rows + i));
             }
             if (i != rows - 1)
                 builder.newLine();
         }
-        group.sendMessage(builder.build());
+        group.sendMessage(builder.code(false).build());
     }
 
 }
