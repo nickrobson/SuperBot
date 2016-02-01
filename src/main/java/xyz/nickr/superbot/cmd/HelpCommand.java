@@ -85,10 +85,13 @@ public class HelpCommand implements Command {
                 maxLen.set(cmdHelp.length());
         });
         List<String> strings = new ArrayList<>(SuperBotCommands.COMMANDS.size());
+        boolean cols = sys.columns();
+        if (cols)
+            maxLen.set(0);
         cmds.forEach(c -> {
             String[] help = c.help(user, group.getType() == GroupType.USER);
             if (c.perm() == Command.DEFAULT_PERMISSION)
-                strings.add(pad(getCmdHelp(c, user, group.getType() == GroupType.USER), maxLen.get()) + " - " + help[1]);
+                strings.add(pad(getCmdHelp(c, user, group.getType() == GroupType.USER), maxLen.get()) + (cols ? "\n  " : "") + " - " + help[1]);
         });
         if (SuperBotController.HELP_IGNORE_WHITESPACE)
             strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
