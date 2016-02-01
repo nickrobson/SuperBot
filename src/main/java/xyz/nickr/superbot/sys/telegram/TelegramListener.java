@@ -6,10 +6,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.regex.Matcher;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -38,6 +42,7 @@ public class TelegramListener implements Listener {
 
     private final TelegramBot bot;
     private final TelegramSys sys;
+    private final Random random = new Random();
     private final Properties uids = new Properties();
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
@@ -102,7 +107,7 @@ public class TelegramListener implements Listener {
                     Map<String, Conversion> map = convs.get(from);
                     if (convs.containsKey(from) && map.containsKey(to)) {
                         String out = map.get(to).apply(quant);
-                        String text = "[Convert] " + quant + " " + from + " => " + to + " = " + out;
+                        String text = "\\[Convert] " + quant + " " + from + " => " + to + " = " + out;
                         results.add(res(from + " => " + to, quant + " => " + out, text, false));
                     }
                 }
@@ -118,7 +123,7 @@ public class TelegramListener implements Listener {
                         while ((line = reader.readLine()) != null && results.isEmpty()) {
                             Matcher matcher = CurrencyCommand.CONVERSION_PATTERN.matcher(line);
                             if (matcher.find()) {
-                                String out = "[Currency] " + quant + " " + from + " => " + to + " = " + matcher.group(1);
+                                String out = "\\[Currency] " + quant + " " + from + " => " + to + " = " + matcher.group(1);
                                 results.add(res(from + " => " + to, quant + " => " + matcher.group(1), out, false));
                             }
                         }
@@ -128,8 +133,8 @@ public class TelegramListener implements Listener {
         }
         if (results.isEmpty()) {
             String un = bot.getBotUsername();
-            results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "", false));
-            results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "", false));
+            results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "Invalid conversion. :(", false));
+            results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "Invalid currency conversion. :(", false));
         }
         InlineQueryResponse res = InlineQueryResponse.builder()
                                         .is_personal(false)
@@ -141,6 +146,28 @@ public class TelegramListener implements Listener {
 
     @Override
     public void onInlineResultChosen(InlineResultChosenEvent event) {
+    }
+
+    private String getUniqueId(String out) {
+        String uid = uids.getProperty(out);
+        if (uid == null) {
+            uid = "";
+            String chars = "abcdefghijklmnopqrstuvwxyz";
+            chars += chars.toUpperCase() + "0123456789";
+            for (int i = 0; i < 8; i++)
+                uid += chars.charAt(random.nextInt(chars.length()));
+            uids.setProperty(out, uid);
+            try {
+                Path tmp = Files.createTempFile("superbot-tguidscache-" + System.nanoTime(), ".tmp");
+                uids.store(Files.newBufferedWriter(tmp), "Telegram Inline UIDs Cache file");
+                Files.copy(tmp, new File("tguids.cache").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                if (!tmp.toFile().delete())
+                    tmp.toFile().deleteOnExit();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return uid;
     }
 
 }
