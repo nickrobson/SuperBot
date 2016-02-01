@@ -5,9 +5,6 @@ import java.util.Map;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
-import pro.zackpollard.telegrambot.api.chat.GroupChat;
-import pro.zackpollard.telegrambot.api.chat.IndividualChat;
-import pro.zackpollard.telegrambot.api.chat.SuperGroupChat;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import xyz.nickr.superbot.sys.Group;
@@ -25,6 +22,7 @@ public class TelegramSys implements Sys {
     private final TelegramBot bot;
 
     private final Map<String, GroupConfiguration> configs = new HashMap<>();
+    private final Map<String, String> usernameCache = new HashMap<>();
 
     public TelegramSys(String key) {
         bot = TelegramBot.login(key);
@@ -59,15 +57,7 @@ public class TelegramSys implements Sys {
 
     @Override
     public String getUserFriendlyName(String uniqueId) {
-        Chat chat = TelegramBot.getChat(Long.parseLong(uniqueId));
-        if(chat instanceof GroupChat) {
-            return ((GroupChat) chat).getName();
-        } else if (chat instanceof SuperGroupChat) {
-            return ((SuperGroupChat) chat).getName();
-        } else if (chat instanceof IndividualChat) {
-            return ((IndividualChat) chat).getPartner().getUsername();
-        }
-        return uniqueId;
+        return usernameCache.getOrDefault(uniqueId, uniqueId);
     }
 
     @Override
@@ -85,6 +75,9 @@ public class TelegramSys implements Sys {
     }
 
     User wrap(pro.zackpollard.telegrambot.api.user.User user) {
+        String un = user.getUsername();
+        if (un != null)
+            usernameCache.put(String.valueOf(user.getId()), un);
         return new TelegramUser(user, this);
     }
 
