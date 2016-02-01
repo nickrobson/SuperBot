@@ -14,7 +14,11 @@ public interface MessageBuilder<T extends MessageBuilder<T>> {
 
     T html(String text);
 
-    T link(String url);
+    T link(String url, String text);
+
+    default T link(String url) {
+        return link(url, url);
+    }
 
     T bold(boolean on);
 

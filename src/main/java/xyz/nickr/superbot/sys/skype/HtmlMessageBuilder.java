@@ -16,7 +16,6 @@ public class HtmlMessageBuilder implements MessageBuilder<HtmlMessageBuilder> {
 
     private final StringBuilder msg;
 
-    private boolean             link          = false;
     private boolean             bold          = false;
     private boolean             italic        = false;
     private boolean             underline     = false;
@@ -45,7 +44,7 @@ public class HtmlMessageBuilder implements MessageBuilder<HtmlMessageBuilder> {
 
     @Override
     public String build() {
-        link(null).strikethrough(false).italic(false).blink(false).underline(false).code(false).size(0).bold(false);
+        strikethrough(false).italic(false).blink(false).underline(false).code(false).size(0).bold(false);
         return msg.toString();
     }
 
@@ -73,12 +72,8 @@ public class HtmlMessageBuilder implements MessageBuilder<HtmlMessageBuilder> {
     }
 
     @Override
-    public HtmlMessageBuilder link(String url) {
-        boolean on = url != null;
-        if (link != on) {
-            link = on;
-            msg.append(on ? "<a href=\"" + url + "\">" : "</a>");
-        }
+    public HtmlMessageBuilder link(String url, String text) {
+        msg.append("<a href=\"" + url + "\">" + text + "</a>");
         return this;
     }
 

@@ -40,7 +40,7 @@ public class TelegramListener implements Listener {
             String help = "You can access my help menu by typing `" + SuperBotCommands.COMMAND_PREFIX + "help`";
             String message = sys.message()
                     .bold(true)
-                    .text(TelegramMessageBuilder.html_escape(welcome) + "\n" + TelegramMessageBuilder.html_escape(help))
+                    .text(TelegramMessageBuilder.markdown_escape(welcome) + "\n" + TelegramMessageBuilder.markdown_escape(help))
                     .bold(false)
                     .build();
             convo.sendMessage(message);

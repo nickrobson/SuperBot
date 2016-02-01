@@ -8,18 +8,13 @@ import xyz.nickr.superbot.sys.User;
  */
 public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBuilder> {
 
-    public static String html_escape(String text) {
-        text = text.replace("&", "&amp;"); // & is replaced with &amp;
-        text = text.replace("'", "&apos;"); // ' is replaced with &apos;
-        text = text.replace("\"", "&quot;"); // " is replaced with &quot;
-        text = text.replace("<", "&lt;"); // < is replaced with &lt;
-        text = text.replace(">", "&gt;"); // > is replaced with &gt;
+    public static String markdown_escape(String text) {
+        text = text.replace("*", "\\*"); // * is replaced with \*
         return text;
     }
 
     private final StringBuilder msg;
 
-    private boolean             link          = false;
     private boolean             bold          = false;
     private boolean             italic        = false;
     private boolean             code          = false;
@@ -44,7 +39,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
 
     @Override
     public String build() {
-        link(null).strikethrough(false).italic(false).blink(false).underline(false).code(false).size(0).bold(false);
+        italic(false).bold(false).code(false);
         return msg.toString();
     }
 
@@ -61,7 +56,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
 
     @Override
     public TelegramMessageBuilder text(String text) {
-        msg.append(html_escape(text));
+        msg.append(markdown_escape(text));
         return this;
     }
 
@@ -72,12 +67,8 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
     }
 
     @Override
-    public TelegramMessageBuilder link(String url) {
-        boolean on = url != null;
-        if (link != on) {
-            link = on;
-            msg.append(on ? "<a href=\"" + url + "\">" : "</a>");
-        }
+    public TelegramMessageBuilder link(String url, String text) {
+        msg.append("[" + text + "](" + url + ")");
         return this;
     }
 
@@ -85,7 +76,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
     public TelegramMessageBuilder bold(boolean on) {
         if (bold != on) {
             bold = on;
-            msg.append(on ? "<b>" : "</b>");
+            msg.append(on ? "**" : "**");
         }
         return this;
     }
@@ -94,7 +85,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
     public TelegramMessageBuilder italic(boolean on) {
         if (italic != on) {
             italic = on;
-            msg.append(on ? "<i>" : "</i>");
+            msg.append(on ? "*" : "*");
         }
         return this;
     }
@@ -113,7 +104,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
     public TelegramMessageBuilder code(boolean on) {
         if (code != on) {
             code = on;
-            msg.append(on ? "<pre>" : "</pre>");
+            msg.append(on ? "`" : "`");
         }
         return this;
     }
