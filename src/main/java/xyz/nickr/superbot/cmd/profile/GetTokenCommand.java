@@ -10,7 +10,7 @@ import xyz.nickr.superbot.sys.Profile;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
-public class GetRegisterTokenCommand implements Command {
+public class GetTokenCommand implements Command {
 
     final SecureRandom random = new SecureRandom();
 

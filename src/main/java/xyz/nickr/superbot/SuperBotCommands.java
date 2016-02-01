@@ -18,9 +18,10 @@ import xyz.nickr.superbot.cmd.perm.AddPermCommand;
 import xyz.nickr.superbot.cmd.perm.DelPermCommand;
 import xyz.nickr.superbot.cmd.perm.ListPermsCommand;
 import xyz.nickr.superbot.cmd.profile.CreateProfileCommand;
+import xyz.nickr.superbot.cmd.profile.DeleteTokenCommand;
 import xyz.nickr.superbot.cmd.profile.FindProfileCommand;
 import xyz.nickr.superbot.cmd.profile.GetProfileCommand;
-import xyz.nickr.superbot.cmd.profile.GetRegisterTokenCommand;
+import xyz.nickr.superbot.cmd.profile.GetTokenCommand;
 import xyz.nickr.superbot.cmd.profile.RegisterAccountCommand;
 import xyz.nickr.superbot.cmd.shows.AddShowCommand;
 import xyz.nickr.superbot.cmd.shows.ProgressCommand;
@@ -69,11 +70,14 @@ public class SuperBotCommands {
         register(new DelPermCommand());
         register(new ListPermsCommand());
 
-        register(new CreateProfileCommand());
         register(new GetProfileCommand());
         register(new FindProfileCommand());
+
+        register(new CreateProfileCommand());
         register(new RegisterAccountCommand());
-        register(new GetRegisterTokenCommand());
+
+        register(new GetTokenCommand());
+        register(new DeleteTokenCommand());
 
         register(new AddShowCommand());
         register(new ProgressCommand());

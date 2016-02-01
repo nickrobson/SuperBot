@@ -56,4 +56,14 @@ public class GetProfileCommand implements Command {
         group.sendMessage(mb);
     }
 
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
 }
