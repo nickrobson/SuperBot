@@ -8,6 +8,8 @@ public interface Sys {
 
     String getName();
 
+    String prefix();
+
     boolean isUIDCaseSensitive();
 
     boolean columns();

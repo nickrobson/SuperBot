@@ -36,8 +36,7 @@ public class HelpCommand implements Command {
         return true;
     }
 
-    String getCmdHelp(Command cmd, User user, boolean userChat) {
-        String pre = SuperBotCommands.COMMAND_PREFIX;
+    String getCmdHelp(Command cmd, String pre, User user, boolean userChat) {
         String s = pre;
         for (String n : cmd.names()) {
             if (s.length() > pre.length())
@@ -78,9 +77,10 @@ public class HelpCommand implements Command {
             group.sendMessage("It looks like there are no commands enabled in this chat.");
             return;
         }
+        String prefix = sys.prefix();
         AtomicInteger maxLen = new AtomicInteger(0);
         cmds.forEach(c -> {
-            String cmdHelp = getCmdHelp(c, user, group.getType() == GroupType.USER);
+            String cmdHelp = getCmdHelp(c, prefix, user, group.getType() == GroupType.USER);
             if (c.perm() == Command.DEFAULT_PERMISSION && cmdHelp.length() > maxLen.get())
                 maxLen.set(cmdHelp.length());
         });
@@ -91,7 +91,7 @@ public class HelpCommand implements Command {
         cmds.forEach(c -> {
             String[] help = c.help(user, group.getType() == GroupType.USER);
             if (c.perm() == Command.DEFAULT_PERMISSION)
-                strings.add(pad(getCmdHelp(c, user, group.getType() == GroupType.USER), maxLen.get()) + (cols ? "\n  " : "") + " - " + help[1]);
+                strings.add(pad(getCmdHelp(c, prefix, user, group.getType() == GroupType.USER), maxLen.get()) + (cols ? "\n  " : "") + " - " + help[1]);
         });
         if (SuperBotController.HELP_IGNORE_WHITESPACE)
             strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));

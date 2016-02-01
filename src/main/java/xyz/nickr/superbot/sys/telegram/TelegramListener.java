@@ -14,11 +14,10 @@ import xyz.nickr.superbot.sys.User;
  * Created by bo0tzz
  */
 public class TelegramListener implements Listener {
-    private final TelegramBot bot;
+
     private final TelegramSys sys;
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
-        this.bot = bot;
         this.sys = sys;
     }
 
@@ -26,7 +25,7 @@ public class TelegramListener implements Listener {
     public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
         Group g = sys.wrap(event.getChat());
         User u = sys.wrap(event.getMessage().getSender());
-        String msg = SuperBotCommands.COMMAND_PREFIX + event.getCommand().trim() + " " + event.getArgsString().trim();
+        String msg = sys.prefix() + event.getCommand().trim() + " " + event.getArgsString().trim();
         SuperBotCommands.exec(sys, g, u, sys.wrap(msg, event.getMessage()));
     }
 
@@ -37,7 +36,7 @@ public class TelegramListener implements Listener {
         GroupConfiguration cfg = SuperBotController.getGroupConfiguration(convo);
         if (cfg != null && cfg.isShowJoinMessage()) {
             String welcome = String.format(SuperBotController.WELCOME_MESSAGE_JOIN, user.getUsername(), convo.getDisplayName());
-            String help = "You can access my help menu by typing `" + SuperBotCommands.COMMAND_PREFIX + "help`";
+            String help = "You can access my help menu by typing `" + sys.prefix() + "help`";
             String message = sys.message()
                     .bold(true)
                     .text(TelegramMessageBuilder.markdown_escape(welcome) + "\n" + TelegramMessageBuilder.markdown_escape(help))

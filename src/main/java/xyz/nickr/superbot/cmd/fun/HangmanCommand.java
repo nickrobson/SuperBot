@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
@@ -42,6 +41,7 @@ public class HangmanCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> mb = sys.message();
+        String prefix = sys.prefix();
         if (group.getType() == GroupType.USER)
             if (currentPhrase != null)
                 group.sendMessage(mb.text("[Hangman] There is already a game in progress.").newLine().text("[Hangman] To take a guess, send a message in a group."));
@@ -76,9 +76,9 @@ public class HangmanCommand implements Command {
                 group.sendMessage(mb.text("[Hangman] The phrase has been set to: ").code(true).text(currentPhrase));
             }
         else if (currentPhrase == null)
-            group.sendMessage(mb.text("[Hangman] There is no game in progress currently!").newLine().text("[Hangman] To set the phrase, PM me `" + SuperBotCommands.COMMAND_PREFIX + "hangman [phrase]`!"));
+            group.sendMessage(mb.text("[Hangman] There is no game in progress currently!").newLine().text("[Hangman] To set the phrase, PM me `" + prefix + "hangman [phrase]`!"));
         else if (args.length != 1)
-            group.sendMessage(mb.bold(true).text("Usage: ").bold(false).text(PREFIX + "hangman [guess]").html(currentPhrase != null ? sys.message().newLine().text("Phrase so far: ").code(true).text(found).build() : ""));
+            group.sendMessage(mb.bold(true).text("Usage: ").bold(false).text(prefix + "hangman [guess]").html(currentPhrase != null ? sys.message().newLine().text("Phrase so far: ").code(true).text(found).build() : ""));
         else {
             char first = args[0].trim().toUpperCase().charAt(0);
             if (args[0].trim().length() != 1)

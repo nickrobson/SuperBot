@@ -11,6 +11,7 @@ import java.util.Optional;
  * Created by bo0tzz
  */
 public class TelegramUser implements User {
+
     private final pro.zackpollard.telegrambot.api.user.User user;
     private final TelegramSys sys;
 
@@ -40,6 +41,7 @@ public class TelegramUser implements User {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public Message sendMessage(String message) {
         return sys.wrap(message, sys.sendMessage(TelegramBot.getChat(user.getId()), message));
     }

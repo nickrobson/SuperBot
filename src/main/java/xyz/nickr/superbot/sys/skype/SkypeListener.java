@@ -21,7 +21,7 @@ import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
-public class    SkypeListener implements SkypeErrorHandler {
+public class SkypeListener implements SkypeErrorHandler {
 
     private SkypeSys sys;
 
@@ -35,7 +35,7 @@ public class    SkypeListener implements SkypeErrorHandler {
         GroupConfiguration cfg = SuperBotController.getGroupConfiguration(sys.wrap(convo));
         if (cfg != null && cfg.isShowJoinMessage()) {
             String welcome = String.format(SuperBotController.WELCOME_MESSAGE_JOIN, user.getUsername(), convo.getTopic());
-            String help = "You can access my help menu by typing `" + SuperBotCommands.COMMAND_PREFIX + "help`";
+            String help = "You can access my help menu by typing `" + sys.prefix() + "help`";
             String message = Chat.bold(HtmlMessageBuilder.html_escape(welcome)) + "\n" + HtmlMessageBuilder.html_escape(help);
             convo.sendMessage(message);
         }

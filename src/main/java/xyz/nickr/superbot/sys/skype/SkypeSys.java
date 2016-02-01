@@ -36,6 +36,11 @@ public class SkypeSys implements Sys {
     }
 
     @Override
+    public String prefix() {
+        return "+";
+    }
+
+    @Override
     public boolean isUIDCaseSensitive() {
         return false;
     }

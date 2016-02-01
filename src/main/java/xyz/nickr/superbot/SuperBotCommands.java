@@ -47,7 +47,6 @@ import xyz.nickr.superbot.sys.User;
 public class SuperBotCommands {
 
     public static final Map<String, Command> COMMANDS = new HashMap<>();
-    public static final String COMMAND_PREFIX = "+";
 
     public static void register(Command cmd) {
         for (String name : cmd.names())
@@ -100,12 +99,13 @@ public class SuperBotCommands {
     public static void exec(Sys sys, Group g, User u, Message message) {
         String msg = message.getMessage().trim();
         String[] words = msg.split("\\s+");
+        String prefix = sys.prefix();
 
-        if (msg.isEmpty() || words.length == 0 || !words[0].startsWith(COMMAND_PREFIX)) {
+        if (msg.isEmpty() || words.length == 0 || !words[0].startsWith(prefix)) {
             return;
         }
 
-        String cmdName = words[0].substring(COMMAND_PREFIX.length()).toLowerCase();
+        String cmdName = words[0].substring(prefix.length()).toLowerCase();
         Command cmd = COMMANDS.get(cmdName);
         if (cmd == null)
             return;
@@ -126,7 +126,7 @@ public class SuperBotCommands {
             if (!cmd.perm().has(sys, g, u, u.getProfile())) {
                 MessageBuilder<?> mb = sys.message();
                 mb.bold(true).text("Error: ").bold(false);
-                mb.text("You don't have permission to use " + COMMAND_PREFIX + cmdName + "!");
+                mb.text("You don't have permission to use " + prefix + cmdName + "!");
                 g.sendMessage(mb.toString());
             } else {
                 cmd.exec(sys, u, g, cmdName, args, message);

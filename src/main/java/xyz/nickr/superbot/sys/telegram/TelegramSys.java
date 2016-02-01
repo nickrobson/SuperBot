@@ -31,6 +31,11 @@ public class TelegramSys implements Sys {
     }
 
     @Override
+    public String prefix() {
+        return "/";
+    }
+
+    @Override
     public boolean isUIDCaseSensitive() {
         return false;
     }
@@ -72,4 +77,5 @@ public class TelegramSys implements Sys {
         SendableTextMessage msg = SendableTextMessage.builder().message(message).parseMode(ParseMode.MARKDOWN).build();
         return bot.sendMessage(chat, msg);
     }
+
 }
