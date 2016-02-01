@@ -2,8 +2,10 @@ package xyz.nickr.superbot.sys;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
 import xyz.nickr.superbot.cmd.Command;
@@ -41,7 +43,11 @@ public class GroupConfiguration {
         if (file.exists())
             file.delete();
         try {
-            options.store(new FileOutputStream(file), "");
+            Path tmp = Files.createTempFile("superbot-groupcfg-" + getUniqueId() + "-" + System.nanoTime(), ".tmp");
+            options.store(Files.newBufferedWriter(tmp), "GroupConfiguration: " + String.valueOf(getUniqueId()));
+            Files.copy(tmp, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            if (!tmp.toFile().delete())
+                tmp.toFile().deleteOnExit();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

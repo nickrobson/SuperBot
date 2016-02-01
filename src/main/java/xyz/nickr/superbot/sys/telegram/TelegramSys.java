@@ -1,7 +1,14 @@
 package xyz.nickr.superbot.sys.telegram;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
@@ -22,12 +29,17 @@ public class TelegramSys implements Sys {
     private final TelegramBot bot;
 
     private final Map<String, GroupConfiguration> configs = new HashMap<>();
-    private final Map<String, String> usernameCache = new HashMap<>();
+    private final Properties usernameCache = new Properties();
 
     public TelegramSys(String key) {
         bot = TelegramBot.login(key);
         bot.getEventsManager().register(new TelegramListener(bot, this));
         bot.startUpdates(false);
+        try {
+            usernameCache.load(new FileInputStream(new File("tgusers.cache")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -57,7 +69,7 @@ public class TelegramSys implements Sys {
 
     @Override
     public String getUserFriendlyName(String uniqueId) {
-        return usernameCache.getOrDefault(uniqueId, uniqueId);
+        return usernameCache.getProperty(uniqueId, uniqueId);
     }
 
     @Override
@@ -77,7 +89,16 @@ public class TelegramSys implements Sys {
     User wrap(pro.zackpollard.telegrambot.api.user.User user) {
         String un = user.getUsername();
         if (un != null)
-            usernameCache.put(String.valueOf(user.getId()), un);
+            usernameCache.setProperty(String.valueOf(user.getId()), un);
+        try {
+            Path tmp = Files.createTempFile("superbot-tguserscache-" + System.nanoTime(), ".tmp");
+            usernameCache.store(Files.newBufferedWriter(tmp), "Telegram Username Cache file");
+            Files.copy(tmp, new File("tgusers.cache").toPath(), StandardCopyOption.REPLACE_EXISTING);
+            if (!tmp.toFile().delete())
+                tmp.toFile().deleteOnExit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return new TelegramUser(user, this);
     }
 

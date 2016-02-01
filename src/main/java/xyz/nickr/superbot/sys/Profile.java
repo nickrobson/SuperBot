@@ -124,7 +124,7 @@ public class Profile {
     public void save() {
         try {
             Path tmp = Files.createTempFile("superbot-profile-" + name + "-" + System.nanoTime(), ".tmp");
-            props.store(Files.newBufferedWriter(tmp), "");
+            props.store(Files.newBufferedWriter(tmp), "User Profile: " + name);
             Files.copy(tmp, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             if (!tmp.toFile().delete())
                 tmp.toFile().deleteOnExit();
