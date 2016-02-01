@@ -90,6 +90,7 @@ public class TelegramListener implements Listener {
     public void onInlineQueryReceived(InlineQueryReceivedEvent event) {
         String q = event.getQuery().getQuery().trim();
         System.out.println("INLINE QUERY RECEIVED: " + q);
+        System.out.println("FROM: " + (event.getQuery().getSender().getUsername() != null ? event.getQuery().getSender().getUsername() : String.valueOf(event.getQuery().getSender().getId())));
         String[] words = q.split("\\s+");
         List<InlineQueryResult> results = new LinkedList<>();
         if (words.length >= 1) {
