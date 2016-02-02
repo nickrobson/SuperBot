@@ -41,19 +41,21 @@ public class ShowsCommand implements Command {
         boolean cols = sys.columns();
         int rows = cols ? send.size() / 2 + send.size() % 2 : send.size();
         int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
-        MessageBuilder<?> builder = sys.message().code(true);
+        MessageBuilder<?> builder = sys.message();
         for (int i = 0; i < rows; i++) {
             String spaces = "";
             for (int j = send.get(i).length(); j < maxLen1; j++)
                 spaces += ' ';
+            builder.code(true);
             builder.raw(send.get(i)).escaped(spaces);
             if (cols && send.size() > rows + i) {
                 builder.escaped("    ").raw(send.get(rows + i));
             }
+            builder.code(false);
             if (i != rows - 1)
                 builder.newLine();
         }
-        group.sendMessage(builder.code(false).build());
+        group.sendMessage(builder.build());
     }
 
 }
