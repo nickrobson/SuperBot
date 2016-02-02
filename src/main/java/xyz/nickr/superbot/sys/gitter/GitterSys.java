@@ -19,6 +19,7 @@ public class GitterSys implements Sys {
     final Jitter jitter;
 
     public GitterSys(String token) {
+        System.out.println("Loading SuperBot: Gitter");
         if (token == null) {
             System.err.println("Gitter Token Missing!");
             this.jitter = null;
@@ -30,6 +31,7 @@ public class GitterSys implements Sys {
         this.jitter.getCurrentRooms().forEach(room -> {
             room.beginMessageStreaming();
         });
+        System.out.println("Done SuperBot: Gitter");
     }
 
     @Override

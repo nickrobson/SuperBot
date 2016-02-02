@@ -33,7 +33,7 @@ public class TelegramSys implements Sys {
 
     public TelegramSys(String key) {
         new Thread(() -> {
-            System.out.println("Loading SuperBot: Skype");
+            System.out.println("Loading SuperBot: Telegram");
             bot = TelegramBot.login(key);
             bot.getEventsManager().register(new TelegramListener(bot, this));
             bot.startUpdates(true);
@@ -43,7 +43,7 @@ public class TelegramSys implements Sys {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("Done SuperBot: Skype");
+            System.out.println("Done SuperBot: Telegram");
         }).start();
     }
 
