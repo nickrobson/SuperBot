@@ -33,6 +33,7 @@ public class TelegramSys implements Sys {
 
     public TelegramSys(String key) {
         new Thread(() -> {
+            long now = System.currentTimeMillis();
             System.out.println("Loading SuperBot: Telegram");
             bot = TelegramBot.login(key);
             bot.getEventsManager().register(new TelegramListener(bot, this));
@@ -43,7 +44,7 @@ public class TelegramSys implements Sys {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("Done SuperBot: Telegram");
+            System.out.println("Done SuperBot: Telegram (" + (System.currentTimeMillis() - now) + "ms)");
         }).start();
     }
 

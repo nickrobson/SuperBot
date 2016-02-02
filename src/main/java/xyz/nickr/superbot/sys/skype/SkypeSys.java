@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import in.kyle.ezskypeezlife.EzSkype;
-import in.kyle.ezskypeezlife.EzSkypeBuilder;
-import in.kyle.ezskypeezlife.api.SkypeCredentials;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
@@ -22,15 +20,18 @@ public class SkypeSys implements Sys {
 
     public SkypeSys(String username, String password) {
         new Thread(() -> {
+            long now = System.currentTimeMillis();
             System.out.println("Loading SuperBot: Skype");
             try {
                 SkypeListener listener = new SkypeListener(this);
-                skype = new EzSkypeBuilder(new SkypeCredentials(username, password)).withAll().setCaptchaHandler(listener).buildAndLogin();
+                skype = new EzSkype(username, password);
+                skype.setErrorHandler(listener);
+                skype.login();
                 skype.getEventManager().registerEvents(listener);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println("Done SuperBot: Skype");
+            System.out.println("Done SuperBot: Skype (" + (System.currentTimeMillis() - now) + "ms)");
         }).start();
     }
 
