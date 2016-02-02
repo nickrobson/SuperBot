@@ -11,6 +11,7 @@ public class MarkdownMessageBuilder implements MessageBuilder<MarkdownMessageBui
     public static String markdown_escape(String text, boolean code) {
         if (!code) {
             text = text.replace("*", "\\*"); // * is replaced with \*
+            text = text.replace("_", "\\_"); // _ is replaced with \_
             text = text.replace("[", "\\["); // [ is replaced with \[
         }
         return text;
@@ -18,9 +19,9 @@ public class MarkdownMessageBuilder implements MessageBuilder<MarkdownMessageBui
 
     private final StringBuilder msg;
 
-    private boolean             bold          = false;
-    private boolean             italic        = false;
-    private boolean             code          = false;
+    private boolean bold = false;
+    private boolean italic = false;
+    private boolean code = false;
 
     public MarkdownMessageBuilder() {
         this("");
@@ -88,7 +89,16 @@ public class MarkdownMessageBuilder implements MessageBuilder<MarkdownMessageBui
     public MarkdownMessageBuilder italic(boolean on) {
         if (italic != on) {
             italic = on;
-            msg.append(on ? "*" : "*");
+            msg.append(on ? "_" : "_");
+        }
+        return this;
+    }
+
+    @Override
+    public MarkdownMessageBuilder code(boolean on) {
+        if (code != on) {
+            code = on;
+            msg.append(on ? "`" : "`");
         }
         return this;
     }
@@ -100,15 +110,6 @@ public class MarkdownMessageBuilder implements MessageBuilder<MarkdownMessageBui
 
     @Override
     public MarkdownMessageBuilder strikethrough(boolean on) {
-        return this;
-    }
-
-    @Override
-    public MarkdownMessageBuilder code(boolean on) {
-        if (code != on) {
-            code = on;
-            msg.append(on ? "`" : "`");
-        }
         return this;
     }
 

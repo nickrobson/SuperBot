@@ -24,11 +24,11 @@ public interface MessageBuilder<T extends MessageBuilder<T>> {
 
     T italic(boolean on);
 
+    T code(boolean on);
+
     T underline(boolean on);
 
     T strikethrough(boolean on);
-
-    T code(boolean on);
 
     T blink(boolean on);
 

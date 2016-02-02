@@ -39,7 +39,7 @@ public class GitterGroup implements Group {
 
     @Override
     public String getDisplayName() {
-        return room.getTopic();
+        return room.getName();
     }
 
     @Override
