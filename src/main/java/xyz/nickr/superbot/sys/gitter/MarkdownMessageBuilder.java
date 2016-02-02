@@ -49,7 +49,12 @@ public class MarkdownMessageBuilder implements MessageBuilder<MarkdownMessageBui
 
     @Override
     public MarkdownMessageBuilder newLine() {
+        boolean wasCode = code;
+        if (wasCode)
+            code(false);
         msg.append("\n");
+        if (wasCode)
+            code(true);
         return this;
     }
 
