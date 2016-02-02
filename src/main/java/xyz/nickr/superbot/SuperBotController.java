@@ -36,6 +36,7 @@ import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.gitter.GitterSys;
 import xyz.nickr.superbot.sys.skype.SkypeSys;
 import xyz.nickr.superbot.sys.telegram.TelegramSys;
+import xyz.nickr.superbot.web.SuperBotServer;
 
 /**
  * @author Nick Robson
@@ -71,6 +72,13 @@ public class SuperBotController {
             register(new SkypeSys(properties.getProperty("skype.username"), properties.getProperty("skype.password")));
             register(new TelegramSys(properties.getProperty("telegram.api")));
             register(new GitterSys(properties.getProperty("gitter.api")));
+
+            try {
+                // HTTP Server
+                new SuperBotServer();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
             SuperBotShows.setup();
 

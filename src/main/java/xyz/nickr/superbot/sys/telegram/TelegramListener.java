@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +22,7 @@ import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResult;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultArticle;
+import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultPhoto;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
@@ -35,6 +37,7 @@ import xyz.nickr.superbot.cmd.util.CurrencyCommand;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.User;
+import xyz.nickr.superbot.web.StandardEndpoints;
 
 /**
  * Created by bo0tzz
@@ -100,7 +103,33 @@ public class TelegramListener implements Listener {
         String[] words = q.split("\\s+");
         List<InlineQueryResult> results = new LinkedList<>();
         if (words.length >= 1) {
-            if (words[0].equalsIgnoreCase("convert")) {
+            if (words[0].startsWith("#")) {
+                String colour = words[0].substring(1);
+                if (StandardEndpoints.PATTERN_HEXCOLOUR.matcher(colour).matches()) {
+                    if (colour.length() == 3) {
+                        String c = "";
+                        for (int i = 0; i < 6; i++)
+                            c += colour.charAt(i/2);
+                        colour = c;
+                    }
+                    if (colour.length() == 6) {
+                        URL url;
+                        try {
+                            url = new URL("http://ci.nickr.xyz:8081/photo/" + colour);
+                            results.add(InlineQueryResultPhoto.builder()
+                                            .parseMode(ParseMode.NONE)
+                                            .title("#" + colour)
+                                            .thumbUrl(url)
+                                            .photoUrl(url)
+                                            .photoWidth(StandardEndpoints.PHOTO_WIDTH)
+                                            .photoHeight(StandardEndpoints.PHOTO_HEIGHT)
+                                            .build());
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } else if (words[0].equalsIgnoreCase("convert")) {
                 // convert [from] [to] [quantity]
                 Map<String, Map<String, Conversion>> convs = ConvertCommand.conversions;
                 if (words.length >= 4) {
@@ -144,6 +173,7 @@ public class TelegramListener implements Listener {
         }
         if (results.isEmpty()) {
             String un = bot.getBotUsername();
+            results.add(res("Colour", "@" + un + " #[colour]", "@" + un + " \\#\\[colour]", false));
             results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un.replace("_", "\\_"), false));
             results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "/currency@" + un.replace("_", "\\_"), false));
         }
