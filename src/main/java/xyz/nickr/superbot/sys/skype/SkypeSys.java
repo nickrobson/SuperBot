@@ -19,15 +19,19 @@ public class SkypeSys implements Sys {
     public EzSkype skype;
 
     public SkypeSys(String username, String password) {
-        try {
-            SkypeListener listener = new SkypeListener(this);
-            skype = new EzSkype(username, password);
-            skype.setErrorHandler(listener);
-            skype.login();
-            skype.getEventManager().registerEvents(listener);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            System.out.println("Loading SuperBot: Skype");
+            try {
+                SkypeListener listener = new SkypeListener(this);
+                skype = new EzSkype(username, password);
+                skype.setErrorHandler(listener);
+                skype.login();
+                skype.getEventManager().registerEvents(listener);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Done SuperBot: Skype");
+        }).start();
     }
 
     @Override

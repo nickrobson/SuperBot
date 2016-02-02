@@ -26,21 +26,25 @@ import xyz.nickr.superbot.sys.User;
  */
 public class TelegramSys implements Sys {
 
-    private final TelegramBot bot;
+    private TelegramBot bot;
 
     private final Map<String, GroupConfiguration> configs = new HashMap<>();
     private final Properties usernameCache = new Properties();
 
     public TelegramSys(String key) {
-        bot = TelegramBot.login(key);
-        bot.getEventsManager().register(new TelegramListener(bot, this));
-        bot.startUpdates(true);
+        new Thread(() -> {
+            System.out.println("Loading SuperBot: Skype");
+            bot = TelegramBot.login(key);
+            bot.getEventsManager().register(new TelegramListener(bot, this));
+            bot.startUpdates(true);
 
-        try {
-            usernameCache.load(new FileInputStream(new File("tgusers.cache")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            try {
+                usernameCache.load(new FileInputStream(new File("tgusers.cache")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Done SuperBot: Skype");
+        }).start();
     }
 
     @Override
