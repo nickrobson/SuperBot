@@ -32,7 +32,6 @@ public class StandardEndpoints {
                     if (!cache.exists()) {
                         BufferedImage img = new BufferedImage(PHOTO_WIDTH, PHOTO_HEIGHT, BufferedImage.TYPE_INT_RGB);
                         int rgb = Integer.parseInt(colour, 16);
-                        System.out.println(rgb);
                         Graphics2D g = img.createGraphics();
                         g.setColor(new Color(rgb));
                         g.fillRect(0, 0, PHOTO_WIDTH, PHOTO_HEIGHT);
