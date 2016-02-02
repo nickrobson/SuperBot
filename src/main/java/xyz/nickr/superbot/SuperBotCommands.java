@@ -107,6 +107,8 @@ public class SuperBotCommands {
         String[] words = msg.split("\\s+");
         String prefix = sys.prefix();
 
+        System.out.println(sys.getName() + ": " + msg);
+
         if (msg.isEmpty() || words.length == 0 || !words[0].startsWith(prefix)) {
             return;
         }
