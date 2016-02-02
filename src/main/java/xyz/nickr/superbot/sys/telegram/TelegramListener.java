@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -17,6 +18,12 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Random;
 import java.util.regex.Matcher;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
@@ -130,6 +137,39 @@ public class TelegramListener implements Listener {
                         }
                     }
                 }
+            } else if (words[0].equalsIgnoreCase("distance")) {
+                if (words.length >= 3) {
+                    String from = words[1], to = words[2];
+                    try {
+                        JSONObject res = Unirest.get(String.format("http://www.distance24.org/route.json?stops=%s|%s",
+                                                        URLEncoder.encode(from, "UTF-8"), URLEncoder.encode(to, "UTF-8")))
+                                        .asJson().getBody().getObject();
+                        JSONArray arr = res.getJSONArray("stops");
+                        boolean fromValid = true, toValid = true;
+                        if (arr.getJSONObject(0).getString("type").equalsIgnoreCase("Invalid"))
+                            fromValid = false;
+                        else
+                            from = arr.getJSONObject(0).getString("city") + ", " + arr.getJSONObject(0).getString("region");
+                        if (arr.getJSONObject(1).getString("type").equalsIgnoreCase("Invalid"))
+                            toValid = false;
+                        else
+                            to = arr.getJSONObject(1).getString("city") + ", " + arr.getJSONObject(1).getString("region");
+                        if (fromValid && toValid) {
+                            double dist = res.getDouble("distance");
+                            String text = "\\[Distance] " + " " + from + " -> " + to + " = " + dist + "km";
+                            results.add(res(from + " => " + to, "Distance: " + dist + "km", text, false));
+                        } else {
+                            String disp = "";
+                            if (!fromValid)
+                                disp += from;
+                            if (!toValid)
+                                disp += (disp.isEmpty() ? "" : ", ") + to;
+                            results.add(res("Invalid city name(s): " + disp, "Try another query", "\\[Distance] Invalid city name(s): " + disp, false));
+                        }
+                    } catch (IOException | UnirestException e) {
+                        e.printStackTrace();
+                    }
+                }
             } else if (words[0].equalsIgnoreCase("convert")) {
                 // convert [from] [to] [quantity]
                 Map<String, Map<String, Conversion>> convs = ConvertCommand.conversions;
@@ -175,6 +215,7 @@ public class TelegramListener implements Listener {
         if (results.isEmpty()) {
             String un = bot.getBotUsername();
             results.add(res("Colour", "@" + un + " #[colour]", "@" + un.replace("_", "\\_") + " \\#\\[colour]", false));
+            results.add(res("Distance", "@" + un + " distance [from] [to]", "@" + un.replace("_", "\\_") + " distance \\[from] \\[to]", false));
             results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un.replace("_", "\\_"), false));
             results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "/currency@" + un.replace("_", "\\_"), false));
         }
