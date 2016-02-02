@@ -90,6 +90,10 @@
 			</snapshots>
 		</repository>
 		<repository>
+			<id>nickr</id>
+			<url>http://nickr.xyz/maven/public/</url>
+		</repository>
+		<repository>
 			<id>jcenter</id>
 			<url>http://jcenter.bintray.com/</url>
 		</repository>
@@ -112,6 +116,12 @@
 			<groupId>pro.zackpollard.telegrambot.api</groupId>
 			<artifactId>jtelegram-botapi</artifactId>
 			<version>0.7.6</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>xyz.nickr</groupId>
+			<artifactId>Jitter</artifactId>
+			<version>0.0.1</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
