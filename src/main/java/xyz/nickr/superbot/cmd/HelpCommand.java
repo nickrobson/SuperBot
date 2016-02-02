@@ -113,8 +113,8 @@ public class HelpCommand implements Command {
         MessageBuilder<?> mb = sys.message();
         if (spaces.length() > 0)
             mb.code(true).escaped(spaces).code(false);
-        mb.bold(true).escaped(wel.trim() + come).bold(false).code(true);
-        strings.forEach(s -> mb.newLine().escaped(s));
+        mb.bold(true).escaped(wel.trim() + come).bold(false);
+        strings.forEach(s -> mb.newLine().code(true).escaped(s).code(false));
         group.sendMessage(mb);
     }
 
