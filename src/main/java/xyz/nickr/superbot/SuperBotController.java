@@ -258,8 +258,8 @@ public class SuperBotController {
     public static GroupConfiguration newGroupConfiguration() {
         File file = null, dir = new File("groups");
         int n = 0;
-        while (file == null || file.exists())
-            file = new File(dir, n + ".cfg");
+        do file = new File(dir, n++ + ".cfg");
+        while (file.exists());
         return new GroupConfiguration(file);
     }
 

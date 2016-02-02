@@ -107,19 +107,15 @@ public class SuperBotCommands {
         String[] words = msg.split("\\s+");
         String prefix = sys.prefix();
 
-        System.out.println(sys.getName() + ": " + msg);
-
         if (msg.isEmpty() || words.length == 0 || !words[0].startsWith(prefix)) {
             return;
         }
 
-        System.out.println(sys.getName() + ": " + msg);
         String cmdName = words[0].substring(prefix.length()).toLowerCase();
         Command cmd = COMMANDS.get(cmdName);
         if (cmd == null)
             return;
 
-        System.out.println(sys.getName() + ": " + msg);
         GroupConfiguration cfg = SuperBotController.getGroupConfiguration(g);
         if (g.getType() == GroupType.GROUP) {
             if (cfg.isDisabled() || !cfg.isCommandEnabled(cmd))
@@ -127,7 +123,6 @@ public class SuperBotCommands {
         } else if (!cmd.userchat())
             return;
 
-        System.out.println(sys.getName() + ": " + msg);
         String[] args = new String[words.length - 1];
         System.arraycopy(words, 1, args, 0, args.length);
 
