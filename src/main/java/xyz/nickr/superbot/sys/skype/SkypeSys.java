@@ -5,6 +5,7 @@ import java.util.Map;
 
 import in.kyle.ezskypeezlife.EzSkype;
 import in.kyle.ezskypeezlife.EzSkypeBuilder;
+import in.kyle.ezskypeezlife.api.SkypeCredentials;
 import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
@@ -24,7 +25,7 @@ public class SkypeSys implements Sys {
             System.out.println("Loading SuperBot: Skype");
             try {
                 SkypeListener listener = new SkypeListener(this);
-                skype = new EzSkypeBuilder(username, password).withAll().setCaptchaHandler(listener).buildAndLogin();
+                skype = new EzSkypeBuilder(new SkypeCredentials(username, password)).withAll().setCaptchaHandler(listener).buildAndLogin();
                 skype.getEventManager().registerEvents(listener);
             } catch (Exception e) {
                 e.printStackTrace();
