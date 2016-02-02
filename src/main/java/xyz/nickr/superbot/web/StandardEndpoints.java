@@ -40,7 +40,7 @@ public class StandardEndpoints {
                         cache.createNewFile();
                         ImageIO.write(img, "png", cache);
                     }
-                    return NanoHTTPD.newChunkedResponse(Response.Status.OK, "image/png", new FileInputStream(cache));
+                    return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, "image/png", new FileInputStream(cache), cache.length());
                 }
             }
         }
