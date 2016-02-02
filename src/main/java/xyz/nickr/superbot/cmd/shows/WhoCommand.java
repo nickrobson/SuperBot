@@ -52,16 +52,16 @@ public class WhoCommand implements Command {
                 String t = pad(shows.get(i), maxLen1);
                 if (cols && shows.size() > rows + i)
                     t += "    |    " + pad(shows.get(rows + i), maxLen2);
-                s += sys.message().text(t).build();
+                s += sys.message().escaped(t).build();
                 if (i != rows - 1)
                     s += "\n   ";
             }
         }
         MessageBuilder<?> mb = sys.message();
         if (shows.size() > 0)
-            group.sendMessage(mb.bold(true).text("Shows " + username + " is watching:").bold(false).html("\n").code(true).text("   " + s));
+            group.sendMessage(mb.bold(true).escaped("Shows " + username + " is watching:").bold(false).raw("\n").code(true).escaped("   " + s));
         else
-            group.sendMessage(mb.bold(true).text("Error: ").bold(false).text("It doesn't look like " + username + " uses me. :("));
+            group.sendMessage(mb.bold(true).escaped("Error: ").bold(false).escaped("It doesn't look like " + username + " uses me. :("));
     }
 
 }

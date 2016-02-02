@@ -31,9 +31,9 @@ public class DeleteTokenCommand implements Command {
             if (prof.has("token")) {
                 prof.remove("token");
                 prof.save();
-                mb.text("Deleted your old token.");
+                mb.escaped("Deleted your old token.");
             } else {
-                mb.text("No token registered to your profile.");
+                mb.escaped("No token registered to your profile.");
             }
             group.sendMessage(mb);
         } else {

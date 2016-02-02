@@ -55,10 +55,10 @@ public class SkypeListener implements SkypeErrorHandler {
         boolean isGroup = convo.getConversationType() == SkypeConversationType.GROUP;
         if (isGroup && conf != null && conf.isShowEditedMessages()) {
             MessageBuilder<?> mb = sys.message();
-            mb.bold(true).text(event.getUser().getUsername()).bold(false);
-            mb.text(" edited their message:").newLine();
-            mb.html(Sys.START_OF_LINE.matcher(event.getContentOld()).replaceAll("&gt; ")).newLine().newLine();
-            mb.html(Sys.START_OF_LINE.matcher(event.getContentNew()).replaceAll("&gt; "));
+            mb.bold(true).escaped(event.getUser().getUsername()).bold(false);
+            mb.escaped(" edited their message:").newLine();
+            mb.raw(Sys.START_OF_LINE.matcher(event.getContentOld()).replaceAll("&gt; ")).newLine().newLine();
+            mb.raw(Sys.START_OF_LINE.matcher(event.getContentNew()).replaceAll("&gt; "));
             convo.sendMessage(mb.build());
         }
         cmd(event.getMessage());

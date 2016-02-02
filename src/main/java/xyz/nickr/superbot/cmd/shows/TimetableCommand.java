@@ -35,7 +35,7 @@ public class TimetableCommand implements Command {
             builder.newLine();
         List<String> names = set.stream().map(s -> s.display).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
-        builder.bold(true).text(day + ": ").bold(false).text(Joiner.join(", ", names));
+        builder.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class TimetableCommand implements Command {
         if (builder.length() > 0) {
             group.sendMessage(builder.build());
         } else {
-            group.sendMessage(builder.text("Something went wrong!"));
+            group.sendMessage(builder.escaped("Something went wrong!"));
         }
     }
 

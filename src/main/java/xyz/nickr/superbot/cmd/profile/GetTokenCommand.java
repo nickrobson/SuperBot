@@ -40,8 +40,8 @@ public class GetTokenCommand implements Command {
                 prof.set("token", token);
                 prof.save();
             }
-            user.sendMessage(sys.message().text("Your registration token: " + token));
-            group.sendMessage(sys.message().text("I've sent you the token. If you didn't receive it, make sure I'm a contact and not blocked."));
+            user.sendMessage(sys.message().escaped("Your registration token: " + token));
+            group.sendMessage(sys.message().escaped("I've sent you the token. If you didn't receive it, make sure I'm a contact and not blocked."));
         } else {
             sendNoProfile(sys, user, group);
         }

@@ -38,16 +38,16 @@ public class AddPermCommand implements Command {
             sendUsage(sys, user, group);
         } else {
             if (!Profile.getProfile(args[0]).isPresent()) {
-                group.sendMessage(sys.message().text("No profile with name = " + args[0].toLowerCase()));
+                group.sendMessage(sys.message().escaped("No profile with name = " + args[0].toLowerCase()));
                 return;
             }
-            MessageBuilder<?> mb = sys.message().bold(true).text(args[0]).bold(false);
+            MessageBuilder<?> mb = sys.message().bold(true).escaped(args[0]).bold(false);
             if (SuperBotPermissions.set(args[0], args[1], true)) {
-                mb.text(" now has: ");
+                mb.escaped(" now has: ");
             } else {
-                mb.text(" already has: ");
+                mb.escaped(" already has: ");
             }
-            group.sendMessage(mb.bold(true).text(args[1]).bold(false));
+            group.sendMessage(mb.bold(true).escaped(args[1]).bold(false));
         }
     }
 

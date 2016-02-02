@@ -30,10 +30,10 @@ public class FindProfileCommand implements Command {
         if (args.length == 0) {
             Optional<Profile> prof = user.getProfile();
             if (prof.isPresent()) {
-                mb.bold(true).text("Your profile (" + prof.get().getName() + "):").bold(false);
+                mb.bold(true).escaped("Your profile (" + prof.get().getName() + "):").bold(false);
                 for (Entry<String, String> acc : prof.get().getAccounts().entrySet()) {
                     Sys sy = SuperBotController.PROVIDERS.get(acc.getKey());
-                    mb.newLine().text("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
+                    mb.newLine().escaped("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
                 sendNoProfile(sys, user, group);
@@ -43,13 +43,13 @@ public class FindProfileCommand implements Command {
             String s = sys.isUIDCaseSensitive() ? args[0] : args[0].toLowerCase();
             Optional<Profile> prof = Profile.get(sys, s);
             if (prof.isPresent()) {
-                mb.bold(true).text(" " + s + "'s profile (" + prof.get().getName() + "):").bold(false);
+                mb.bold(true).escaped(" " + s + "'s profile (" + prof.get().getName() + "):").bold(false);
                 for (Entry<String, String> acc : prof.get().getAccounts().entrySet()) {
                     Sys sy = SuperBotController.PROVIDERS.get(acc.getKey());
-                    mb.newLine().text("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
+                    mb.newLine().escaped("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
-                mb.text("No profile with (provider: " + sys.getName() + ", name: " + s + ")");
+                mb.escaped("No profile with (provider: " + sys.getName() + ", name: " + s + ")");
             }
         }
         group.sendMessage(mb);

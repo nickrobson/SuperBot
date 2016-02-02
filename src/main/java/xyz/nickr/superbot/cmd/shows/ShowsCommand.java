@@ -35,7 +35,7 @@ public class ShowsCommand implements Command {
                 sb.append(s);
             }
             if (sb.length() > 0)
-                send.add(sys.message().text("[" + show.getDisplay() + "] " + sb.toString()).build());
+                send.add(sys.message().escaped("[" + show.getDisplay() + "] " + sb.toString()).build());
         }
         send.sort(String.CASE_INSENSITIVE_ORDER);
         boolean cols = sys.columns();
@@ -46,9 +46,9 @@ public class ShowsCommand implements Command {
             String spaces = "";
             for (int j = send.get(i).length(); j < maxLen1; j++)
                 spaces += ' ';
-            builder.html(send.get(i)).text(spaces);
+            builder.raw(send.get(i)).escaped(spaces);
             if (cols && send.size() > rows + i) {
-                builder.text("    ").html(send.get(rows + i));
+                builder.escaped("    ").raw(send.get(rows + i));
             }
             if (i != rows - 1)
                 builder.newLine();

@@ -10,9 +10,9 @@ public interface MessageBuilder<T extends MessageBuilder<T>> {
 
     T name(User user);
 
-    T text(String text);
+    T escaped(String text);
 
-    T html(String text);
+    T raw(String text);
 
     T link(String url, String text);
 

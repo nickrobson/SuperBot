@@ -41,10 +41,10 @@ public class WipeCommand implements Command {
         String toRemove = args[0];
         AtomicBoolean wiped = SuperBotController.wipe(toRemove);
         if (wiped.get()) {
-            group.sendMessage(sys.message().text("Wiped " + toRemove));
+            group.sendMessage(sys.message().escaped("Wiped " + toRemove));
             SuperBotController.saveProgress();
         } else {
-            group.sendMessage(sys.message().text("No data to wipe on " + toRemove));
+            group.sendMessage(sys.message().escaped("No data to wipe on " + toRemove));
         }
     }
 

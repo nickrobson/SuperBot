@@ -56,17 +56,17 @@ public class HtmlMessageBuilder implements MessageBuilder<HtmlMessageBuilder> {
 
     @Override
     public HtmlMessageBuilder name(User user) {
-        return text(user.name());
+        return escaped(user.name());
     }
 
     @Override
-    public HtmlMessageBuilder text(String text) {
+    public HtmlMessageBuilder escaped(String text) {
         msg.append(html_escape(text));
         return this;
     }
 
     @Override
-    public HtmlMessageBuilder html(String text) {
+    public HtmlMessageBuilder raw(String text) {
         msg.append(text);
         return this;
     }

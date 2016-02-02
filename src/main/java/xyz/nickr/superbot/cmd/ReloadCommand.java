@@ -35,7 +35,7 @@ public class ReloadCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        Message msg = group.sendMessage(sys.message().text(" "));
+        Message msg = group.sendMessage(sys.message().escaped(" "));
         SuperBotController.saveProgress();
         SuperBotController.savePermissions();
         new Thread(() -> {

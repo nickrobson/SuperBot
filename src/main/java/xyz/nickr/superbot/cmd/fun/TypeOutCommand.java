@@ -33,7 +33,7 @@ public class TypeOutCommand implements Command {
                 try {
                     Thread.sleep(250);
                 } catch (Exception e) {}
-                msg.edit(sys.message().text(str.substring(0, ++c)));
+                msg.edit(sys.message().escaped(str.substring(0, ++c)));
             }
         }, "TypeOut Thread").start();
     }

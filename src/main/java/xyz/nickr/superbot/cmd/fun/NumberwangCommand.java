@@ -37,9 +37,9 @@ public class NumberwangCommand implements Command {
         if (args.length == 0)
             sendUsage(sys, user, group);
         else if (random.nextInt(8) == random.nextInt(8))
-            group.sendMessage(sys.message().text("That's numberwang!"));
+            group.sendMessage(sys.message().escaped("That's numberwang!"));
         else
-            group.sendMessage(sys.message().text("Sorry, that's not numberwang!"));
+            group.sendMessage(sys.message().escaped("Sorry, that's not numberwang!"));
     }
 
 }

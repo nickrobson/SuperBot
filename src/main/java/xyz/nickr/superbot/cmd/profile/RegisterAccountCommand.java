@@ -37,15 +37,15 @@ public class RegisterAccountCommand implements Command {
                     if (cfgtoken.equals(token)) {
                         prof.remove("token");
                         prof.setAccount(sys, user, true);
-                        mb.text("Added account (provider: " + sys.getName() + ", uid: " + user.getUniqueId() + ") to profile (name: " + prof.getName() + ")");
+                        mb.escaped("Added account (provider: " + sys.getName() + ", uid: " + user.getUniqueId() + ") to profile (name: " + prof.getName() + ")");
                     } else {
-                        mb.text("Invalid token.");
+                        mb.escaped("Invalid token.");
                     }
                 } else {
-                    mb.text("No token registered to your profile.");
+                    mb.escaped("No token registered to your profile.");
                 }
             } else {
-                mb.text("No profile with name = " + args[0].toLowerCase());
+                mb.escaped("No profile with name = " + args[0].toLowerCase());
             }
         }
         group.sendMessage(mb);

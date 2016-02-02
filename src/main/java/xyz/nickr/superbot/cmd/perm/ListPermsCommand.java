@@ -38,16 +38,16 @@ public class ListPermsCommand implements Command {
             if (args.length == 0)
                 sendNoProfile(sys, user, group);
             else
-                group.sendMessage(mb.text("No profile with name = " + args[0].toLowerCase()));
+                group.sendMessage(mb.escaped("No profile with name = " + args[0].toLowerCase()));
             return;
         }
         String name = prof.get().getName();
         Set<String> perms = SuperBotPermissions.get(name);
         if (perms.isEmpty()) {
-            mb.bold(true).text("Profile " + name + " has no permissions.").bold(false);
+            mb.bold(true).escaped("Profile " + name + " has no permissions.").bold(false);
         } else {
-            mb.bold(true).text("Profile " + name + " has the following permissions:").bold(false).newLine();
-            mb.text(Joiner.join(", ", perms));
+            mb.bold(true).escaped("Profile " + name + " has the following permissions:").bold(false).newLine();
+            mb.escaped(Joiner.join(", ", perms));
         }
         group.sendMessage(mb.toString());
     }

@@ -31,10 +31,10 @@ public class GetProfileCommand implements Command {
             Optional<Profile> profile = user.getProfile();
             if (profile.isPresent()) {
                 Profile prof = profile.get();
-                mb.bold(true).text("Your profile (" + prof.getName() + "):").bold(false);
+                mb.bold(true).escaped("Your profile (" + prof.getName() + "):").bold(false);
                 for (Entry<String, String> acc : prof.getAccounts().entrySet()) {
                     Sys sy = SuperBotController.PROVIDERS.get(acc.getKey());
-                    mb.newLine().text("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
+                    mb.newLine().escaped("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
                 sendNoProfile(sys, user, group);
@@ -44,13 +44,13 @@ public class GetProfileCommand implements Command {
             Optional<Profile> profile = Profile.getProfile(args[0]);
             if (profile.isPresent()) {
                 Profile prof = profile.get();
-                mb.bold(true).text("Profile (" + prof.getName() + "):").bold(false);
+                mb.bold(true).escaped("Profile (" + prof.getName() + "):").bold(false);
                 for (Entry<String, String> acc : prof.getAccounts().entrySet()) {
                     Sys sy = SuperBotController.PROVIDERS.get(acc.getKey());
-                    mb.newLine().text("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
+                    mb.newLine().escaped("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
-                mb.text("No profile with (name: " + args[0].toLowerCase() + ")");
+                mb.escaped("No profile with (name: " + args[0].toLowerCase() + ")");
             }
         }
         group.sendMessage(mb);

@@ -23,20 +23,20 @@ public class VersionCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> builder = sys.message();
-        builder.bold(true).text("Version: ").bold(false).text(SuperBotController.VERSION).newLine();
-        builder.bold(true).text("Build Number: ").bold(false);
+        builder.bold(true).escaped("Version: ").bold(false).escaped(SuperBotController.VERSION).newLine();
+        builder.bold(true).escaped("Build Number: ").bold(false);
         int build = SuperBotController.BUILD_NUMBER;
         if (build > 0)
-            builder.text(Integer.toString(build));
+            builder.escaped(Integer.toString(build));
         else
-            builder.text("Unknown");
+            builder.escaped("Unknown");
         if (SuperBotController.GIT_COMMIT_IDS.length > 0)
-            builder.newLine().bold(true).text("Commit Summary:").bold(false);
+            builder.newLine().bold(true).escaped("Commit Summary:").bold(false);
         for (int i = 0; i < SuperBotController.GIT_COMMIT_IDS.length; i++) {
             String id = SuperBotController.GIT_COMMIT_IDS[i].substring(0, 8);
             String msg = SuperBotController.GIT_COMMIT_MESSAGES[i];
             String author = SuperBotController.GIT_COMMIT_AUTHORS[i];
-            builder.newLine().italic(true).text(author + " ").italic(false).text(msg).italic(true).text(" (" + id + ")").italic(false).build();
+            builder.newLine().italic(true).escaped(author + " ").italic(false).escaped(msg).italic(true).escaped(" (" + id + ")").italic(false).build();
         }
         group.sendMessage(builder.toString());
     }

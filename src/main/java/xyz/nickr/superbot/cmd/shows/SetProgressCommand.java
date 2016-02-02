@@ -34,20 +34,20 @@ public class SetProgressCommand implements Command {
 
             MessageBuilder<?> mb = sys.message();
             if (show == null) {
-                group.sendMessage(mb.text("Invalid show name: " + args[0]));
+                group.sendMessage(mb.escaped("Invalid show name: " + args[0]));
             } else if (ep.equalsIgnoreCase("none") || ep.equalsIgnoreCase("remove")) {
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.remove(user.getUsername());
                 SuperBotController.PROGRESS.put(show.getMainName(), prg);
-                group.sendMessage(mb.text("Removed " + user.getDisplayName().orElse(user.getUsername()) + "'s progress on ").bold(true).text(show.getDisplay()));
+                group.sendMessage(mb.escaped("Removed " + user.getDisplayName().orElse(user.getUsername()) + "'s progress on ").bold(true).escaped(show.getDisplay()));
                 SuperBotController.saveProgress();
             } else if (!SuperBotShows.EPISODE_PATTERN.matcher(ep).matches()) {
-                group.sendMessage(mb.text("Invalid episode: " + ep + " (doesn't match SxEyy format)"));
+                group.sendMessage(mb.escaped("Invalid episode: " + ep + " (doesn't match SxEyy format)"));
             } else {
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.put(user.getUsername(), ep);
                 SuperBotController.PROGRESS.put(show.getMainName(), prg);
-                group.sendMessage(mb.text("Set " + user.getDisplayName().orElse(user.getUsername()) + "'s progress on ").bold(true).text(show.getDisplay()).bold(false).text(" to " + ep));
+                group.sendMessage(mb.escaped("Set " + user.getDisplayName().orElse(user.getUsername()) + "'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to " + ep));
                 SuperBotController.saveProgress();
             }
         }

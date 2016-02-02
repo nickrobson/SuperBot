@@ -54,17 +54,17 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
 
     @Override
     public TelegramMessageBuilder name(User user) {
-        return text(user.name());
+        return escaped(user.name());
     }
 
     @Override
-    public TelegramMessageBuilder text(String text) {
+    public TelegramMessageBuilder escaped(String text) {
         msg.append(markdown_escape(text, code));
         return this;
     }
 
     @Override
-    public TelegramMessageBuilder html(String text) {
+    public TelegramMessageBuilder raw(String text) {
         msg.append(text);
         return this;
     }

@@ -41,12 +41,12 @@ public class RemoveShowCommand implements Command {
             Show show = SuperBotShows.getShow(args[0]);
             if (show != null) {
                 if (SuperBotShows.removeShow(args[0])) {
-                    group.sendMessage(mb.bold(true).text("Removed show: ").bold(false).text(show.display));
+                    group.sendMessage(mb.bold(true).escaped("Removed show: ").bold(false).escaped(show.display));
                 } else {
-                    group.sendMessage(mb.text("Something went wrong."));
+                    group.sendMessage(mb.escaped("Something went wrong."));
                 }
             } else {
-                group.sendMessage(mb.text("I couldn't find a show with the name \"" + args[0] + "\""));
+                group.sendMessage(mb.escaped("I couldn't find a show with the name \"" + args[0] + "\""));
             }
         }
     }

@@ -25,7 +25,7 @@ public class UidCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        group.sendMessage(sys.message().text("This group's longId is: ").bold(true).text(group.getUniqueId()));
+        group.sendMessage(sys.message().escaped("This group's longId is: ").bold(true).escaped(group.getUniqueId()));
     }
 
     @Override

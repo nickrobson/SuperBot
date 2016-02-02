@@ -54,16 +54,16 @@ public class AddShowCommand implements Command {
             if (show == null) {
                 show = new SuperBotShows.Show(showName, day, aliases);
                 if (SuperBotShows.addShow(show)) {
-                    mb.italic(true).text("Let's review the info:").italic(false);
-                    mb.bold(true).text("\nDisplay Name: ").bold(false).text(show.display);
-                    mb.bold(true).text("\nDay of the Week: ").bold(false).text(show.day);
-                    mb.bold(true).text("\nAliases: ").bold(false).text(Arrays.asList(show.names).toString());
+                    mb.italic(true).escaped("Let's review the info:").italic(false);
+                    mb.bold(true).escaped("\nDisplay Name: ").bold(false).escaped(show.display);
+                    mb.bold(true).escaped("\nDay of the Week: ").bold(false).escaped(show.day);
+                    mb.bold(true).escaped("\nAliases: ").bold(false).escaped(Arrays.asList(show.names).toString());
                     group.sendMessage(mb);
                 } else {
-                    group.sendMessage(mb.text("Something went wrong."));
+                    group.sendMessage(mb.escaped("Something went wrong."));
                 }
             } else {
-                group.sendMessage(mb.text("A show already exists with the name \"" + showName + "\""));
+                group.sendMessage(mb.escaped("A show already exists with the name \"" + showName + "\""));
             }
         }
     }

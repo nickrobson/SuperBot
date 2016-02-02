@@ -77,7 +77,7 @@ public class ConvertCommand implements Command {
                 for (Map.Entry<String, Conversion> sub : cell.getValue().entrySet()) {
                     if (builder.length() > 0)
                         builder.newLine();
-                    builder.text(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(), sub.getValue().from, sub.getValue().to));
+                    builder.escaped(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(), sub.getValue().from, sub.getValue().to));
                 }
             }
             group.sendMessage(builder.toString());
@@ -99,21 +99,21 @@ public class ConvertCommand implements Command {
                     try {
                         new BigDecimal(input);
                     } catch (Exception ex) {
-                        group.sendMessage(sys.message().text("[Convert] The conversion between " + from + " and " + to + " requires a number to be input."));
+                        group.sendMessage(sys.message().escaped("[Convert] The conversion between " + from + " and " + to + " requires a number to be input."));
                         return;
                     }
                 }
                 try {
                     String res = conv.apply(input);
                     if (conv.appendSymbol)
-                        group.sendMessage(sys.message().text("[Convert] " + String.format("%s%s => %s%s", input, from, res, to)));
+                        group.sendMessage(sys.message().escaped("[Convert] " + String.format("%s%s => %s%s", input, from, res, to)));
                     else
-                        group.sendMessage(sys.message().text("[Convert] " + String.format("(%s => %s) %s => %s", from, to, input, res)));
+                        group.sendMessage(sys.message().escaped("[Convert] " + String.format("(%s => %s) %s => %s", from, to, input, res)));
                 } catch (Throwable t) {
-                    group.sendMessage(sys.message().text("[Convert] An error occurred while converting : " + t.getClass().getSimpleName() + "\n" + t.getMessage()));
+                    group.sendMessage(sys.message().escaped("[Convert] An error occurred while converting : " + t.getClass().getSimpleName() + "\n" + t.getMessage()));
                 }
             } else {
-                group.sendMessage(sys.message().text("[Convert] No conversion found between " + from + " and " + to + "!"));
+                group.sendMessage(sys.message().escaped("[Convert] No conversion found between " + from + " and " + to + "!"));
             }
         }
     }
