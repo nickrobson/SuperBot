@@ -102,6 +102,7 @@ public class TelegramListener implements Listener {
         System.out.println("FROM: " + (event.getQuery().getSender().getUsername() != null ? event.getQuery().getSender().getUsername() : String.valueOf(event.getQuery().getSender().getId())));
         String[] words = q.split("\\s+");
         List<InlineQueryResult> results = new LinkedList<>();
+        boolean is_personal = false;
         if (words.length >= 1) {
             if (words[0].startsWith("#")) {
                 String colour = words[0].substring(1);
@@ -173,12 +174,12 @@ public class TelegramListener implements Listener {
         }
         if (results.isEmpty()) {
             String un = bot.getBotUsername();
-            results.add(res("Colour", "@" + un + " #[colour]", "@" + un + " \\#\\[colour]", false));
+            results.add(res("Colour", "@" + un + " #[colour]", "@" + un.replace("_", "\\_") + " \\#\\[colour]", false));
             results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un.replace("_", "\\_"), false));
             results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "/currency@" + un.replace("_", "\\_"), false));
         }
         InlineQueryResponse res = InlineQueryResponse.builder()
-                                        .is_personal(false)
+                                        .is_personal(is_personal)
                                         .results(results)
                                         .cache_time(0)
                                         .build();
