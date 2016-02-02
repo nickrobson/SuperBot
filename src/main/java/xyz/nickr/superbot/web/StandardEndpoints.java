@@ -15,7 +15,7 @@ import fi.iki.elonen.NanoHTTPD.Response;
 public class StandardEndpoints {
 
     public static final Pattern PATTERN_HEXCOLOUR = Pattern.compile("(?i)(?:[a-z0-9]{3})|(?:[a-z0-9]{6})");
-    public static final int PHOTO_WIDTH = 64, PHOTO_HEIGHT = 64;
+    public static final int PHOTO_WIDTH = 128, PHOTO_HEIGHT = 128;
 
     public static final Endpoint PHOTO = (session, routes) -> {
         if (routes.length > 1) {
