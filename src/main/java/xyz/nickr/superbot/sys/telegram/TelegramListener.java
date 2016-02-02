@@ -141,8 +141,7 @@ public class TelegramListener implements Listener {
                 if (words.length >= 3) {
                     String from = words[1], to = words[2];
                     try {
-                        JSONObject res = Unirest.get(String.format("http://www.distance24.org/route.json?stops=%s|%s",
-                                                        URLEncoder.encode(from, "UTF-8"), URLEncoder.encode(to, "UTF-8")))
+                        JSONObject res = Unirest.get(String.format("http://www.distance24.org/route.json?stops=%s", URLEncoder.encode(from + "|" + to, "UTF-8")))
                                         .asJson().getBody().getObject();
                         JSONArray arr = res.getJSONArray("stops");
                         boolean fromValid = true, toValid = true;
