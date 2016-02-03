@@ -120,20 +120,17 @@ public class TelegramListener implements Listener {
                 if (PATTERN_HEXCOLOUR_FREE.matcher(colour).matches()) {
                     String hex = "0123456789ABCDEF";
                     if (colour.length() == 2) {
-                        String co = colour;
                         for (int i = 0; i < hex.length(); i++) {
-                            co += hex.charAt(i);
+                            String co = colour + hex.charAt(i);
+                            String c = "";
+                            for (int x = 0; x < 6; i++)
+                                c += co.charAt(i/2);
+                            colours.add(c);
                         }
-                        String c = "";
-                        for (int i = 0; i < 6; i++)
-                            c += co.charAt(i/2);
-                        colours.add(c);
                     } else if (colour.length() == 5) {
-                        String co = colour;
                         for (int i = 0; i < hex.length(); i++) {
-                            co += hex.charAt(i);
+                            colours.add(colour + hex.charAt(i));
                         }
-                        colours.add(co);
                     } else if (colour.length() == 3 || colour.length() == 6) {
                         if (colour.length() == 3) {
                             String c = "";
