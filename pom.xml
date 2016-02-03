@@ -8,7 +8,7 @@
 	
   	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jitter.version>0.2.0</jitter.version>
+        <jitter.version>1.0.0</jitter.version>
  	</properties>
  	 
 	<build>
