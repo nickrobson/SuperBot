@@ -8,6 +8,7 @@
 	
   	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jitter.version>0.2.0</jitter.version>
  	</properties>
  	 
 	<build>
@@ -121,7 +122,7 @@
 		<dependency>
 			<groupId>xyz.nickr</groupId>
 			<artifactId>Jitter</artifactId>
-			<version>0.1.0</version>
+			<version>${jitter.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

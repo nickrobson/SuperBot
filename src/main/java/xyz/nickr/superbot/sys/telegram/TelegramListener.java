@@ -249,15 +249,15 @@ public class TelegramListener implements Listener {
         event.getQuery().answer(bot, res);
     }
 
-    String alphabet = "abcdefghijklmnopqrstuvwxyz";
-    String flippedalph = "ɐqɔpǝɟbɥıظʞןɯuodbɹsʇnʌʍxʎz";
+    String alphabet = "abcdefghijklmnopqrstuvwxyz',\\/`?!";
+    String flippedalph = "ɐqɔpǝɟbɥıظʞןɯuodbɹsʇnʌʍxʎz,'/\\,¿¡";
 
     private String flip(String text) {
         StringBuilder sb = new StringBuilder();
         for (char c : text.toCharArray()) {
             int idx;
             char r = Character.isAlphabetic(c) ? Character.toLowerCase(c) : c;
-            if ((idx = alphabet.indexOf(r)) > 0)
+            if ((idx = alphabet.indexOf(r)) >= 0)
                 c = flippedalph.charAt(idx);
             sb.append(c);
         }
