@@ -232,7 +232,7 @@ public class TelegramListener implements Listener {
         }
         if (results.isEmpty()) {
             String un = bot.getBotUsername();
-            results.add(res("Colour", "@" + un + " #[colour]", "@" + un.replace("_", "\\_") + " \\#\\[colour]", false));
+            results.add(res("Colour", "@" + un + " #[colour]", "@" + un.replace("_", "\\_") + " #\\[colour]", false));
             results.add(res("Distance", "@" + un + " distance [from] [to]", "@" + un.replace("_", "\\_") + " distance \\[from] \\[to]", false));
             results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un.replace("_", "\\_"), false));
             results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "/currency@" + un.replace("_", "\\_"), false));
