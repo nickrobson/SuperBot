@@ -8,15 +8,11 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,7 +52,6 @@ public class TelegramListener implements Listener {
 
     private final TelegramBot bot;
     private final TelegramSys sys;
-    private final Random random = new Random();
     private final Properties uids = new Properties();
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
@@ -247,29 +242,6 @@ public class TelegramListener implements Listener {
 
     @Override
     public void onInlineResultChosen(InlineResultChosenEvent event) {
-    }
-
-    @SuppressWarnings("unused")
-    private String getUniqueId(String out) {
-        String uid = uids.getProperty(out);
-        if (uid == null) {
-            uid = "";
-            String chars = "abcdefghijklmnopqrstuvwxyz";
-            chars += chars.toUpperCase() + "0123456789";
-            for (int i = 0; i < 8; i++)
-                uid += chars.charAt(random.nextInt(chars.length()));
-            uids.setProperty(out, uid);
-            try {
-                Path tmp = Files.createTempFile("superbot-tguidscache-" + System.nanoTime(), ".tmp");
-                uids.store(Files.newBufferedWriter(tmp), "Telegram Inline UIDs Cache file");
-                Files.copy(tmp, new File("tguids.cache").toPath(), StandardCopyOption.REPLACE_EXISTING);
-                if (!tmp.toFile().delete())
-                    tmp.toFile().deleteOnExit();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return uid;
     }
 
 }
