@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
+import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.util.ConvertCommand;
@@ -183,6 +185,12 @@ public class TelegramListener implements Listener {
                         e.printStackTrace();
                     }
                 }
+            } else if (words[0].equalsIgnoreCase("flip")) {
+                if (words.length > 1) {
+                    String[] args = Arrays.copyOfRange(words, 1, words.length);
+                    String text = Joiner.join(" ", args);
+                    results.add(res("flip text", flip("flip text"), flip(text), false));
+                }
             } else if (words[0].equalsIgnoreCase("convert")) {
                 // convert [from] [to] [quantity]
                 Map<String, Map<String, Conversion>> convs = ConvertCommand.conversions;
@@ -227,6 +235,7 @@ public class TelegramListener implements Listener {
         }
         if (results.isEmpty()) {
             String un = bot.getBotUsername();
+            results.add(res("Flip", "@" + un + " flip [text]", "@" + un.replace("_", "\\_") + " flip \\[text]", false));
             results.add(res("Colour", "@" + un + " #[colour]", "@" + un.replace("_", "\\_") + " #\\[colour]", false));
             results.add(res("Distance", "@" + un + " distance [from] [to]", "@" + un.replace("_", "\\_") + " distance \\[from] \\[to]", false));
             results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un.replace("_", "\\_"), false));
@@ -238,6 +247,21 @@ public class TelegramListener implements Listener {
                                         .cache_time(0)
                                         .build();
         event.getQuery().answer(bot, res);
+    }
+
+    String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    String flippedalph = "ɐqɔpǝɟbɥıظʞןɯuodbɹsʇnʌʍxʎz";
+
+    private String flip(String text) {
+        StringBuilder sb = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            int idx;
+            char r = Character.isAlphabetic(c) ? Character.toLowerCase(c) : c;
+            if ((idx = alphabet.indexOf(r)) > 0)
+                c = flippedalph.charAt(idx);
+            sb.append(c);
+        }
+        return sb.toString();
     }
 
     @Override

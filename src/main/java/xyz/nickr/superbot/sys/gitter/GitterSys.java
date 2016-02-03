@@ -29,9 +29,10 @@ public class GitterSys implements Sys {
         this.jitter = Jitter.builder().token(token).build();
         this.jitter.onMessage(m -> SuperBotCommands.exec(this, wrap(m.getRoom()), wrap(m.getSender()), wrap(m)));
         this.jitter.getCurrentRooms().forEach(room -> {
-            this.jitter.bayeux().subscribeRoomMessages(room.getID());
-            //room.beginMessageStreaming();
-            //room.beginEventsStreaming();
+            jitter.bayeux().subscribeRoom(room.getID());
+            jitter.bayeux().subscribeRoomUsers(room.getID());
+            jitter.bayeux().subscribeRoomEvents(room.getID());
+            jitter.bayeux().subscribeRoomMessages(room.getID());
         });
         System.out.println("Done SuperBot: Gitter (" + (System.currentTimeMillis() - now) + "ms)");
     }
