@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Random;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,6 +51,8 @@ import xyz.nickr.superbot.web.StandardEndpoints;
  * Created by bo0tzz
  */
 public class TelegramListener implements Listener {
+
+    public static final Pattern PATTERN_HEXCOLOUR_FREE = Pattern.compile("(?:[A-F0-9]{2,3})|(?:[A-F0-9]{5,6})");
 
     private final TelegramBot bot;
     private final TelegramSys sys;
@@ -112,29 +115,48 @@ public class TelegramListener implements Listener {
         boolean is_personal = false;
         if (words.length >= 1) {
             if (words[0].startsWith("#")) {
-                String colour = words[0].substring(1);
-                if (StandardEndpoints.PATTERN_HEXCOLOUR.matcher(colour).matches()) {
-                    if (colour.length() == 3) {
+                String colour = words[0].substring(1).toUpperCase();
+                List<String> colours = new LinkedList<>();
+                if (PATTERN_HEXCOLOUR_FREE.matcher(colour).matches()) {
+                    String hex = "0123456789ABCDEF";
+                    if (colour.length() == 2) {
+                        String co = colour;
+                        for (int i = 0; i < hex.length(); i++) {
+                            co += hex.charAt(i);
+                        }
                         String c = "";
                         for (int i = 0; i < 6; i++)
-                            c += colour.charAt(i/2);
-                        colour = c;
-                    }
-                    if (colour.length() == 6) {
-                        URL url;
-                        try {
-                            url = new URL("http://ci.nickr.xyz:8081/photo/" + colour);
-                            results.add(InlineQueryResultPhoto.builder()
-                                            .parseMode(ParseMode.NONE)
-                                            .title("#" + colour)
-                                            .thumbUrl(url)
-                                            .photoUrl(url)
-                                            .photoWidth(StandardEndpoints.PHOTO_WIDTH)
-                                            .photoHeight(StandardEndpoints.PHOTO_HEIGHT)
-                                            .build());
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
+                            c += co.charAt(i/2);
+                        colours.add(c);
+                    } else if (colour.length() == 5) {
+                        String co = colour;
+                        for (int i = 0; i < hex.length(); i++) {
+                            co += hex.charAt(i);
                         }
+                        colours.add(co);
+                    } else if (colour.length() == 3 || colour.length() == 6) {
+                        if (colour.length() == 3) {
+                            String c = "";
+                            for (int i = 0; i < 6; i++)
+                                c += colour.charAt(i/2);
+                            colours.add(c);
+                        }
+                    }
+                }
+                for (String co : colours) {
+                    URL url;
+                    try {
+                        url = new URL("http://ci.nickr.xyz:8081/photo/" + co);
+                        results.add(InlineQueryResultPhoto.builder()
+                                        .parseMode(ParseMode.NONE)
+                                        .title("#" + co)
+                                        .thumbUrl(url)
+                                        .photoUrl(url)
+                                        .photoWidth(StandardEndpoints.PHOTO_WIDTH)
+                                        .photoHeight(StandardEndpoints.PHOTO_HEIGHT)
+                                        .build());
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
                     }
                 }
             } else if (words[0].equalsIgnoreCase("distance")) {
@@ -148,11 +170,11 @@ public class TelegramListener implements Listener {
                         if (arr.getJSONObject(0).getString("type").equalsIgnoreCase("Invalid"))
                             fromValid = false;
                         else
-                            from = arr.getJSONObject(0).getString("city") + ", " + arr.getJSONObject(0).getString("region");
+                            from = arr.getJSONObject(0).getString("city") + (arr.getJSONObject(0).has("region") ? ", " + arr.getJSONObject(0).getString("region") : "");
                         if (arr.getJSONObject(1).getString("type").equalsIgnoreCase("Invalid"))
                             toValid = false;
                         else
-                            to = arr.getJSONObject(1).getString("city") + ", " + arr.getJSONObject(1).getString("region");
+                            to = arr.getJSONObject(1).getString("city") + ", " + (arr.getJSONObject(1).has("region") ? ", " + arr.getJSONObject(1).getString("region") : "");
                         if (fromValid && toValid) {
                             double dist = res.getDouble("distance");
                             String text = "\\[Distance] " + " " + from + " -> " + to + " = " + dist + "km";
