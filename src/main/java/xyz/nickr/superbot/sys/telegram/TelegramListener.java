@@ -123,8 +123,8 @@ public class TelegramListener implements Listener {
                         for (int i = 0; i < hex.length(); i++) {
                             String co = colour + hex.charAt(i);
                             String c = "";
-                            for (int x = 0; x < 6; i++)
-                                c += co.charAt(i/2);
+                            for (int x = 0; x < 6; x++)
+                                c += co.charAt(x/2);
                             colours.add(c);
                         }
                     } else if (colour.length() == 5) {
