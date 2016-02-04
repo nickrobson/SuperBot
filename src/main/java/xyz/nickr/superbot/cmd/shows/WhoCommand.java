@@ -56,7 +56,7 @@ public class WhoCommand implements Command {
             }
         }
         List<String> shows = new ArrayList<>();
-        Map<Show, String> progress = SuperBotController.getUserProgress(username);
+        Map<Show, String> progress = SuperBotController.getUserProgress(username.toLowerCase());
         progress.forEach((show, ep) -> {
             if (show != null)
                 shows.add(show.getDisplay() + "    (" + ep + ")");
