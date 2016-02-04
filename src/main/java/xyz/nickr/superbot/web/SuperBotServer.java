@@ -22,7 +22,7 @@ public class SuperBotServer extends NanoHTTPD {
     public SuperBotServer() throws IOException {
         super(8081);
         StandardEndpoints.register();
-        start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+        start(NanoHTTPD.SOCKET_READ_TIMEOUT, true);
     }
 
     @Override

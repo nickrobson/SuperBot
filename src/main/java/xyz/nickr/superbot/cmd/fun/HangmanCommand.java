@@ -13,6 +13,7 @@ import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
+import xyz.nickr.superbot.sys.Profile;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -42,7 +43,10 @@ public class HangmanCommand implements Command {
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> mb = sys.message();
         String prefix = sys.prefix();
-        if (group.getType() == GroupType.USER)
+        Profile profile = user.getProfile().orElse(null);
+        if (profile == null) {
+            group.sendMessage("[Hangman] You need a profile to use this. Use " + prefix + "createprofile.");
+        } else if (group.getType() == GroupType.USER)
             if (currentPhrase != null)
                 group.sendMessage(mb.escaped("[Hangman] There is already a game in progress.").newLine().escaped("[Hangman] To take a guess, send a message in a group."));
             else if (args.length == 0)
@@ -100,7 +104,7 @@ public class HangmanCommand implements Command {
                                 numChanged++;
                             }
                         }
-                        numCorrect.put(user.getUsername(), numCorrect.getOrDefault(user.getUsername(), 0) + numChanged);
+                        numCorrect.put(profile.getName(), numCorrect.getOrDefault(profile.getName(), 0) + numChanged);
                         found = sb.toString();
                         if (currentPhrase.equals(found)) {
                             MessageBuilder<?> stats = sys.message();

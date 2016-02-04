@@ -3,6 +3,7 @@ package xyz.nickr.superbot.cmd.shows;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.SuperBotShows.Show;
@@ -10,6 +11,7 @@ import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
+import xyz.nickr.superbot.sys.Profile;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -34,7 +36,25 @@ public class WhoCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        String username = args.length > 0 ? args[0].toLowerCase() : user.getUsername();
+        String prefix = sys.prefix();
+        String username;
+        if (args.length > 0) {
+            Optional<Profile> profile = Profile.getProfile(args[0]);
+            if (profile.isPresent())
+                username = profile.get().getName();
+            else {
+                group.sendMessage("No profile with name: " + args[0]);
+                return;
+            }
+        } else {
+            Optional<Profile> profile = user.getProfile();
+            if (profile.isPresent())
+                username = profile.get().getName();
+            else {
+                group.sendMessage("You need a profile to use this. Use " + prefix + "createprofile.");
+                return;
+            }
+        }
         List<String> shows = new ArrayList<>();
         Map<Show, String> progress = SuperBotController.getUserProgress(username);
         progress.forEach((show, ep) -> {

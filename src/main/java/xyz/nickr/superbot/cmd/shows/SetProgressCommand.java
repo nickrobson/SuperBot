@@ -1,7 +1,6 @@
 package xyz.nickr.superbot.cmd.shows;
 
 import java.util.Map;
-
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.SuperBotShows;
 import xyz.nickr.superbot.SuperBotShows.Show;
@@ -9,6 +8,7 @@ import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
+import xyz.nickr.superbot.sys.Profile;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -29,25 +29,31 @@ public class SetProgressCommand implements Command {
         if (args.length < 2) {
             sendUsage(sys, user, group);
         } else {
+            String prefix = sys.prefix();
+            Profile profile = user.getProfile().orElse(null);
+            if (profile == null) {
+                group.sendMessage("You need a profile to use this. Use " + prefix + "createprofile.");
+                return;
+            }
+            String profileName = profile.getName();
             Show show = SuperBotShows.getShow(args[0]);
             String ep = args[1].toUpperCase();
-
             MessageBuilder<?> mb = sys.message();
             if (show == null) {
                 group.sendMessage(mb.escaped("Invalid show name: " + args[0]));
             } else if (ep.equalsIgnoreCase("none") || ep.equalsIgnoreCase("remove")) {
                 Map<String, String> prg = SuperBotController.getProgress(show);
-                prg.remove(user.getUsername());
+                prg.remove(profileName);
                 SuperBotController.PROGRESS.put(show.getMainName(), prg);
-                group.sendMessage(mb.escaped("Removed " + user.getDisplayName().orElse(user.getUsername()) + "'s progress on ").bold(true).escaped(show.getDisplay()));
+                group.sendMessage(mb.escaped("Removed " + profileName + "'s progress on ").bold(true).escaped(show.getDisplay()));
                 SuperBotController.saveProgress();
             } else if (!SuperBotShows.EPISODE_PATTERN.matcher(ep).matches()) {
                 group.sendMessage(mb.escaped("Invalid episode: " + ep + " (doesn't match SxEyy format)"));
             } else {
                 Map<String, String> prg = SuperBotController.getProgress(show);
-                prg.put(user.getUsername(), ep);
+                prg.put(profileName, ep);
                 SuperBotController.PROGRESS.put(show.getMainName(), prg);
-                group.sendMessage(mb.escaped("Set " + user.getDisplayName().orElse(user.getUsername()) + "'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to " + ep));
+                group.sendMessage(mb.escaped("Set " + profileName + "'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to " + ep));
                 SuperBotController.saveProgress();
             }
         }
