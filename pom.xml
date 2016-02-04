@@ -91,10 +91,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>nickr</id>
-			<url>http://nickr.xyz/maven/public/</url>
-		</repository>
-		<repository>
 			<id>jcenter</id>
 			<url>http://jcenter.bintray.com/</url>
 		</repository>
