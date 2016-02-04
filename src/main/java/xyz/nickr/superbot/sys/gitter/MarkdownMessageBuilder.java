@@ -14,7 +14,6 @@ public class MarkdownMessageBuilder implements MessageBuilder<MarkdownMessageBui
             text = text.replace("_", "\\_"); // _ is replaced with \_
             text = text.replace("[", "\\["); // [ is replaced with \[
         }
-        text = text.replace(" ", "&nbsp;");
         return text;
     }
 
