@@ -49,7 +49,7 @@ public class Profile {
     private final Properties props = new Properties();
 
     public Profile(String name, File file) {
-        this.name = name.toLowerCase();
+        this.name = name;
         this.file = file;
 
         load();
@@ -59,7 +59,7 @@ public class Profile {
     public Profile(File file) {
         this.file = file;
         load();
-        this.name = props.getProperty("name").toLowerCase();
+        this.name = props.getProperty("name");
     }
 
     public Profile(String name) {
