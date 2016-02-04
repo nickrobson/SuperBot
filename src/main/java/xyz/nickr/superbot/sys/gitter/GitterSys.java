@@ -23,16 +23,23 @@ public class GitterSys implements Sys {
         System.out.println("Loading SuperBot: Gitter");
         if (token == null) {
             System.err.println("Gitter Token Missing!");
-            this.jitter = null;
+            jitter = null;
             return;
         }
-        this.jitter = Jitter.builder().token(token).build();
-        this.jitter.onMessage(m -> SuperBotCommands.exec(this, wrap(m.getRoom()), wrap(m.getSender()), wrap(m)));
-        this.jitter.getCurrentRooms().forEach(room -> {
-            jitter.bayeux().subscribeRoom(room.getID());
-            jitter.bayeux().subscribeRoomUsers(room.getID());
-            jitter.bayeux().subscribeRoomEvents(room.getID());
-            jitter.bayeux().subscribeRoomMessages(room.getID());
+        jitter = Jitter.builder().token(token).build();
+        jitter.onMessage(m -> SuperBotCommands.exec(this, wrap(m.getRoom()), wrap(m.getSender()), wrap(m)));
+
+        User user = jitter.getCurrentUser();
+
+        jitter.bayeux().subscribeUserRooms(user);
+        jitter.bayeux().subscribeUserInformation(user);
+
+        jitter.getCurrentRooms().forEach(room -> {
+            jitter.bayeux().subscribeRoom(room);
+            jitter.bayeux().subscribeRoomUsers(room);
+            jitter.bayeux().subscribeRoomEvents(room);
+            jitter.bayeux().subscribeRoomMessages(room);
+            jitter.bayeux().subscribeUserRoomUnread(user, room);
         });
         System.out.println("Done SuperBot: Gitter (" + (System.currentTimeMillis() - now) + "ms)");
     }
