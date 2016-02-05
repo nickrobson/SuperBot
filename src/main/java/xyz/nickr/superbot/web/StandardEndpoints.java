@@ -36,7 +36,7 @@ public class StandardEndpoints {
                 }
                 if (colour.length() == 6) {
                     File cache = new File("web/photo/" + colour);
-                    if (true || !cache.exists()) {
+                    if (!cache.exists()) {
                         BufferedImage img = new BufferedImage(PHOTO_WIDTH, PHOTO_HEIGHT, BufferedImage.TYPE_INT_RGB);
                         int rgb = Integer.parseInt(colour, 16);
                         Graphics2D g = img.createGraphics();
