@@ -97,7 +97,7 @@ public class GroupConfiguration {
     }
 
     public boolean isCommandEnabled(Command cmd) {
-        return getBoolean("cmd." + cmd.names()[0].toLowerCase(), isEverythingOn() ? true : isUseAlwaysEnabled() ? cmd.alwaysEnabled() : false);
+        return getBoolean("cmd." + cmd.names()[0].toLowerCase(), isEverythingOn() && cmd.useEverythingOn() ? true : isUseAlwaysEnabled() ? cmd.alwaysEnabled() : false);
     }
 
     public boolean isShowJoinMessage() {

@@ -11,6 +11,7 @@ import xyz.nickr.superbot.cmd.StopCommand;
 import xyz.nickr.superbot.cmd.cfg.EditConfigCommand;
 import xyz.nickr.superbot.cmd.cfg.ShowConfigCommand;
 import xyz.nickr.superbot.cmd.fun.DefineCommand;
+import xyz.nickr.superbot.cmd.fun.FCCPointsCommand;
 import xyz.nickr.superbot.cmd.fun.HangmanCommand;
 import xyz.nickr.superbot.cmd.fun.NumberwangCommand;
 import xyz.nickr.superbot.cmd.fun.TypeOutCommand;
@@ -100,6 +101,8 @@ public class SuperBotCommands {
         register(new GitCommand());
         register(new JenkinsCommand());
         register(new VersionCommand());
+
+        register(new FCCPointsCommand());
     }
 
     public static void exec(Sys sys, Group g, User u, Message message) {

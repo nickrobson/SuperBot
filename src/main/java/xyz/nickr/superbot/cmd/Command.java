@@ -31,6 +31,10 @@ public interface Command {
         return false;
     }
 
+    default boolean useEverythingOn() {
+        return true;
+    }
+
     /* UTILITY FUNCTIONS */
 
     default Message sendUsage(Sys sys, User user, Group group) {
