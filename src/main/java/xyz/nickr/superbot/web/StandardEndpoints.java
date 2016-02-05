@@ -27,6 +27,8 @@ public class StandardEndpoints {
     public static final Endpoint PHOTO = (session, routes) -> {
         if (routes.length > 1) {
             routes[1] = routes[1].toUpperCase();
+            if (routes[1].contains("."))
+                routes[1] = routes[1].split("\\.")[0];
             String colour = routes[1];
             if (PATTERN_HEXCOLOUR.matcher(colour).matches()) {
                 if (colour.length() == 3) {
