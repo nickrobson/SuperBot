@@ -259,8 +259,12 @@ public class SuperBotController {
             cfg = newGroupConfiguration();
             cfg.set(GroupConfiguration.KEY_PROVIDER, provider.getName());
             cfg.set(GroupConfiguration.KEY_UNIQUE_ID, uniqueId);
+            cfg.set(GroupConfiguration.KEY_GROUP_NAME, group.getDisplayName());
             cfg.save();
             provider.addGroupConfiguration(cfg);
+        } else {
+            cfg.set(GroupConfiguration.KEY_GROUP_NAME, group.getDisplayName());
+            cfg.save();
         }
         return cfg;
     }

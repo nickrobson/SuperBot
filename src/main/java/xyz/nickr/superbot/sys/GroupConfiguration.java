@@ -12,12 +12,14 @@ import xyz.nickr.superbot.cmd.Command;
 
 public class GroupConfiguration {
 
-    public static final String KEY_PROVIDER      = "provider";
-    public static final String KEY_UNIQUE_ID     = "uniqueId";
-    public static final String KEY_IS_DISABLED   = "disabled";
-    public static final String KEY_SHOW_JOINS    = "showJoins";
-    public static final String KEY_SHOW_EDITS    = "showEdits";
-    public static final String KEY_EVERYTHING_ON = "everythingOn";
+    public static final String KEY_PROVIDER           = "provider";
+    public static final String KEY_UNIQUE_ID          = "uniqueId";
+    public static final String KEY_GROUP_NAME         = "groupName";
+    public static final String KEY_IS_DISABLED        = "disabled";
+    public static final String KEY_SHOW_JOINS         = "showJoins";
+    public static final String KEY_SHOW_EDITS         = "showEdits";
+    public static final String KEY_EVERYTHING_ON      = "everythingOn";
+    public static final String KEY_USE_ALWAYS_ENABLED = "useAlwaysEnabled";
 
     private final File file;
     private Properties options;
@@ -87,11 +89,15 @@ public class GroupConfiguration {
     }
 
     public boolean isEverythingOn() {
-        return Boolean.parseBoolean(get(KEY_EVERYTHING_ON));
+        return getBoolean(KEY_EVERYTHING_ON, false);
+    }
+
+    public boolean isUseAlwaysEnabled() {
+        return getBoolean(KEY_USE_ALWAYS_ENABLED, true);
     }
 
     public boolean isCommandEnabled(Command cmd) {
-        return getBoolean("cmd." + cmd.names()[0].toLowerCase(), isEverythingOn() ? true : cmd.alwaysEnabled());
+        return getBoolean("cmd." + cmd.names()[0].toLowerCase(), isEverythingOn() ? true : isUseAlwaysEnabled() ? cmd.alwaysEnabled() : false);
     }
 
     public boolean isShowJoinMessage() {
