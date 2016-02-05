@@ -49,9 +49,9 @@ public class StandardEndpoints {
                         StandardEndpoints.drawCenteredString(g, "#" + routes[1], new Rectangle(0, 0, PHOTO_WIDTH, PHOTO_HEIGHT), new Font(Font.MONOSPACED, Font.BOLD, 16));
                         cache.getParentFile().mkdirs();
                         cache.createNewFile();
-                        ImageIO.write(img, "png", cache);
+                        ImageIO.write(img, "jpg", cache);
                     }
-                    return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, "image/png", new FileInputStream(cache), cache.length());
+                    return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, "image/jpeg", new FileInputStream(cache), cache.length());
                 }
             }
         }
