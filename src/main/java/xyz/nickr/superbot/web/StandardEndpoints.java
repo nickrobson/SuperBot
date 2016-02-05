@@ -35,7 +35,7 @@ public class StandardEndpoints {
                     colour = c;
                 }
                 if (colour.length() == 6) {
-                    File cache = new File("web/photo/" + colour);
+                    File cache = new File("web/photo/" + routes[1]);
                     if (!cache.exists()) {
                         BufferedImage img = new BufferedImage(PHOTO_WIDTH, PHOTO_HEIGHT, BufferedImage.TYPE_INT_RGB);
                         int rgb = Integer.parseInt(colour, 16);
