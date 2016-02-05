@@ -129,12 +129,12 @@ public class TelegramListener implements Listener {
                             colours.add(colour + hex.charAt(i));
                         }
                     } else if (colour.length() == 3 || colour.length() == 6) {
+                        String c = colour.length() == 3 ? "" : colour;
                         if (colour.length() == 3) {
-                            String c = "";
                             for (int i = 0; i < 6; i++)
                                 c += colour.charAt(i/2);
-                            colours.add(c);
                         }
+                        colours.add(c);
                     }
                 }
                 for (String co : colours) {
