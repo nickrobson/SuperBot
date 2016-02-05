@@ -110,6 +110,7 @@ public class TelegramListener implements Listener {
         String[] words = q.split("\\s+");
         List<InlineQueryResult> results = new LinkedList<>();
         boolean is_personal = false;
+        int cache_time = 0;
         if (words.length >= 1) {
             if (words[0].startsWith("#")) {
                 String colour = words[0].substring(1).toUpperCase();
@@ -154,6 +155,7 @@ public class TelegramListener implements Listener {
                         e.printStackTrace();
                     }
                 }
+                cache_time = 30;
             } else if (words[0].equalsIgnoreCase("distance")) {
                 if (words.length >= 3) {
                     String from = words[1], to = words[2];
@@ -245,7 +247,7 @@ public class TelegramListener implements Listener {
         InlineQueryResponse res = InlineQueryResponse.builder()
                                         .is_personal(is_personal)
                                         .results(results)
-                                        .cache_time(0)
+                                        .cache_time(cache_time)
                                         .build();
         event.getQuery().answer(bot, res);
     }
