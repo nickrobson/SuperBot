@@ -22,4 +22,6 @@ public interface Sys {
 
     void addGroupConfiguration(GroupConfiguration cfg);
 
+    default void onLoaded() {}
+
 }

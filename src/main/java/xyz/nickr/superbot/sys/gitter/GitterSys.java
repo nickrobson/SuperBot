@@ -41,10 +41,15 @@ public class GitterSys implements Sys {
             jitter.bayeux().subscribeRoomEvents(room);
             jitter.bayeux().subscribeRoomMessages(room);
             jitter.bayeux().subscribeUserRoomUnread(user, room);
-
-            SuperBotController.getGroupConfiguration(wrap(room));
         });
         System.out.println("Done SuperBot: Gitter (" + (System.currentTimeMillis() - now) + "ms)");
+    }
+
+    @Override
+    public void onLoaded() {
+        jitter.getCurrentRooms().forEach(room -> {
+            SuperBotController.getGroupConfiguration(wrap(room));
+        });
     }
 
     @Override

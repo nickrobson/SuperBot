@@ -86,6 +86,8 @@ public class SuperBotController {
 
             load(null);
 
+            PROVIDERS.forEach((s, sys) -> sys.onLoaded());
+
             HELP_IGNORE_WHITESPACE = properties.getProperty("help.whitespace", "false").equalsIgnoreCase("true");
             HELP_WELCOME_CENTRED = properties.getProperty("help.welcome.centred", "false").equalsIgnoreCase("true");
 
