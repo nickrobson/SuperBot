@@ -40,22 +40,23 @@ public class SetProgressCommand implements Command {
             String ep = args[1].toUpperCase();
             MessageBuilder<?> mb = sys.message();
             if (show == null) {
-                group.sendMessage(mb.escaped("Invalid show name: ").bold(true).escaped(args[0]).bold(false));
+                mb.escaped("Invalid show name: ").bold(true).escaped(args[0]).bold(false);
             } else if (ep.equalsIgnoreCase("none") || ep.equalsIgnoreCase("remove")) {
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.remove(profileName.toLowerCase());
                 SuperBotController.PROGRESS.put(show.getMainName(), prg);
-                group.sendMessage(mb.escaped("Removed ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay()));
+                mb.escaped("Removed ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay());
                 SuperBotController.saveProgress();
             } else if (!SuperBotShows.EPISODE_PATTERN.matcher(ep).matches()) {
-                group.sendMessage(mb.escaped("Invalid episode: ").bold(true).escaped(ep).bold(false).escaped(" (doesn't match SxEyy format)"));
+                mb.escaped("Invalid episode: ").bold(true).escaped(ep).bold(false).escaped(" (doesn't match SxEyy format)");
             } else {
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.put(profileName.toLowerCase(), ep);
                 SuperBotController.PROGRESS.put(show.getMainName(), prg);
-                group.sendMessage(mb.escaped("Set ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to " + ep));
+                mb.escaped("Set ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to " + ep);
                 SuperBotController.saveProgress();
             }
+            group.sendMessage(mb);
         }
     }
 

@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -32,6 +33,7 @@ import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.GroupType;
+import xyz.nickr.superbot.sys.Profile;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.gitter.GitterSys;
 import xyz.nickr.superbot.sys.skype.SkypeSys;
@@ -198,7 +200,7 @@ public class SuperBotController {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         String[] data = line.split("=", 2);
-                        map.put(data[0], data[1]);
+                        map.put(data[0].toLowerCase(), data[1]);
                     }
                     PROGRESS.put(file.getName().substring(0, file.getName().length() - 4), map);
                 } catch (IOException ex) {
@@ -218,7 +220,7 @@ public class SuperBotController {
                 File file = new File(dir, entry.getKey() + ".mrv");
                 BufferedWriter writer = Files.newBufferedWriter(file.toPath());
                 for (Entry<String, String> e : entry.getValue().entrySet()) {
-                    writer.write(e.getKey() + "=" + e.getValue());
+                    writer.write(e.getKey().toLowerCase() + "=" + e.getValue());
                     writer.newLine();
                 }
                 writer.close();
@@ -307,7 +309,8 @@ public class SuperBotController {
         for (String s : users) {
             if (sb.length() > 0)
                 sb.append(", ");
-            sb.append(s);
+            Optional<Profile> p = Profile.getProfile(s);
+            sb.append(p.isPresent() ? p.get().getName() : s);
         }
         return sb.toString();
     }
@@ -325,8 +328,8 @@ public class SuperBotController {
     public static Map<Show, String> getUserProgress(String username) {
         Map<Show, String> prg = new HashMap<>();
         PROGRESS.forEach((s, m) -> {
-            if (m.containsKey(username))
-                prg.put(SuperBotShows.getShow(s), m.get(username));
+            if (m.containsKey(username.toLowerCase()))
+                prg.put(SuperBotShows.getShow(s), m.get(username.toLowerCase()));
         });
         return prg;
     }
