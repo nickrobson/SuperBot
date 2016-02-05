@@ -21,11 +21,12 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class StandardEndpoints {
 
-    public static final Pattern PATTERN_HEXCOLOUR = Pattern.compile("(?i)(?:[a-f0-9]{3})|(?:[a-f0-9]{6})");
+    public static final Pattern PATTERN_HEXCOLOUR = Pattern.compile("(?:[A-F0-9]{3})|(?:[A-F0-9]{6})");
     public static final int PHOTO_WIDTH = 128, PHOTO_HEIGHT = 128;
 
     public static final Endpoint PHOTO = (session, routes) -> {
         if (routes.length > 1) {
+            routes[1] = routes[1].toUpperCase();
             String colour = routes[1];
             if (PATTERN_HEXCOLOUR.matcher(colour).matches()) {
                 if (colour.length() == 3) {
