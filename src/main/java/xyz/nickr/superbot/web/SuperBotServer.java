@@ -15,6 +15,8 @@ public class SuperBotServer extends NanoHTTPD {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        while (true) {}
     }
 
     private static final Map<String, Endpoint> endpoints = new HashMap<>();
@@ -22,7 +24,7 @@ public class SuperBotServer extends NanoHTTPD {
     public SuperBotServer() throws IOException {
         super(8081);
         StandardEndpoints.register();
-        start(NanoHTTPD.SOCKET_READ_TIMEOUT, true);
+        start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
     }
 
     @Override
@@ -34,7 +36,7 @@ public class SuperBotServer extends NanoHTTPD {
                 Response res = endpoints.get(routes[0]).serve(session, routes);
                 if (res != null)
                     return res;
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }

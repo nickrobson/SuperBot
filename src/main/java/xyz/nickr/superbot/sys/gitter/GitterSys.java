@@ -8,6 +8,7 @@ import xyz.nickr.jitter.api.Message;
 import xyz.nickr.jitter.api.Room;
 import xyz.nickr.jitter.api.User;
 import xyz.nickr.superbot.SuperBotCommands;
+import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
@@ -40,6 +41,8 @@ public class GitterSys implements Sys {
             jitter.bayeux().subscribeRoomEvents(room);
             jitter.bayeux().subscribeRoomMessages(room);
             jitter.bayeux().subscribeUserRoomUnread(user, room);
+
+            SuperBotController.getGroupConfiguration(wrap(room));
         });
         System.out.println("Done SuperBot: Gitter (" + (System.currentTimeMillis() - now) + "ms)");
     }
