@@ -46,7 +46,6 @@ public class GitterGroup implements Group {
     public GroupType getType() {
         switch (room.getType()) {
             case USER:
-            case USER_CHANNEL:
                 return GroupType.USER;
             default:
                 return GroupType.GROUP;
