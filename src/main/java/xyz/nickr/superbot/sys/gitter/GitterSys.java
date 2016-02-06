@@ -71,7 +71,7 @@ public class GitterSys implements Sys {
 
     @Override
     public boolean columns() {
-        return true;
+        return false;
     }
 
     @Override

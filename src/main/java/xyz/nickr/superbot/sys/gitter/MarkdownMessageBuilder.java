@@ -12,7 +12,6 @@ public class MarkdownMessageBuilder implements MessageBuilder<MarkdownMessageBui
         if (!code) {
             text = text.replace("*", "\\*"); // * is replaced with \*
             text = text.replace("_", "\\_"); // _ is replaced with \_
-            text = text.replace("[", "\\["); // [ is replaced with \[
         }
         return text;
     }
