@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import org.eclipse.jetty.http.MimeTypes;
+
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response;
 
@@ -26,10 +28,13 @@ public class StandardEndpoints {
 
     public static final Endpoint PHOTO = (session, routes) -> {
         if (routes.length > 1) {
-            routes[1] = routes[1].toUpperCase();
-            if (routes[1].contains("."))
-                routes[1] = routes[1].split("\\.")[0];
-            String colour = routes[1];
+            String format = "png";
+            String colour = routes[1].toUpperCase();
+            if (routes[1].contains(".")) {
+                String[] spl = routes[1].split("\\.");
+                colour = spl[0].toUpperCase();
+                format = spl[1].toLowerCase();
+            }
             if (PATTERN_HEXCOLOUR.matcher(colour).matches()) {
                 if (colour.length() == 3) {
                     String c = "";
@@ -46,12 +51,12 @@ public class StandardEndpoints {
                         g.setColor(new Color(rgb));
                         g.fillRect(0, 0, PHOTO_WIDTH, PHOTO_HEIGHT);
                         g.setColor(Color.WHITE);
-                        StandardEndpoints.drawCenteredString(g, "#" + routes[1], new Rectangle(0, 0, PHOTO_WIDTH, PHOTO_HEIGHT), new Font(Font.MONOSPACED, Font.BOLD, 16));
+                        StandardEndpoints.drawCenteredString(g, "#" + colour, new Rectangle(0, 0, PHOTO_WIDTH, PHOTO_HEIGHT), new Font(Font.MONOSPACED, Font.BOLD, 16));
                         cache.getParentFile().mkdirs();
                         cache.createNewFile();
-                        ImageIO.write(img, "jpg", cache);
+                        ImageIO.write(img, format, cache);
                     }
-                    return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, "image/jpeg", new FileInputStream(cache), cache.length());
+                    return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, getMimeType(format), new FileInputStream(cache), cache.length());
                 }
             }
         }
@@ -84,6 +89,10 @@ public class StandardEndpoints {
         g.drawString(text, x, y);
 
         g.setFont(old);
+    }
+
+    public static String getMimeType(String extension) {
+        return new MimeTypes().getMimeByExtension("test." + extension);
     }
 
     static void register() {

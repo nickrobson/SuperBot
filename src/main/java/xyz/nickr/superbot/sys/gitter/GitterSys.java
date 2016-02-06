@@ -36,6 +36,8 @@ public class GitterSys implements Sys {
         jitter.bayeux().subscribeUserInformation(user);
 
         jitter.getCurrentRooms().forEach(room -> {
+            System.out.println("Found room: " + room.getName());
+
             jitter.bayeux().subscribeRoom(room);
             jitter.bayeux().subscribeRoomUsers(room);
             jitter.bayeux().subscribeRoomEvents(room);
