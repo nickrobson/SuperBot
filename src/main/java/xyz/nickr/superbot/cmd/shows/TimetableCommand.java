@@ -57,7 +57,7 @@ public class TimetableCommand implements Command {
         }
         MessageBuilder<?> builder = sys.message();
         if (args.length > 0)
-            lines.removeIf(s -> !s.toLowerCase().contains(args[0].toLowerCase()));
+            lines.removeIf(s -> !s.toLowerCase().contains(Joiner.join(" ", args).toLowerCase()));
         lines.forEach(l -> {
             if (builder.length() > 0)
                 builder.newLine();
