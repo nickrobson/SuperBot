@@ -109,11 +109,7 @@ public class HelpCommand implements Command {
         int mid = welcome.length() / 2;
         String wel = pad(welcome.substring(0, mid), maxLen.get());
         String come = welcome.substring(mid);
-        String spaces = SuperBotController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
-        MessageBuilder<?> mb = sys.message();
-        if (spaces.length() > 0)
-            mb.code(true).escaped(spaces).code(false);
-        mb.bold(true).escaped(wel.trim() + come).bold(false);
+        MessageBuilder<?> mb = sys.message().bold(true).escaped(wel.trim() + come).bold(false);
         strings.forEach(s -> mb.newLine().code(true).escaped(s).code(false));
         group.sendMessage(mb);
     }
