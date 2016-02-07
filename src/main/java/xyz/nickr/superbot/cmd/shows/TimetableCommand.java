@@ -3,6 +3,7 @@ package xyz.nickr.superbot.cmd.shows;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,15 +28,16 @@ public class TimetableCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "", "see what days each show is on" };
+        return new String[] { "(search)", "see what days each show is on" };
     }
 
-    void append(String day, Set<Show> set, MessageBuilder<?> builder) {
-        if (builder.length() > 0)
-            builder.newLine();
+    MessageBuilder<?> get(String day, Set<Show> set, Sys sys) {
+        MessageBuilder<?> mb = sys.message();
+        if (mb.length() > 0)
+            mb.newLine();
         List<String> names = set.stream().map(s -> s.display).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
-        builder.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names));
+        return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names));
     }
 
     @Override
@@ -48,13 +50,17 @@ public class TimetableCommand implements Command {
             set.add(s);
             days.put(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase(), set);
         });
-        MessageBuilder<?> builder = sys.message();
-        // days.forEach((day, set) -> {
+        List<String> lines = new LinkedList<>();
         for (String day : Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Netflix", "Not airing")) {
             Set<Show> set = days.get(day.toLowerCase());
-            if (set != null)
-                append(day, set, builder);
+            if (set != null) {
+                get(day, set, sys);
+            }
         }
+        MessageBuilder<?> builder = sys.message();
+        if (args.length > 0)
+            lines.removeIf(s -> !s.toLowerCase().contains(args[0].toLowerCase()));
+        lines.forEach(builder::raw);
         if (builder.length() > 0) {
             group.sendMessage(builder.build());
         } else {
