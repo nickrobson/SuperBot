@@ -33,8 +33,6 @@ public class TimetableCommand implements Command {
 
     String get(String day, Set<Show> set, Sys sys) {
         MessageBuilder<?> mb = sys.message();
-        if (mb.length() > 0)
-            mb.newLine();
         List<String> names = set.stream().map(s -> s.display).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
         return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names)).build();
@@ -60,7 +58,11 @@ public class TimetableCommand implements Command {
         MessageBuilder<?> builder = sys.message();
         if (args.length > 0)
             lines.removeIf(s -> !s.toLowerCase().contains(args[0].toLowerCase()));
-        lines.forEach(builder::raw);
+        lines.forEach(l -> {
+            if (builder.length() > 0)
+                builder.newLine();
+            builder.raw(l);
+        });
         if (builder.length() > 0) {
             group.sendMessage(builder.build());
         } else {
