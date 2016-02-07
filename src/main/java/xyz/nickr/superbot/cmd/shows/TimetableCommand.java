@@ -31,13 +31,13 @@ public class TimetableCommand implements Command {
         return new String[] { "(search)", "see what days each show is on" };
     }
 
-    MessageBuilder<?> get(String day, Set<Show> set, Sys sys) {
+    String get(String day, Set<Show> set, Sys sys) {
         MessageBuilder<?> mb = sys.message();
         if (mb.length() > 0)
             mb.newLine();
         List<String> names = set.stream().map(s -> s.display).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
-        return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names));
+        return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names)).build();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TimetableCommand implements Command {
         for (String day : Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Netflix", "Not airing")) {
             Set<Show> set = days.get(day.toLowerCase());
             if (set != null) {
-                get(day, set, sys);
+                lines.add(get(day, set, sys));
             }
         }
         MessageBuilder<?> builder = sys.message();
@@ -64,7 +64,7 @@ public class TimetableCommand implements Command {
         if (builder.length() > 0) {
             group.sendMessage(builder.build());
         } else {
-            group.sendMessage(builder.escaped("Something went wrong!"));
+            group.sendMessage(builder.escaped("No matching shows."));
         }
     }
 
