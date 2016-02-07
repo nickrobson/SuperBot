@@ -77,7 +77,8 @@ public class GroupConfiguration {
     }
 
     public String set(String option, String value) {
-        return String.valueOf(options.setProperty(option, value));
+        Object o = options.setProperty(option, value);
+        return o != null ? o.toString() : null;
     }
 
     public String getProvider() {
