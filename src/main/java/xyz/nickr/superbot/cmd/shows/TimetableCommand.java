@@ -1,5 +1,6 @@
 package xyz.nickr.superbot.cmd.shows;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -37,15 +38,19 @@ public class TimetableCommand implements Command {
         return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names)).build();
     }
 
+    <T> Set<T> merge(Set<T> a, Set<T> b) {
+        Set<T> m = new HashSet<>(a);
+        m.addAll(b);
+        return m;
+    }
+
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         Map<String, Set<Show>> days = new HashMap<>();
         SuperBotShows.TRACKED_SHOWS.forEach(s -> {
             String day = s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "Not airing" : s.day;
             day = day.substring(0, 1).toUpperCase() + day.substring(1).toLowerCase();
-            Set<Show> set = days.getOrDefault(day, new HashSet<>());
-            set.add(s);
-            days.put(day, set);
+            days.merge(day, new HashSet<>(Arrays.asList(s)), this::merge);
         });
         List<String> lines = new LinkedList<>();
         for (String day : days.keySet()) {
