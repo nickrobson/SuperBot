@@ -93,10 +93,7 @@ public class HelpCommand implements Command {
             if (c.perm() == Command.DEFAULT_PERMISSION)
                 strings.add(pad(getCmdHelp(c, prefix, user, group.getType() == GroupType.USER), maxLen.get()) + (cols ? "" : "\n  ") + " - " + help[1]);
         });
-        if (SuperBotController.HELP_IGNORE_WHITESPACE)
-            strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
-        else
-            strings.sort(null);
+        strings.sort(null);
         if (args.length > 0)
             strings.removeIf(s -> !s.contains(args[0]));
         String welcome = String.format(SuperBotController.WELCOME_MESSAGE, group.getDisplayName());

@@ -2,6 +2,7 @@ package xyz.nickr.superbot.sys.gitter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import xyz.nickr.jitter.Jitter;
 import xyz.nickr.jitter.api.Message;
@@ -17,41 +18,51 @@ public class GitterSys implements Sys {
 
     private final Map<String, GroupConfiguration> configs = new HashMap<>();
 
-    final Jitter jitter;
+    Jitter jitter;
 
     public GitterSys(String token) {
-        long now = System.currentTimeMillis();
-        System.out.println("Loading SuperBot: Gitter");
-        if (token == null) {
-            System.err.println("Gitter Token Missing!");
-            jitter = null;
-            return;
-        }
-        jitter = Jitter.builder().token(token).build();
-        jitter.onMessage(m -> SuperBotCommands.exec(this, wrap(m.getRoom()), wrap(m.getSender()), wrap(m)));
+        new Thread(() -> {
+            long now = System.currentTimeMillis();
+            System.out.println("Loading SuperBot: Gitter");
+            if (token == null) {
+                System.err.println("Gitter Token Missing!");
+                jitter = null;
+                return;
+            }
+            jitter = Jitter.builder().token(token).build();
+            jitter.onMessage(m -> SuperBotCommands.exec(this, wrap(m.getRoom()), wrap(m.getSender()), wrap(m)));
 
-        User user = jitter.getCurrentUser();
+            User user = jitter.getCurrentUser();
 
-        jitter.bayeux().subscribeUserRooms(user);
-        jitter.bayeux().subscribeUserInformation(user);
+            jitter.bayeux().subscribeUserRooms(user);
+            jitter.bayeux().subscribeUserInformation(user);
 
-        jitter.getCurrentRooms().forEach(room -> {
-            System.out.println("Found room: " + room.getName());
-
-            jitter.bayeux().subscribeRoom(room);
-            jitter.bayeux().subscribeRoomUsers(room);
-            jitter.bayeux().subscribeRoomEvents(room);
-            jitter.bayeux().subscribeRoomMessages(room);
-            jitter.bayeux().subscribeUserRoomUnread(user, room);
-        });
-        System.out.println("Done SuperBot: Gitter (" + (System.currentTimeMillis() - now) + "ms)");
+            jitter.getCurrentRooms().forEach(room -> {
+                System.out.println("Found room: " + room.getName());
+                jitter.bayeux().subscribeRoom(room);
+                jitter.bayeux().subscribeRoomUsers(room);
+                jitter.bayeux().subscribeRoomEvents(room);
+                jitter.bayeux().subscribeRoomMessages(room);
+                jitter.bayeux().subscribeUserRoomUnread(user, room);
+            });
+            onLoaded();
+            System.out.println("Done SuperBot: Gitter (" + (System.currentTimeMillis() - now) + "ms)");
+        }).start();
     }
 
-    @Override
-    public void onLoaded() {
+    private void loadRooms() {
         jitter.getCurrentRooms().forEach(room -> {
             SuperBotController.getGroupConfiguration(wrap(room));
         });
+    }
+
+    private final AtomicBoolean doneLoading = new AtomicBoolean(false);
+
+    @Override
+    public void onLoaded() {
+        // only go through on second call to this function
+        if (doneLoading.getAndSet(true))
+            loadRooms();
     }
 
     @Override

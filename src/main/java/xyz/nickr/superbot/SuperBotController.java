@@ -55,9 +55,6 @@ public class SuperBotController {
 
     public static final Gson                             GSON                   = new GsonBuilder().setPrettyPrinting().create();
 
-    public static boolean                                HELP_IGNORE_WHITESPACE = false;
-    public static boolean                                HELP_WELCOME_CENTRED   = true;
-
     public static String                                 VERSION                = "Unknown";
     public static int                                    BUILD_NUMBER           = 0;
     public static String[]                               GIT_COMMIT_IDS         = new String[] { "Unknown" };
@@ -87,9 +84,6 @@ public class SuperBotController {
             load(null);
 
             PROVIDERS.forEach((s, sys) -> sys.onLoaded());
-
-            HELP_IGNORE_WHITESPACE = properties.getProperty("help.whitespace", "false").equalsIgnoreCase("true");
-            HELP_WELCOME_CENTRED = properties.getProperty("help.welcome.centred", "false").equalsIgnoreCase("true");
 
             new Thread(() -> {
                 try {
