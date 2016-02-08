@@ -58,16 +58,9 @@ public class TimetableCommand implements Command {
         MessageBuilder<?> builder = sys.message();
         if (args.length > 0)
             lines.removeIf(s -> !s.toLowerCase().contains(Joiner.join(" ", args).toLowerCase()));
-        lines.forEach(l -> {
-            if (builder.length() > 0)
-                builder.newLine();
-            builder.raw(l);
-        });
-        if (builder.length() > 0) {
-            group.sendMessage(builder.build());
-        } else {
-            group.sendMessage(builder.escaped("No matching shows."));
-        }
+        builder.bold(true).escaped(lines.isEmpty() ? "No matching shows or days." : "Shows by day:").bold(false);
+        lines.forEach(l -> builder.newLine().raw(l));
+        group.sendMessage(builder);
     }
 
 }
