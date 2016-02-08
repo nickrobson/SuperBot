@@ -1,6 +1,5 @@
 package xyz.nickr.superbot.cmd.shows;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -42,22 +41,22 @@ public class TimetableCommand implements Command {
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         Map<String, Set<Show>> days = new HashMap<>();
         SuperBotShows.TRACKED_SHOWS.forEach(s -> {
-            Set<Show> set = days.get(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase());
-            if (set == null)
-                set = new HashSet<>();
+            String day = s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "Not airing" : s.day;
+            day = day.substring(0, 1).toUpperCase() + day.substring(1).toLowerCase();
+            Set<Show> set = days.getOrDefault(day, new HashSet<>());
             set.add(s);
-            days.put(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase(), set);
+            days.put(day, set);
         });
         List<String> lines = new LinkedList<>();
-        for (String day : Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Netflix", "Not airing")) {
-            Set<Show> set = days.get(day.toLowerCase());
+        for (String day : days.keySet()) {
+            Set<Show> set = days.get(day);
             if (set != null) {
                 lines.add(get(day, set, sys));
             }
         }
-        MessageBuilder<?> builder = sys.message();
         if (args.length > 0)
             lines.removeIf(s -> !s.toLowerCase().contains(Joiner.join(" ", args).toLowerCase()));
+        MessageBuilder<?> builder = sys.message();
         builder.bold(true).escaped(lines.isEmpty() ? "No matching shows or days." : "Shows by day:").bold(false);
         lines.forEach(l -> builder.newLine().raw(l));
         group.sendMessage(builder);
