@@ -52,8 +52,10 @@ public class TimetableCommand implements Command {
             day = day.substring(0, 1).toUpperCase() + day.substring(1).toLowerCase();
             days.merge(day, new HashSet<>(Arrays.asList(s)), this::merge);
         });
+        List<String> alldays = new LinkedList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Netflix", "Not airing"));
+        days.keySet().stream().filter(s -> !alldays.contains(s)).forEach(alldays::add);
         List<String> lines = new LinkedList<>();
-        for (String day : days.keySet()) {
+        for (String day : alldays) {
             Set<Show> set = days.get(day);
             if (set != null) {
                 lines.add(get(day, set, sys));
