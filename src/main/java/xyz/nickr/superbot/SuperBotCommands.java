@@ -25,6 +25,7 @@ import xyz.nickr.superbot.cmd.profile.GetProfileCommand;
 import xyz.nickr.superbot.cmd.profile.GetTokenCommand;
 import xyz.nickr.superbot.cmd.profile.RegisterAccountCommand;
 import xyz.nickr.superbot.cmd.shows.AddShowCommand;
+import xyz.nickr.superbot.cmd.shows.EditShowCommand;
 import xyz.nickr.superbot.cmd.shows.ProgressCommand;
 import xyz.nickr.superbot.cmd.shows.RemoveShowCommand;
 import xyz.nickr.superbot.cmd.shows.SetProgressCommand;
@@ -81,6 +82,7 @@ public class SuperBotCommands {
         register(new DeleteTokenCommand());
 
         register(new AddShowCommand());
+        register(new EditShowCommand());
         register(new ProgressCommand());
         register(new RemoveShowCommand());
         register(new SetProgressCommand());

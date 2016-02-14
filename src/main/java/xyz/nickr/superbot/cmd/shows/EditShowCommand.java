@@ -6,6 +6,7 @@ import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotShows;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.cmd.Command;
+import xyz.nickr.superbot.cmd.Permission;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
@@ -22,6 +23,11 @@ public class EditShowCommand implements Command {
     @Override
     public String[] help(User user, boolean userchat) {
         return new String[]{ "display/day/aliases [show name] [params]", "updates the display name, day, or aliases of a show" };
+    }
+
+    @Override
+    public Permission perm() {
+        return string("shows.edit");
     }
 
     @Override
