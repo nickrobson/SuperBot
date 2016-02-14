@@ -39,6 +39,8 @@ public class SuperBotShows {
     }
 
     public static void loadShows() {
+        TRACKED_SHOWS.clear();
+        SHOWS_BY_NAME.clear();
         JsonArray jsonArray = readJson();
         for (int x = 0, arrsize = jsonArray.size(); x < arrsize; x++) {
             JsonElement el = jsonArray.get(x);
@@ -111,10 +113,14 @@ public class SuperBotShows {
             }
             if (found) {
                 arr.set(i, show.toJson());
+                register(show);
                 break;
             }
         }
-        return found ? writeJson(arr) : false;
+        boolean ret = found ? writeJson(arr) : false;
+        if (ret)
+            loadShows();
+        return ret;
     }
 
     public static JsonArray readJson() {
