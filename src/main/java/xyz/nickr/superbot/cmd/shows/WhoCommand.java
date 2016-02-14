@@ -79,7 +79,7 @@ public class WhoCommand implements Command {
         }
         MessageBuilder<?> mb = sys.message();
         if (shows.size() > 0)
-            group.sendMessage(mb.bold(true).escaped("Shows " + username + " is watching:").bold(false).raw("\n").escaped("   ").raw(s));
+            group.sendMessage(mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false).raw("\n").escaped("   ").raw(s));
         else
             group.sendMessage(mb.bold(true).escaped("Error: ").bold(false).escaped("It doesn't look like " + username + " uses me. :("));
     }
