@@ -65,13 +65,7 @@ public class SuperBotShows {
         JsonArray arr = readJson();
         if (arr != null) {
             register(show);
-            JsonObject showDetails = new JsonObject();
-            JsonArray aliases = new JsonArray();
-            Arrays.asList(show.names).forEach(aliases::add);
-            showDetails.addProperty("showname", show.display);
-            showDetails.addProperty("day", show.day);
-            showDetails.add("aliases", aliases);
-            arr.add(showDetails);
+            arr.add(show.toJson());
             return writeJson(arr);
         }
         return false;
@@ -97,6 +91,25 @@ public class SuperBotShows {
             else if (obj.get("showname").getAsString().equals(show.display)) {
                 it.remove();
             }
+        }
+        return writeJson(arr);
+    }
+
+    public static boolean editShow(String name, Show show) {
+        if (name == null || show == null)
+            return false;
+        JsonArray arr = readJson();
+        for (int i = 0; i < arr.size(); i++) {
+            JsonArray names = arr.get(i).getAsJsonObject().getAsJsonArray("aliases");
+            int j;
+            for (j = 0; j < names.size(); j++) {
+                if (name.equals(names.get(j).getAsString())) {
+                    arr.set(i, show.toJson());
+                    break;
+                }
+            }
+            if (j == names.size())
+                return false;
         }
         return writeJson(arr);
     }
@@ -164,9 +177,9 @@ public class SuperBotShows {
 
     public static final class Show {
 
-        public final String   display;
-        public final String[] names;
-        public final String   day;
+        public String   display;
+        public String[] names;
+        public String   day;
 
         public Show(String display, String day, String... names) {
             this.display = display;
@@ -184,6 +197,31 @@ public class SuperBotShows {
 
         public String getMainName() {
             return names[0];
+        }
+
+        @Override
+        public Show clone() {
+            return new Show(display, day, names);
+        }
+
+        public JsonObject toJson() {
+            JsonObject showDetails = new JsonObject();
+            JsonArray aliases = new JsonArray();
+            Arrays.asList(names).forEach(aliases::add);
+            showDetails.addProperty("showname", display);
+            showDetails.addProperty("day", day);
+            showDetails.add("aliases", aliases);
+            return showDetails;
+        }
+
+        public static Show fromJson(JsonObject obj) {
+            String disp = obj.get("showname").getAsString();
+            String day  = obj.get("day").getAsString();
+            JsonArray arr = obj.getAsJsonArray("aliases");
+            String[] names = new String[arr.size()];
+            for (int i = 0; i < arr.size(); i++)
+                names[i] = arr.get(i).getAsString();
+            return new Show(disp, day, names);
         }
 
     }

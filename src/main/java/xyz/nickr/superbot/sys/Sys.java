@@ -14,7 +14,7 @@ public interface Sys {
 
     boolean columns();
 
-    MessageBuilder<?> message();
+    MessageBuilder<? extends MessageBuilder<?>> message();
 
     String getUserFriendlyName(String uniqueId);
 
