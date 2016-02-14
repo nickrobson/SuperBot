@@ -22,7 +22,7 @@ public class EditShowCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "display/day/aliases [show name] [params]", "updates the display name, day, or aliases of a show" };
+        return new String[]{ "[show name] display/day/aliases [params]", "updates the display name, day, or aliases of a show" };
     }
 
     @Override
@@ -32,7 +32,7 @@ public class EditShowCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        Show show = args.length < 3 ? null : SuperBotShows.getShow(args[1]);
+        Show show = args.length < 3 ? null : SuperBotShows.getShow(args[0]);
         if (show != null)
             show = show.clone();
         MessageBuilder<?> mb = sys.message();
@@ -40,18 +40,18 @@ public class EditShowCommand implements Command {
             sendUsage(sys, user, group);
             return;
         } else if (show == null) {
-            group.sendMessage(mb.escaped("I couldn't find a show with the name \"" + args[1] + "\""));
-        } else if (args[0].equalsIgnoreCase("display")) {
+            group.sendMessage(mb.escaped("I couldn't find a show with the name \"" + args[0] + "\""));
+        } else if (args[1].equalsIgnoreCase("display")) {
             show.display = Joiner.join(" ", Arrays.copyOfRange(args, 2, args.length));
-        } else if (args[0].equalsIgnoreCase("day")) {
+        } else if (args[1].equalsIgnoreCase("day")) {
             show.day = Joiner.join(" ", Arrays.copyOfRange(args, 2, args.length));
-        } else if (args[0].equalsIgnoreCase("aliases")) {
+        } else if (args[1].equalsIgnoreCase("aliases")) {
             show.names = Arrays.copyOfRange(args, 2, args.length);
         } else {
             sendUsage(sys, user, group);
             return;
         }
-        if (SuperBotShows.editShow(args[1], show)) {
+        if (SuperBotShows.editShow(args[0], show)) {
             mb.italic(true).escaped("Successfully edited show:").italic(false);
             mb.bold(true).escaped("\nDisplay Name: ").bold(false).escaped(show.display);
             mb.bold(true).escaped("\nDay of the Week: ").bold(false).escaped(show.day);
