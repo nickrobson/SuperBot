@@ -99,19 +99,21 @@ public class SuperBotShows {
         if (name == null || show == null)
             return false;
         JsonArray arr = readJson();
+        boolean found = false;
         for (int i = 0; i < arr.size(); i++) {
             JsonArray names = arr.get(i).getAsJsonObject().getAsJsonArray("aliases");
             int j;
             for (j = 0; j < names.size(); j++) {
-                if (name.equals(names.get(j).getAsString())) {
-                    arr.set(i, show.toJson());
-                    break;
+                if (name.equalsIgnoreCase(names.get(j).getAsString())) {
+                    found = true;
                 }
             }
-            if (j == names.size())
-                return false;
+            if (found) {
+                arr.set(i, show.toJson());
+                break;
+            }
         }
-        return writeJson(arr);
+        return found ? writeJson(arr) : false;
     }
 
     public static JsonArray readJson() {
