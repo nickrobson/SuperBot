@@ -72,9 +72,10 @@ public class WhoCommand implements Command {
                 String t = pad(shows.get(i), maxLen1);
                 if (cols && shows.size() > rows + i)
                     t += "    |    " + pad(shows.get(rows + i), maxLen2);
-                s += sys.message().code(true).escaped(t).code(false).build();
+                MessageBuilder<?> mb = sys.message().code(true).escaped(t).code(false);
                 if (i != rows - 1)
-                    s += "\n   ";
+                    mb.newLine().escaped("   ");
+                s += mb.build();
             }
         }
         MessageBuilder<?> mb = sys.message();
