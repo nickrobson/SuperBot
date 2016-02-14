@@ -56,6 +56,7 @@ public class EditShowCommand implements Command {
             mb.bold(true).escaped("\nDisplay Name: ").bold(false).escaped(show.display);
             mb.bold(true).escaped("\nDay of the Week: ").bold(false).escaped(show.day);
             mb.bold(true).escaped("\nAliases: ").bold(false).escaped(Arrays.asList(show.names).toString());
+            group.sendMessage(mb);
         } else {
             group.sendMessage(mb.escaped("Something went wrong."));
         }

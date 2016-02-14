@@ -106,6 +106,7 @@ public class SuperBotShows {
             for (j = 0; j < names.size(); j++) {
                 if (name.equalsIgnoreCase(names.get(j).getAsString())) {
                     found = true;
+                    break;
                 }
             }
             if (found) {
