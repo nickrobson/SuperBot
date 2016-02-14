@@ -18,9 +18,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
 
     private final StringBuilder msg;
 
-    private boolean             bold          = false;
-    private boolean             italic        = false;
-    private boolean             code          = false;
+    private boolean bold, italic, code;
 
     public TelegramMessageBuilder() {
         this("");
