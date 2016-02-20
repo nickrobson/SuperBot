@@ -8,7 +8,6 @@ import xyz.nickr.jitter.Jitter;
 import xyz.nickr.jitter.api.Message;
 import xyz.nickr.jitter.api.Room;
 import xyz.nickr.jitter.api.User;
-import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.MessageBuilder;
@@ -30,7 +29,7 @@ public class GitterSys implements Sys {
                 return;
             }
             jitter = Jitter.builder().token(token).build();
-            jitter.onMessage(m -> SuperBotCommands.exec(this, wrap(m.getRoom()), wrap(m.getSender()), wrap(m)));
+            jitter.events().register(new GitterListener(this));
 
             User user = jitter.getCurrentUser();
 
