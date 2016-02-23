@@ -141,7 +141,7 @@ public class TelegramListener implements Listener {
                 for (String co : colours) {
                     URL url;
                     try {
-                        url = new URL("http://ci.nickr.xyz:8081/photo/" + co + ".jpg");
+                        url = new URL("http://nickr.xyz/photo/" + co);
                         results.add(InlineQueryResultPhoto.builder()
                                         .parseMode(ParseMode.NONE)
                                         .title("#" + co)
