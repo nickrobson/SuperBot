@@ -145,7 +145,7 @@ public class TelegramListener implements Listener {
                         results.add(InlineQueryResultPhoto.builder()
                                         .parseMode(ParseMode.NONE)
                                         .title("#" + co)
-                                        .caption("#" + co)
+                                        .caption("")
                                         .thumbUrl(url)
                                         .photoUrl(url)
                                         .photoWidth(StandardEndpoints.PHOTO_WIDTH)
