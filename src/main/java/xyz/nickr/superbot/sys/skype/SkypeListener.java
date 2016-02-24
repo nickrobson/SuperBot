@@ -3,15 +3,13 @@ package xyz.nickr.superbot.sys.skype;
 import java.util.Scanner;
 
 import in.kyle.ezskypeezlife.Chat;
-import in.kyle.ezskypeezlife.api.SkypeConversationType;
-import in.kyle.ezskypeezlife.api.captcha.SkypeCaptcha;
-import in.kyle.ezskypeezlife.api.captcha.SkypeErrorHandler;
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
-import in.kyle.ezskypeezlife.api.obj.SkypeMessage;
-import in.kyle.ezskypeezlife.api.obj.SkypeUser;
+import in.kyle.ezskypeezlife.api.conversation.SkypeConversation;
+import in.kyle.ezskypeezlife.api.conversation.SkypeConversationType;
+import in.kyle.ezskypeezlife.api.errors.SkypeCaptcha;
+import in.kyle.ezskypeezlife.api.errors.SkypeErrorHandler;
 import in.kyle.ezskypeezlife.events.conversation.SkypeConversationUserJoinEvent;
-import in.kyle.ezskypeezlife.events.conversation.SkypeMessageEditedEvent;
-import in.kyle.ezskypeezlife.events.conversation.SkypeMessageReceivedEvent;
+import in.kyle.ezskypeezlife.events.conversation.message.SkypeMessageEditedEvent;
+import in.kyle.ezskypeezlife.events.conversation.message.SkypeMessageReceivedEvent;
 import in.kyle.ezskypeezlife.events.user.SkypeContactRequestEvent;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
@@ -30,7 +28,7 @@ public class SkypeListener implements SkypeErrorHandler {
     }
 
     public void join(SkypeConversationUserJoinEvent event) {
-        SkypeUser user = event.getUser();
+        in.kyle.ezskypeezlife.api.user.SkypeUser user = event.getUser();
         SkypeConversation convo = event.getConversation();
         GroupConfiguration cfg = SuperBotController.getGroupConfiguration(sys.wrap(convo));
         if (cfg != null && cfg.isShowJoinMessage()) {
@@ -64,8 +62,8 @@ public class SkypeListener implements SkypeErrorHandler {
         cmd(event.getMessage());
     }
 
-    public synchronized void cmd(SkypeMessage message) {
-        SkypeUser user = message.getSender();
+    public synchronized void cmd(in.kyle.ezskypeezlife.api.conversation.message.SkypeMessage message) {
+        in.kyle.ezskypeezlife.api.user.SkypeUser user = message.getSender();
         SkypeConversation group = message.getConversation();
 
         Group g = sys.wrap(group);
@@ -88,6 +86,11 @@ public class SkypeListener implements SkypeErrorHandler {
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    @Override
+    public void handleException(Exception ex) {
+        ex.printStackTrace();
     }
 
 }

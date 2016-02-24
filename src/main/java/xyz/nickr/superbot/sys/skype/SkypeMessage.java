@@ -8,11 +8,11 @@ import xyz.nickr.superbot.sys.User;
 public class SkypeMessage implements Message {
 
     private final SkypeSys sys;
-    private final in.kyle.ezskypeezlife.api.obj.SkypeMessage msg;
+    private final in.kyle.ezskypeezlife.api.conversation.message.SkypeMessage msg;
     private final Conversable conv;
     private final User user;
 
-    public SkypeMessage(SkypeSys sys, in.kyle.ezskypeezlife.api.obj.SkypeMessage msg) {
+    public SkypeMessage(SkypeSys sys, in.kyle.ezskypeezlife.api.conversation.message.SkypeMessage msg) {
         this.sys = sys;
         this.msg = msg;
         this.conv = sys.wrap(msg.getConversation());

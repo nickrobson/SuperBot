@@ -9,9 +9,9 @@ import xyz.nickr.superbot.sys.User;
 public class SkypeUser implements User {
 
     private final SkypeSys sys;
-    final in.kyle.ezskypeezlife.api.obj.SkypeUser user;
+    final in.kyle.ezskypeezlife.api.user.SkypeUser user;
 
-    public SkypeUser(SkypeSys sys, in.kyle.ezskypeezlife.api.obj.SkypeUser user) {
+    public SkypeUser(SkypeSys sys, in.kyle.ezskypeezlife.api.user.SkypeUser user) {
         this.sys = sys;
         this.user = user;
     }
