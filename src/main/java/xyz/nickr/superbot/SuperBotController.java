@@ -340,7 +340,7 @@ public class SuperBotController {
             Manifest mf = new Manifest(is);
             VERSION = mf.getMainAttributes().getValue("MavenVersion");
             BUILD_NUMBER = Integer.parseInt(mf.getMainAttributes().getValue("JenkinsBuild"));
-            URL changesUrl = new URL("http://ci.nickr.xyz/job/SuperChat/" + BUILD_NUMBER + "/api/json?pretty=true&tree=changeSet[items[id,msg,author[id]]]");
+            URL changesUrl = new URL("http://ci.nickr.xyz/job/SuperBot/" + BUILD_NUMBER + "/api/json?pretty=true&tree=changeSet[items[id,msg,author[id]]]");
             BufferedReader changesReader = new BufferedReader(new InputStreamReader(changesUrl.openStream()));
             JsonObject obj = GSON.fromJson(changesReader, JsonObject.class);
             JsonArray details = obj.getAsJsonObject("changeSet").getAsJsonArray("items");
