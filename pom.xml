@@ -94,6 +94,10 @@
 			<id>jcenter</id>
 			<url>http://jcenter.bintray.com/</url>
 		</repository>
+		<repository>
+			<id>nickr</id>
+			<url>http://nickr.xyz/maven/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -119,6 +123,12 @@
 			<groupId>xyz.nickr</groupId>
 			<artifactId>Jitter</artifactId>
 			<version>${jitter.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>xyz.nickr</groupId>
+			<artifactId>mathos</artifactId>
+			<version>1.1.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
