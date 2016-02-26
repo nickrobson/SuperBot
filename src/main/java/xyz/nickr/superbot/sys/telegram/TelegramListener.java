@@ -45,6 +45,7 @@ import xyz.nickr.superbot.cmd.util.CurrencyCommand;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.User;
+import xyz.nickr.superbot.sys.gitter.MarkdownMessageBuilder;
 import xyz.nickr.superbot.web.StandardEndpoints;
 
 /**
@@ -200,7 +201,7 @@ public class TelegramListener implements Listener {
                 try {
                     String input = Joiner.join("", Arrays.copyOfRange(words, 1, words.length));
                     Complex cmp = Mathos.value(input);
-                    results.add(res("Result:", cmp.toString(), input + " = " + cmp.toString(), false));
+                    results.add(res("Result:", cmp.toString(), MarkdownMessageBuilder.markdown_escape(input + " = " + cmp.toString(), false), false));
                 } catch (Exception ignored) {
                     results.add(res("Invalid maths", ":(", "Invalid maths!", false));
                 }
@@ -251,6 +252,7 @@ public class TelegramListener implements Listener {
             results.add(res("Flip", "@" + un + " flip [text]", "@" + un.replace("_", "\\_") + " flip \\[text]", false));
             results.add(res("Colour", "@" + un + " #[colour]", "@" + un.replace("_", "\\_") + " #\\[colour]", false));
             results.add(res("Distance", "@" + un + " distance [from] [to]", "@" + un.replace("_", "\\_") + " distance \\[from] \\[to]", false));
+            results.add(res("Maths", "@" + un + " maths [query]", "/math@" + un.replace("_", "\\_"), false));
             results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un.replace("_", "\\_"), false));
             results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "/currency@" + un.replace("_", "\\_"), false));
         }
