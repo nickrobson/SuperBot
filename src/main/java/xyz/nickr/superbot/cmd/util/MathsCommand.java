@@ -29,12 +29,12 @@ public class MathsCommand implements Command {
         }
         MessageBuilder<?> mb = sys.message();
         try {
-            String input = Joiner.join(" ", args);
+            String input = Joiner.join("", args);
             mb.escaped("[Maths] Query: " + input).newLine();
             mb.escaped("[Maths] Result: " + Mathos.value(input));
             group.sendMessage(mb);
         } catch (Exception ex) {
-            group.sendMessage(mb.escaped(ex.getClass().getSimpleName() + ": " + ex.getMessage()));
+            group.sendMessage(mb.escaped("An error occurred: " + ex.getMessage()));
         }
     }
 

@@ -34,6 +34,8 @@ import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
+import xyz.nickr.mathos.Complex;
+import xyz.nickr.mathos.Mathos;
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
@@ -192,7 +194,15 @@ public class TelegramListener implements Listener {
                 if (words.length > 1) {
                     String[] args = Arrays.copyOfRange(words, 1, words.length);
                     String text = Joiner.join(" ", args);
-                    results.add(res("flip text", flip("flip text"), flip(text), false));
+                    results.add(res("flip text", flip(text), flip(text), false));
+                }
+            } else if (words[0].equalsIgnoreCase("math") || words[0].equalsIgnoreCase("maths")) {
+                try {
+                    String input = Joiner.join("", Arrays.copyOfRange(words, 1, words.length));
+                    Complex cmp = Mathos.value(input);
+                    results.add(res("Result:", cmp.toString(), input + " = " + cmp.toString(), false));
+                } catch (Exception ignored) {
+                    results.add(res("Invalid maths", ":(", "Invalid maths!", false));
                 }
             } else if (words[0].equalsIgnoreCase("convert")) {
                 // convert [from] [to] [quantity]
