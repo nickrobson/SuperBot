@@ -16,6 +16,7 @@ public class GitterListener implements JitterListener {
     public void onMessage(MessageReceivedEvent event) {
         Message m = event.getMessage();
         SuperBotCommands.exec(sys, sys.wrap(m.getRoom()), sys.wrap(m.getSender()), sys.wrap(m));
+        m.getRoom().getMessageHistory().markRead();
     }
 
 }
