@@ -316,7 +316,7 @@ public class SuperBotController {
     }
 
     public static Map<String, String> getProgress(Show show) {
-        return getProgress(show == null ? null : show.getMainName());
+        return getProgress(show == null ? null : show.names[0]);
     }
 
     public static Map<String, String> getProgress(String show) {

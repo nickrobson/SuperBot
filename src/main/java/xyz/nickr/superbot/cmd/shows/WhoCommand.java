@@ -59,7 +59,7 @@ public class WhoCommand implements Command {
         Map<Show, String> progress = SuperBotController.getUserProgress(username.toLowerCase());
         progress.forEach((show, ep) -> {
             if (show != null)
-                shows.add(show.getDisplay() + "    (" + ep + ")");
+                shows.add(show.display + "    (" + ep + ")");
         });
         boolean cols = sys.columns();
         int rows = cols ? shows.size() / 2 + shows.size() % 2 : shows.size();

@@ -188,26 +188,13 @@ public class SuperBotShows {
 
     public static final class Show {
 
-        public String   display;
+        public String display, day;
         public String[] names;
-        public String   day;
 
         public Show(String display, String day, String... names) {
             this.display = display;
             this.day = day;
             this.names = names;
-        }
-
-        public String getDisplay() {
-            return display;
-        }
-
-        public String[] getNames() {
-            return names;
-        }
-
-        public String getMainName() {
-            return names[0];
         }
 
         @Override

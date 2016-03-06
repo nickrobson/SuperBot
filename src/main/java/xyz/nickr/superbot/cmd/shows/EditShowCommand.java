@@ -53,9 +53,9 @@ public class EditShowCommand implements Command {
         }
         if (SuperBotShows.editShow(args[0], show)) {
             mb.italic(true).escaped("Successfully edited show:").italic(false);
-            mb.bold(true).escaped("\nDisplay Name: ").bold(false).escaped(show.display);
-            mb.bold(true).escaped("\nDay of the Week: ").bold(false).escaped(show.day);
-            mb.bold(true).escaped("\nAliases: ").bold(false).escaped(Arrays.asList(show.names).toString());
+            mb.newLine().bold(true).escaped("Display Name: ").bold(false).escaped(show.display);
+            mb.newLine().bold(true).escaped("Day of the Week: ").bold(false).escaped(show.day);
+            mb.newLine().bold(true).escaped("Aliases: ").bold(false).escaped(Arrays.asList(show.names).toString());
             group.sendMessage(mb);
         } else {
             group.sendMessage(mb.escaped("Something went wrong."));
