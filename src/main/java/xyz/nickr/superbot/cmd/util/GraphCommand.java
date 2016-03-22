@@ -1,17 +1,10 @@
 package xyz.nickr.superbot.cmd.util;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import xyz.nickr.superbot.Joiner;
@@ -44,21 +37,8 @@ public class GraphCommand implements Command {
         }
         MessageBuilder<?> mb = sys.message();
         try {
-            List<String> ags = new ArrayList<>(Arrays.asList(args));
-            Map<String, Matcher> vars = ags.stream().collect(Collectors.toMap(a -> a, a -> VARIABLE_ARG.matcher(a)));
-            vars.entrySet().removeIf(e -> !e.getValue().matches());
-            ags.removeIf(a -> vars.containsKey(a));
-            String input = Joiner.join("", ags);
-            List<Map.Entry<String, String>> vs = vars.entrySet().stream()
-                                                        .map(e -> e.getValue())
-                                                        .map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2)))
-                                                        .collect(Collectors.toList());
-            Expression e = new ExpressionBuilder(input)
-                    .variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet()))
-                    .build();
-            for (Map.Entry<String, String> ent : vs) {
-                e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
-            }
+            String input = Joiner.join("", args);
+            Expression e = new ExpressionBuilder(input).variables("x").build();
             Map<Double, Double> values = new HashMap<>();
             Function<Double, Double> mapper = x -> e.setVariable("x", x).evaluate();
             int bounds = 39;
