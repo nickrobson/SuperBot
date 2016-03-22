@@ -37,6 +37,7 @@ import xyz.nickr.superbot.cmd.shows.WipeCommand;
 import xyz.nickr.superbot.cmd.util.ConvertCommand;
 import xyz.nickr.superbot.cmd.util.CurrencyCommand;
 import xyz.nickr.superbot.cmd.util.GitCommand;
+import xyz.nickr.superbot.cmd.util.GraphCommand;
 import xyz.nickr.superbot.cmd.util.JenkinsCommand;
 import xyz.nickr.superbot.cmd.util.MathsCommand;
 import xyz.nickr.superbot.cmd.util.UidCommand;
@@ -101,6 +102,7 @@ public class SuperBotCommands {
         register(new ConvertCommand());
         register(new CurrencyCommand());
         register(new GitCommand());
+        register(new GraphCommand());
         register(new JenkinsCommand());
         register(new MathsCommand());
         register(new UidCommand());
