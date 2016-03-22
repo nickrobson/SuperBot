@@ -66,12 +66,14 @@ public class GraphCommand implements Command {
                 values.put(x, mapper.apply(x));
             }
             values.forEach((x, y) -> System.out.format("%.3f %.3f\n", x, y));
+            System.out.println("-----------------");
             int numbersPerColumn = bounds / 39; // skype has width of 79, so we use one for axis
             for (int y = 0; y < 39; y++) {
                 int ay = (y - 19) * numbersPerColumn;
                 mb.code(true);
                 for (int x = 0; x < 79; x++) {
                     int ax = (x - 39) * numbersPerColumn;
+                    System.out.format("(%.3f, %.3f) (%.3f, %.3f)\n", ax, ay, x, y);
                     if (ax == 0 && ay == 0) {
                         mb.escaped("+");
                     } else if (ax == 0) {
