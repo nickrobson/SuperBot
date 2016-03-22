@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +33,7 @@ public class GraphCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[maths]", "graphs an equation for you" };
+        return new String[]{ "[equation]", "graphs an equation for you" };
     }
 
     @Override
@@ -64,16 +65,30 @@ public class GraphCommand implements Command {
             for (double x = -bounds; x <= bounds; x += 1) {
                 values.put(x, mapper.apply(x));
             }
+            values.forEach((x, y) -> System.out.format("%d %d\n", x, y));
             int numbersPerColumn = bounds / 39; // skype has width of 79, so we use one for axis
             for (int y = 0; y < 79; y++) {
                 int ay = (y - 39) * numbersPerColumn;
                 mb.code(true);
                 for (int x = 0; x < 79; x++) {
                     int ax = (x - 39) * numbersPerColumn;
-                    if (ax == 0 || ay == 0 || values.containsKey(ax) && Math.abs(values.get(ax) - ay) <= 0.5) {
-                        mb.escaped(".");
+                    if (ax == 0 && ay == 0) {
+                        mb.escaped("+");
+                    } else if (ax == 0) {
+                        mb.escaped("|");
+                    } else if (ay == 0) {
+                        mb.escaped("-");
                     } else {
-                        mb.escaped(" ");
+                        boolean found = false;
+                        for (Entry<Double, Double> entry : values.entrySet()) {
+                            if (Math.abs(entry.getKey() - ax) < numbersPerColumn / 2) {
+                                if (Math.abs(entry.getValue() - ay) < numbersPerColumn / 2) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+                        mb.escaped(found ? "." : " ");
                     }
                 }
                 mb.code(false).newLine();
