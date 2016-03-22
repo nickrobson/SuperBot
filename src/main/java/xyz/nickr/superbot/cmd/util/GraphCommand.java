@@ -83,8 +83,8 @@ public class GraphCommand implements Command {
                     } else {
                         boolean found = false;
                         for (Entry<Double, Double> entry : values.entrySet()) {
-                            if (Math.abs(entry.getKey() - ax) < numbersPerColumn / 2) {
-                                if (Math.abs(entry.getValue() - ay) < numbersPerColumn / 2) {
+                            if (Math.abs(entry.getKey() - ax) <= numbersPerColumn / 2) {
+                                if (Math.abs(entry.getValue() - ay) <= numbersPerColumn / 2) {
                                     found = true;
                                     break;
                                 }
