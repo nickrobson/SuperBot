@@ -29,16 +29,15 @@ public class SetProgressCommand implements Command {
         if (args.length < 2) {
             sendUsage(sys, user, group);
         } else {
-            String prefix = sys.prefix();
+            MessageBuilder<?> mb = sys.message();
             Profile profile = user.getProfile().orElse(null);
             if (profile == null) {
-                group.sendMessage("You need a profile to use this. Use " + prefix + "createprofile.");
+                sendNoProfile(sys, user, group);
                 return;
             }
             String profileName = profile.getName();
             Show show = SuperBotShows.getShow(args[0]);
             String ep = args[1].toUpperCase();
-            MessageBuilder<?> mb = sys.message();
             String oldprg = show != null ? SuperBotController.getUserProgress(profileName).get(show) : null;
             if (show == null) {
                 mb.escaped("Invalid show name: ").bold(true).escaped(args[0]).bold(false);

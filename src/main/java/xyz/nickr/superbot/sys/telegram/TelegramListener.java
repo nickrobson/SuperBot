@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,6 +26,8 @@ import org.json.JSONObject;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResult;
@@ -34,14 +39,13 @@ import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
-import xyz.nickr.mathos.Complex;
-import xyz.nickr.mathos.Mathos;
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.util.ConvertCommand;
 import xyz.nickr.superbot.cmd.util.ConvertCommand.Conversion;
 import xyz.nickr.superbot.cmd.util.CurrencyCommand;
+import xyz.nickr.superbot.cmd.util.MathsCommand;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.User;
@@ -199,9 +203,23 @@ public class TelegramListener implements Listener {
                 }
             } else if (words[0].equalsIgnoreCase("math") || words[0].equalsIgnoreCase("maths")) {
                 try {
-                    String input = Joiner.join("", Arrays.copyOfRange(words, 1, words.length));
-                    Complex cmp = Mathos.value(input);
-                    results.add(res("Result:", cmp.toString(), MarkdownMessageBuilder.markdown_escape(input + " = " + cmp.toString(), false), false));
+                    String[] args = Arrays.copyOfRange(words, 1, words.length);
+                    List<String> ags = new ArrayList<>(Arrays.asList(args));
+                    List<String> vars = ags.stream().filter(a -> MathsCommand.VARIABLE_ARG.asPredicate().test(a)).collect(Collectors.toList());
+                    ags.removeIf(a -> vars.contains(a));
+                    String input = Joiner.join("", ags);
+                    List<Map.Entry<String, String>> vs = vars.stream()
+                                                                .map(a -> MathsCommand.VARIABLE_ARG.matcher(a))
+                                                                .map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2)))
+                                                                .collect(Collectors.toList());
+                    Expression e = new ExpressionBuilder(input)
+                            .variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet()))
+                            .build();
+                    for (Map.Entry<String, String> ent : vs) {
+                        e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
+                    }
+                    double result = e.evaluate();
+                    results.add(res("Result:", String.valueOf(result), MarkdownMessageBuilder.markdown_escape(input + " = " + result, false), false));
                 } catch (Exception ignored) {
                     results.add(res("Invalid maths", ":(", "Invalid maths!", false));
                 }

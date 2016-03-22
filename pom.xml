@@ -125,12 +125,10 @@
 			<artifactId>Jitter</artifactId>
 			<version>${jitter.version}</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>xyz.nickr</groupId>
-			<artifactId>mathos</artifactId>
-			<version>${mathos.version}</version>
-			<scope>compile</scope>
+		</dependency><dependency>
+		    <groupId>net.objecthunter</groupId>
+		    <artifactId>exp4j</artifactId>
+		    <version>0.4.5</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.nanohttpd</groupId>
