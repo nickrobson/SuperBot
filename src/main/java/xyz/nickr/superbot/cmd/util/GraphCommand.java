@@ -39,9 +39,9 @@ public class GraphCommand implements Command {
         MessageBuilder<?> mb = sys.message();
         try {
             String input = Joiner.join("", args);
-            Expression e = new ExpressionBuilder(input).variables("x").build();
+            Expression e = new ExpressionBuilder(input).variables("x", "X").build();
             Map<Double, Double> values = new HashMap<>();
-            Function<Double, Double> mapper = x -> e.setVariable("x", x).evaluate();
+            Function<Double, Double> mapper = x -> e.setVariable("x", x).setVariable("X", x).evaluate();
             int bounds = 39;
             for (double x = -bounds; x <= bounds; x += 1) {
                 values.put(x, mapper.apply(x));
