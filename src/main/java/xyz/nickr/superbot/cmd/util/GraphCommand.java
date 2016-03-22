@@ -3,8 +3,10 @@ package xyz.nickr.superbot.cmd.util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import xyz.nickr.superbot.Joiner;
@@ -45,11 +47,18 @@ public class GraphCommand implements Command {
             for (double x = -bounds; x <= bounds; x += 1) {
                 values.put(x, -mapper.apply(x));
             }
-            values.forEach((x, y) -> System.out.format("%.3f %.3f\n", x, y));
             System.out.println("-----------------");
+            AtomicBoolean hasPositives = new AtomicBoolean(false), hasNegatives = new AtomicBoolean(false);
+            values.forEach((x, y) -> {
+                if (y > 0) hasPositives.set(true);
+                if (y < 0) hasNegatives.set(true);
+            });
+            boolean pos = hasPositives.get(), neg = hasNegatives.get();
             int numbersPerColumn = bounds / 39; // skype has width of 79, so we use one for axis
             for (int y = 0; y < 39; y++) {
                 int ay = (y - 19) * numbersPerColumn * 2;
+                if (ay > 2 && !pos) continue;
+                if (ay < -2 && !neg) break;
                 mb.code(true);
                 for (int x = 0; x < 79; x++) {
                     int ax = (x - 39) * numbersPerColumn;
