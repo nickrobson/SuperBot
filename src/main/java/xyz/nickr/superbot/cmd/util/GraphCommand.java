@@ -47,22 +47,20 @@ public class GraphCommand implements Command {
             for (double x = -bounds; x <= bounds; x += 1) {
                 values.put(x, -mapper.apply(x));
             }
-            System.out.println("-----------------");
             AtomicBoolean hasPositives = new AtomicBoolean(false), hasNegatives = new AtomicBoolean(false);
             values.forEach((x, y) -> {
                 if (y > 0) hasPositives.set(true);
                 if (y < 0) hasNegatives.set(true);
             });
             boolean pos = hasPositives.get(), neg = hasNegatives.get();
+            mb.code(true);
             int numbersPerColumn = bounds / 39; // skype has width of 79, so we use one for axis
             for (int y = 0; y < 39; y++) {
                 int ay = (y - 19) * numbersPerColumn * 2;
-                if (ay > 2 && !pos) continue;
-                if (ay < -2 && !neg) break;
-                mb.code(true);
+                if (ay >= 4 && !pos) continue;
+                if (ay < -3 && !neg) break;
                 for (int x = 0; x < 79; x++) {
                     int ax = (x - 39) * numbersPerColumn;
-                    System.out.format("(%d, %d) (%d, %d)\n", ax, ay, x, y);
                     boolean found = false;
                     for (Entry<Double, Double> entry : values.entrySet()) {
                         if (Math.abs(entry.getKey() - ax) <= numbersPerColumn / 2) {
@@ -84,8 +82,8 @@ public class GraphCommand implements Command {
                         mb.escaped(" ");
                     }
                 }
-                mb.code(false).newLine();
             }
+            mb.code(false).newLine();
             group.sendMessage(mb);
         } catch (Exception ex) {
             group.sendMessage(mb.escaped("An error occurred: " + ex.getMessage()));
