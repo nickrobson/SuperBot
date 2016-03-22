@@ -43,7 +43,7 @@ public class GraphCommand implements Command {
             Function<Double, Double> mapper = x -> e.setVariable("x", x).evaluate();
             int bounds = 39;
             for (double x = -bounds; x <= bounds; x += 1) {
-                values.put(x, mapper.apply(x));
+                values.put(x, -mapper.apply(x));
             }
             values.forEach((x, y) -> System.out.format("%.3f %.3f\n", x, y));
             System.out.println("-----------------");
