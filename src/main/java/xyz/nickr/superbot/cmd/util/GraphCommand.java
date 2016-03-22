@@ -67,8 +67,8 @@ public class GraphCommand implements Command {
             }
             values.forEach((x, y) -> System.out.format("%d %d\n", x, y));
             int numbersPerColumn = bounds / 39; // skype has width of 79, so we use one for axis
-            for (int y = 0; y < 79; y++) {
-                int ay = (y - 39) * numbersPerColumn;
+            for (int y = 0; y < 39; y++) {
+                int ay = (y - 19) * numbersPerColumn;
                 mb.code(true);
                 for (int x = 0; x < 79; x++) {
                     int ax = (x - 39) * numbersPerColumn;
