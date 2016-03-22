@@ -73,8 +73,9 @@ public class GraphCommand implements Command {
                         mb.escaped(" ");
                     }
                 }
+                mb.newLine();
             }
-            mb.code(false).newLine();
+            mb.code(false);
             group.sendMessage(mb);
         } catch (Exception ex) {
             group.sendMessage(mb.escaped("An error occurred: " + ex.getMessage()));
