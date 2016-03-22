@@ -57,6 +57,8 @@ public class MathsCommand implements Command {
             for (Map.Entry<String, String> ent : vs) {
                 e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
             }
+            e.setVariable("e", Math.E);
+            e.setVariable("Pi", Math.PI);
             double result = e.evaluate();
             mb.escaped("[Maths] Result: " + result);
             group.sendMessage(mb);

@@ -219,6 +219,8 @@ public class TelegramListener implements Listener {
                     for (Map.Entry<String, String> ent : vs) {
                         e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
                     }
+                    e.setVariable("e", Math.E);
+                    e.setVariable("Pi", Math.PI);
                     double result = e.evaluate();
                     results.add(res("Result:", String.valueOf(result), MarkdownMessageBuilder.markdown_escape(Joiner.join(" ", args) + " = " + result, false), false));
                 } catch (Exception ignored) {
