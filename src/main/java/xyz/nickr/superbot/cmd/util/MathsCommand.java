@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -41,14 +42,18 @@ public class MathsCommand implements Command {
         MessageBuilder<?> mb = sys.message();
         try {
             List<String> ags = new ArrayList<>(Arrays.asList(args));
-            List<String> vars = ags.stream().filter(a -> VARIABLE_ARG.asPredicate().test(a)).collect(Collectors.toList());
+            List<Map.Entry<String, Matcher>> vars = ags.stream()
+                                                     .map(a -> new AbstractMap.SimpleEntry<>(a, VARIABLE_ARG.matcher(a)))
+                                                     .collect(Collectors.toList());
+            vars.removeIf(e -> !e.getValue().matches());
             ags.removeIf(a -> vars.contains(a));
             String input = Joiner.join("", ags);
             mb.escaped("[Maths] Query: " + input).newLine();
             List<Map.Entry<String, String>> vs = vars.stream()
-                                                        .map(a -> VARIABLE_ARG.matcher(a))
+                                                        .map(e -> e.getValue())
                                                         .map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2)))
                                                         .collect(Collectors.toList());
+            System.out.println(vs);
             Expression e = new ExpressionBuilder(input)
                     .variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet()))
                     .build();
@@ -60,6 +65,7 @@ public class MathsCommand implements Command {
             group.sendMessage(mb);
         } catch (Exception ex) {
             group.sendMessage(mb.escaped("An error occurred: " + ex.getMessage()));
+            ex.printStackTrace();
         }
     }
 
