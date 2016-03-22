@@ -54,23 +54,25 @@ public class GraphCommand implements Command {
                 for (int x = 0; x < 79; x++) {
                     int ax = (x - 39) * numbersPerColumn;
                     System.out.format("(%d, %d) (%d, %d)\n", ax, ay, x, y);
-                    if (ax == 0 && ay == 0) {
+                    boolean found = false;
+                    for (Entry<Double, Double> entry : values.entrySet()) {
+                        if (Math.abs(entry.getKey() - ax) <= numbersPerColumn / 2) {
+                            if (Math.abs(entry.getValue() - ay) <= numbersPerColumn) {
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (found) {
+                        mb.escaped(".");
+                    } else if (ax == 0 && ay == 0) {
                         mb.escaped("+");
                     } else if (ax == 0) {
                         mb.escaped("|");
                     } else if (ay == 0) {
                         mb.escaped("-");
                     } else {
-                        boolean found = false;
-                        for (Entry<Double, Double> entry : values.entrySet()) {
-                            if (Math.abs(entry.getKey() - ax) <= numbersPerColumn / 2) {
-                                if (Math.abs(entry.getValue() - ay) <= numbersPerColumn) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                        }
-                        mb.escaped(found ? "." : " ");
+                        mb.escaped(" ");
                     }
                 }
                 mb.code(false).newLine();
