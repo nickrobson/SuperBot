@@ -42,18 +42,15 @@ public class MathsCommand implements Command {
         MessageBuilder<?> mb = sys.message();
         try {
             List<String> ags = new ArrayList<>(Arrays.asList(args));
-            List<Map.Entry<String, Matcher>> vars = ags.stream()
-                                                     .map(a -> new AbstractMap.SimpleEntry<>(a, VARIABLE_ARG.matcher(a)))
-                                                     .collect(Collectors.toList());
-            vars.removeIf(e -> !e.getValue().matches());
-            ags.removeIf(a -> vars.contains(a));
+            Map<String, Matcher> vars = ags.stream().collect(Collectors.toMap(a -> a, a -> VARIABLE_ARG.matcher(a)));
+            vars.entrySet().removeIf(e -> !e.getValue().matches());
+            ags.removeIf(a -> vars.containsKey(a));
             String input = Joiner.join("", ags);
             mb.escaped("[Maths] Query: " + input).newLine();
-            List<Map.Entry<String, String>> vs = vars.stream()
+            List<Map.Entry<String, String>> vs = vars.entrySet().stream()
                                                         .map(e -> e.getValue())
                                                         .map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2)))
                                                         .collect(Collectors.toList());
-            System.out.println(vs);
             Expression e = new ExpressionBuilder(input)
                     .variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet()))
                     .build();

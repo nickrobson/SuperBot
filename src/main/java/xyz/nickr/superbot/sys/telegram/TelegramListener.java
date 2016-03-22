@@ -205,22 +205,19 @@ public class TelegramListener implements Listener {
                 try {
                     String[] args = Arrays.copyOfRange(words, 1, words.length);
                     List<String> ags = new ArrayList<>(Arrays.asList(args));
-                    List<Map.Entry<String, Matcher>> vars = ags.stream()
-                            .map(a -> new AbstractMap.SimpleEntry<>(a, MathsCommand.VARIABLE_ARG.matcher(a)))
-                            .collect(Collectors.toList());
-                    vars.removeIf(e -> !e.getValue().matches());
-                    ags.removeIf(a -> vars.contains(a));
+                    Map<String, Matcher> vars = ags.stream().collect(Collectors.toMap(a -> a, a -> MathsCommand.VARIABLE_ARG.matcher(a)));
+                    vars.entrySet().removeIf(e -> !e.getValue().matches());
+                    ags.removeIf(a -> vars.containsKey(a));
                     String input = Joiner.join("", ags);
-                    List<Map.Entry<String, String>> vs = vars.stream()
-                                                   .map(e -> e.getValue())
-                                                   .map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2)))
-                                                   .collect(Collectors.toList());
-                    System.out.println(vs);
+                    List<Map.Entry<String, String>> vs = vars.entrySet().stream()
+                                                                .map(e -> e.getValue())
+                                                                .map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2)))
+                                                                .collect(Collectors.toList());
                     Expression e = new ExpressionBuilder(input)
-                    .variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet()))
-                    .build();
+                            .variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet()))
+                            .build();
                     for (Map.Entry<String, String> ent : vs) {
-                    e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
+                        e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
                     }
                     double result = e.evaluate();
                     results.add(res("Result:", String.valueOf(result), MarkdownMessageBuilder.markdown_escape(input + " = " + result, false), false));
