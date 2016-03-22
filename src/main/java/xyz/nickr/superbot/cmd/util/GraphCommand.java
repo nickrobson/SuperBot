@@ -73,7 +73,7 @@ public class GraphCommand implements Command {
                 mb.code(true);
                 for (int x = 0; x < 79; x++) {
                     int ax = (x - 39) * numbersPerColumn;
-                    System.out.format("(%.3f, %.3f) (%.3f, %.3f)\n", ax, ay, x, y);
+                    System.out.format("(%d, %d) (%d, %d)\n", ax, ay, x, y);
                     if (ax == 0 && ay == 0) {
                         mb.escaped("+");
                     } else if (ax == 0) {
