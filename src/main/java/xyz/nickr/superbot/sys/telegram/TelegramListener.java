@@ -220,7 +220,7 @@ public class TelegramListener implements Listener {
                         e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
                     }
                     double result = e.evaluate();
-                    results.add(res("Result:", String.valueOf(result), MarkdownMessageBuilder.markdown_escape(input + " = " + result, false), false));
+                    results.add(res("Result:", String.valueOf(result), MarkdownMessageBuilder.markdown_escape(Joiner.join(" ", args) + " = " + result, false), false));
                 } catch (Exception ignored) {
                     results.add(res("Invalid maths", ":(", "Invalid maths!", false));
                 }
