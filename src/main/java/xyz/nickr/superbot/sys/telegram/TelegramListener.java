@@ -215,6 +215,7 @@ public class TelegramListener implements Listener {
                                                                 .collect(Collectors.toList());
                     Expression e = new ExpressionBuilder(input)
                             .variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet()))
+                            .variables("e", "Pi")
                             .build();
                     for (Map.Entry<String, String> ent : vs) {
                         e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
