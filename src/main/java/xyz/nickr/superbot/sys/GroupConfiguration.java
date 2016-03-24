@@ -57,7 +57,9 @@ public class GroupConfiguration {
     }
 
     public Properties get() {
-        return new Properties(options);
+        Properties props = new Properties();
+        options.forEach(props::put);
+        return props;
     }
 
     public String get(String option) {
