@@ -49,12 +49,14 @@ public class OmdbSeasonCommand implements Command {
                     infos.add(emb.build());
                 }
                 int maxLen = infos.subList(0, sys.columns() ? infos.size() / 2 : infos.size()).stream().mapToInt(s -> s.length()).max().orElse(0);
-                for (int i = 0, j = sys.columns() ? infos.size() / 2 : infos.size(); i < j; i++) {
-                    if (sys.columns() && i >= j/2) {
-                        mb.escaped("   " + infos.get(i));
-                    } else {
-                        mb.newLine().raw(pad(infos.get(i), maxLen));
-                    }
+                List<String> lines = new LinkedList<>();
+                for (int i = 0, j = infos.size(); i < j; i++) {
+                    int col = sys.columns() && i >= j / 2 ? i - j/2: i;
+                    String line = infos.get(i);
+                    if (lines.size() > col)
+                        lines.set(i, pad(lines.get(i), maxLen) + "    " + line);
+                    else
+                        lines.add(line);
                 }
             } else {
                 mb.escaped("Invalid IMDB ID (" + args[0] + ")");
