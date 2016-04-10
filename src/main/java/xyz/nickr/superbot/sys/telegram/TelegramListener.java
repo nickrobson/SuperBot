@@ -1,8 +1,6 @@
 package xyz.nickr.superbot.sys.telegram;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -15,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -61,17 +58,10 @@ public class TelegramListener implements Listener {
 
     private final TelegramBot bot;
     private final TelegramSys sys;
-    private final Properties uids = new Properties();
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
         this.bot = bot;
         this.sys = sys;
-
-        try {
-            uids.load(new FileInputStream(new File("tguids.cache")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
