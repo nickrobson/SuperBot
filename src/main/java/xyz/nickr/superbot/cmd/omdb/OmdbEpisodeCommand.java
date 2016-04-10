@@ -33,10 +33,11 @@ public class OmdbEpisodeCommand implements Command {
                 SeasonResult season = SuperBotController.OMDB.seasonById(args[0], args[1]);
                 for (SeasonEpisodeResult episode : season) {
                     if (args[2].equals(episode.episode)) {
-                        mb.bold(true).escaped(episode.title).bold(false);
+                        mb.bold(true).escaped(season.title).bold(false).escaped(" S" + season.season + "E" + episode.episode + ":");
+                        mb.newLine().bold(true).escaped(episode.title).bold(false);
                         mb.escaped(" (" + episode.imdbRating + ", " + episode.released + ")");
                         mb.newLine().escaped("For more information, use ");
-                        mb.bold(true).escaped(sys.prefix() + "omdbtitle " + episode.imdbId + "(true|false)");
+                        mb.bold(true).escaped(sys.prefix() + "omdbtitle " + episode.imdbId + " (true|false)");
                         break;
                     }
                 }
