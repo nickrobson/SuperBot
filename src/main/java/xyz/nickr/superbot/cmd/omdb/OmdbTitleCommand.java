@@ -19,7 +19,7 @@ public class OmdbTitleCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[imdbId] (fullplot)", "get title information" };
+        return new String[]{ "[imdbId] (true/false)", "get title information" };
     }
 
     @Override

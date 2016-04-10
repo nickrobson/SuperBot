@@ -35,6 +35,8 @@ public class OmdbEpisodeCommand implements Command {
                     if (args[2].equals(episode.episode)) {
                         mb.bold(true).escaped(episode.title).bold(false);
                         mb.escaped(" (" + episode.imdbRating + ", " + episode.released + ")");
+                        mb.newLine().escaped("For more information, use ");
+                        mb.bold(true).escaped(sys.prefix() + "omdbtitle " + episode.imdbId + "(true|false)");
                         break;
                     }
                 }
