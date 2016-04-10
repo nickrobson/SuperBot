@@ -1,7 +1,8 @@
 package xyz.nickr.superbot.cmd.omdb;
 
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
@@ -32,6 +33,12 @@ public class OmdbSeasonCommand implements Command {
         return s;
     }
 
+    String toString(Sys sys, SeasonEpisodeResult episode) {
+        MessageBuilder<?> mb = sys.message();
+        mb.bold(true).escaped("E" + episode.episode + " (" + episode.imdbRating + ")").bold(false);
+        return mb.escaped(": " + episode.title).build();
+    }
+
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 2) {
@@ -41,25 +48,20 @@ public class OmdbSeasonCommand implements Command {
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 SeasonResult season = SuperBotController.OMDB.seasonById(args[0], args[1]);
                 mb.escaped(season.title + ", season " + args[1] + ": ");
-                List<String> infos = new LinkedList<>();
-                for (SeasonEpisodeResult episode : season) {
-                    MessageBuilder<?> emb = sys.message();
-                    emb.bold(true).escaped("E" + episode.episode + " (" + episode.imdbRating + ")").bold(false);
-                    emb.escaped(": " + episode.title);
-                    infos.add(emb.build());
-                }
-                int maxLen = infos.subList(0, sys.columns() ? infos.size() / 2 : infos.size()).stream().mapToInt(s -> s.length()).max().orElse(0);
-                List<String> lines = new LinkedList<>();
-                for (int i = 0, j = infos.size(); i < j; i++) {
-                    int col = sys.columns() && i >= j / 2 ? i - j/2: i;
-                    String line = infos.get(i);
-                    if (lines.size() > col)
-                        lines.set(i, pad(lines.get(i), maxLen) + "    " + line);
-                    else
-                        lines.add(line);
-                }
-                for (String line : lines) {
-                    mb.newLine().raw(line);
+                List<SeasonEpisodeResult> episodes = Arrays.asList(season.episodes);
+                List<String> infos = episodes.stream().map(s -> toString(sys, s)).collect(Collectors.toList());
+                boolean cols = sys.columns();
+                int rows = cols ? episodes.size() / 2 + episodes.size() % 2 : episodes.size();
+                int maxLen = infos.subList(0, rows).stream().mapToInt(s -> s.length()).max().orElse(0);
+                for (int i = 0; i < rows; i++) {
+                    String s = pad(infos.get(i), maxLen);
+                    if (cols && episodes.size() > i + rows) {
+                        s += "  |  " + infos.get(i + rows);
+                    }
+                    mb.raw(s);
+                    if (i != rows - 1) {
+                        mb.newLine();
+                    }
                 }
             } else {
                 mb.escaped("Invalid IMDB ID (" + args[0] + ")");

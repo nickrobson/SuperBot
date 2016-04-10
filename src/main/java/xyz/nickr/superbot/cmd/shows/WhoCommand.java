@@ -64,14 +64,13 @@ public class WhoCommand implements Command {
         boolean cols = sys.columns();
         int rows = cols ? shows.size() / 2 + shows.size() % 2 : shows.size();
         shows.sort(String.CASE_INSENSITIVE_ORDER);
-        int maxLen1 = (cols ? shows.subList(0, rows) : shows).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
-        int maxLen2 = cols ? shows.subList(rows, shows.size()).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length() : 0;
+        int maxLen1 = shows.subList(0, rows).stream().mapToInt(s -> s.length()).max().orElse(0);
         String s = "";
         for (int i = 0; i < rows; i++) {
             if (shows.size() > i) {
                 String t = pad(shows.get(i), maxLen1);
                 if (cols && shows.size() > rows + i)
-                    t += "    |    " + pad(shows.get(rows + i), maxLen2);
+                    t += "   |   " + shows.get(rows + i);
                 MessageBuilder<?> mb = sys.message().code(true).escaped(t).code(false);
                 if (i != rows - 1)
                     mb.newLine().escaped("   ");
@@ -80,7 +79,7 @@ public class WhoCommand implements Command {
         }
         MessageBuilder<?> mb = sys.message();
         if (shows.size() > 0)
-            group.sendMessage(mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false).raw("\n").escaped("   ").raw(s));
+            group.sendMessage(mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false).newLine().escaped("   ").raw(s));
         else
             group.sendMessage(mb.bold(true).escaped("Error: ").bold(false).escaped("It doesn't look like " + username + " uses me. :("));
     }
