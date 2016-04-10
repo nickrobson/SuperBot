@@ -15,6 +15,9 @@ import xyz.nickr.superbot.cmd.fun.FCCPointsCommand;
 import xyz.nickr.superbot.cmd.fun.HangmanCommand;
 import xyz.nickr.superbot.cmd.fun.NumberwangCommand;
 import xyz.nickr.superbot.cmd.fun.TypeOutCommand;
+import xyz.nickr.superbot.cmd.omdb.OmdbEpisodeCommand;
+import xyz.nickr.superbot.cmd.omdb.OmdbSearchCommand;
+import xyz.nickr.superbot.cmd.omdb.OmdbSeasonCommand;
 import xyz.nickr.superbot.cmd.perm.AddPermCommand;
 import xyz.nickr.superbot.cmd.perm.DelPermCommand;
 import xyz.nickr.superbot.cmd.perm.ListPermsCommand;
@@ -82,6 +85,10 @@ public class SuperBotCommands {
 
         register(new GetTokenCommand());
         register(new DeleteTokenCommand());
+
+        register(new OmdbSearchCommand());
+        register(new OmdbSeasonCommand());
+        register(new OmdbEpisodeCommand());
 
         register(new AddShowCommand());
         register(new EditShowCommand());

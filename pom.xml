@@ -8,9 +8,72 @@
 	
   	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jomdb.version>0.0.1</jomdb.version>
         <jitter.version>3.0.0</jitter.version>
         <mathos.version>1.1.1</mathos.version>
  	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>xyz.nickr</groupId>
+			<artifactId>jomdb</artifactId>
+			<version>${jomdb.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>xyz.nickr</groupId>
+			<artifactId>Jitter</artifactId>
+			<version>${jitter.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.6</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>in.kyle</groupId>
+			<artifactId>EzSkypeEzLife</artifactId>
+			<version>1.3.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>pro.zackpollard.telegrambot.api</groupId>
+			<artifactId>jtelegram-botapi</artifactId>
+			<version>0.7.6</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+		    <groupId>net.objecthunter</groupId>
+		    <artifactId>exp4j</artifactId>
+		    <version>0.4.5</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.nanohttpd</groupId>
+		    <artifactId>nanohttpd</artifactId>
+		    <version>2.2.0</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>EzSkype-mvn-repo</id>
+			<url>https://raw.github.com/AkHo1ic/EzSkype/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>jcenter</id>
+			<url>http://jcenter.bintray.com/</url>
+		</repository>
+		<repository>
+			<id>nickr</id>
+			<url>http://nickr.xyz/maven/</url>
+		</repository>
+	</repositories>
  	 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -81,59 +144,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>EzSkype-mvn-repo</id>
-			<url>https://raw.github.com/AkHo1ic/EzSkype/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>jcenter</id>
-			<url>http://jcenter.bintray.com/</url>
-		</repository>
-		<repository>
-			<id>nickr</id>
-			<url>http://nickr.xyz/maven/</url>
-		</repository>
-	</repositories>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.16.6</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>in.kyle</groupId>
-			<artifactId>EzSkypeEzLife</artifactId>
-			<version>1.3.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>pro.zackpollard.telegrambot.api</groupId>
-			<artifactId>jtelegram-botapi</artifactId>
-			<version>0.7.6</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>xyz.nickr</groupId>
-			<artifactId>Jitter</artifactId>
-			<version>${jitter.version}</version>
-			<scope>compile</scope>
-		</dependency><dependency>
-		    <groupId>net.objecthunter</groupId>
-		    <artifactId>exp4j</artifactId>
-		    <version>0.4.5</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.nanohttpd</groupId>
-		    <artifactId>nanohttpd</artifactId>
-		    <version>2.2.0</version>
-		</dependency>
-	</dependencies>
+	
 </project>

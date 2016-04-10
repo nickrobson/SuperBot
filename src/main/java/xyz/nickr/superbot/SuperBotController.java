@@ -29,6 +29,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
@@ -45,21 +46,23 @@ import xyz.nickr.superbot.web.SuperBotServer;
  */
 public class SuperBotController {
 
-    public static final Map<String, Sys>                 PROVIDERS              = new HashMap<>();
+    public static final Map<String, Sys> PROVIDERS = new HashMap<>();
 
-    public static final Map<String, Map<String, String>> PROGRESS               = new TreeMap<>();
+    public static final Map<String, Map<String, String>> PROGRESS = new TreeMap<>();
 
-    public static final List<String>                     HANGMAN_PHRASES        = new LinkedList<>();
-    public static final String                           WELCOME_MESSAGE        = "Welcome to %s";
-    public static final String                           WELCOME_MESSAGE_JOIN   = "Welcome, %s, to %s";
+    public static final List<String> HANGMAN_PHRASES = new LinkedList<>();
+    public static final String WELCOME_MESSAGE = "Welcome to %s";
+    public static final String WELCOME_MESSAGE_JOIN = "Welcome, %s, to %s";
 
-    public static final Gson                             GSON                   = new GsonBuilder().setPrettyPrinting().create();
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    public static String                                 VERSION                = "Unknown";
-    public static int                                    BUILD_NUMBER           = 0;
-    public static String[]                               GIT_COMMIT_IDS         = new String[] { "Unknown" };
-    public static String[]                               GIT_COMMIT_MESSAGES    = new String[] { "Unknown" };
-    public static String[]                               GIT_COMMIT_AUTHORS     = new String[] { "Unknown" };
+    public static String VERSION = "Unknown";
+    public static int BUILD_NUMBER = 0;
+    public static String[] GIT_COMMIT_IDS = new String[] { "Unknown" };
+    public static String[] GIT_COMMIT_MESSAGES = new String[] { "Unknown" };
+    public static String[] GIT_COMMIT_AUTHORS = new String[] { "Unknown" };
+
+    public static final JavaOMDB OMDB = new JavaOMDB();
 
     public static void main(String[] args) {
         try {
