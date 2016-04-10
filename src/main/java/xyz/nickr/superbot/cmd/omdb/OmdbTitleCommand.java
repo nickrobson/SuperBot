@@ -19,7 +19,7 @@ public class OmdbTitleCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[imdbId]", "get title information" };
+        return new String[]{ "[imdbId] (fullplot)", "get title information" };
     }
 
     @Override
@@ -29,7 +29,8 @@ public class OmdbTitleCommand implements Command {
         } else {
             MessageBuilder<?> mb = sys.message();
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
-                TitleResult title = SuperBotController.OMDB.titleById(args[0]);
+                boolean fullPlot = args.length > 1 && args[1].equalsIgnoreCase("true");
+                TitleResult title = SuperBotController.OMDB.titleById(args[0], fullPlot);
                 mb.bold(true).escaped(title.title).bold(false).escaped(" (" + title.imdbID + ") is a " + title.genre + " " + title.type);
                 mb.newLine().bold(true).escaped("Rating: ").bold(false).escaped(title.imdbRating + " from " + title.imdbVotes + " votes");
                 mb.newLine().bold(true).escaped("Runtime: ").bold(false).escaped(title.runtime);
@@ -37,6 +38,7 @@ public class OmdbTitleCommand implements Command {
                 mb.newLine().bold(true).escaped("Actors: ").bold(false).escaped(title.actors);
                 mb.newLine().bold(true).escaped("Writer: ").bold(false).escaped(title.writer);
                 mb.newLine().bold(true).escaped("Awards: ").bold(false).escaped(title.awards);
+                mb.newLine().bold(true).escaped("Plot: ").bold(false).escaped(title.plot);
             } else {
                 mb.escaped("Invalid IMDB ID (" + args[0] + ")");
             }
