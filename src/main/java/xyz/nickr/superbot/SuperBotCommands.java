@@ -153,7 +153,11 @@ public class SuperBotCommands {
                 mb.escaped("You don't have permission to use " + prefix + cmdName + "!");
                 g.sendMessage(mb.toString());
             } else {
-                cmd.exec(sys, u, g, cmdName, args, message);
+                try {
+                    cmd.exec(sys, u, g, cmdName, args, message);
+                } catch (Exception ex) {
+                    g.sendMessage(sys.message().escaped("[ERROR] " + ex.getClass().getSimpleName() + ": " + ex.getMessage()));
+                }
             }
         }
     }
