@@ -34,7 +34,7 @@ public class OmdbSeasonCommand implements Command {
     }
 
     String toString(Sys sys, SeasonEpisodeResult episode) {
-        return sys.message().escaped("E" + episode.episode + " (" + episode.imdbRating + "): " + episode.title).build();
+        return "E" + episode.episode + " (" + episode.imdbRating + "): " + episode.title;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class OmdbSeasonCommand implements Command {
                     if (cols && episodes.size() > i + rows) {
                         s += "  |  " + infos.get(i + rows);
                     }
-                    mb.newLine().raw(s);
+                    mb.newLine().escaped(s);
                 }
                 mb.code(false);
             } else {
