@@ -34,9 +34,7 @@ public class OmdbSeasonCommand implements Command {
     }
 
     String toString(Sys sys, SeasonEpisodeResult episode) {
-        MessageBuilder<?> mb = sys.message();
-        mb.bold(true).escaped("E" + episode.episode + " (" + episode.imdbRating + ")").bold(false);
-        return mb.escaped(": " + episode.title).build();
+        return sys.message().code(true).escaped("E" + episode.episode + " (" + episode.imdbRating + "): " + episode.title).build();
     }
 
     @Override
@@ -58,10 +56,7 @@ public class OmdbSeasonCommand implements Command {
                     if (cols && episodes.size() > i + rows) {
                         s += "  |  " + infos.get(i + rows);
                     }
-                    mb.raw(s);
-                    if (i != rows - 1) {
-                        mb.newLine();
-                    }
+                    mb.newLine().raw(s);
                 }
             } else {
                 mb.escaped("Invalid IMDB ID (" + args[0] + ")");
