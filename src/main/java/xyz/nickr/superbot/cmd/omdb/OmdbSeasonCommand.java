@@ -58,6 +58,9 @@ public class OmdbSeasonCommand implements Command {
                     else
                         lines.add(line);
                 }
+                for (String line : lines) {
+                    mb.newLine().raw(line);
+                }
             } else {
                 mb.escaped("Invalid IMDB ID (" + args[0] + ")");
             }
