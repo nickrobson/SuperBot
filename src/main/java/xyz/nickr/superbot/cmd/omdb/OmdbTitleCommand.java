@@ -30,12 +30,13 @@ public class OmdbTitleCommand implements Command {
             MessageBuilder<?> mb = sys.message();
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 TitleResult title = SuperBotController.OMDB.titleById(args[0]);
-                mb.escaped(title.title + " (" + title.imdbID + ") is a " + title.genre + " " + title.type + ", " + title.runtime);
-                mb.newLine().escaped(title.imdbRating + " from " + title.imdbVotes + "votes");
-                mb.newLine().escaped("Director: " + title.director);
-                mb.newLine().escaped("Actors: " + title.actors);
-                mb.newLine().escaped("Writer: " + title.writer);
-                mb.newLine().escaped("Awards: " + title.awards);
+                mb.bold(true).escaped(title.title).bold(false).escaped(" (" + title.imdbID + ") is a " + title.genre + " " + title.type);
+                mb.newLine().bold(true).escaped("Rating: ").bold(false).escaped(title.imdbRating + " from " + title.imdbVotes + " votes");
+                mb.newLine().bold(true).escaped("Runtime: ").bold(false).escaped(title.runtime);
+                mb.newLine().bold(true).escaped("Director: ").bold(false).escaped(title.director);
+                mb.newLine().bold(true).escaped("Actors: ").bold(false).escaped(title.actors);
+                mb.newLine().bold(true).escaped("Writer: ").bold(false).escaped(title.writer);
+                mb.newLine().bold(true).escaped("Awards: ").bold(false).escaped(title.awards);
             } else {
                 mb.escaped("Invalid IMDB ID (" + args[0] + ")");
             }

@@ -63,7 +63,7 @@ public class OmdbSearchCommand implements Command {
                     mb.escaped(" (" + sr.year + "): " + sr.imdbId + ", a " + sr.type);
                 }
                 if (page != res.getPageCount()) {
-                    mb.newLine().escaped("For more results, use " + sys.prefix() + names()[0] + " " + search + " -page=" + (page + 1));
+                    mb.newLine().escaped("For more results, use ").bold(true).escaped(sys.prefix() + names()[0] + " " + search + " -page=" + (page + 1));
                 }
             }
             group.sendMessage(mb);
