@@ -18,6 +18,7 @@ import xyz.nickr.superbot.cmd.fun.TypeOutCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbEpisodeCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbSearchCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbSeasonCommand;
+import xyz.nickr.superbot.cmd.omdb.OmdbTitleCommand;
 import xyz.nickr.superbot.cmd.perm.AddPermCommand;
 import xyz.nickr.superbot.cmd.perm.DelPermCommand;
 import xyz.nickr.superbot.cmd.perm.ListPermsCommand;
@@ -87,6 +88,7 @@ public class SuperBotCommands {
         register(new DeleteTokenCommand());
 
         register(new OmdbSearchCommand());
+        register(new OmdbTitleCommand());
         register(new OmdbSeasonCommand());
         register(new OmdbEpisodeCommand());
 

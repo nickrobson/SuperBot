@@ -54,13 +54,16 @@ public class OmdbSearchCommand implements Command {
             } else {
                 SearchResultsPage pa = res.getPage(page);
                 if (pa.size() > 0) {
-                    mb.escaped("Results: ");
+                    mb.bold(true).italic(true).escaped("Results (" + page + "/" + res.getPageCount() + "): ").italic(false).bold(false);
                 } else {
-                    mb.escaped("No results.");
+                    mb.bold(true).italic(true).escaped("No results.").italic(false).bold(false);
                 }
                 for (SearchResult sr : pa) {
                     mb.newLine().bold(true).escaped(sr.title).bold(false);
                     mb.escaped(" (" + sr.year + "): " + sr.imdbId + ", a " + sr.type);
+                }
+                if (page != res.getPageCount()) {
+                    mb.newLine().escaped("For more results, use " + sys.prefix() + names()[0] + " " + search + " -page=" + (page + 1));
                 }
             }
             group.sendMessage(mb);
