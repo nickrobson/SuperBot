@@ -39,6 +39,10 @@ public class OmdbSearchCommand implements Command {
                     group.sendMessage(mb.escaped("Invalid page number (" + pg + ")"));
                     return;
                 }
+            } else {
+                if (!search.isEmpty())
+                    search += " ";
+                search += arg;
             }
         }
         if (search.length() > 0) {
