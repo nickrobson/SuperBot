@@ -32,10 +32,13 @@ public class UpcomingCommand implements Command {
         Calendar now = Calendar.getInstance();
         now.clear();
         now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+        now.add(Calendar.DATE, -1);
         Calendar week = Calendar.getInstance();
         week.clear();
         week.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-        week.add(Calendar.DATE, 7);
+        week.add(Calendar.DATE, 6);
+
+
 
         Map<Calendar, String> days = new TreeMap<>();
         for (Show show : SuperBotShows.SHOWS_BY_ID.values()) {
