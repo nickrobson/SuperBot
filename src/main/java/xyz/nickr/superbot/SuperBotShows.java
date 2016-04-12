@@ -2,7 +2,6 @@ package xyz.nickr.superbot;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,7 +9,6 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,7 +38,7 @@ import xyz.nickr.jomdb.model.TitleResult;
  */
 public class SuperBotShows {
 
-    public static final List<Show>          TRACKED_SHOWS   = new ArrayList<>();
+    public static final List<Show>          TRACKED_SHOWS   = new LinkedList<>();
     public static final Map<String, String> SHOWS_BY_NAME   = new HashMap<>();
     public static final Map<String, Show>   SHOWS_BY_ID     = new HashMap<>();
     public static final Pattern             EPISODE_PATTERN = Pattern.compile("S[1-9][0-9]?E[1-9][0-9]?");
@@ -50,29 +48,22 @@ public class SuperBotShows {
             loadShows();
     }
 
-    public static void register(String imdb, String link) {
-        SHOWS_BY_NAME.put(link.toLowerCase(), imdb);
-    }
-
-    public static void unregister(String link) {
-        SHOWS_BY_NAME.remove(link);
-    }
-
     public static boolean addLink(String imdb, String link) {
         if (imdb == null || link == null)
             return false;
         Show show = getShow(imdb, false);
         if (show == null)
             return false;
-        register(imdb, link);
+        SHOWS_BY_NAME.put(link.toLowerCase(), imdb);
         show.addLink(link);
+        System.out.println("Link added: " + link + " <=> " + imdb);
         return saveShows();
     }
 
     public static boolean removeLink(String link) {
         if (link == null)
             return false;
-        unregister(link);
+        SHOWS_BY_NAME.remove(link.toLowerCase());
         return saveShows();
     }
 
@@ -88,9 +79,7 @@ public class SuperBotShows {
         } else if (create && !SHOWS_BY_ID.containsKey(ident)) {
             SHOWS_BY_ID.put(ident, new Show(ident));
         }
-        if (ident == null)
-            return null;
-        return SHOWS_BY_ID.get(ident);
+        return ident != null ? SHOWS_BY_ID.get(ident) : null;
     }
 
     public static void loadShows() {
@@ -106,6 +95,9 @@ public class SuperBotShows {
             if (el != null && el.isJsonObject()) {
                 JsonObject obj = el.getAsJsonObject();
                 addLink(obj.get("imdb").getAsString(), obj.get("link").getAsString());
+                System.out.println("object: " + el);
+            } else {
+                System.out.println("not a json object: " + el);
             }
         }
     }
@@ -113,11 +105,9 @@ public class SuperBotShows {
     public static boolean saveShows() {
         JsonObject data = new JsonObject();
         JsonArray shows = new JsonArray();
-        for (Show show : TRACKED_SHOWS) {
-            shows.add(show.imdb);
-        }
         JsonArray links = new JsonArray();
         for (Show show : TRACKED_SHOWS) {
+            shows.add(show.imdb);
             for (String link : show.links) {
                 JsonObject obj = new JsonObject();
                 obj.addProperty("imdb", show.imdb);
@@ -137,16 +127,13 @@ public class SuperBotShows {
         JsonObject data = readJson(f);
         if (data == null)
             data = readJson(bk);
+        System.out.println(data);
         return data;
     }
 
     private static JsonObject readJson(File f) {
         try {
-            if (f.exists()) {
-                return SuperBotController.GSON.fromJson(new FileReader(f), JsonObject.class);
-            } else {
-                throw new FileNotFoundException(f.getName() + " is missing");
-            }
+            return SuperBotController.GSON.fromJson(new FileReader(f), JsonObject.class);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -191,7 +178,7 @@ public class SuperBotShows {
         }
 
         public void addLink(String link) {
-            links.add(link);
+            links.add(link.toLowerCase());
         }
 
         public String getDisplay() {
