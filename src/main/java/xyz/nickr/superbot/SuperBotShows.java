@@ -38,13 +38,12 @@ import xyz.nickr.jomdb.model.TitleResult;
  */
 public class SuperBotShows {
 
-    public static final List<Show>          TRACKED_SHOWS   = new LinkedList<>();
     public static final Map<String, String> SHOWS_BY_NAME   = new HashMap<>();
     public static final Map<String, Show>   SHOWS_BY_ID     = new HashMap<>();
     public static final Pattern             EPISODE_PATTERN = Pattern.compile("S[1-9][0-9]?E[1-9][0-9]?");
 
     public static void setup() {
-        if (TRACKED_SHOWS.isEmpty())
+        if (SHOWS_BY_ID.isEmpty())
             loadShows();
     }
 
@@ -56,7 +55,6 @@ public class SuperBotShows {
             return false;
         SHOWS_BY_NAME.put(link.toLowerCase(), imdb);
         show.addLink(link);
-        System.out.println("Link added: " + link + " <=> " + imdb);
         return saveShows();
     }
 
@@ -86,18 +84,17 @@ public class SuperBotShows {
         JsonObject data = readJson();
         if (data == null)
             return;
-        TRACKED_SHOWS.clear();
         SHOWS_BY_NAME.clear();
+        SHOWS_BY_ID.clear();
         for (JsonElement el : data.getAsJsonArray("shows")) {
-            TRACKED_SHOWS.add(new Show(el.getAsString()));
+            String imdb = el.getAsString();
+            Show show = new Show(imdb);
+            SHOWS_BY_ID.put(imdb, show);
         }
         for (JsonElement el : data.getAsJsonArray("links")) {
             if (el != null && el.isJsonObject()) {
                 JsonObject obj = el.getAsJsonObject();
                 addLink(obj.get("imdb").getAsString(), obj.get("link").getAsString());
-                System.out.println("object: " + el);
-            } else {
-                System.out.println("not a json object: " + el);
             }
         }
     }
@@ -106,7 +103,7 @@ public class SuperBotShows {
         JsonObject data = new JsonObject();
         JsonArray shows = new JsonArray();
         JsonArray links = new JsonArray();
-        for (Show show : TRACKED_SHOWS) {
+        for (Show show : SHOWS_BY_ID.values()) {
             shows.add(show.imdb);
             for (String link : show.links) {
                 JsonObject obj = new JsonObject();
@@ -127,7 +124,6 @@ public class SuperBotShows {
         JsonObject data = readJson(f);
         if (data == null)
             data = readJson(bk);
-        System.out.println(data);
         return data;
     }
 
