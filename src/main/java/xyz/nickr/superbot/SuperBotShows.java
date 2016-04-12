@@ -211,13 +211,15 @@ public class SuperBotShows {
             JavaOMDB omdb = SuperBotController.OMDB;
             int n = 0;
             SeasonResult season = null;
-            do {
-                SeasonResult next = omdb.seasonById(imdb, String.valueOf(n + 1));
-                if (next == null)
-                    break;
-                season = next;
-                n++;
-            } while (season != null);
+            try {
+                do {
+                    SeasonResult next = omdb.seasonById(imdb, String.valueOf(n + 1));
+                    if (next == null)
+                        break;
+                    season = next;
+                    n++;
+                } while (season != null);
+            } catch (Exception ex) {}
             if (n > 0) {
                 Calendar now = Calendar.getInstance();
                 List<SeasonEpisodeResult> eps = Arrays.asList(season.episodes);
