@@ -173,7 +173,7 @@ public class SuperBotShows {
         public final String imdb;
         public final Set<String> links;
 
-        private String display, day;
+        private volatile String display, day;
 
         public Show(String imdb, String... links) {
             this.imdb = imdb;
@@ -189,14 +189,14 @@ public class SuperBotShows {
             links.add(link.toLowerCase());
         }
 
-        public String getDisplay() {
+        public synchronized String getDisplay() {
             if (display != null)
                 return display;
             TitleResult res = SuperBotController.OMDB.titleById(imdb);
             return this.display = res != null ? res.title : null;
         }
 
-        public String getDay() {
+        public synchronized String getDay() {
             if (day != null)
                 return day;
             JavaOMDB omdb = SuperBotController.OMDB;

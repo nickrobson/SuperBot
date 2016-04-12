@@ -84,6 +84,13 @@ public class SuperBotController {
 
             SuperBotShows.setup();
 
+            new Thread(() -> {
+                SuperBotShows.SHOWS_BY_ID.values().forEach(show -> {
+                    show.getDisplay();
+                    show.getDay();
+                });
+            }).start();
+
             load(null);
 
             PROVIDERS.forEach((s, sys) -> sys.onLoaded());
