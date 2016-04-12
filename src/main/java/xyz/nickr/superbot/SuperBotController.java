@@ -201,7 +201,7 @@ public class SuperBotController {
                     BufferedReader reader = Files.newBufferedReader(file.toPath());
                     Map<String, String> map = new HashMap<>();
                     GSON.fromJson(reader, JsonObject.class).entrySet().forEach(e -> map.put(e.getKey(), e.getValue().getAsString()));
-                    PROGRESS.put(file.getName().substring(0, file.getName().length() - 4), map);
+                    PROGRESS.put(file.getName().substring(0, file.getName().length() - 5), map);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
