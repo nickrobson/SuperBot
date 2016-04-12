@@ -34,6 +34,7 @@ import xyz.nickr.superbot.cmd.shows.RemoveLinkCommand;
 import xyz.nickr.superbot.cmd.shows.SetProgressCommand;
 import xyz.nickr.superbot.cmd.shows.ShowsCommand;
 import xyz.nickr.superbot.cmd.shows.TimetableCommand;
+import xyz.nickr.superbot.cmd.shows.UpcomingCommand;
 import xyz.nickr.superbot.cmd.shows.ViewingOrderCommand;
 import xyz.nickr.superbot.cmd.shows.WhoCommand;
 import xyz.nickr.superbot.cmd.shows.WipeCommand;
@@ -97,6 +98,7 @@ public class SuperBotCommands {
         register(new SetProgressCommand());
         register(new ShowsCommand());
         register(new TimetableCommand());
+        register(new UpcomingCommand());
         register(new ViewingOrderCommand());
         register(new WhoCommand());
         register(new WipeCommand());

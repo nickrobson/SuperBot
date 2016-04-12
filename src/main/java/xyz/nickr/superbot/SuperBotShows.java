@@ -7,16 +7,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import com.google.gson.JsonArray;
@@ -184,8 +183,6 @@ public class SuperBotShows {
         public final String imdb, display;
         public final Set<String> links;
 
-        private AtomicReference<String> day = new AtomicReference<>();
-
         public Show(String imdb, String display, String... links) {
             this(imdb, display, Arrays.asList(links));
         }
@@ -204,38 +201,49 @@ public class SuperBotShows {
             return display;
         }
 
-        public String getDay() {
-            String d = day.get();
-            if (d != null)
-               return d;
+        public Calendar getDate() {
             JavaOMDB omdb = SuperBotController.OMDB;
+            Calendar now = Calendar.getInstance();
+            Calendar today = Calendar.getInstance();
+            now.clear();
+            now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            SeasonResult season = null, next = null;
             int n = 0;
-            SeasonResult season = null;
             try {
                 do {
-                    SeasonResult next = omdb.seasonById(imdb, String.valueOf(n + 1));
+                    next = omdb.seasonById(imdb, String.valueOf(n+1));
+                    if (next != null && next.episodes.length > 0) {
+                        SeasonEpisodeResult first = next.episodes[0], last = next.episodes[next.episodes.length - 1];
+                        Calendar a = first.getReleaseDate(), b = last.getReleaseDate();
+                        if (a.after(now) || !a.after(now) && !b.before(now)) {
+                            season = next;
+                            break;
+                        }
+                    }
                     if (next == null)
                         break;
                     season = next;
                     n++;
-                } while (season != null);
+                } while (next != null);
             } catch (Exception ex) {}
-            if (n > 0) {
-                Calendar now = Calendar.getInstance();
-                List<SeasonEpisodeResult> eps = Arrays.asList(season.episodes);
-                SeasonEpisodeResult ser = null;
-                for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
-                    Calendar cal = (ser = it.next()).getReleaseDate();
-                    if (cal != null && !cal.after(now)) {
-                        d = days.getOrDefault(ser.getReleaseDate().get(Calendar.DAY_OF_WEEK), "N/A");
-                        break;
+            if (season != null) {
+                for (Iterator<SeasonEpisodeResult> it = season.iterator(); it.hasNext();) {
+                    Calendar cal = it.next().getReleaseDate();
+                    if (cal != null && cal.after(now)) {
+                        return cal;
                     }
                 }
             }
-            if (d == null)
-                d = "N/A";
-            day.set(d);
-            return d;
+            return null;
+        }
+
+        public String getDateString() {
+            return getDateString(getDate());
+        }
+
+        public String getDay() {
+            Calendar date = getDate();
+            return date != null ? days.getOrDefault(date.get(Calendar.DAY_OF_WEEK), "N/A") : "N/A";
         }
 
         @Override
@@ -249,7 +257,11 @@ public class SuperBotShows {
                 return o == this;
             Show s = (Show) o;
             return imdb == s.imdb || imdb != null && imdb.equals(s.imdb);
-         }
+        }
+
+        public static String getDateString(Calendar date) {
+            return date != null ? new SimpleDateFormat("E, d MMM yyyy").format(date.getTime()) : "N/A";
+        }
 
     }
 
