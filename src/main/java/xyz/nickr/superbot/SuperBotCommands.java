@@ -155,6 +155,7 @@ public class SuperBotCommands {
                     cmd.exec(sys, u, g, cmdName, args, message);
                 } catch (Exception ex) {
                     g.sendMessage(sys.message().escaped("[ERROR] " + ex.getClass().getSimpleName() + ": " + ex.getMessage()));
+                    ex.printStackTrace();
                 }
             }
         }
