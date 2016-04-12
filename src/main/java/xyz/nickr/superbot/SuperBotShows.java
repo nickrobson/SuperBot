@@ -183,6 +183,8 @@ public class SuperBotShows {
         public final String imdb, display;
         public final Set<String> links;
 
+        private String day;
+
         public Show(String imdb, String display, String... links) {
             this(imdb, display, Arrays.asList(links));
         }
@@ -242,8 +244,10 @@ public class SuperBotShows {
         }
 
         public String getDay() {
+            if (day != null)
+                return day;
             Calendar date = getDate();
-            return date != null ? days.getOrDefault(date.get(Calendar.DAY_OF_WEEK), "N/A") : "N/A";
+            return day = date != null ? days.getOrDefault(date.get(Calendar.DAY_OF_WEEK), "N/A") : "N/A";
         }
 
         @Override
