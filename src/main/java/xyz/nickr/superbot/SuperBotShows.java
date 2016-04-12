@@ -200,11 +200,11 @@ public class SuperBotShows {
             links.add(link.toLowerCase());
         }
 
-        public synchronized String getDisplay() {
+        public String getDisplay() {
             return display;
         }
 
-        public synchronized String getDay() {
+        public String getDay() {
             if (day != null)
                 return day;
             JavaOMDB omdb = SuperBotController.OMDB;
