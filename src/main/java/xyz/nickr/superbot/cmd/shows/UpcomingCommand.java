@@ -36,7 +36,7 @@ public class UpcomingCommand implements Command {
         Calendar week = Calendar.getInstance();
         week.clear();
         week.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-        week.add(Calendar.DATE, 6);
+        week.add(Calendar.DATE, 7);
 
 
         Map<Calendar, String> days = new TreeMap<>();
