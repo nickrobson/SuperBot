@@ -54,7 +54,7 @@ public class ProgressCommand implements Command {
                 if (show == null)
                     builder = builder.escaped("Invalid show: " + argz.get(i));
                 else
-                    builder = show(show.names[0], builder, all_eps);
+                    builder = show(show.imdb, builder, all_eps);
             }
         } else {
             sendUsage(sys, user, group);
@@ -75,7 +75,7 @@ public class ProgressCommand implements Command {
             if (!epz.contains(e))
                 epz.add(e);
         });
-        builder.bold(true).escaped("Episode progress: " + SuperBotShows.getShow(show).display).bold(false);
+        builder.bold(true).escaped("Episode progress: " + SuperBotShows.getShow(show).getDisplay()).bold(false);
         if (epz.size() > 0) {
             if (all_eps) {
                 for (String ep : epz) {

@@ -44,16 +44,16 @@ public class SetProgressCommand implements Command {
             } else if (ep.equalsIgnoreCase("none") || ep.equalsIgnoreCase("remove")) {
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.remove(profileName.toLowerCase());
-                SuperBotController.PROGRESS.put(show.names[0], prg);
-                mb.escaped("Removed ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.display);
+                SuperBotController.PROGRESS.put(show.imdb, prg);
+                mb.escaped("Removed ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay());
                 SuperBotController.saveProgress();
             } else if (!SuperBotShows.EPISODE_PATTERN.matcher(ep).matches()) {
                 mb.escaped("Invalid episode: ").bold(true).escaped(ep).bold(false).escaped(" (doesn't match SxEyy format)");
             } else {
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.put(profileName.toLowerCase(), ep);
-                SuperBotController.PROGRESS.put(show.names[0], prg);
-                mb.escaped("Set ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.display).bold(false).escaped(" to " + ep);
+                SuperBotController.PROGRESS.put(show.imdb, prg);
+                mb.escaped("Set ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to " + ep);
                 if (oldprg != null) {
                     mb.escaped(" (was " + oldprg + ")");
                 }

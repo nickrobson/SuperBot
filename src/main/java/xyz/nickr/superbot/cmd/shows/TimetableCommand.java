@@ -33,7 +33,7 @@ public class TimetableCommand implements Command {
 
     String get(String day, Set<Show> set, Sys sys) {
         MessageBuilder<?> mb = sys.message();
-        List<String> names = set.stream().map(s -> s.display).collect(Collectors.toList());
+        List<String> names = set.stream().map(s -> s.getDisplay()).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
         return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names)).build();
     }
@@ -48,8 +48,9 @@ public class TimetableCommand implements Command {
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         Map<String, Set<Show>> days = new HashMap<>();
         SuperBotShows.TRACKED_SHOWS.forEach(s -> {
-            String day = s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "Not airing" : s.day;
-            day = day.substring(0, 1).toUpperCase() + day.substring(1).toLowerCase();
+            String day = s.getDay();
+            if (day == null || day.isEmpty() || day.equals("N/A"))
+                day = "Not airing";
             days.merge(day, new HashSet<>(Arrays.asList(s)), this::merge);
         });
         List<String> alldays = new LinkedList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Netflix", "Not airing"));

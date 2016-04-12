@@ -51,13 +51,15 @@ public class OmdbSeasonCommand implements Command {
                 boolean cols = sys.columns();
                 int rows = cols ? episodes.size() / 2 + episodes.size() % 2 : episodes.size();
                 int maxLen = infos.subList(0, rows).stream().mapToInt(s -> s.length()).max().orElse(0);
-                mb.code(true);
+                mb.newLine().code(true);
                 for (int i = 0; i < rows; i++) {
                     String s = pad(infos.get(i), maxLen);
                     if (cols && episodes.size() > i + rows) {
                         s += "  |  " + infos.get(i + rows);
                     }
-                    mb.newLine().escaped(s);
+                    if (i > 0)
+                        mb.newLine();
+                    mb.escaped(s);
                 }
                 mb.code(false);
             } else {

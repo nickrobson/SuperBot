@@ -192,15 +192,11 @@ public class SuperBotController {
         if (!dir.exists())
             dir.mkdir();
         for (File file : dir.listFiles()) {
-            if (file.isFile() && file.getName().endsWith(".mrv")) {
+            if (file.isFile() && file.getName().endsWith(".json")) {
                 try {
-                    Map<String, String> map = new HashMap<>();
                     BufferedReader reader = Files.newBufferedReader(file.toPath());
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        String[] data = line.split("=", 2);
-                        map.put(data[0].toLowerCase(), data[1]);
-                    }
+                    Map<String, String> map = new HashMap<>();
+                    GSON.fromJson(reader, JsonObject.class).entrySet().forEach(e -> map.put(e.getKey(), e.getValue().getAsString()));
                     PROGRESS.put(file.getName().substring(0, file.getName().length() - 4), map);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -216,12 +212,11 @@ public class SuperBotController {
             dir.mkdir();
         for (Entry<String, Map<String, String>> entry : map.entrySet()) {
             try {
-                File file = new File(dir, entry.getKey() + ".mrv");
+                File file = new File(dir, entry.getKey() + ".json");
+                JsonObject obj = new JsonObject();
+                entry.getValue().forEach((k, v) -> obj.addProperty(k, v));
                 BufferedWriter writer = Files.newBufferedWriter(file.toPath());
-                for (Entry<String, String> e : entry.getValue().entrySet()) {
-                    writer.write(e.getKey().toLowerCase() + "=" + e.getValue());
-                    writer.newLine();
-                }
+                GSON.toJson(obj, writer);
                 writer.close();
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -319,7 +314,7 @@ public class SuperBotController {
     }
 
     public static Map<String, String> getProgress(Show show) {
-        return getProgress(show == null ? null : show.names[0]);
+        return getProgress(show == null ? null : show.imdb);
     }
 
     public static Map<String, String> getProgress(String show) {

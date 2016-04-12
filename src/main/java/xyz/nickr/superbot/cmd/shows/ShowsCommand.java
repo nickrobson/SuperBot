@@ -29,13 +29,13 @@ public class ShowsCommand implements Command {
         List<String> send = new LinkedList<>();
         for (Show show : SuperBotShows.TRACKED_SHOWS) {
             StringBuilder sb = new StringBuilder();
-            for (String s : show.names) {
+            for (String s : show.links) {
                 if (sb.length() > 0)
                     sb.append(", ");
                 sb.append(s);
             }
             if (sb.length() > 0)
-                send.add(sys.message().code(true).escaped("[" + show.display + "] " + sb.toString()).code(false).build());
+                send.add(sys.message().code(true).escaped("[" + show.getDisplay() + "] " + sb.toString()).code(false).build());
         }
         send.sort(String.CASE_INSENSITIVE_ORDER);
         boolean cols = sys.columns();
