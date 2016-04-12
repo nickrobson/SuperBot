@@ -65,12 +65,13 @@ public class WhoCommand implements Command {
         int rows = cols ? shows.size() / 2 + shows.size() % 2 : shows.size();
         shows.sort(String.CASE_INSENSITIVE_ORDER);
         int maxLen1 = shows.subList(0, rows).stream().mapToInt(s -> s.length()).max().orElse(0);
+        int maxLen2 = shows.subList(rows, shows.size()).stream().mapToInt(s -> s.length()).max().orElse(0);
         String s = "";
         for (int i = 0; i < rows; i++) {
             if (shows.size() > i) {
                 String t = pad(shows.get(i), maxLen1);
                 if (cols && shows.size() > rows + i)
-                    t += "   |   " + shows.get(rows + i);
+                    t += "   |   " + pad(shows.get(rows + i), maxLen2);
                 MessageBuilder<?> mb = sys.message().code(true).escaped(t).code(false);
                 if (i != rows - 1)
                     mb.newLine().escaped("   ");
