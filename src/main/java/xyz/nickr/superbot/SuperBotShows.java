@@ -26,7 +26,6 @@ import xyz.nickr.jomdb.JOMDBException;
 import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;
-import xyz.nickr.jomdb.model.TitleResult;
 
 /**
  * Contains all logic pertaining to the different shows the bot tracks.
@@ -85,7 +84,7 @@ public class SuperBotShows {
         if (!JavaOMDB.IMDB_ID_PATTERN.matcher(ident).matches()) {
             ident = SHOWS_BY_NAME.get(ident);
         } else if (create && !SHOWS_BY_ID.containsKey(ident)) {
-            SHOWS_BY_ID.put(ident, new Show(ident));
+            SHOWS_BY_ID.put(ident, new Show(ident, SuperBotController.OMDB.titleById(ident).title));
         }
         return ident != null ? SHOWS_BY_ID.get(ident) : null;
     }
@@ -97,8 +96,10 @@ public class SuperBotShows {
         SHOWS_BY_NAME.clear();
         SHOWS_BY_ID.clear();
         for (JsonElement el : data.getAsJsonArray("shows")) {
-            String imdb = el.getAsString();
-            Show show = new Show(imdb);
+            JsonObject obj = el.getAsJsonObject();
+            String imdb = obj.get("imdb").getAsString();
+            String display = obj.has("display") ? obj.get("display").getAsString() : SuperBotController.OMDB.titleById(imdb).title;
+            Show show = new Show(imdb, display);
             SHOWS_BY_ID.put(imdb, show);
         }
         for (JsonElement el : data.getAsJsonArray("links")) {
@@ -170,18 +171,18 @@ public class SuperBotShows {
 
     public static final class Show {
 
-        public final String imdb;
+        public final String imdb, display;
         public final Set<String> links;
 
-        private volatile String display, day;
+        private volatile String day;
 
-        public Show(String imdb, String... links) {
-            this.imdb = imdb;
-            this.links = new TreeSet<>(Arrays.asList(links));
+        public Show(String imdb, String display, String... links) {
+            this(imdb, display, Arrays.asList(links));
         }
 
-        public Show(String imdb, Collection<String> links) {
+        public Show(String imdb, String display, Collection<String> links) {
             this.imdb = imdb;
+            this.display = display;
             this.links = new TreeSet<>(links);
         }
 
@@ -190,10 +191,7 @@ public class SuperBotShows {
         }
 
         public synchronized String getDisplay() {
-            if (display != null)
-                return display;
-            TitleResult res = SuperBotController.OMDB.titleById(imdb);
-            return this.display = res != null ? res.title : null;
+            return display;
         }
 
         public synchronized String getDay() {
@@ -224,7 +222,7 @@ public class SuperBotShows {
 
         @Override
         public Show clone() {
-            return new Show(imdb, links);
+            return new Show(imdb, display, links);
         }
 
         @Override
