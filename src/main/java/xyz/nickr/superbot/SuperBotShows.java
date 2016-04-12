@@ -213,6 +213,7 @@ public class SuperBotShows {
             Calendar today = Calendar.getInstance();
             now.clear();
             now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            now.add(Calendar.DATE, -1);
             SeasonResult season = null, next = null;
             int n = 0;
             try {
