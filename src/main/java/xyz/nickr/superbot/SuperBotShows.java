@@ -96,9 +96,15 @@ public class SuperBotShows {
         SHOWS_BY_NAME.clear();
         SHOWS_BY_ID.clear();
         for (JsonElement el : data.getAsJsonArray("shows")) {
-            JsonObject obj = el.getAsJsonObject();
-            String imdb = obj.get("imdb").getAsString();
-            String display = obj.has("display") ? obj.get("display").getAsString() : SuperBotController.OMDB.titleById(imdb).title;
+            String imdb;
+            JsonObject obj = null;
+            if (el.isJsonObject()) {
+                obj = el.getAsJsonObject();
+                imdb = obj.get("imdb").getAsString();
+            } else {
+                imdb = el.getAsString();
+            }
+            String display = obj != null && obj.has("display") ? obj.get("display").getAsString() : SuperBotController.OMDB.titleById(imdb).title;
             Show show = new Show(imdb, display);
             SHOWS_BY_ID.put(imdb, show);
         }
@@ -115,7 +121,11 @@ public class SuperBotShows {
         JsonArray shows = new JsonArray();
         JsonArray links = new JsonArray();
         for (Show show : SHOWS_BY_ID.values()) {
-            shows.add(show.imdb);
+            JsonObject s = new JsonObject();
+            s.addProperty("imdb", show.imdb);
+            if (show.display != null)
+                s.addProperty("display", show.display);
+            shows.add(s);
             for (String link : show.links) {
                 JsonObject obj = new JsonObject();
                 obj.addProperty("imdb", show.imdb);
