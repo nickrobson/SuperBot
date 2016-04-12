@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import in.kyle.ezskypeezlife.EzSkype;
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.conversation.SkypeConversation;
+import in.kyle.ezskypeezlife.api.skype.SkypeCredentials;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.Message;
@@ -19,15 +20,20 @@ public class SkypeSys implements Sys {
     public EzSkype skype;
 
     public SkypeSys(String username, String password) {
-        try {
-            SkypeListener listener = new SkypeListener(this);
-            skype = new EzSkype(username, password);
-            skype.setErrorHandler(listener);
-            skype.login();
-            skype.getEventManager().registerEvents(listener);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            long now = System.currentTimeMillis();
+            System.out.println("Loading SuperBot: Skype");
+            try {
+                SkypeListener listener = new SkypeListener(this);
+                skype = new EzSkype(new SkypeCredentials(username, password));
+                skype.setErrorHandler(listener);
+                skype.login();
+                skype.getEventManager().registerEvents(listener);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Done SuperBot: Skype (" + (System.currentTimeMillis() - now) + "ms)");
+        }).start();
     }
 
     @Override
@@ -36,13 +42,28 @@ public class SkypeSys implements Sys {
     }
 
     @Override
+    public String prefix() {
+        return "+";
+    }
+
+    @Override
     public boolean isUIDCaseSensitive() {
         return false;
     }
 
     @Override
+    public boolean columns() {
+        return true;
+    }
+
+    @Override
     public MessageBuilder<?> message() {
         return new HtmlMessageBuilder();
+    }
+
+    @Override
+    public String getUserFriendlyName(String uniqueId) {
+        return uniqueId;
     }
 
     @Override
@@ -59,11 +80,11 @@ public class SkypeSys implements Sys {
         return new SkypeGroup(this, group);
     }
 
-    User wrap(in.kyle.ezskypeezlife.api.obj.SkypeUser user) {
+    User wrap(in.kyle.ezskypeezlife.api.user.SkypeUser user) {
         return new SkypeUser(this, user);
     }
 
-    Message wrap(in.kyle.ezskypeezlife.api.obj.SkypeMessage message) {
+    Message wrap(in.kyle.ezskypeezlife.api.conversation.message.SkypeMessage message) {
         return new SkypeMessage(this, message);
     }
 

@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -28,36 +29,40 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.GroupType;
+import xyz.nickr.superbot.sys.Profile;
 import xyz.nickr.superbot.sys.Sys;
+import xyz.nickr.superbot.sys.gitter.GitterSys;
 import xyz.nickr.superbot.sys.skype.SkypeSys;
+import xyz.nickr.superbot.sys.telegram.TelegramSys;
+import xyz.nickr.superbot.web.SuperBotServer;
 
 /**
  * @author Nick Robson
  */
 public class SuperBotController {
 
-    public static final Map<String, Sys>                 PROVIDERS              = new HashMap<>();
+    public static final Map<String, Sys> PROVIDERS = new HashMap<>();
 
-    public static final Map<String, Map<String, String>> PROGRESS               = new TreeMap<>();
+    public static final Map<String, Map<String, String>> PROGRESS = new TreeMap<>();
 
-    public static final List<String>                     HANGMAN_PHRASES        = new LinkedList<>();
-    public static final String                           WELCOME_MESSAGE        = "Welcome to %s";
-    public static final String                           WELCOME_MESSAGE_JOIN   = "Welcome, %s, to %s";
+    public static final List<String> HANGMAN_PHRASES = new LinkedList<>();
+    public static final String WELCOME_MESSAGE = "Welcome to %s";
+    public static final String WELCOME_MESSAGE_JOIN = "Welcome, %s, to %s";
 
-    public static final Gson                             GSON                   = new GsonBuilder().setPrettyPrinting().create();
+    public static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
 
-    public static boolean                                HELP_IGNORE_WHITESPACE = false;
-    public static boolean                                HELP_WELCOME_CENTRED   = true;
+    public static String VERSION = "Unknown";
+    public static int BUILD_NUMBER = 0;
+    public static String[] GIT_COMMIT_IDS = new String[] { "Unknown" };
+    public static String[] GIT_COMMIT_MESSAGES = new String[] { "Unknown" };
+    public static String[] GIT_COMMIT_AUTHORS = new String[] { "Unknown" };
 
-    public static String                                 VERSION                = "Unknown";
-    public static int                                    BUILD_NUMBER           = 0;
-    public static String[]                               GIT_COMMIT_IDS         = new String[] { "Unknown" };
-    public static String[]                               GIT_COMMIT_MESSAGES    = new String[] { "Unknown" };
-    public static String[]                               GIT_COMMIT_AUTHORS     = new String[] { "Unknown" };
+    public static final JavaOMDB OMDB = new JavaOMDB(false);
 
     public static void main(String[] args) {
         try {
@@ -66,14 +71,26 @@ public class SuperBotController {
             Properties properties = new Properties();
             properties.load(new FileInputStream(config));
 
-            register(new SkypeSys(properties.getProperty("username"), properties.getProperty("password")));
+            register(new SkypeSys(properties.getProperty("skype.username"), properties.getProperty("skype.password")));
+            register(new TelegramSys(properties.getProperty("telegram.api")));
+            register(new GitterSys(properties.getProperty("gitter.api")));
+
+            try {
+                // HTTP Server
+                new SuperBotServer();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
             SuperBotShows.setup();
 
+            new Thread(() -> SuperBotShows.SHOWS_BY_ID.values().forEach(show -> {
+                System.out.println("Fetched day for: " + show.display + " (" + show.getDay() + ")");
+            })).start();
+
             load(null);
 
-            HELP_IGNORE_WHITESPACE = properties.getProperty("help.whitespace", "false").equalsIgnoreCase("true");
-            HELP_WELCOME_CENTRED = properties.getProperty("help.welcome.centred", "false").equalsIgnoreCase("true");
+            PROVIDERS.forEach((s, sys) -> sys.onLoaded());
 
             new Thread(() -> {
                 try {
@@ -81,7 +98,7 @@ public class SuperBotController {
                 } catch (Exception ex) {}
                 saveProgress();
                 System.exit(0);
-            }, "SuperChat Sleepy Thread").start();
+            }, "SuperBot Sleepy Thread").start();
 
             new Thread(() -> {
                 while (true) {
@@ -95,7 +112,7 @@ public class SuperBotController {
                         Thread.sleep(10_000); // 10 seconds
                     } catch (Exception ex) {}
                 }
-            }, "SuperChat FileWatch Thread").start();;
+            }, "SuperBot FileWatch Thread").start();
 
             while (true) {}
         } catch (Exception ex) {
@@ -179,15 +196,11 @@ public class SuperBotController {
         if (!dir.exists())
             dir.mkdir();
         for (File file : dir.listFiles()) {
-            if (file.isFile() && file.getName().endsWith(".mrv")) {
+            if (file.isFile() && file.getName().endsWith(".json")) {
                 try {
-                    Map<String, String> map = new HashMap<>();
                     BufferedReader reader = Files.newBufferedReader(file.toPath());
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        String[] data = line.split("=", 2);
-                        map.put(data[0], data[1]);
-                    }
+                    Map<String, String> map = new HashMap<>();
+                    GSON.fromJson(reader, JsonObject.class).entrySet().forEach(e -> map.put(e.getKey(), e.getValue().getAsString()));
                     PROGRESS.put(file.getName().substring(0, file.getName().length() - 4), map);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -203,12 +216,11 @@ public class SuperBotController {
             dir.mkdir();
         for (Entry<String, Map<String, String>> entry : map.entrySet()) {
             try {
-                File file = new File(dir, entry.getKey() + ".mrv");
+                File file = new File(dir, entry.getKey() + ".json");
+                JsonObject obj = new JsonObject();
+                entry.getValue().forEach((k, v) -> obj.addProperty(k, v));
                 BufferedWriter writer = Files.newBufferedWriter(file.toPath());
-                for (Entry<String, String> e : entry.getValue().entrySet()) {
-                    writer.write(e.getKey() + "=" + e.getValue());
-                    writer.newLine();
-                }
+                GSON.toJson(obj, writer);
                 writer.close();
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -235,17 +247,22 @@ public class SuperBotController {
     }
 
     public static GroupConfiguration getGroupConfiguration(Group group, boolean create) {
-        if (group.getType() != GroupType.GROUP)
+        if (group.getType() != GroupType.GROUP) {
             return null;
-        String longId = group.getUniqueId();
+        }
+        String uniqueId = group.getUniqueId();
         Sys provider = group.getProvider();
-        GroupConfiguration cfg = provider.getGroupConfiguration(longId);
+        GroupConfiguration cfg = provider.getGroupConfiguration(uniqueId);
         if (cfg == null) {
             cfg = newGroupConfiguration();
             cfg.set(GroupConfiguration.KEY_PROVIDER, provider.getName());
-            cfg.set(GroupConfiguration.KEY_UNIQUE_ID, longId);
+            cfg.set(GroupConfiguration.KEY_UNIQUE_ID, uniqueId);
+            cfg.set(GroupConfiguration.KEY_GROUP_NAME, group.getDisplayName());
             cfg.save();
             provider.addGroupConfiguration(cfg);
+        } else {
+            cfg.set(GroupConfiguration.KEY_GROUP_NAME, group.getDisplayName());
+            cfg.save();
         }
         return cfg;
     }
@@ -253,8 +270,8 @@ public class SuperBotController {
     public static GroupConfiguration newGroupConfiguration() {
         File file = null, dir = new File("groups");
         int n = 0;
-        while (file == null || file.exists())
-            file = new File(dir, n + ".cfg");
+        do file = new File(dir, n++ + ".cfg");
+        while (file.exists());
         return new GroupConfiguration(file);
     }
 
@@ -294,13 +311,14 @@ public class SuperBotController {
         for (String s : users) {
             if (sb.length() > 0)
                 sb.append(", ");
-            sb.append(s);
+            Optional<Profile> p = Profile.getProfile(s);
+            sb.append(p.isPresent() ? p.get().getName() : s);
         }
         return sb.toString();
     }
 
     public static Map<String, String> getProgress(Show show) {
-        return getProgress(show == null ? null : show.getMainName());
+        return getProgress(show == null ? null : show.imdb);
     }
 
     public static Map<String, String> getProgress(String show) {
@@ -312,8 +330,8 @@ public class SuperBotController {
     public static Map<Show, String> getUserProgress(String username) {
         Map<Show, String> prg = new HashMap<>();
         PROGRESS.forEach((s, m) -> {
-            if (m.containsKey(username))
-                prg.put(SuperBotShows.getShow(s), m.get(username));
+            if (m.containsKey(username.toLowerCase()))
+                prg.put(SuperBotShows.getShow(s), m.get(username.toLowerCase()));
         });
         return prg;
     }
@@ -324,7 +342,7 @@ public class SuperBotController {
             Manifest mf = new Manifest(is);
             VERSION = mf.getMainAttributes().getValue("MavenVersion");
             BUILD_NUMBER = Integer.parseInt(mf.getMainAttributes().getValue("JenkinsBuild"));
-            URL changesUrl = new URL("http://ci.nickr.xyz/job/SuperChat/" + BUILD_NUMBER + "/api/json?pretty=true&tree=changeSet[items[id,msg,author[id]]]");
+            URL changesUrl = new URL("http://ci.nickr.xyz/job/SuperBot/" + BUILD_NUMBER + "/api/json?pretty=true&tree=changeSet[items[id,msg,author[id]]]");
             BufferedReader changesReader = new BufferedReader(new InputStreamReader(changesUrl.openStream()));
             JsonObject obj = GSON.fromJson(changesReader, JsonObject.class);
             JsonArray details = obj.getAsJsonObject("changeSet").getAsJsonArray("items");

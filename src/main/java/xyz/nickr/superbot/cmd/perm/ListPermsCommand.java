@@ -33,18 +33,21 @@ public class ListPermsCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> mb = sys.message();
-        Optional<Profile> prof = user.getProfile();
-        if (args.length == 0 && !prof.isPresent()) {
-            group.sendMessage(mb.text("You don't have a profile! Create one first."));
+        Optional<Profile> prof = args.length == 0 ? user.getProfile() : Profile.getProfile(args[0]);
+        if (!prof.isPresent()) {
+            if (args.length == 0)
+                sendNoProfile(sys, user, group);
+            else
+                group.sendMessage(mb.escaped("No profile with name = " + args[0].toLowerCase()));
             return;
         }
-        String username = args.length == 0 ? prof.get().getName() : args[0];
-        Set<String> perms = SuperBotPermissions.get(username);
+        String name = prof.get().getName();
+        Set<String> perms = SuperBotPermissions.get(name);
         if (perms.isEmpty()) {
-            mb.bold(true).text("Profile " + username + " has no permissions.").bold(false);
+            mb.bold(true).escaped("Profile " + name + " has no permissions.").bold(false);
         } else {
-            mb.bold(true).text("Profile " + username + " has the following permissions:").bold(false).newLine();
-            mb.text(Joiner.join(", ", perms));
+            mb.bold(true).escaped("Profile " + name + " has the following permissions:").bold(false).newLine();
+            mb.escaped(Joiner.join(", ", perms));
         }
         group.sendMessage(mb.toString());
     }

@@ -3,7 +3,7 @@ package xyz.nickr.superbot.sys.skype;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import in.kyle.ezskypeezlife.api.obj.SkypeConversation;
+import in.kyle.ezskypeezlife.api.conversation.SkypeConversation;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;

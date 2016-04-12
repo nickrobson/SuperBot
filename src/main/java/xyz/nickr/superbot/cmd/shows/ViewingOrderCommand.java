@@ -20,7 +20,7 @@ public class ViewingOrderCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "[mcu,af]", "shows the advised viewing order for the show(s)" };
+        return new String[] { "[mcu,af]", "gets the show's advised viewing order" };
     }
 
     @Override
@@ -32,26 +32,26 @@ public class ViewingOrderCommand implements Command {
             else {
                 InputStream stream = getClass().getResourceAsStream("/viewingorder/" + args[0].toLowerCase() + ".txt");
                 if (stream == null)
-                    mb.text("No viewing order found with name " + args[0].toLowerCase());
+                    mb.escaped("No viewing order found with name " + args[0].toLowerCase());
                 else {
-                    mb.bold(true).text("Viewing order for " + args[0].toLowerCase() + ":").bold(false);
+                    mb.bold(true).escaped("Viewing order for " + args[0].toLowerCase() + ":").bold(false);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        mb.html("\n");
+                        mb.raw("\n");
                         if (line.startsWith("**"))
-                            mb.bold(true).text(line.substring(2)).bold(false);
+                            mb.bold(true).escaped(line.substring(2)).bold(false);
                         else if (line.startsWith("//"))
-                            mb.italic(true).text(line.substring(2)).italic(false);
+                            mb.italic(true).escaped(line.substring(2)).italic(false);
                         else
-                            mb.text(line);
+                            mb.escaped(line);
                     }
                     reader.close();
                 }
             }
             group.sendMessage(mb.build());
         } catch (Exception ex) {
-            group.sendMessage(mb.text("Looks like an error occurred!"));
+            group.sendMessage(mb.escaped("Looks like an error occurred!"));
             ex.printStackTrace();
         }
     }

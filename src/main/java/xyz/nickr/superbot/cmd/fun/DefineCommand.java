@@ -20,7 +20,7 @@ public class DefineCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        group.sendMessage(sys.message().text("Do I look like a fucking dictionary to you?"));
+        group.sendMessage(sys.message().escaped("Do I look like a fucking dictionary to you?"));
     }
 
 }

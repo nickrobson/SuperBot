@@ -8,12 +8,20 @@ public interface Sys {
 
     String getName();
 
+    String prefix();
+
     boolean isUIDCaseSensitive();
 
-    MessageBuilder<?> message();
+    boolean columns();
+
+    MessageBuilder<? extends MessageBuilder<?>> message();
+
+    String getUserFriendlyName(String uniqueId);
 
     GroupConfiguration getGroupConfiguration(String uniqueId);
 
     void addGroupConfiguration(GroupConfiguration cfg);
+
+    default void onLoaded() {}
 
 }

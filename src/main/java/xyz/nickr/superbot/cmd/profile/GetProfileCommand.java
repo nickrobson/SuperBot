@@ -1,8 +1,9 @@
 package xyz.nickr.superbot.cmd.profile;
 
-import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Map.Entry;
 
+import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
@@ -15,40 +16,54 @@ public class GetProfileCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "getprofile", "profile" };
+        return new String[]{ "profile", "getprofile" };
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "(user)", "get yours or (user)'s profile" };
+        return new String[]{ "(profile)", "get yours or (profile)'s profile info" };
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> mb = sys.message();
         if (args.length == 0) {
-            Optional<Profile> prof = user.getProfile();
-            if (prof.isPresent()) {
-                mb.bold(true).text("Your profile (" + prof.get().getName() + "):").bold(false);
-                for (Entry<String, String> acc : prof.get().getAccounts().entrySet()) {
-                    mb.newLine().text("   " + acc.getKey() + ": " + acc.getValue());
+            Optional<Profile> profile = user.getProfile();
+            if (profile.isPresent()) {
+                Profile prof = profile.get();
+                mb.bold(true).escaped("Your profile (" + prof.getName() + "):").bold(false);
+                for (Entry<String, String> acc : prof.getAccounts().entrySet()) {
+                    Sys sy = SuperBotController.PROVIDERS.get(acc.getKey());
+                    mb.newLine().escaped("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
-                mb.text("You don't have a profile yet. Create one!");
+                sendNoProfile(sys, user, group);
+                return;
             }
         } else {
-            String s = sys.isUIDCaseSensitive() ? args[0] : args[0].toLowerCase();
-            Optional<Profile> prof = Profile.get(sys, s);
-            if (prof.isPresent()) {
-                mb.bold(true).text(" " + s + "'s profile (" + prof.get().getName() + "):").bold(false);
-                for (Entry<String, String> acc : prof.get().getAccounts().entrySet()) {
-                    mb.newLine().text("   " + acc.getKey() + ": " + acc.getValue());
+            Optional<Profile> profile = Profile.getProfile(args[0]);
+            if (profile.isPresent()) {
+                Profile prof = profile.get();
+                mb.bold(true).escaped("Profile (" + prof.getName() + "):").bold(false);
+                for (Entry<String, String> acc : prof.getAccounts().entrySet()) {
+                    Sys sy = SuperBotController.PROVIDERS.get(acc.getKey());
+                    mb.newLine().escaped("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
-                mb.text(" " + s + " doesn't have a profile yet.");
+                mb.escaped("No profile with (name: " + args[0].toLowerCase() + ")");
             }
         }
         group.sendMessage(mb);
+    }
+
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
     }
 
 }

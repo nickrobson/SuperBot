@@ -16,10 +16,10 @@ import xyz.nickr.superbot.sys.User;
  * @author Horrgs
  * @author Nick Robson
  */
-public class RemoveShowCommand implements Command {
+public class RemoveLinkCommand implements Command {
     @Override
     public String[] names() {
-        return new String[] { "removeshow" };
+        return new String[] { "removelink" };
     }
 
     @Override
@@ -29,7 +29,7 @@ public class RemoveShowCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "[show]", "Remove a show from the list" };
+        return new String[] { "[link]", "Remove a link from its associated show" };
     }
 
     @Override
@@ -40,13 +40,13 @@ public class RemoveShowCommand implements Command {
             MessageBuilder<?> mb = sys.message();
             Show show = SuperBotShows.getShow(args[0]);
             if (show != null) {
-                if (SuperBotShows.removeShow(args[0])) {
-                    group.sendMessage(mb.bold(true).text("Removed show: ").bold(false).text(show.display));
+                if (SuperBotShows.removeLink(args[0])) {
+                    group.sendMessage(mb.bold(true).escaped("Removed link (" + args[0] + ") from: ").bold(false).escaped(show.getDisplay()));
                 } else {
-                    group.sendMessage(mb.text("Something went wrong."));
+                    group.sendMessage(mb.escaped("Something went wrong."));
                 }
             } else {
-                group.sendMessage(mb.text("I couldn't find a show with the name \"" + args[0] + "\""));
+                group.sendMessage(mb.escaped("I couldn't find a show with the name \"" + args[0] + "\""));
             }
         }
     }

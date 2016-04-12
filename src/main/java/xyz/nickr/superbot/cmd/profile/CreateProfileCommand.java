@@ -31,16 +31,26 @@ public class CreateProfileCommand implements Command {
             Optional<Profile> matching = Profile.getProfile(args[0]);
             MessageBuilder<?> mb = sys.message();
             if (existing.isPresent()) {
-                mb.text("You already have a profile (" + existing.get().getName() + ")");
+                mb.escaped("You already have a profile (" + existing.get().getName() + ")");
             } else if (matching.isPresent()) {
-                mb.text("A profile with that name already exists!");
+                mb.escaped("A profile with that name already exists!");
             } else {
                 Profile prof = new Profile(args[0]).register();
                 prof.setAccount(sys, user, true);
-                mb.text("Successfully created profile (name: " + prof.getName() + ")");
+                mb.escaped("Successfully created profile (name: " + prof.getName() + ")");
             }
             group.sendMessage(mb);
         }
+    }
+
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
     }
 
 }

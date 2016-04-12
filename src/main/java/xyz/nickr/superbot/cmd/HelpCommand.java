@@ -10,6 +10,7 @@ import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -35,8 +36,7 @@ public class HelpCommand implements Command {
         return true;
     }
 
-    String getCmdHelp(Command cmd, User user, boolean userChat) {
-        String pre = SuperBotCommands.COMMAND_PREFIX;
+    String getCmdHelp(Command cmd, String pre, User user, boolean userChat) {
         String s = pre;
         for (String n : cmd.names()) {
             if (s.length() > pre.length())
@@ -77,43 +77,38 @@ public class HelpCommand implements Command {
             group.sendMessage("It looks like there are no commands enabled in this chat.");
             return;
         }
+        String prefix = sys.prefix();
         AtomicInteger maxLen = new AtomicInteger(0);
         cmds.forEach(c -> {
-            String cmdHelp = getCmdHelp(c, user, group.getType() == GroupType.USER);
+            String cmdHelp = getCmdHelp(c, prefix, user, group.getType() == GroupType.USER);
             if (c.perm() == Command.DEFAULT_PERMISSION && cmdHelp.length() > maxLen.get())
                 maxLen.set(cmdHelp.length());
         });
         List<String> strings = new ArrayList<>(SuperBotCommands.COMMANDS.size());
-        StringBuilder builder = new StringBuilder();
+        boolean cols = sys.columns();
+        if (!cols)
+            maxLen.set(0);
         cmds.forEach(c -> {
             String[] help = c.help(user, group.getType() == GroupType.USER);
             if (c.perm() == Command.DEFAULT_PERMISSION)
-                strings.add(pad(getCmdHelp(c, user, group.getType() == GroupType.USER), maxLen.get()) + " - " + help[1]);
+                strings.add(pad(getCmdHelp(c, prefix, user, group.getType() == GroupType.USER), maxLen.get()) + (cols ? "" : "\n  ") + " - " + help[1]);
         });
-        if (SuperBotController.HELP_IGNORE_WHITESPACE)
-            strings.sort((s1, s2) -> s1.trim().compareTo(s2.trim()));
-        else
-            strings.sort(null);
+        strings.sort(null);
         if (args.length > 0)
             strings.removeIf(s -> !s.contains(args[0]));
         String welcome = String.format(SuperBotController.WELCOME_MESSAGE, group.getDisplayName());
         if (group.getType() == GroupType.USER)
             welcome = "Welcome, " + user.getUsername();
         if (strings.isEmpty()) {
-            group.sendMessage(sys.message().bold(true).text(welcome));
+            group.sendMessage(sys.message().bold(true).escaped(welcome));
             return;
         }
         int mid = welcome.length() / 2;
         String wel = pad(welcome.substring(0, mid), maxLen.get());
         String come = welcome.substring(mid);
-        maxLen.set(0);
-        strings.forEach(s -> {
-            if (s.length() > maxLen.get())
-                maxLen.set(s.length());
-            builder.append("\n" + sys.message().text(s));
-        });
-        String spaces = SuperBotController.HELP_WELCOME_CENTRED ? strings.get(0).replaceAll("\\S.+", "") : wel.replaceAll("\\S+", "");
-        group.sendMessage(sys.message().code(true).text(spaces).code(false).bold(true).text(wel.trim() + come).bold(false).code(true).text(builder.toString()));
+        MessageBuilder<?> mb = sys.message().bold(true).escaped(wel.trim() + come).bold(false);
+        strings.forEach(s -> mb.newLine().code(true).escaped(s).code(false));
+        group.sendMessage(mb);
     }
 
 }

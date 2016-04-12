@@ -49,7 +49,7 @@ public class Profile {
     private final Properties props = new Properties();
 
     public Profile(String name, File file) {
-        this.name = name.toLowerCase();
+        this.name = name;
         this.file = file;
 
         load();
@@ -59,7 +59,7 @@ public class Profile {
     public Profile(File file) {
         this.file = file;
         load();
-        this.name = props.getProperty("name").toLowerCase();
+        this.name = props.getProperty("name");
     }
 
     public Profile(String name) {
@@ -68,6 +68,22 @@ public class Profile {
 
     public String getName() {
         return name;
+    }
+
+    public boolean has(String key) {
+        return props.containsKey(key);
+    }
+
+    public String get(String key) {
+        return props.getProperty(key);
+    }
+
+    public void remove(String key) {
+        props.remove(key);
+    }
+
+    public void set(String key, String val) {
+        props.setProperty(key, val);
     }
 
     public Map<String, String> getAccounts() {
@@ -108,7 +124,7 @@ public class Profile {
     public void save() {
         try {
             Path tmp = Files.createTempFile("superbot-profile-" + name + "-" + System.nanoTime(), ".tmp");
-            props.store(Files.newBufferedWriter(tmp), "");
+            props.store(Files.newBufferedWriter(tmp), "User Profile: " + name);
             Files.copy(tmp, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             if (!tmp.toFile().delete())
                 tmp.toFile().deleteOnExit();

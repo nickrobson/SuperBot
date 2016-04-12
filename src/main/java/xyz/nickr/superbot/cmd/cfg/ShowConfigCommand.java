@@ -1,5 +1,7 @@
 package xyz.nickr.superbot.cmd.cfg;
 
+import java.util.Properties;
+
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
@@ -32,16 +34,21 @@ public class ShowConfigCommand implements Command {
         MessageBuilder<?> mb = sys.message();
         GroupConfiguration cfg = SuperBotController.getGroupConfiguration(group, false);
         if (group.getType() == GroupType.USER)
-            group.sendMessage(mb.text("User chats don't have configurations."));
+            group.sendMessage(mb.escaped("User chats don't have configurations."));
         else if (cfg == null)
-            group.sendMessage(mb.text("There is no config for this group!"));
+            group.sendMessage(mb.escaped("There is no config for this group!"));
         else {
-            mb.bold(true).text("Configuration settings:").bold(false);
-            cfg.get().forEach((opt, val) -> {
-                mb.newLine();
-                mb.italic(true).text(opt.toString()).italic(false);
-                mb.text(" = " + val);
-            });
+            Properties props = cfg.get();
+            if (props.size() > 0) {
+                mb.bold(true).escaped("Configuration settings:").bold(false);
+                cfg.get().forEach((opt, val) -> {
+                    mb.newLine();
+                    mb.italic(true).escaped(opt.toString()).italic(false);
+                    mb.escaped(" = " + val);
+                });
+            } else {
+                mb.bold(true).escaped("No configuration settings!").bold(false);
+            }
             group.sendMessage(mb.toString());
         }
     }

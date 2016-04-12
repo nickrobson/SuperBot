@@ -36,9 +36,9 @@ public class StopCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (used.equalsIgnoreCase("kys"))
-            group.sendMessage(sys.message().text("ded"));
+            group.sendMessage(sys.message().escaped("ded"));
         else
-            group.sendMessage(sys.message().text("Goodbye!"));
+            group.sendMessage(sys.message().escaped("Goodbye!"));
         SuperBotController.saveProgress();
         System.exit(0);
     }

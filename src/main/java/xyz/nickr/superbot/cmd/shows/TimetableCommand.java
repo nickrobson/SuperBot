@@ -3,6 +3,7 @@ package xyz.nickr.superbot.cmd.shows;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,39 +28,46 @@ public class TimetableCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "", "see what days each show is on" };
+        return new String[] { "(search)", "see what days each show is on" };
     }
 
-    void append(String day, Set<Show> set, MessageBuilder<?> builder) {
-        if (builder.length() > 0)
-            builder.newLine();
-        List<String> names = set.stream().map(s -> s.display).collect(Collectors.toList());
+    String get(String day, Set<Show> set, Sys sys) {
+        MessageBuilder<?> mb = sys.message();
+        List<String> names = set.stream().map(s -> s.getDisplay()).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
-        builder.bold(true).text(day + ": ").bold(false).text(Joiner.join(", ", names));
+        return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names)).build();
+    }
+
+    <T> Set<T> merge(Set<T> a, Set<T> b) {
+        Set<T> m = new HashSet<>(a);
+        m.addAll(b);
+        return m;
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         Map<String, Set<Show>> days = new HashMap<>();
-        SuperBotShows.TRACKED_SHOWS.forEach(s -> {
-            Set<Show> set = days.get(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase());
-            if (set == null)
-                set = new HashSet<>();
-            set.add(s);
-            days.put(s.day == null || s.day.isEmpty() || s.day.equals("N/A") ? "not airing" : s.day.toLowerCase(), set);
+        SuperBotShows.SHOWS_BY_ID.values().forEach(s -> {
+            String day = s.getDay();
+            if (day == null || day.isEmpty() || day.equals("N/A"))
+                day = "Not airing";
+            days.merge(day, new HashSet<>(Arrays.asList(s)), this::merge);
         });
+        List<String> alldays = new LinkedList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Netflix", "Not airing"));
+        days.keySet().stream().filter(s -> !alldays.contains(s)).forEach(alldays::add);
+        List<String> lines = new LinkedList<>();
+        for (String day : alldays) {
+            Set<Show> set = days.get(day);
+            if (set != null) {
+                lines.add(get(day, set, sys));
+            }
+        }
+        if (args.length > 0)
+            lines.removeIf(s -> !s.toLowerCase().contains(Joiner.join(" ", args).toLowerCase()));
         MessageBuilder<?> builder = sys.message();
-        // days.forEach((day, set) -> {
-        for (String day : Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Netflix", "Not airing")) {
-            Set<Show> set = days.get(day.toLowerCase());
-            if (set != null)
-                append(day, set, builder);
-        }
-        if (builder.length() > 0) {
-            group.sendMessage(builder.build());
-        } else {
-            group.sendMessage(builder.text("Something went wrong!"));
-        }
+        builder.bold(true).escaped(lines.isEmpty() ? "No matching shows or days." : "Shows by day:").bold(false);
+        lines.forEach(l -> builder.newLine().raw(l));
+        group.sendMessage(builder);
     }
 
 }

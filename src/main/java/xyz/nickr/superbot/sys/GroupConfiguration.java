@@ -2,20 +2,24 @@ package xyz.nickr.superbot.sys;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
 import xyz.nickr.superbot.cmd.Command;
 
 public class GroupConfiguration {
 
-    public static final String KEY_PROVIDER      = "provider";
-    public static final String KEY_UNIQUE_ID     = "uniqueId";
-    public static final String KEY_IS_DISABLED   = "disabled";
-    public static final String KEY_SHOW_JOINS    = "showJoins";
-    public static final String KEY_SHOW_EDITS    = "showEdits";
-    public static final String KEY_EVERYTHING_ON = "everythingOn";
+    public static final String KEY_PROVIDER           = "provider";
+    public static final String KEY_UNIQUE_ID          = "uniqueId";
+    public static final String KEY_GROUP_NAME         = "groupName";
+    public static final String KEY_IS_DISABLED        = "disabled";
+    public static final String KEY_SHOW_JOINS         = "showJoins";
+    public static final String KEY_SHOW_EDITS         = "showEdits";
+    public static final String KEY_EVERYTHING_ON      = "everythingOn";
+    public static final String KEY_USE_ALWAYS_ENABLED = "useAlwaysEnabled";
 
     private final File file;
     private Properties options;
@@ -41,7 +45,11 @@ public class GroupConfiguration {
         if (file.exists())
             file.delete();
         try {
-            options.store(new FileOutputStream(file), "");
+            Path tmp = Files.createTempFile("superbot-groupcfg-" + getUniqueId() + "-" + System.nanoTime(), ".tmp");
+            options.store(Files.newBufferedWriter(tmp), "GroupConfiguration: " + String.valueOf(getUniqueId()));
+            Files.copy(tmp, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            if (!tmp.toFile().delete())
+                tmp.toFile().deleteOnExit();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -49,7 +57,9 @@ public class GroupConfiguration {
     }
 
     public Properties get() {
-        return new Properties(options);
+        Properties props = new Properties();
+        options.forEach(props::put);
+        return props;
     }
 
     public String get(String option) {
@@ -69,7 +79,8 @@ public class GroupConfiguration {
     }
 
     public String set(String option, String value) {
-        return options.setProperty(option, value).toString();
+        Object o = options.setProperty(option, value);
+        return o != null ? o.toString() : null;
     }
 
     public String getProvider() {
@@ -81,11 +92,17 @@ public class GroupConfiguration {
     }
 
     public boolean isEverythingOn() {
-        return Boolean.parseBoolean(get(KEY_EVERYTHING_ON));
+        return getBoolean(KEY_EVERYTHING_ON, false);
+    }
+
+    public boolean isUseAlwaysEnabled() {
+        return getBoolean(KEY_USE_ALWAYS_ENABLED, true);
     }
 
     public boolean isCommandEnabled(Command cmd) {
-        return isEverythingOn() || getBoolean("cmd." + cmd.names()[0].toLowerCase(), cmd.alwaysEnabled());
+        boolean a = isUseAlwaysEnabled() && cmd.alwaysEnabled();
+        boolean b = isEverythingOn() && cmd.useEverythingOn();
+        return getBoolean("cmd." + cmd.names()[0].toLowerCase(), a || b);
     }
 
     public boolean isShowJoinMessage() {

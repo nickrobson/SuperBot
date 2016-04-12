@@ -50,12 +50,11 @@ public class ProgressCommand implements Command {
             for (int i = 0; i < argz.size(); i++) {
                 Show show = SuperBotShows.getShow(argz.get(i));
                 if (i > 0)
-                    builder.html("\n");
+                    builder.raw("\n");
                 if (show == null)
-                    builder = builder.text("Invalid show: " + argz.get(i));
-                else {
-                    builder = show(show.getMainName(), builder, all_eps);
-                }
+                    builder = builder.escaped("Invalid show: " + argz.get(i));
+                else
+                    builder = show(show.imdb, builder, all_eps);
             }
         } else {
             sendUsage(sys, user, group);
@@ -64,7 +63,7 @@ public class ProgressCommand implements Command {
         if (sent) {
             group.sendMessage(builder.build());
         } else {
-            group.sendMessage(sys.message().text("No progress submitted for any show."));
+            group.sendMessage(sys.message().escaped("No progress submitted for any show."));
         }
     }
 
@@ -76,18 +75,18 @@ public class ProgressCommand implements Command {
             if (!epz.contains(e))
                 epz.add(e);
         });
-        builder.bold(true).text("Episode progress: " + SuperBotShows.getShow(show).getDisplay()).bold(false);
+        builder.bold(true).escaped("Episode progress: " + SuperBotShows.getShow(show).getDisplay()).bold(false);
         if (epz.size() > 0) {
             if (all_eps) {
                 for (String ep : epz) {
-                    builder.newLine().text("- " + ep.toUpperCase() + ": " + SuperBotController.getUsersOn(show, ep));
+                    builder.newLine().escaped("- " + ep.toUpperCase() + ": " + SuperBotController.getUsersOn(show, ep));
                 }
             } else {
-                builder.newLine().text("- Earliest: " + epz.get(0) + " (" + SuperBotController.getUsersOn(show, epz.get(0)) + ")");
-                builder.newLine().text("- Latest:   " + epz.get(epz.size() - 1) + " (" + SuperBotController.getUsersOn(show, epz.get(epz.size() - 1)) + ")");
+                builder.newLine().escaped("- Earliest: " + epz.get(0) + " (" + SuperBotController.getUsersOn(show, epz.get(0)) + ")");
+                builder.newLine().escaped("- Latest:   " + epz.get(epz.size() - 1) + " (" + SuperBotController.getUsersOn(show, epz.get(epz.size() - 1)) + ")");
             }
         } else {
-            builder.newLine().text("No progress submitted.");
+            builder.newLine().escaped("No progress submitted.");
         }
         return builder;
     }
