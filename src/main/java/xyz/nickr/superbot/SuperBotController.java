@@ -54,7 +54,7 @@ public class SuperBotController {
     public static final String WELCOME_MESSAGE = "Welcome to %s";
     public static final String WELCOME_MESSAGE_JOIN = "Welcome, %s, to %s";
 
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
 
     public static String VERSION = "Unknown";
     public static int BUILD_NUMBER = 0;
