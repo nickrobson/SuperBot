@@ -160,8 +160,10 @@ public class SuperBotShows {
 
     public static final class Show {
 
-        public String imdb;
-        public Set<String> links;
+        public final String imdb;
+        public final Set<String> links;
+
+        private String display, day;
 
         public Show(String imdb, String... links) {
             this.imdb = imdb;
@@ -178,11 +180,15 @@ public class SuperBotShows {
         }
 
         public String getDisplay() {
+            if (display != null)
+                return display;
             TitleResult res = SuperBotController.OMDB.titleById(imdb);
             return res != null ? res.title : null;
         }
 
         public String getDay() {
+            if (day != null)
+                return day;
             JavaOMDB omdb = SuperBotController.OMDB;
             int n = 0;
             SeasonResult season = null;
