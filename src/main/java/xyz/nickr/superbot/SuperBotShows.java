@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import com.google.gson.JsonArray;
@@ -184,7 +185,7 @@ public class SuperBotShows {
         public final String imdb, display;
         public final Set<String> links;
 
-        private volatile String day;
+        private AtomicReference<String> day = new AtomicReference<>();
 
         public Show(String imdb, String display, String... links) {
             this(imdb, display, Arrays.asList(links));
@@ -205,8 +206,9 @@ public class SuperBotShows {
         }
 
         public String getDay() {
-            if (day != null)
-                return day;
+            String d = day.get();
+            if (d != null)
+               return d;
             JavaOMDB omdb = SuperBotController.OMDB;
             int n = 0;
             SeasonResult season = null;
@@ -223,11 +225,15 @@ public class SuperBotShows {
                 for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
                     Calendar cal = (ser = it.next()).getReleaseDate();
                     if (cal != null && !cal.after(now)) {
-                        return this.day = days.getOrDefault(ser.getReleaseDate().get(Calendar.DAY_OF_WEEK), "N/A");
+                        d = days.getOrDefault(ser.getReleaseDate().get(Calendar.DAY_OF_WEEK), "N/A");
+                        break;
                     }
                 }
             }
-            return this.day = "N/A";
+            if (d == null)
+                d = "N/A";
+            day.set(d);
+            return d;
         }
 
         @Override
