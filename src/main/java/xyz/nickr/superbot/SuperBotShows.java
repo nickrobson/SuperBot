@@ -7,14 +7,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.time.DayOfWeek;
-import java.time.Instant;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +39,18 @@ public class SuperBotShows {
     public static final Map<String, String> SHOWS_BY_NAME   = new HashMap<>();
     public static final Map<String, Show>   SHOWS_BY_ID     = new HashMap<>();
     public static final Pattern             EPISODE_PATTERN = Pattern.compile("S[1-9][0-9]?E[1-9][0-9]?");
+
+    private static final Map<Integer, String> days = new HashMap<>();
+
+    static {
+        days.put(Calendar.SUNDAY, "Sunday");
+        days.put(Calendar.MONDAY, "Monday");
+        days.put(Calendar.TUESDAY, "Tuesday");
+        days.put(Calendar.WEDNESDAY, "Wednesday");
+        days.put(Calendar.THURSDAY, "Thursday");
+        days.put(Calendar.FRIDAY, "Friday");
+        days.put(Calendar.SATURDAY, "Saturday");
+    }
 
     public static void setup() {
         if (SHOWS_BY_ID.isEmpty())
@@ -199,14 +209,12 @@ public class SuperBotShows {
                 }
             } catch (JOMDBException ignored) {}
             if (n > 0) {
-                List<SeasonEpisodeResult> eps = new LinkedList<>(Arrays.asList(season.episodes));
-                eps.sort((a, b) -> a.getReleaseDate().compareTo(b.getReleaseDate()));
-                Instant now = Instant.now();
+                Calendar now = Calendar.getInstance();
+                List<SeasonEpisodeResult> eps = Arrays.asList(season.episodes);
                 SeasonEpisodeResult ser = null;
                 for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
-                    if (!(ser = it.next()).getReleaseDate().isAfter(now)) {
-                        String day = DayOfWeek.from(ser.getReleaseDate()).name();
-                        return day.charAt(0) + day.substring(1).toLowerCase();
+                    if (!(ser = it.next()).getReleaseDate().after(now)) {
+                        return days.getOrDefault(ser.getReleaseDate().get(Calendar.DAY_OF_WEEK), "N/A");
                     }
                 }
             }
