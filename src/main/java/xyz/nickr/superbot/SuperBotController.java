@@ -62,7 +62,7 @@ public class SuperBotController {
     public static String[] GIT_COMMIT_MESSAGES = new String[] { "Unknown" };
     public static String[] GIT_COMMIT_AUTHORS = new String[] { "Unknown" };
 
-    public static final JavaOMDB OMDB = new JavaOMDB();
+    public static final JavaOMDB OMDB = new JavaOMDB(false);
 
     public static void main(String[] args) {
         try {
