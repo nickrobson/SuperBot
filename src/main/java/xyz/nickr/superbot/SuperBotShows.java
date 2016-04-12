@@ -23,7 +23,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import xyz.nickr.jomdb.JOMDBException;
 import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;
@@ -212,12 +211,13 @@ public class SuperBotShows {
             JavaOMDB omdb = SuperBotController.OMDB;
             int n = 0;
             SeasonResult season = null;
-            try {
-                while (true) {
-                    season = omdb.seasonById(imdb, String.valueOf(n + 1));
-                    n++;
-                }
-            } catch (JOMDBException ignored) {}
+            do {
+                SeasonResult next = omdb.seasonById(imdb, String.valueOf(n + 1));
+                if (next == null)
+                    break;
+                season = next;
+                n++;
+            } while (season != null);
             if (n > 0) {
                 Calendar now = Calendar.getInstance();
                 List<SeasonEpisodeResult> eps = Arrays.asList(season.episodes);
