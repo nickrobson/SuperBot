@@ -193,7 +193,7 @@ public class SuperBotShows {
             if (display != null)
                 return display;
             TitleResult res = SuperBotController.OMDB.titleById(imdb);
-            return res != null ? res.title : null;
+            return this.display = res != null ? res.title : null;
         }
 
         public String getDay() {
@@ -215,11 +215,11 @@ public class SuperBotShows {
                 for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
                     Calendar cal = (ser = it.next()).getReleaseDate();
                     if (cal != null && !cal.after(now)) {
-                        return days.getOrDefault(ser.getReleaseDate().get(Calendar.DAY_OF_WEEK), "N/A");
+                        return this.day = days.getOrDefault(ser.getReleaseDate().get(Calendar.DAY_OF_WEEK), "N/A");
                     }
                 }
             }
-            return "N/A";
+            return this.day = "N/A";
         }
 
         @Override
