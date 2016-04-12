@@ -183,7 +183,8 @@ public class SuperBotShows {
         public final String imdb, display;
         public final Set<String> links;
 
-        private String day;
+        private boolean dateCached = false;
+        private Calendar date;
 
         public Show(String imdb, String display, String... links) {
             this(imdb, display, Arrays.asList(links));
@@ -204,6 +205,9 @@ public class SuperBotShows {
         }
 
         public Calendar getDate() {
+            if (dateCached)
+                return date;
+            dateCached = true;
             JavaOMDB omdb = SuperBotController.OMDB;
             Calendar now = Calendar.getInstance();
             Calendar today = Calendar.getInstance();
@@ -232,7 +236,7 @@ public class SuperBotShows {
                 for (Iterator<SeasonEpisodeResult> it = season.iterator(); it.hasNext();) {
                     Calendar cal = it.next().getReleaseDate();
                     if (cal != null && cal.after(now)) {
-                        return cal;
+                        return date = cal;
                     }
                 }
             }
@@ -244,10 +248,8 @@ public class SuperBotShows {
         }
 
         public String getDay() {
-            if (day != null)
-                return day;
             Calendar date = getDate();
-            return day = date != null ? days.getOrDefault(date.get(Calendar.DAY_OF_WEEK), "N/A") : "N/A";
+            return date != null ? days.getOrDefault(date.get(Calendar.DAY_OF_WEEK), "N/A") : "N/A";
         }
 
         @Override
