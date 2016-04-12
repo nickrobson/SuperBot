@@ -11,11 +11,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import com.google.gson.JsonArray;
@@ -177,12 +177,12 @@ public class SuperBotShows {
 
         public Show(String imdb, String... links) {
             this.imdb = imdb;
-            this.links = new HashSet<>(Arrays.asList(links));
+            this.links = new TreeSet<>(Arrays.asList(links));
         }
 
         public Show(String imdb, Collection<String> links) {
             this.imdb = imdb;
-            this.links = new HashSet<>(links);
+            this.links = new TreeSet<>(links);
         }
 
         public void addLink(String link) {
@@ -213,7 +213,8 @@ public class SuperBotShows {
                 List<SeasonEpisodeResult> eps = Arrays.asList(season.episodes);
                 SeasonEpisodeResult ser = null;
                 for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
-                    if (!(ser = it.next()).getReleaseDate().after(now)) {
+                    Calendar cal = (ser = it.next()).getReleaseDate();
+                    if (cal != null && !cal.after(now)) {
                         return days.getOrDefault(ser.getReleaseDate().get(Calendar.DAY_OF_WEEK), "N/A");
                     }
                 }
