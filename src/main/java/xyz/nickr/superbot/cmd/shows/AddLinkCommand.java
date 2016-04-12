@@ -52,6 +52,12 @@ public class AddLinkCommand implements Command {
                 group.sendMessage(mb.escaped("No show found with IMDB ID " + imdb));
                 return;
             }
+            Show imdbShow = SuperBotShows.getShow(imdb);
+            if (imdbShow == null) {
+                imdbShow = new Show(imdb, res.title);
+                SuperBotShows.SHOWS_BY_ID.put(imdb, imdbShow);
+            }
+            SuperBotShows.saveShows();
             mb.bold(true).escaped("Linking results:").bold(false);
             for (int i = 1; i < args.length; i++) {
                 String alias = args[i].toLowerCase();
@@ -59,13 +65,13 @@ public class AddLinkCommand implements Command {
                 if (show != null) {
                     mb.newLine().escaped("Link exists: " + alias + " => " + show.getDisplay());
                 } else if (SuperBotShows.addLink(imdb, alias)) {
-                    show = SuperBotShows.getShow(imdb);
                     mb.newLine().escaped("New link added: " + alias + " => " + res.title);
                 } else {
                     mb.newLine().escaped("Something went wrong.");
                     break;
                 }
             }
+            SuperBotShows.saveShows();
             group.sendMessage(mb);
         }
     }
