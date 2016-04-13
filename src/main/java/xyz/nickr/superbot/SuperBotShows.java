@@ -185,6 +185,7 @@ public class SuperBotShows {
         public final Set<String> links;
 
         private boolean dateCached = false;
+        private SeasonResult season;
         private Calendar date;
 
         public Show(String imdb, String display, String... links) {
@@ -205,16 +206,15 @@ public class SuperBotShows {
             return display;
         }
 
-        public Calendar getDate() {
-            if (dateCached)
-                return date;
-            dateCached = true;
+        public SeasonResult getSeason() {
+            if (season != null)
+                return season;
             JavaOMDB omdb = SuperBotController.OMDB;
-            Calendar now = Calendar.getInstance();
             Calendar today = Calendar.getInstance();
+            Calendar now = Calendar.getInstance();
             now.clear();
             now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-            SeasonResult season = null, next = null;
+            SeasonResult next = null;
             int n = 0;
             try {
                 do {
@@ -233,7 +233,19 @@ public class SuperBotShows {
                     }
                 } while (next != null);
             } catch (Exception ex) {}
-            if (n > 1) {
+            return season;
+        }
+
+        public Calendar getDate() {
+            if (dateCached)
+                return date;
+            dateCached = true;
+            SeasonResult season = getSeason();
+            Calendar today = Calendar.getInstance();
+            Calendar now = Calendar.getInstance();
+            now.clear();
+            now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            if (season != null) {
                 List<SeasonEpisodeResult> eps = Arrays.asList(season.episodes);
                 for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
                     Calendar cal = it.next().getReleaseDate();
