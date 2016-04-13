@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -213,28 +214,28 @@ public class SuperBotShows {
             Calendar today = Calendar.getInstance();
             now.clear();
             now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-            now.add(Calendar.DATE, -1);
             SeasonResult season = null, next = null;
             int n = 0;
             try {
                 do {
-                    next = omdb.seasonById(imdb, String.valueOf(n+1));
+                    next = omdb.seasonById(imdb, String.valueOf(++n));
+                    if (next != null)
+                        season = next;
                     if (next != null && next.episodes.length > 0) {
                         SeasonEpisodeResult first = next.episodes[0], last = next.episodes[next.episodes.length - 1];
                         Calendar a = first.getReleaseDate(), b = last.getReleaseDate();
-                        if (a.after(now) || !a.after(now) && !b.before(now)) {
+                        if (a.after(now) && b.after(now)) {
+                            season = next;
+                        } else if (!a.after(now) && !b.before(now)) {
                             season = next;
                             break;
                         }
                     }
-                    if (next == null)
-                        break;
-                    season = next;
-                    n++;
                 } while (next != null);
             } catch (Exception ex) {}
-            if (season != null) {
-                for (Iterator<SeasonEpisodeResult> it = season.iterator(); it.hasNext();) {
+            if (n > 1) {
+                List<SeasonEpisodeResult> eps = Arrays.asList(season.episodes);
+                for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
                     Calendar cal = it.next().getReleaseDate();
                     if (cal != null && cal.after(now)) {
                         return date = cal;
