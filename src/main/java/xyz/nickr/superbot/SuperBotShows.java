@@ -70,7 +70,16 @@ public class SuperBotShows {
     public static boolean removeLink(String link) {
         if (link == null)
             return false;
-        SHOWS_BY_NAME.remove(link.toLowerCase());
+        link = link.toLowerCase();
+        String imdb = SHOWS_BY_NAME.remove(link);
+        if (imdb == null)
+            return false;
+        if (!SHOWS_BY_NAME.values().contains(imdb))
+            SHOWS_BY_ID.remove(imdb);
+        else {
+            Show show = SHOWS_BY_ID.get(imdb);
+            show.links.remove(link);
+        }
         return saveShows();
     }
 
