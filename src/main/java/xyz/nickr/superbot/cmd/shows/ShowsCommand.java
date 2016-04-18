@@ -27,7 +27,7 @@ public class ShowsCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         List<String> send = new LinkedList<>();
-        for (Show show : SuperBotShows.SHOWS_BY_ID.values()) {
+        for (Show show : SuperBotShows.getShows()) {
             StringBuilder sb = new StringBuilder();
             for (String s : show.links) {
                 if (sb.length() > 0)

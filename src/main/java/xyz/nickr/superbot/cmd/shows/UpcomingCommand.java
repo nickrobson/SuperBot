@@ -39,7 +39,7 @@ public class UpcomingCommand implements Command {
         week.add(Calendar.DATE, 7);
 
         Map<Calendar, String> days = new TreeMap<>();
-        for (Show show : SuperBotShows.SHOWS_BY_ID.values()) {
+        for (Show show : SuperBotShows.getShows()) {
             Calendar date = show.getDate();
             if (date != null && !date.before(now) && !date.after(week)) {
                 days.merge(date, show.display, (a, b) -> a + ", " + b);

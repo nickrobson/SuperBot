@@ -55,7 +55,7 @@ public class AddLinkCommand implements Command {
             Show imdbShow = SuperBotShows.getShow(imdb);
             if (imdbShow == null) {
                 imdbShow = new Show(imdb, res.title);
-                SuperBotShows.SHOWS_BY_ID.put(imdb, imdbShow);
+                SuperBotShows.addShow(imdb, imdbShow);
             }
             SuperBotShows.saveShows();
             mb.bold(true).escaped("Linking results:").bold(false);

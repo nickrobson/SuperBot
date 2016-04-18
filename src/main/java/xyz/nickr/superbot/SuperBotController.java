@@ -84,7 +84,7 @@ public class SuperBotController {
 
             SuperBotShows.setup();
 
-            new Thread(() -> SuperBotShows.SHOWS_BY_ID.values().forEach(show -> {
+            new Thread(() -> SuperBotShows.getShows().forEach(show -> {
                 System.out.println("Fetched day for: " + show.display + " (" + show.getDay() + ")");
             })).start();
 

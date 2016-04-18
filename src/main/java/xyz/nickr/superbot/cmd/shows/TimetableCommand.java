@@ -47,7 +47,7 @@ public class TimetableCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         Map<String, Set<Show>> days = new HashMap<>();
-        SuperBotShows.SHOWS_BY_ID.values().forEach(s -> {
+        SuperBotShows.getShows().forEach(s -> {
             String day = s.getDay();
             if (day == null || day.isEmpty() || day.equals("N/A"))
                 day = "Not airing";

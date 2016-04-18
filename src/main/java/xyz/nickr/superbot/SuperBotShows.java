@@ -83,6 +83,10 @@ public class SuperBotShows {
         return saveShows();
     }
 
+    public static Collection<Show> getShows() {
+        return SHOWS_BY_ID.values();
+    }
+
     public static Show getShow(String ident) {
         return getShow(ident, false);
     }
@@ -97,6 +101,12 @@ public class SuperBotShows {
             SHOWS_BY_ID.put(ident, new Show(ident, SuperBotController.OMDB.titleById(ident).title));
         }
         return ident != null ? SHOWS_BY_ID.get(ident) : null;
+    }
+
+    public static void addShow(String imdb, Show show) {
+        SHOWS_BY_ID.put(imdb, show);
+        for (String link : show.links)
+            addLink(imdb, link);
     }
 
     public static void loadShows() {
