@@ -90,6 +90,7 @@ public class SuperBotShows {
     public static Show getShow(String ident, boolean create) {
         if (ident == null)
             return null;
+        ident = ident.toLowerCase();
         if (!JavaOMDB.IMDB_ID_PATTERN.matcher(ident).matches()) {
             ident = SHOWS_BY_NAME.get(ident);
         } else if (create && !SHOWS_BY_ID.containsKey(ident)) {
