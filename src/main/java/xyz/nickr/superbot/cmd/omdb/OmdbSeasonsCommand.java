@@ -32,8 +32,9 @@ public class OmdbSeasonsCommand implements Command {
             MessageBuilder<?> mb = sys.message();
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 TitleResult title = SuperBotController.OMDB.titleById(args[0]);
+                mb.italic(true).escaped(title.title + " seasons:").italic(false);
                 for (SeasonResult season : title.seasons()) {
-                    mb.bold(true).escaped("Season " + season.season).bold(false);
+                    mb.newLine().bold(true).escaped("Season " + season.season).bold(false);
                     if (season.episodes.length > 0) {
                         SeasonEpisodeResult first = season.episodes[0], last = season.episodes[season.episodes.length - 1];
                         mb.escaped(": " + season.episodes.length + " episodes, " + first.released + " - " + last.released);
