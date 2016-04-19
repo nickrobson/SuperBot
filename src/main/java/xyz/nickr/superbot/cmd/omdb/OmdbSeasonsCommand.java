@@ -1,5 +1,8 @@
 package xyz.nickr.superbot.cmd.omdb;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;
@@ -24,6 +27,10 @@ public class OmdbSeasonsCommand implements Command {
         return new String[]{ "[imdbId]", "get information about the show's seasons" };
     }
 
+    String toString(Calendar c) {
+        return new SimpleDateFormat("dd MM yyyy").format(c.getTime());
+    }
+
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 1) {
@@ -37,7 +44,7 @@ public class OmdbSeasonsCommand implements Command {
                     mb.newLine().bold(true).escaped("Season " + season.season).bold(false);
                     if (season.episodes.length > 0) {
                         SeasonEpisodeResult first = season.episodes[0], last = season.episodes[season.episodes.length - 1];
-                        mb.escaped(": " + season.episodes.length + " episodes, " + first.released + " - " + last.released);
+                        mb.escaped(": " + season.episodes.length + " episodes, " + toString(first.getReleaseDate()) + " - " + toString(last.getReleaseDate()));
                     }
                 }
             } else {
