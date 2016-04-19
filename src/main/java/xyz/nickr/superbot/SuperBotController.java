@@ -114,7 +114,9 @@ public class SuperBotController {
                 }
             }, "SuperBot FileWatch Thread").start();
 
-            while (true) {}
+            while (true) {
+                Thread.sleep(100_000);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
