@@ -26,7 +26,7 @@ public class OmdbSeasonsCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        if (args.length < 2) {
+        if (args.length < 1) {
             sendUsage(sys, user, group);
         } else {
             MessageBuilder<?> mb = sys.message();
