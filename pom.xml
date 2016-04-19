@@ -8,7 +8,7 @@
 	
   	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jomdb.version>1.1.0</jomdb.version>
+        <jomdb.version>1.2.0</jomdb.version>
         <jitter.version>3.0.0</jitter.version>
  	</properties>
 
