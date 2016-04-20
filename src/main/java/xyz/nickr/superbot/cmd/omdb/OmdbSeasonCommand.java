@@ -8,6 +8,8 @@ import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;
 import xyz.nickr.superbot.SuperBotController;
+import xyz.nickr.superbot.SuperBotShows;
+import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
@@ -43,6 +45,9 @@ public class OmdbSeasonCommand implements Command {
             sendUsage(sys, user, group);
         } else {
             MessageBuilder<?> mb = sys.message();
+            Show show = SuperBotShows.getShow(args[0], false);
+            if (show != null)
+                args[0] = show.imdb;
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 SeasonResult season = SuperBotController.OMDB.seasonById(args[0], args[1]);
                 mb.bold(true).escaped(season.title).bold(false).escaped(", season " + args[1] + ":");
