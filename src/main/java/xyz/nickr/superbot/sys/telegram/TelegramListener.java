@@ -293,6 +293,7 @@ public class TelegramListener implements Listener {
 
         @Override
         public Message sendMessage(String message) {
+            System.out.println(message);
             results.add(res("Result:", message, message, false));
             return new DummyMessage(this, message);
         }
