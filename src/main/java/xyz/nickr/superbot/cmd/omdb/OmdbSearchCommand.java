@@ -47,7 +47,7 @@ public class OmdbSearchCommand implements Command {
         }
         if (search.length() > 0) {
             SearchResults res = omdb.search(search);
-            if (res.getPageCount() == 0) {
+            if (res == null || res.getPageCount() == 0) {
                 mb.escaped("No results.");
             } else if (page < 1 || page > res.getPageCount()) {
                 mb.escaped(String.format("Page number not in [1,%d]", res.getPageCount()));

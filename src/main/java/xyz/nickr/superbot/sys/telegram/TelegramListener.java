@@ -184,9 +184,8 @@ public class TelegramListener implements Listener {
                     results.add(res("flip text", flip(text), flip(text), false));
                 }
             } else {
-                String cmd = Joiner.join(" ", words);
+                String cmd = "/" + Joiner.join(" ", words);
                 DummyUser user = new DummyUser(event, results);
-                System.out.println(cmd);
                 SuperBotCommands.exec(sys, new DummyGroup(user), user, new DummyMessage(user, cmd));
             }
         }
@@ -293,7 +292,6 @@ public class TelegramListener implements Listener {
 
         @Override
         public Message sendMessage(String message) {
-            System.out.println(message);
             results.add(res("Result:", message, message, false));
             return new DummyMessage(this, message);
         }

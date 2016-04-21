@@ -45,6 +45,7 @@ import xyz.nickr.superbot.cmd.util.GitCommand;
 import xyz.nickr.superbot.cmd.util.GraphCommand;
 import xyz.nickr.superbot.cmd.util.JenkinsCommand;
 import xyz.nickr.superbot.cmd.util.MathsCommand;
+import xyz.nickr.superbot.cmd.util.PasteFetchCommand;
 import xyz.nickr.superbot.cmd.util.UidCommand;
 import xyz.nickr.superbot.cmd.util.VersionCommand;
 import xyz.nickr.superbot.sys.Group;
@@ -116,6 +117,7 @@ public class SuperBotCommands {
         register(new GraphCommand());
         register(new JenkinsCommand());
         register(new MathsCommand());
+        register(new PasteFetchCommand());
         register(new UidCommand());
         register(new VersionCommand());
 
