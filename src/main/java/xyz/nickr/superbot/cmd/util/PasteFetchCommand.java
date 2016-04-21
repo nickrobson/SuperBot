@@ -82,7 +82,7 @@ public class PasteFetchCommand implements Command {
         try {
             URLConnection conn = new URL(raw).openConnection();
             String type = conn.getContentType();
-            if (type != null && type.startsWith("text/plain")) {
+            if (type != null && type.contains("text/plain")) {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                     mb.bold(true).escaped("Paste data from " + url + ":").bold(false);
                     reader.lines().forEach(lines::add);
