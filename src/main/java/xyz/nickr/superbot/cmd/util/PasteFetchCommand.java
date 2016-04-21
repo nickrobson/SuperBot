@@ -20,6 +20,7 @@ public class PasteFetchCommand implements Command {
 
     public static Pattern PASTEBIN = Pattern.compile("https?://(?:www\\.)?pastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)");
     public static Pattern HASTEBIN = Pattern.compile("https?://(?:www\\.)?hastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)(?:\\.[a-zA-Z0-9]+)?");
+    public static Pattern NICKR = Pattern.compile("https?://(?:www\\.)?nickr\\.xyz/paste/(?:raw/)?([a-zA-Z0-9]+)");
 
     @Override
     public String[] names() {
@@ -55,6 +56,8 @@ public class PasteFetchCommand implements Command {
                 scrape(url, "http://pastebin.com/raw/" + m.group(1), mb, lines);
             } else if ((m = HASTEBIN.matcher(url)).matches()) {
                 scrape(url, "http://hastebin.com/raw/" + m.group(1), mb, lines);
+            } else if ((m = NICKR.matcher(url)).matches()) {
+                scrape(url, "http://nickr.xyz/paste/raw/" + m.group(1), mb, lines);
             } else {
                 mb.escaped(url + " does not match any providers.");
                 match = false;
