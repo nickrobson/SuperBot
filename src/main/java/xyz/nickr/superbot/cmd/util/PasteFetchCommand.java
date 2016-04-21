@@ -57,7 +57,7 @@ public class PasteFetchCommand implements Command {
                         mb.bold(true).escaped("Paste data:").bold(false);
                         reader.lines().forEach(line -> {
                             if (markdown) {
-                                mb.newLine().raw(line);
+                                mb.newLine().raw(line.replaceAll("(\\b|^|[^*])(\\*)(\\b|[^*])", "$1_$3").replaceAll("\\*\\*", "*"));
                             } else {
                                 mb.newLine().escaped(line);
                             }
