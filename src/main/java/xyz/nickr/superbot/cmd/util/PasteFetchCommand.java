@@ -8,7 +8,6 @@ import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
@@ -27,17 +26,25 @@ public class PasteFetchCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[url]", "fetches paste from URL" };
+        return new String[]{ "(-md) [url]", "fetches paste from URL, optionally formatting with Markdown" };
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        if (args.length == 0) {
+        MessageBuilder<?> mb = sys.message();
+        String url = "";
+        boolean md = false;
+        for (String arg : args) {
+            if (arg.equals("-md"))
+                md = true;
+            else
+                url += arg + " ";
+        }
+        final boolean markdown = md;
+        if ((url = url.trim()).isEmpty()) {
             sendUsage(sys, user, group);
             return;
         }
-        MessageBuilder<?> mb = sys.message();
-        String url = Joiner.join(" ", args);
         Matcher m;
         if ((m = PASTEBIN.matcher(url)).matches()) {
             String id = m.group(1);
@@ -48,7 +55,13 @@ public class PasteFetchCommand implements Command {
                 if (type != null && type.startsWith("text/plain")) {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                         mb.bold(true).escaped("Paste data:").bold(false);
-                        reader.lines().forEach(line -> mb.newLine().escaped(line));
+                        reader.lines().forEach(line -> {
+                            if (markdown) {
+                                mb.newLine().raw(line);
+                            } else {
+                                mb.newLine().escaped(line);
+                            }
+                        });
                     } catch (Exception ex) {
                         mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
                     }
@@ -61,7 +74,11 @@ public class PasteFetchCommand implements Command {
         } else {
             mb.escaped("That URL does not match any providers.");
         }
-        group.sendMessage(mb);
+        try {
+            group.sendMessage(mb);
+        } catch (Exception ex) {
+            group.sendMessage(sys.message().escaped("Invalid Markdown formatting."));
+        }
     }
 
     @Override
