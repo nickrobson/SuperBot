@@ -1,21 +1,16 @@
 package xyz.nickr.superbot.sys.telegram;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,8 +18,6 @@ import org.json.JSONObject;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResult;
@@ -39,14 +32,13 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
-import xyz.nickr.superbot.cmd.util.ConvertCommand;
-import xyz.nickr.superbot.cmd.util.ConvertCommand.Conversion;
-import xyz.nickr.superbot.cmd.util.CurrencyCommand;
-import xyz.nickr.superbot.cmd.util.MathsCommand;
+import xyz.nickr.superbot.sys.Conversable;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
+import xyz.nickr.superbot.sys.GroupType;
+import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
-import xyz.nickr.superbot.sys.gitter.MarkdownMessageBuilder;
 import xyz.nickr.superbot.web.StandardEndpoints;
 
 /**
@@ -89,7 +81,7 @@ public class TelegramListener implements Listener {
         }
     }
 
-    private InlineQueryResultArticle res(String title, String desc, String text, boolean web) {
+    private static InlineQueryResultArticle res(String title, String desc, String text, boolean web) {
         return InlineQueryResultArticle.builder()
             .parseMode(ParseMode.MARKDOWN)
             .title(title)
@@ -191,72 +183,9 @@ public class TelegramListener implements Listener {
                     String text = Joiner.join(" ", args);
                     results.add(res("flip text", flip(text), flip(text), false));
                 }
-            } else if (words[0].equalsIgnoreCase("math") || words[0].equalsIgnoreCase("maths")) {
-                try {
-                    String[] args = Arrays.copyOfRange(words, 1, words.length);
-                    List<String> ags = new ArrayList<>(Arrays.asList(args));
-                    Map<String, Matcher> vars = ags.stream().collect(Collectors.toMap(a -> a, a -> MathsCommand.VARIABLE_ARG.matcher(a)));
-                    vars.entrySet().removeIf(e -> !e.getValue().matches());
-                    ags.removeIf(a -> vars.containsKey(a));
-                    String input = Joiner.join("", ags);
-                    List<Map.Entry<String, String>> vs = vars.entrySet().stream()
-                                                                .map(e -> e.getValue())
-                                                                .map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2)))
-                                                                .collect(Collectors.toList());
-                    Expression e = new ExpressionBuilder(input)
-                            .variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet()))
-                            .variables("e", "Pi")
-                            .build();
-                    for (Map.Entry<String, String> ent : vs) {
-                        e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
-                    }
-                    e.setVariable("e", Math.E);
-                    e.setVariable("Pi", Math.PI);
-                    double result = e.evaluate();
-                    results.add(res("Result:", String.valueOf(result), MarkdownMessageBuilder.markdown_escape(Joiner.join(" ", args) + " = " + result, false), false));
-                } catch (Exception ignored) {
-                    results.add(res("Invalid maths", ":(", "Invalid maths!", false));
-                }
-            } else if (words[0].equalsIgnoreCase("convert")) {
-                // convert [from] [to] [quantity]
-                Map<String, Map<String, Conversion>> convs = ConvertCommand.conversions;
-                if (words.length >= 4) {
-                    String from = words[1], to = words[2], quant = words[3];
-                    Map<String, Conversion> map = convs.get(from);
-                    if (convs.containsKey(from) && map.containsKey(to)) {
-                        String out = map.get(to).apply(quant);
-                        String text = "\\[Convert] " + quant + " " + from + " => " + out + " " + to;
-                        results.add(res(from + " => " + to, quant + " => " + out, text, false));
-                    }
-                } else {
-                    String un = bot.getBotUsername();
-                    for (Entry<String, Map<String, Conversion>> e : convs.entrySet()) {
-                        for (Entry<String, Conversion> f : e.getValue().entrySet()) {
-                            String title = "@" + un + " convert " + e.getKey() + " " + f.getKey() + " [quantity]";
-                            String desc = "Convert " + f.getValue().from + " to " + f.getValue().to;
-                            String text = "/convert@" + un.replace("_", "\\_") + " " + e.getKey() + " " + f.getKey() + " 100";
-                            results.add(res(title, desc, text, false));
-                        }
-                    }
-                }
-            } else if (words[0].equalsIgnoreCase("currency")) {
-                // currency [from] [to] [quantity]
-                if (words.length >= 4) {
-                    String from = words[1].toUpperCase(), to = words[2].toUpperCase(), quant = words[3];
-                    String queryURL = String.format("https://www.google.co.uk/finance/converter?from=%s&to=%s&a=%s", from, to, quant);
-                    try {
-                        URL url = new URL(queryURL);
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-                        String line;
-                        while ((line = reader.readLine()) != null && results.isEmpty()) {
-                            Matcher matcher = CurrencyCommand.CONVERSION_PATTERN.matcher(line);
-                            if (matcher.find()) {
-                                String out = "\\[Currency] " + quant + " " + from + " => " + matcher.group(1);
-                                results.add(res(from + " => " + to, quant + " => " + matcher.group(1).split(" ")[0], out, false));
-                            }
-                        }
-                    } catch (IOException e) {}
-                }
+            } else {
+                DummyUser user = new DummyUser(event);
+                SuperBotCommands.exec(sys, new DummyGroup(user), user, new DummyMessage(user, Joiner.join(" ", words)));
             }
         }
         if (results.isEmpty()) {
@@ -293,6 +222,136 @@ public class TelegramListener implements Listener {
 
     @Override
     public void onInlineResultChosen(InlineResultChosenEvent event) {
+    }
+
+    public class DummyGroup implements Group {
+
+        private DummyUser dummy;
+
+        public DummyGroup(DummyUser dummy) {
+            this.dummy = dummy;
+        }
+
+        @Override
+        public Sys getProvider() {
+            return sys;
+        }
+
+        @Override
+        public String getUniqueId() {
+            return dummy.getUniqueId();
+        }
+
+        @Override
+        public Message sendMessage(String message) {
+            return dummy.sendMessage(message);
+        }
+
+        @Override
+        public String getDisplayName() {
+            return dummy.getDisplayName().orElse(dummy.getUsername());
+        }
+
+        @Override
+        public GroupType getType() {
+            return GroupType.USER;
+        }
+
+        @Override
+        public boolean isAdmin(User u) {
+            return false;
+        }
+
+        @Override
+        public Set<User> getUsers() {
+            return new HashSet<>(Arrays.asList(dummy));
+        }
+
+    }
+
+    public class DummyUser implements User {
+
+        private InlineQueryReceivedEvent event;
+        private pro.zackpollard.telegrambot.api.user.User user;
+
+        public DummyUser(InlineQueryReceivedEvent event) {
+            this.event = event;
+            this.user = event.getQuery().getSender();
+        }
+
+        @Override
+        public Sys getProvider() {
+            return sys;
+        }
+
+        @Override
+        public String getUniqueId() {
+            return String.valueOf(user.getId());
+        }
+
+        @Override
+        public Message sendMessage(String message) {
+            event.getQuery().answer(bot, res("Result:", message, message, false));
+            return new DummyMessage(this, message);
+        }
+
+        @Override
+        public String getUsername() {
+            return user.getUsername();
+        }
+
+        @Override
+        public Optional<String> getDisplayName() {
+            return Optional.ofNullable(user.getFullName());
+        }
+
+    }
+
+    public class DummyMessage implements Message {
+
+        private Conversable convo;
+        private String message;
+
+        public DummyMessage(Conversable convo, String message) {
+            this.convo = convo;
+            this.message = message;
+        }
+
+        @Override
+        public Sys getProvider() {
+            return sys;
+        }
+
+        @Override
+        public String getUniqueId() {
+            return "";
+        }
+
+        @Override
+        public Conversable getConversation() {
+            return convo;
+        }
+
+        @Override
+        public User getSender() {
+            return null;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
+
+        @Override
+        public void edit(String message) {
+
+        }
+
+        @Override
+        public boolean isEdited() {
+            return false;
+        }
+
     }
 
 }

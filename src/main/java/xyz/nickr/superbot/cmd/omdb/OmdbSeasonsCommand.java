@@ -59,4 +59,14 @@ public class OmdbSeasonsCommand implements Command {
         }
     }
 
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
 }
