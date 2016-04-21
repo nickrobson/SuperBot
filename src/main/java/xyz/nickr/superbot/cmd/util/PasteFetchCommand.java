@@ -64,4 +64,14 @@ public class PasteFetchCommand implements Command {
         group.sendMessage(mb);
     }
 
+    @Override
+    public boolean alwaysEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean userchat() {
+        return true;
+    }
+
 }
