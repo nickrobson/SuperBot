@@ -184,8 +184,10 @@ public class TelegramListener implements Listener {
                     results.add(res("flip text", flip(text), flip(text), false));
                 }
             } else {
-                DummyUser user = new DummyUser(event);
-                SuperBotCommands.exec(sys, new DummyGroup(user), user, new DummyMessage(user, Joiner.join(" ", words)));
+                String cmd = Joiner.join(" ", words);
+                DummyUser user = new DummyUser(event, results);
+                System.out.println(cmd);
+                SuperBotCommands.exec(sys, new DummyGroup(user), user, new DummyMessage(user, cmd));
             }
         }
         if (results.isEmpty()) {
@@ -271,11 +273,11 @@ public class TelegramListener implements Listener {
 
     public class DummyUser implements User {
 
-        private InlineQueryReceivedEvent event;
+        private List<InlineQueryResult> results;
         private pro.zackpollard.telegrambot.api.user.User user;
 
-        public DummyUser(InlineQueryReceivedEvent event) {
-            this.event = event;
+        public DummyUser(InlineQueryReceivedEvent event, List<InlineQueryResult> results) {
+            this.results = results;
             this.user = event.getQuery().getSender();
         }
 
@@ -291,7 +293,7 @@ public class TelegramListener implements Listener {
 
         @Override
         public Message sendMessage(String message) {
-            event.getQuery().answer(bot, res("Result:", message, message, false));
+            results.add(res("Result:", message, message, false));
             return new DummyMessage(this, message);
         }
 
