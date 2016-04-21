@@ -1,10 +1,11 @@
 package xyz.nickr.superbot.cmd.util;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,7 @@ import xyz.nickr.superbot.sys.User;
 public class PasteFetchCommand implements Command {
 
     public static Pattern PASTEBIN = Pattern.compile("https?://(?:www\\.)?pastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)");
+    public static Pattern HASTEBIN = Pattern.compile("https?://(?:www\\.)?hastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)(?:\\.[a-zA-Z0-9]+)?");
 
     @Override
     public String[] names() {
@@ -45,39 +47,50 @@ public class PasteFetchCommand implements Command {
             sendUsage(sys, user, group);
             return;
         }
-        Matcher m;
-        if ((m = PASTEBIN.matcher(url)).matches()) {
-            String id = m.group(1);
-            url = "http://pastebin.com/raw/" + id;
-            try {
-                URLConnection conn = new URL(url).openConnection();
-                String type = conn.getContentType();
-                if (type != null && type.startsWith("text/plain")) {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                        mb.bold(true).escaped("Paste data:").bold(false);
-                        reader.lines().forEach(line -> {
-                            if (markdown) {
-                                mb.newLine().raw(line.replaceAll("(\\b|^|[^*])(\\*)(\\b|[^*])", "$1_$3").replaceAll("\\*\\*", "*"));
-                            } else {
-                                mb.newLine().escaped(line);
-                            }
-                        });
-                    } catch (Exception ex) {
-                        mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
-                    }
-                } else {
-                    mb.escaped("Invalid pastebin ID! :(");
-                }
-            } catch (IOException ex) {
-                mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
+        try {
+            boolean match = true;
+            Matcher m;
+            List<String> lines = new LinkedList<>();
+            if ((m = PASTEBIN.matcher(url)).matches()) {
+                scrape(url, "http://pastebin.com/raw/" + m.group(1), mb, lines);
+            } else if ((m = HASTEBIN.matcher(url)).matches()) {
+                scrape(url, "http://hastebin.com/raw/" + m.group(1), mb, lines);
+            } else {
+                mb.escaped(url + " does not match any providers.");
+                match = false;
             }
-        } else {
-            mb.escaped("That URL does not match any providers.");
+            if (match) {
+                if (markdown)
+                    lines.forEach(l -> mb.newLine().raw(l.replaceAll("(\\b|^|[^*])(\\*)(\\b|[^*])", "$1_$3").replaceAll("\\*\\*", "*")));
+                else
+                    lines.forEach(l -> mb.newLine().escaped(l));
+            }
+        } catch (Exception ex) {
+            mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
         }
         try {
             group.sendMessage(mb);
         } catch (Exception ex) {
             group.sendMessage(sys.message().escaped("Invalid Markdown formatting."));
+        }
+    }
+
+    public void scrape(String url, String raw, MessageBuilder<?> mb, List<String> lines) {
+        try {
+            URLConnection conn = new URL(raw).openConnection();
+            String type = conn.getContentType();
+            if (type != null && type.startsWith("text/plain")) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    mb.bold(true).escaped("Paste data from " + url + ":").bold(false);
+                    reader.lines().forEach(lines::add);
+                } catch (Exception ex) {
+                    mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
+                }
+            } else {
+                mb.escaped("Invalid paste ID!");
+            }
+        } catch (Exception ex) {
+            mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
         }
     }
 
