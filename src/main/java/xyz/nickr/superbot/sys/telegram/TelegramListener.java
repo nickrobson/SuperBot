@@ -255,7 +255,7 @@ public class TelegramListener implements Listener {
 
         @Override
         public GroupType getType() {
-            return GroupType.USER;
+            return GroupType.GROUP;
         }
 
         @Override
