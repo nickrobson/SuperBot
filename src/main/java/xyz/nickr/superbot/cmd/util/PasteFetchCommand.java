@@ -26,7 +26,7 @@ public class PasteFetchCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "(-md) [url]", "fetches paste from URL, optionally formatting with Markdown" };
+        return new String[]{ "(-m) [url]", "fetches paste from URL, optionally Markdown" };
     }
 
     @Override
@@ -35,7 +35,7 @@ public class PasteFetchCommand implements Command {
         String url = "";
         boolean md = false;
         for (String arg : args) {
-            if (arg.equals("-md"))
+            if (arg.equals("-m"))
                 md = true;
             else
                 url += arg + " ";
