@@ -11,6 +11,7 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
     public static String markdown_escape(String text, boolean code) {
         if (!code) {
             text = text.replace("*", "\\*"); // * is replaced with \*
+            text = text.replace("_", "\\_"); // _ is replaced with \_
             text = text.replace("[", "\\["); // [ is replaced with \[
         }
         return text;
