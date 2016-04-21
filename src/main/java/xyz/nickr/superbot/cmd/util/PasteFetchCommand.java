@@ -29,17 +29,21 @@ public class PasteFetchCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "(-m) [url]", "fetches paste from URL, optionally Markdown" };
+        return new String[]{ "(-mc) [url]", "fetches paste from URL, optionally Markdown" };
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder<?> mb = sys.message();
         String url = "";
-        boolean md = false;
+        boolean md = false, code = false;
         for (String arg : args) {
             if (arg.equals("-m"))
                 md = true;
+            else if (arg.equals("-c"))
+                code = true;
+            else if (arg.equals("-mc"))
+                md = code = true;
             else
                 url += arg + " ";
         }
@@ -65,8 +69,13 @@ public class PasteFetchCommand implements Command {
             if (match) {
                 if (markdown)
                     lines.forEach(l -> mb.newLine().raw(l.replaceAll("(\\b|^|[^*])(\\*)(\\b|[^*])", "$1_$3").replaceAll("\\*\\*", "*")));
-                else
+                else {
+                    if (code)
+                        mb.code(true);
                     lines.forEach(l -> mb.newLine().escaped(l));
+                    if (code)
+                        mb.code(false);
+                }
             }
         } catch (Exception ex) {
             mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
