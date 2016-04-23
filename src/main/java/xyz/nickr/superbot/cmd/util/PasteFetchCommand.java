@@ -93,6 +93,7 @@ public class PasteFetchCommand implements Command {
             }
         } catch (Exception ex) {
             mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
+            ex.printStackTrace();
         }
         try {
             group.sendMessage(mb);
@@ -111,12 +112,14 @@ public class PasteFetchCommand implements Command {
                     reader.lines().forEach(lines::add);
                 } catch (Exception ex) {
                     mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
+                    ex.printStackTrace();
                 }
             } else {
                 mb.escaped("Invalid paste ID!");
             }
         } catch (Exception ex) {
             mb.escaped("An error occurred: " + ex.getClass().getSimpleName());
+            ex.printStackTrace();
         }
     }
 
