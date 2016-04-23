@@ -65,17 +65,17 @@ public class PasteFetchCommand implements Command {
             Matcher m;
             List<String> lines = new LinkedList<>();
             if ((m = PASTEBIN.matcher(url)).matches()) {
-                scrape(url, "http://pastebin.com/raw/" + m.group(1), mb, lines);
+                scrape(url, "http://pastebin.com/raw/" + m.group(1), mb, lines, "text/plain");
             } else if ((m = HASTEBIN.matcher(url)).matches()) {
-                scrape(url, "http://hastebin.com/raw/" + m.group(1), mb, lines);
+                scrape(url, "http://hastebin.com/raw/" + m.group(1), mb, lines, "text/plain");
             } else if ((m = NICKR.matcher(url)).matches()) {
-                scrape(url, "http://nickr.xyz/paste/raw/" + m.group(1), mb, lines);
+                scrape(url, "http://nickr.xyz/paste/raw/" + m.group(1), mb, lines, "text/plain");
             } else if ((m = VILSOL.matcher(url)).matches() && VILSOL_PASTE_TOKEN != null) {
                 List<String> jsonLines = new LinkedList<>();
-                scrape(url, "https://p.vil.so/api/v1/get?token=" + VILSOL_PASTE_TOKEN + "&id=" + m.group(1), mb, jsonLines);
+                scrape(url, "https://p.vil.so/api/v1/get?token=" + VILSOL_PASTE_TOKEN + "&id=" + m.group(1), mb, jsonLines, "application/json");
                 JsonObject json = SuperBotController.GSON.fromJson(Joiner.join("", jsonLines), JsonObject.class);
                 if (json.get("success").getAsBoolean())
-                    lines.addAll(Arrays.asList(json.get("content").getAsString().split("(?:\\\\r)?\\\\n")));
+                    lines.addAll(Arrays.asList(json.get("content").getAsString().split("(?:\r)?\n")));
             } else {
                 mb.escaped(url + " does not match any providers.");
                 match = false;
@@ -102,11 +102,12 @@ public class PasteFetchCommand implements Command {
         }
     }
 
-    public void scrape(String url, String raw, MessageBuilder<?> mb, List<String> lines) {
+    public void scrape(String url, String raw, MessageBuilder<?> mb, List<String> lines, String expectedType) {
         try {
             URLConnection conn = new URL(raw).openConnection();
+            conn.addRequestProperty("User-Agent", "SuperBot by @smudjy");
             String type = conn.getContentType();
-            if (type != null && type.contains("text/plain")) {
+            if (type != null && type.contains(expectedType)) {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                     mb.bold(true).escaped("Paste data from " + url + ":").bold(false);
                     reader.lines().forEach(lines::add);
