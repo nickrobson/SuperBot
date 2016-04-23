@@ -4,11 +4,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.JsonObject;
+
+import xyz.nickr.superbot.Joiner;
+import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
@@ -21,6 +26,9 @@ public class PasteFetchCommand implements Command {
     public static Pattern PASTEBIN = Pattern.compile("https?://(?:www\\.)?pastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)");
     public static Pattern HASTEBIN = Pattern.compile("https?://(?:www\\.)?hastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)(?:\\.[a-zA-Z0-9]+)?");
     public static Pattern NICKR = Pattern.compile("https?://(?:www\\.)?nickr\\.xyz/paste/(?:raw/)?([a-zA-Z0-9]+)");
+    public static Pattern VILSOL = Pattern.compile("https?://(?:www\\.)?p.vil.so/([A-Za-z0-9]+)");
+
+    public static String VILSOL_PASTE_TOKEN;
 
     @Override
     public String[] names() {
@@ -62,6 +70,12 @@ public class PasteFetchCommand implements Command {
                 scrape(url, "http://hastebin.com/raw/" + m.group(1), mb, lines);
             } else if ((m = NICKR.matcher(url)).matches()) {
                 scrape(url, "http://nickr.xyz/paste/raw/" + m.group(1), mb, lines);
+            } else if ((m = VILSOL.matcher(url)).matches() && VILSOL_PASTE_TOKEN != null) {
+                List<String> jsonLines = new LinkedList<>();
+                scrape(url, "https://p.vil.so/api/v1/get?token=" + VILSOL_PASTE_TOKEN + "&id=" + m.group(1), mb, jsonLines);
+                JsonObject json = SuperBotController.GSON.fromJson(Joiner.join("", jsonLines), JsonObject.class);
+                if (json.get("success").getAsBoolean())
+                    lines.addAll(Arrays.asList(json.get("content").getAsString().split("(?:\\\\r)?\\\\n")));
             } else {
                 mb.escaped(url + " does not match any providers.");
                 match = false;

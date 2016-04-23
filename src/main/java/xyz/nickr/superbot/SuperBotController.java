@@ -31,6 +31,7 @@ import com.google.gson.JsonObject;
 
 import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.superbot.SuperBotShows.Show;
+import xyz.nickr.superbot.cmd.util.PasteFetchCommand;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.GroupType;
@@ -74,6 +75,8 @@ public class SuperBotController {
             register(new SkypeSys(properties.getProperty("skype.username"), properties.getProperty("skype.password")));
             register(new TelegramSys(properties.getProperty("telegram.api")));
             register(new GitterSys(properties.getProperty("gitter.api")));
+
+            PasteFetchCommand.VILSOL_PASTE_TOKEN = properties.getProperty("vilsol.paste.token");
 
             try {
                 // HTTP Server
@@ -150,9 +153,9 @@ public class SuperBotController {
         if (!permsFolder.exists())
             permsFolder.mkdirs();
         else {
-            for (File f : permsFolder.listFiles(f -> f.getName().toLowerCase().equals(f.getName()))) {
+            for (File f : permsFolder.listFiles()) {
                 try {
-                    String username = f.getName();
+                    String username = f.getName().toLowerCase();
                     Files.readAllLines(f.toPath()).forEach(s -> SuperBotPermissions.set(username, s, true, false));
                 } catch (IOException ex) {
                     ex.printStackTrace();
