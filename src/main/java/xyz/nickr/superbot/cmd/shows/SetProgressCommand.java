@@ -50,7 +50,7 @@ public class SetProgressCommand implements Command {
                 SuperBotController.PROGRESS.put(show.imdb, prg);
                 mb.escaped("Removed ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay());
                 SuperBotController.saveProgress();
-            } else if (!SuperBotShows.EPISODE_PATTERN.matcher(ep).matches()) {
+            } else if (!SuperBotShows.EPISODE_PATTERN.matcher(ep).matches() && !ep.equals("NEXT")) {
                 mb.escaped("Invalid episode: ").bold(true).escaped(ep).bold(false).escaped(" (doesn't match SxEyy format)");
             } else if (oldprg == null && ep.equals("NEXT")) {
                 mb.escaped("You have no progress registered.");
