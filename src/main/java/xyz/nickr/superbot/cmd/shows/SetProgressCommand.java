@@ -62,10 +62,10 @@ public class SetProgressCommand implements Command {
                     SeasonEpisodeResult[] eps = res.episodes;
                     try {
                         SeasonEpisodeResult r = eps[episode];
-                        ep = String.format("S%sE%d", spl[0], r.episode);
+                        ep = String.format("S%sE%s", spl[0], r.episode);
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        group.sendMessage(mb.escaped("There is no next episode for your current season (S" + spl[0] + ")"));
+                        group.sendMessage(mb.escaped("There is no next episode for your current season (Season " + res.season + ")"));
                         return;
                     }
                 }
