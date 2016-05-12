@@ -57,7 +57,13 @@ public class SetProgressCommand implements Command {
             } else {
                 if (oldprg != null && ep.equals("NEXT")) {
                     String[] spl = oldprg.substring(1).split("E");
-                    int de = args.length > 2 ? Integer.parseInt(args[2]) : 1;
+                    int de;
+                    try {
+                        de = args.length > 2 ? Integer.parseInt(args[2]) : 1;
+                    } catch (Exception ex) {
+                        group.sendMessage(mb.escaped("Not a number: %s!", args[2]));
+                        return;
+                    }
                     int episode = Integer.parseInt(spl[1]) - 1 + de;
                     if (de >= 1) {
                         SeasonResult res = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
