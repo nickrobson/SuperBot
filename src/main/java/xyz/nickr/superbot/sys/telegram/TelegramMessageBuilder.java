@@ -26,68 +26,68 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
     }
 
     public TelegramMessageBuilder(String initial) {
-        msg = new StringBuilder(initial);
+        this.msg = new StringBuilder(initial);
     }
 
     @Override
     public int length() {
-        return msg.length();
+        return this.msg.length();
     }
 
     @Override
     public String toString() {
-        return build();
+        return this.build();
     }
 
     @Override
     public String build() {
-        italic(false).bold(false).code(false);
-        return msg.toString();
+        this.italic(false).bold(false).code(false);
+        return this.msg.toString();
     }
 
     @Override
     public TelegramMessageBuilder newLine() {
-        msg.append("\n");
+        this.msg.append("\n");
         return this;
     }
 
     @Override
     public TelegramMessageBuilder name(User user) {
-        return escaped(user.name());
+        return this.escaped(user.name());
     }
 
     @Override
-    public TelegramMessageBuilder escaped(String text) {
-        msg.append(markdown_escape(text, code));
+    public TelegramMessageBuilder escaped(String text, Object... params) {
+        this.msg.append(TelegramMessageBuilder.markdown_escape(String.format(text, params), this.code));
         return this;
     }
 
     @Override
-    public TelegramMessageBuilder raw(String text) {
-        msg.append(text);
+    public TelegramMessageBuilder raw(String text, Object... params) {
+        this.msg.append(String.format(text, params));
         return this;
     }
 
     @Override
     public TelegramMessageBuilder link(String url, String text) {
-        msg.append("[" + text + "](" + url + ")");
+        this.msg.append("[" + text + "](" + url + ")");
         return this;
     }
 
     @Override
     public TelegramMessageBuilder bold(boolean on) {
-        if (bold != on) {
-            bold = on;
-            msg.append(on ? "*" : "*");
+        if (this.bold != on) {
+            this.bold = on;
+            this.msg.append(on ? "*" : "*");
         }
         return this;
     }
 
     @Override
     public TelegramMessageBuilder italic(boolean on) {
-        if (italic != on) {
-            italic = on;
-            msg.append(on ? "_" : "_");
+        if (this.italic != on) {
+            this.italic = on;
+            this.msg.append(on ? "_" : "_");
         }
         return this;
     }
@@ -104,9 +104,9 @@ public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBui
 
     @Override
     public TelegramMessageBuilder code(boolean on) {
-        if (code != on) {
-            code = on;
-            msg.append(on ? "`" : "`");
+        if (this.code != on) {
+            this.code = on;
+            this.msg.append(on ? "`" : "`");
         }
         return this;
     }

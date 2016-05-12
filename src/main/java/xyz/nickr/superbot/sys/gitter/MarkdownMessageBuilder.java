@@ -27,77 +27,77 @@ public class MarkdownMessageBuilder implements MessageBuilder<MarkdownMessageBui
     }
 
     public MarkdownMessageBuilder(String initial) {
-        msg = new StringBuilder(initial);
+        this.msg = new StringBuilder(initial);
     }
 
     @Override
     public int length() {
-        return msg.length();
+        return this.msg.length();
     }
 
     @Override
     public String toString() {
-        return build();
+        return this.build();
     }
 
     @Override
     public String build() {
-        italic(false).bold(false).code(false);
-        return msg.toString();
+        this.italic(false).bold(false).code(false);
+        return this.msg.toString();
     }
 
     @Override
     public MarkdownMessageBuilder newLine() {
-        msg.append("\n");
+        this.msg.append("\n");
         return this;
     }
 
     @Override
     public MarkdownMessageBuilder name(User user) {
-        return escaped(user.name());
+        return this.escaped(user.name());
     }
 
     @Override
-    public MarkdownMessageBuilder escaped(String text) {
-        msg.append(markdown_escape(text, code));
+    public MarkdownMessageBuilder escaped(String text, Object... params) {
+        this.msg.append(MarkdownMessageBuilder.markdown_escape(String.format(text, params), this.code));
         return this;
     }
 
     @Override
-    public MarkdownMessageBuilder raw(String text) {
-        msg.append(text);
+    public MarkdownMessageBuilder raw(String text, Object... params) {
+        this.msg.append(String.format(text, params));
         return this;
     }
 
     @Override
     public MarkdownMessageBuilder link(String url, String text) {
-        msg.append("[" + text + "](" + url + ")");
+        this.msg.append("[" + text + "](" + url + ")");
         return this;
     }
 
     @Override
     public MarkdownMessageBuilder bold(boolean on) {
-        if (bold != on) {
-            bold = on;
-            msg.append(on ? "**" : "**");
+        if (this.bold != on) {
+            this.bold = on;
+            this.msg.append(on ? "**" : "**");
         }
         return this;
     }
 
     @Override
     public MarkdownMessageBuilder italic(boolean on) {
-        if (italic != on) {
-            italic = on;
-            msg.append(on ? "_" : "_");
+        if (this.italic != on) {
+            this.italic = on;
+            this.msg.append(on ? "_" : "_");
         }
         return this;
     }
 
     @Override
     public MarkdownMessageBuilder code(boolean on) {
-        if (code != on) {
-            code = on;
-            msg.append(on ? "\n```text\n" : "\n```\n");
+        if (this.code != on) {
+            this.code = on;
+            this.msg.append(on ? "\n```text\n" : "\n```\n");
         }
         return this;
     }

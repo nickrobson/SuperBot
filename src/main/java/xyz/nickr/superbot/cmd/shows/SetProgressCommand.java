@@ -57,24 +57,30 @@ public class SetProgressCommand implements Command {
             } else {
                 if (oldprg != null && ep.equals("NEXT")) {
                     String[] spl = oldprg.substring(1).split("E");
-                    int episode = Integer.parseInt(spl[1]);
-                    SeasonResult res = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
-                    SeasonEpisodeResult[] eps = res.episodes;
-                    try {
-                        SeasonEpisodeResult r = eps[episode];
-                        ep = String.format("S%sE%s", spl[0], r.episode);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        group.sendMessage(mb.escaped("There is no next episode for your current season (Season " + res.season + ")"));
+                    int de = args.length > 2 ? Integer.parseInt(args[2]) : 1;
+                    int episode = Integer.parseInt(spl[1]) - 1 + de;
+                    if (de >= 1) {
+                        SeasonResult res = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
+                        SeasonEpisodeResult[] eps = res.episodes;
+                        try {
+                            SeasonEpisodeResult r = eps[episode];
+                            ep = String.format("S%sE%s", spl[0], r.episode);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            group.sendMessage(mb.escaped("There is no episode S%sE%s for %s!", spl[0], episode + 1, show.display));
+                            return;
+                        }
+                    } else {
+                        group.sendMessage(mb.escaped("Invalid number of episodes to count as next."));
                         return;
                     }
                 }
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.put(profileName.toLowerCase(), ep);
                 SuperBotController.PROGRESS.put(show.imdb, prg);
-                mb.escaped("Set ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to " + ep);
+                mb.escaped("Set ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to %s", ep);
                 if (oldprg != null) {
-                    mb.escaped(" (was " + oldprg + ")");
+                    mb.escaped(" (was %s)", oldprg);
                 }
                 SuperBotController.saveProgress();
             }
