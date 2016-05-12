@@ -12,12 +12,12 @@ public class VersionCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "version" };
+        return new String[] {"version"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "", "shows version info" };
+        return new String[] {"", "shows version info"};
     }
 
     @Override
@@ -26,17 +26,19 @@ public class VersionCommand implements Command {
         builder.bold(true).escaped("Version: ").bold(false).escaped(SuperBotController.VERSION).newLine();
         builder.bold(true).escaped("Build Number: ").bold(false);
         int build = SuperBotController.BUILD_NUMBER;
-        if (build > 0)
+        if (build > 0) {
             builder.escaped(Integer.toString(build));
-        else
+        } else {
             builder.escaped("Unknown");
-        if (SuperBotController.GIT_COMMIT_IDS.length > 0)
+        }
+        if (SuperBotController.GIT_COMMIT_IDS.length > 0) {
             builder.newLine().bold(true).escaped("Commit Summary:").bold(false);
+        }
         for (int i = 0; i < SuperBotController.GIT_COMMIT_IDS.length; i++) {
-            String id = SuperBotController.GIT_COMMIT_IDS[i].substring(0, 8);
+            String id = SuperBotController.GIT_COMMIT_IDS[i];
             String msg = SuperBotController.GIT_COMMIT_MESSAGES[i];
             String author = SuperBotController.GIT_COMMIT_AUTHORS[i];
-            builder.newLine().italic(true).escaped(author + " ").italic(false).escaped(msg).italic(true).escaped(" (" + id + ")").italic(false).build();
+            builder.newLine().italic(true).escaped(author + " ").italic(false).escaped(msg).italic(true).escaped(" (").link("http://github.com/nickrobson/SuperBot/commit/" + id, id.substring(0, 8)).escaped(")").italic(false).build();
         }
         group.sendMessage(builder.toString());
     }
