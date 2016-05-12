@@ -38,7 +38,7 @@ public class VersionCommand implements Command {
             String id = SuperBotController.GIT_COMMIT_IDS[i];
             String msg = SuperBotController.GIT_COMMIT_MESSAGES[i];
             String author = SuperBotController.GIT_COMMIT_AUTHORS[i];
-            builder.newLine().italic(true).escaped(author + " ").italic(false).escaped(msg).italic(true).escaped(" ( ").link("http://github.com/nickrobson/SuperBot/commit/" + id, id.substring(0, 8)).escaped(" )").italic(false).build();
+            builder.newLine().italic(true).escaped(author + " ").italic(false).escaped(msg).italic(true).escaped(" (%s)", id.substring(0, 8)).italic(false).build();
         }
         group.sendMessage(builder.toString());
     }
