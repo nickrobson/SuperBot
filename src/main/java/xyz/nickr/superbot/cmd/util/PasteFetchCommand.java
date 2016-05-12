@@ -23,6 +23,8 @@ import xyz.nickr.superbot.sys.User;
 
 public class PasteFetchCommand implements Command {
 
+    public static Pattern HREF = Pattern.compile("<.*?a .*? href=\"(.*?)\"");
+
     public static Pattern PASTEBIN = Pattern.compile("https?://(?:www\\.)?pastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)");
     public static Pattern HASTEBIN = Pattern.compile("https?://(?:www\\.)?hastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)(?:\\.[a-zA-Z0-9]+)?");
     public static Pattern NICKR = Pattern.compile("https?://(?:www\\.)?nickr\\.xyz/paste/(?:raw/)?([a-zA-Z0-9]+)");
@@ -32,12 +34,12 @@ public class PasteFetchCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "pastefetch" };
+        return new String[] {"pastefetch"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "(-cm) [url]", "fetches paste data from a URL" };
+        return new String[] {"(-cm) [url]", "fetches paste data from a URL"};
     }
 
     @Override
@@ -46,49 +48,56 @@ public class PasteFetchCommand implements Command {
         String url = "";
         boolean md = false, code = false;
         for (String arg : args) {
-            if (arg.equals("-m"))
+            if (arg.equals("-m")) {
                 md = true;
-            else if (arg.equals("-c"))
+            } else if (arg.equals("-c")) {
                 code = true;
-            else if (arg.equals("-mc") || arg.equals("-cm"))
+            } else if (arg.equals("-mc") || arg.equals("-cm")) {
                 md = code = true;
-            else
+            } else {
                 url += arg + " ";
+            }
+        }
+        Matcher m = PasteFetchCommand.HREF.matcher(url = url.trim());
+        if (m.find()) {
+            url = m.group(1);
         }
         final boolean markdown = md;
-        if ((url = url.trim()).isEmpty()) {
-            sendUsage(sys, user, group);
+        if (url.isEmpty()) {
+            this.sendUsage(sys, user, group);
             return;
         }
         try {
             boolean match = true;
-            Matcher m;
             List<String> lines = new LinkedList<>();
-            if ((m = PASTEBIN.matcher(url)).matches()) {
-                scrape(url, "http://pastebin.com/raw/" + m.group(1), mb, lines, "text/plain");
-            } else if ((m = HASTEBIN.matcher(url)).matches()) {
-                scrape(url, "http://hastebin.com/raw/" + m.group(1), mb, lines, "text/plain");
-            } else if ((m = NICKR.matcher(url)).matches()) {
-                scrape(url, "http://nickr.xyz/paste/raw/" + m.group(1), mb, lines, "text/plain");
-            } else if ((m = VILSOL.matcher(url)).matches() && VILSOL_PASTE_TOKEN != null) {
+            if ((m = PasteFetchCommand.PASTEBIN.matcher(url)).matches()) {
+                this.scrape(url, "http://pastebin.com/raw/" + m.group(1), mb, lines, "text/plain");
+            } else if ((m = PasteFetchCommand.HASTEBIN.matcher(url)).matches()) {
+                this.scrape(url, "http://hastebin.com/raw/" + m.group(1), mb, lines, "text/plain");
+            } else if ((m = PasteFetchCommand.NICKR.matcher(url)).matches()) {
+                this.scrape(url, "http://nickr.xyz/paste/raw/" + m.group(1), mb, lines, "text/plain");
+            } else if ((m = PasteFetchCommand.VILSOL.matcher(url)).matches() && PasteFetchCommand.VILSOL_PASTE_TOKEN != null) {
                 List<String> jsonLines = new LinkedList<>();
-                scrape(url, "https://p.vil.so/api/v1/get?token=" + VILSOL_PASTE_TOKEN + "&id=" + m.group(1), mb, jsonLines, "application/json");
+                this.scrape(url, "https://p.vil.so/api/v1/get?token=" + PasteFetchCommand.VILSOL_PASTE_TOKEN + "&id=" + m.group(1), mb, jsonLines, "application/json");
                 JsonObject json = SuperBotController.GSON.fromJson(Joiner.join("", jsonLines), JsonObject.class);
-                if (json.get("success").getAsBoolean())
+                if (json.get("success").getAsBoolean()) {
                     lines.addAll(Arrays.asList(json.get("content").getAsString().split("(?:\r)?\n")));
+                }
             } else {
                 mb.escaped(url + " does not match any providers.");
                 match = false;
             }
             if (match) {
-                if (markdown)
+                if (markdown) {
                     lines.forEach(l -> mb.newLine().raw(l.replaceAll("(\\b|^|[^*])(\\*)(\\b|[^*])", "$1_$3").replaceAll("\\*\\*", "*")));
-                else {
-                    if (code)
+                } else {
+                    if (code) {
                         mb.code(true);
+                    }
                     lines.forEach(l -> mb.newLine().escaped(l));
-                    if (code)
+                    if (code) {
                         mb.code(false);
+                    }
                 }
             }
         } catch (Exception ex) {
