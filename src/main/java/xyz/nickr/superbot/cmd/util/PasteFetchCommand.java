@@ -23,7 +23,7 @@ import xyz.nickr.superbot.sys.User;
 
 public class PasteFetchCommand implements Command {
 
-    public static Pattern HREF = Pattern.compile("<.*?a .*? href=\"(.*?)\"");
+    public static Pattern HREF = Pattern.compile("<.*?a.*?href=\"(.*?)\"");
 
     public static Pattern PASTEBIN = Pattern.compile("https?://(?:www\\.)?pastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)");
     public static Pattern HASTEBIN = Pattern.compile("https?://(?:www\\.)?hastebin\\.com/(?:raw/)?([a-zA-Z0-9]+)(?:\\.[a-zA-Z0-9]+)?");
