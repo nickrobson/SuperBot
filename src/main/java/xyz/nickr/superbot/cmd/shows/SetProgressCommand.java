@@ -67,7 +67,7 @@ public class SetProgressCommand implements Command {
                             ep = String.format("S%sE%s", spl[0], r.episode);
                         } catch (Exception ex) {
                             ex.printStackTrace();
-                            group.sendMessage(mb.escaped("There is no episode S%sE%s for %s!", spl[0], episode + 1, show.display));
+                            group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode + 1).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
                             return;
                         }
                     } else {
@@ -78,7 +78,7 @@ public class SetProgressCommand implements Command {
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.put(profileName.toLowerCase(), ep);
                 SuperBotController.PROGRESS.put(show.imdb, prg);
-                mb.escaped("Set ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to %s", ep);
+                mb.escaped("Set ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to ").bold(true).escaped(ep).bold(false);
                 if (oldprg != null) {
                     mb.escaped(" (was %s)", oldprg);
                 }
