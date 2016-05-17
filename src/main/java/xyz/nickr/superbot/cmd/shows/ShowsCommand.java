@@ -42,7 +42,6 @@ public class ShowsCommand implements Command {
         send.sort(String.CASE_INSENSITIVE_ORDER);
         boolean cols = sys.columns();
         int rows = cols ? send.size() / 2 + send.size() % 2 : send.size();
-        int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
         MessageBuilder<?> builder = sys.message();
         int page = 0;
         if (args.length > 0) {
@@ -58,7 +57,9 @@ public class ShowsCommand implements Command {
                 return;
             }
         }
-        for (int i = page * 10, j = (page + 1) * 10 + rows; i < j; i++) {
+        send = send.subList(page * 10, Math.min((page + 1) * 10, send.size()));
+        int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
+        for (int i = 0, j = send.size(); i < j; i++) {
             String spaces = "";
             for (int k = send.get(i).length(); k < maxLen1; k++) {
                 spaces += ' ';

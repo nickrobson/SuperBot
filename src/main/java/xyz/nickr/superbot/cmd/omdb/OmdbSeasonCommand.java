@@ -52,6 +52,10 @@ public class OmdbSeasonCommand implements Command {
             }
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 SeasonResult season = SuperBotController.OMDB.seasonById(args[0], args[1]);
+                if (season == null) {
+                    group.sendMessage(mb.escaped("Failed to find a show with id of %s or season %s", args[0], args[1]));
+                    return;
+                }
                 mb.bold(true).escaped(season.getTitle()).bold(false).escaped(", season " + args[1] + ":");
                 List<SeasonEpisodeResult> episodes = Arrays.asList(season.getEpisodes());
                 List<String> infos = episodes.stream().map(s -> this.toString(sys, s)).collect(Collectors.toList());
