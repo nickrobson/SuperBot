@@ -23,23 +23,23 @@ public class AddLinkCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "addlink" };
+        return new String[] {"addlink"};
     }
 
     @Override
     public Permission perm() {
-        return string("shows.add");
+        return this.string("shows.add");
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "[imdbId] [aliases...]", "links an IMDB ID with aliases" };
+        return new String[] {"[imdbId] [aliases...]", "links an IMDB ID with aliases"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 2) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             MessageBuilder<?> mb = sys.message();
             String imdb = args[0];
@@ -54,7 +54,7 @@ public class AddLinkCommand implements Command {
             }
             Show imdbShow = SuperBotShows.getShow(imdb);
             if (imdbShow == null) {
-                imdbShow = new Show(imdb, res.title);
+                imdbShow = new Show(imdb, res.getTitle());
                 SuperBotShows.addShow(imdb, imdbShow);
             }
             SuperBotShows.saveShows();
@@ -65,7 +65,7 @@ public class AddLinkCommand implements Command {
                 if (show != null) {
                     mb.newLine().escaped("Link exists: " + alias + " => " + show.getDisplay());
                 } else if (SuperBotShows.addLink(imdb, alias)) {
-                    mb.newLine().escaped("New link added: " + alias + " => " + res.title);
+                    mb.newLine().escaped("New link added: " + alias + " => " + res.getTitle());
                 } else {
                     mb.newLine().escaped("Something went wrong.");
                     break;

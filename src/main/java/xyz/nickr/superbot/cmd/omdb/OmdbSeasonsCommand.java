@@ -21,12 +21,12 @@ public class OmdbSeasonsCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "omdbseasons" };
+        return new String[] {"omdbseasons"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[imdbId]", "get information about the show's seasons" };
+        return new String[] {"[imdbId]", "get information about the show's seasons"};
     }
 
     String toString(Calendar c) {
@@ -36,20 +36,23 @@ public class OmdbSeasonsCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 1) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             MessageBuilder<?> mb = sys.message();
             Show show = SuperBotShows.getShow(args[0], false);
-            if (show != null)
+            if (show != null) {
                 args[0] = show.imdb;
+            }
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 TitleResult title = SuperBotController.OMDB.titleById(args[0]);
-                mb.italic(true).escaped(title.title + " seasons:").italic(false);
+                mb.italic(true).escaped(title.getTitle() + " seasons:").italic(false);
                 for (SeasonResult season : title.seasons()) {
-                    mb.newLine().bold(true).escaped("Season " + season.season).bold(false);
-                    if (season.episodes.length > 0) {
-                        SeasonEpisodeResult first = season.episodes[0], last = season.episodes[season.episodes.length - 1];
-                        mb.escaped(": " + season.episodes.length + " episodes, " + toString(first.getReleaseDate()) + " - " + toString(last.getReleaseDate()));
+                    mb.newLine().bold(true).escaped("Season " + season.getSeason()).bold(false);
+                    SeasonEpisodeResult[] episodes = season.getEpisodes();
+                    if (episodes.length > 0) {
+                        SeasonEpisodeResult first = episodes[0],
+                                        last = episodes[episodes.length - 1];
+                        mb.escaped(": " + episodes.length + " episodes, " + this.toString(first.getReleaseDate()) + " - " + this.toString(last.getReleaseDate()));
                     }
                 }
             } else {

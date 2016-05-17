@@ -16,34 +16,35 @@ public class OmdbTitleCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "omdbtitle" };
+        return new String[] {"omdbtitle"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[imdbId] (true/false)", "get title information" };
+        return new String[] {"[imdbId] (true/false)", "get title information"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length == 0) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             MessageBuilder<?> mb = sys.message();
             Show show = SuperBotShows.getShow(args[0], false);
-            if (show != null)
+            if (show != null) {
                 args[0] = show.imdb;
+            }
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 boolean fullPlot = args.length > 1 && args[1].equalsIgnoreCase("true");
                 TitleResult title = SuperBotController.OMDB.titleById(args[0], fullPlot);
-                mb.bold(true).escaped(title.title).bold(false).escaped(" (" + title.imdbID + ") is a " + title.genre + " " + title.type);
-                mb.newLine().bold(true).escaped("Rating: ").bold(false).escaped(title.imdbRating + " from " + title.imdbVotes + " votes");
-                mb.newLine().bold(true).escaped("Runtime: ").bold(false).escaped(title.runtime);
-                mb.newLine().bold(true).escaped("Director: ").bold(false).escaped(title.director);
-                mb.newLine().bold(true).escaped("Actors: ").bold(false).escaped(title.actors);
-                mb.newLine().bold(true).escaped("Writer: ").bold(false).escaped(title.writer);
-                mb.newLine().bold(true).escaped("Awards: ").bold(false).escaped(title.awards);
-                mb.newLine().bold(true).escaped("Plot: ").bold(false).escaped(title.plot);
+                mb.bold(true).escaped(title.getTitle()).bold(false).escaped(" (" + title.getImdbID() + ") is a " + title.getGenre() + " " + title.getType());
+                mb.newLine().bold(true).escaped("Rating: ").bold(false).escaped(title.getImdbRating() + " from " + title.getImdbVotes() + " votes");
+                mb.newLine().bold(true).escaped("Runtime: ").bold(false).escaped(title.getRuntime());
+                mb.newLine().bold(true).escaped("Director: ").bold(false).escaped(title.getDirector());
+                mb.newLine().bold(true).escaped("Actors: ").bold(false).escaped(title.getActors());
+                mb.newLine().bold(true).escaped("Writer: ").bold(false).escaped(title.getWriter());
+                mb.newLine().bold(true).escaped("Awards: ").bold(false).escaped(title.getAwards());
+                mb.newLine().bold(true).escaped("Plot: ").bold(false).escaped(title.getPlot());
             } else {
                 mb.escaped("Invalid IMDB ID (" + args[0] + ")");
             }

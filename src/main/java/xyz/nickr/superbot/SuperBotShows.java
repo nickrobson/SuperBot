@@ -35,86 +35,94 @@ import xyz.nickr.jomdb.model.SeasonResult;
  */
 public class SuperBotShows {
 
-    public static final Map<String, String> SHOWS_BY_NAME   = new HashMap<>();
-    public static final Map<String, Show>   SHOWS_BY_ID     = new HashMap<>();
-    public static final Pattern             EPISODE_PATTERN = Pattern.compile("S[1-9][0-9]?E[1-9][0-9]?");
+    public static final Map<String, String> SHOWS_BY_NAME = new HashMap<>();
+    public static final Map<String, Show> SHOWS_BY_ID = new HashMap<>();
+    public static final Pattern EPISODE_PATTERN = Pattern.compile("S[1-9][0-9]?E[1-9][0-9]?");
 
     private static final Map<Integer, String> days = new HashMap<>();
 
     static {
-        days.put(Calendar.SUNDAY, "Sunday");
-        days.put(Calendar.MONDAY, "Monday");
-        days.put(Calendar.TUESDAY, "Tuesday");
-        days.put(Calendar.WEDNESDAY, "Wednesday");
-        days.put(Calendar.THURSDAY, "Thursday");
-        days.put(Calendar.FRIDAY, "Friday");
-        days.put(Calendar.SATURDAY, "Saturday");
+        SuperBotShows.days.put(Calendar.SUNDAY, "Sunday");
+        SuperBotShows.days.put(Calendar.MONDAY, "Monday");
+        SuperBotShows.days.put(Calendar.TUESDAY, "Tuesday");
+        SuperBotShows.days.put(Calendar.WEDNESDAY, "Wednesday");
+        SuperBotShows.days.put(Calendar.THURSDAY, "Thursday");
+        SuperBotShows.days.put(Calendar.FRIDAY, "Friday");
+        SuperBotShows.days.put(Calendar.SATURDAY, "Saturday");
     }
 
     public static void setup() {
-        if (SHOWS_BY_ID.isEmpty())
-            loadShows();
+        if (SuperBotShows.SHOWS_BY_ID.isEmpty()) {
+            SuperBotShows.loadShows();
+        }
     }
 
     public static boolean addLink(String imdb, String link) {
-        if (imdb == null || link == null)
+        if (imdb == null || link == null) {
             return false;
-        Show show = getShow(imdb, false);
-        if (show == null)
+        }
+        Show show = SuperBotShows.getShow(imdb, false);
+        if (show == null) {
             return false;
-        SHOWS_BY_NAME.put(link.toLowerCase(), imdb);
+        }
+        SuperBotShows.SHOWS_BY_NAME.put(link.toLowerCase(), imdb);
         show.addLink(link);
-        return saveShows();
+        return SuperBotShows.saveShows();
     }
 
     public static boolean removeLink(String link) {
-        if (link == null)
+        if (link == null) {
             return false;
+        }
         link = link.toLowerCase();
-        String imdb = SHOWS_BY_NAME.remove(link);
-        if (imdb == null)
+        String imdb = SuperBotShows.SHOWS_BY_NAME.remove(link);
+        if (imdb == null) {
             return false;
-        if (!SHOWS_BY_NAME.values().contains(imdb))
-            SHOWS_BY_ID.remove(imdb);
-        else {
-            Show show = SHOWS_BY_ID.get(imdb);
+        }
+        if (!SuperBotShows.SHOWS_BY_NAME.values().contains(imdb)) {
+            SuperBotShows.SHOWS_BY_ID.remove(imdb);
+        } else {
+            Show show = SuperBotShows.SHOWS_BY_ID.get(imdb);
             show.links.remove(link);
         }
-        return saveShows();
+        return SuperBotShows.saveShows();
     }
 
     public static Collection<Show> getShows() {
-        return SHOWS_BY_ID.values();
+        return SuperBotShows.SHOWS_BY_ID.values();
     }
 
     public static Show getShow(String ident) {
-        return getShow(ident, false);
+        return SuperBotShows.getShow(ident, false);
     }
 
     public static Show getShow(String ident, boolean create) {
-        if (ident == null)
+        if (ident == null) {
             return null;
+        }
         ident = ident.toLowerCase();
         if (!JavaOMDB.IMDB_ID_PATTERN.matcher(ident).matches()) {
-            ident = SHOWS_BY_NAME.get(ident);
-        } else if (create && !SHOWS_BY_ID.containsKey(ident)) {
-            SHOWS_BY_ID.put(ident, new Show(ident, SuperBotController.OMDB.titleById(ident).title));
+            ident = SuperBotShows.SHOWS_BY_NAME.get(ident);
+        } else if (create && !SuperBotShows.SHOWS_BY_ID.containsKey(ident)) {
+            SuperBotShows.SHOWS_BY_ID.put(ident, new Show(ident, SuperBotController.OMDB.titleById(ident).getTitle()));
         }
-        return ident != null ? SHOWS_BY_ID.get(ident) : null;
+        return ident != null ? SuperBotShows.SHOWS_BY_ID.get(ident) : null;
     }
 
     public static void addShow(String imdb, Show show) {
-        SHOWS_BY_ID.put(imdb, show);
-        for (String link : show.links)
-            addLink(imdb, link);
+        SuperBotShows.SHOWS_BY_ID.put(imdb, show);
+        for (String link : show.links) {
+            SuperBotShows.addLink(imdb, link);
+        }
     }
 
     public static void loadShows() {
-        JsonObject data = readJson();
-        if (data == null)
+        JsonObject data = SuperBotShows.readJson();
+        if (data == null) {
             return;
-        SHOWS_BY_NAME.clear();
-        SHOWS_BY_ID.clear();
+        }
+        SuperBotShows.SHOWS_BY_NAME.clear();
+        SuperBotShows.SHOWS_BY_ID.clear();
         for (JsonElement el : data.getAsJsonArray("shows")) {
             String imdb;
             JsonObject obj = null;
@@ -124,14 +132,14 @@ public class SuperBotShows {
             } else {
                 imdb = el.getAsString();
             }
-            String display = obj != null && obj.has("display") ? obj.get("display").getAsString() : SuperBotController.OMDB.titleById(imdb).title;
+            String display = obj != null && obj.has("display") ? obj.get("display").getAsString() : SuperBotController.OMDB.titleById(imdb).getTitle();
             Show show = new Show(imdb, display);
-            SHOWS_BY_ID.put(imdb, show);
+            SuperBotShows.SHOWS_BY_ID.put(imdb, show);
         }
         for (JsonElement el : data.getAsJsonArray("links")) {
             if (el != null && el.isJsonObject()) {
                 JsonObject obj = el.getAsJsonObject();
-                addLink(obj.get("imdb").getAsString(), obj.get("link").getAsString());
+                SuperBotShows.addLink(obj.get("imdb").getAsString(), obj.get("link").getAsString());
             }
         }
     }
@@ -140,11 +148,12 @@ public class SuperBotShows {
         JsonObject data = new JsonObject();
         JsonArray shows = new JsonArray();
         JsonArray links = new JsonArray();
-        for (Show show : SHOWS_BY_ID.values()) {
+        for (Show show : SuperBotShows.SHOWS_BY_ID.values()) {
             JsonObject s = new JsonObject();
             s.addProperty("imdb", show.imdb);
-            if (show.display != null)
+            if (show.display != null) {
                 s.addProperty("display", show.display);
+            }
             shows.add(s);
             for (String link : show.links) {
                 JsonObject obj = new JsonObject();
@@ -155,16 +164,17 @@ public class SuperBotShows {
         }
         data.add("shows", shows);
         data.add("links", links);
-        return writeJson(data);
+        return SuperBotShows.writeJson(data);
     }
 
     public static JsonObject readJson() {
         String fname = "shows.json";
         File f = new File(fname);
         File bk = new File(fname + ".bak");
-        JsonObject data = readJson(f);
-        if (data == null)
-            data = readJson(bk);
+        JsonObject data = SuperBotShows.readJson(f);
+        if (data == null) {
+            data = SuperBotShows.readJson(bk);
+        }
         return data;
     }
 
@@ -182,8 +192,9 @@ public class SuperBotShows {
         File f = new File(fname);
         File bk = new File(fname + ".bak");
         try {
-            if (f.exists())
+            if (f.exists()) {
                 f.renameTo(bk);
+            }
             BufferedWriter writer = Files.newBufferedWriter(f.toPath(), StandardOpenOption.CREATE);
             SuperBotController.GSON.toJson(data, writer);
             writer.close();
@@ -219,16 +230,17 @@ public class SuperBotShows {
         }
 
         public void addLink(String link) {
-            links.add(link.toLowerCase());
+            this.links.add(link.toLowerCase());
         }
 
         public String getDisplay() {
-            return display;
+            return this.display;
         }
 
         public SeasonResult getSeason() {
-            if (season != null)
-                return season;
+            if (this.season != null) {
+                return this.season;
+            }
             JavaOMDB omdb = SuperBotController.OMDB;
             Calendar today = Calendar.getInstance();
             Calendar now = Calendar.getInstance();
@@ -238,39 +250,44 @@ public class SuperBotShows {
             int n = 0;
             try {
                 do {
-                    next = omdb.seasonById(imdb, String.valueOf(++n));
-                    if (next != null)
-                        season = next;
-                    if (next != null && next.episodes.length > 0) {
-                        SeasonEpisodeResult first = next.episodes[0], last = next.episodes[next.episodes.length - 1];
+                    next = omdb.seasonById(this.imdb, String.valueOf(++n));
+                    if (next != null) {
+                        this.season = next;
+                    }
+                    if (next != null && next.getEpisodes().length > 0) {
+                        SeasonEpisodeResult[] episodes = next.getEpisodes();
+                        SeasonEpisodeResult first = next.getEpisodes()[0],
+                                        last = episodes[episodes.length - 1];
                         Calendar a = first.getReleaseDate(), b = last.getReleaseDate();
                         if (a.after(now) && b.after(now)) {
-                            season = next;
+                            this.season = next;
                         } else if (!a.after(now) && !b.before(now)) {
-                            season = next;
+                            this.season = next;
                             break;
                         }
                     }
                 } while (next != null);
-            } catch (Exception ex) {}
-            return season;
+            } catch (Exception ex) {
+            }
+            return this.season;
         }
 
         public Calendar getDate() {
-            if (dateCached)
-                return date;
-            dateCached = true;
-            SeasonResult season = getSeason();
+            if (this.dateCached) {
+                return this.date;
+            }
+            this.dateCached = true;
+            SeasonResult season = this.getSeason();
             Calendar today = Calendar.getInstance();
             Calendar now = Calendar.getInstance();
             now.clear();
             now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
             if (season != null) {
-                List<SeasonEpisodeResult> eps = Arrays.asList(season.episodes);
+                List<SeasonEpisodeResult> eps = Arrays.asList(season.getEpisodes());
                 for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
                     Calendar cal = it.next().getReleaseDate();
                     if (cal != null && cal.after(now)) {
-                        return date = cal;
+                        return this.date = cal;
                     }
                 }
             }
@@ -278,25 +295,26 @@ public class SuperBotShows {
         }
 
         public String getDateString() {
-            return getDateString(getDate());
+            return Show.getDateString(this.getDate());
         }
 
         public String getDay() {
-            Calendar date = getDate();
-            return date != null ? days.getOrDefault(date.get(Calendar.DAY_OF_WEEK), "N/A") : "N/A";
+            Calendar date = this.getDate();
+            return date != null ? SuperBotShows.days.getOrDefault(date.get(Calendar.DAY_OF_WEEK), "N/A") : "N/A";
         }
 
         @Override
         public Show clone() {
-            return new Show(imdb, display, links);
+            return new Show(this.imdb, this.display, this.links);
         }
 
         @Override
         public boolean equals(Object o) {
-            if (o == null || o == this || o.getClass() != getClass())
+            if (o == null || o == this || o.getClass() != this.getClass()) {
                 return o == this;
+            }
             Show s = (Show) o;
-            return imdb == s.imdb || imdb != null && imdb.equals(s.imdb);
+            return this.imdb == s.imdb || this.imdb != null && this.imdb.equals(s.imdb);
         }
 
         public static String getDateString(Calendar date) {

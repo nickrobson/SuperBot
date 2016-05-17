@@ -16,12 +16,12 @@ public class OmdbSearchCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "omdbsearch" };
+        return new String[] {"omdbsearch"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[search terms...]", "search OMDB" };
+        return new String[] {"[search terms...]", "search OMDB"};
     }
 
     @Override
@@ -40,8 +40,9 @@ public class OmdbSearchCommand implements Command {
                     return;
                 }
             } else {
-                if (!search.isEmpty())
+                if (!search.isEmpty()) {
                     search += " ";
+                }
                 search += arg;
             }
         }
@@ -59,16 +60,16 @@ public class OmdbSearchCommand implements Command {
                     mb.bold(true).italic(true).escaped("No results.").italic(false).bold(false);
                 }
                 for (SearchResult sr : pa) {
-                    mb.newLine().bold(true).escaped(sr.title).bold(false);
-                    mb.escaped(" (" + sr.year + "): " + sr.imdbId + ", a " + sr.type);
+                    mb.newLine().bold(true).escaped(sr.getTitle()).bold(false);
+                    mb.escaped(" (" + sr.getYear() + "): " + sr.getImdbId() + ", a " + sr.getType());
                 }
                 if (page != res.getPageCount()) {
-                    mb.newLine().escaped("For more results, use ").bold(true).escaped(sys.prefix() + names()[0] + " " + search + " -page=" + (page + 1));
+                    mb.newLine().escaped("For more results, use ").bold(true).escaped(sys.prefix() + this.names()[0] + " " + search + " -page=" + (page + 1));
                 }
             }
             group.sendMessage(mb);
         } else {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         }
     }
 

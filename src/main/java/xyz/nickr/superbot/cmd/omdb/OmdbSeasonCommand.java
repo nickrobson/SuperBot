@@ -21,49 +21,52 @@ public class OmdbSeasonCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "omdbseason" };
+        return new String[] {"omdbseason"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[imdbId] [season]", "get season information" };
+        return new String[] {"[imdbId] [season]", "get season information"};
     }
 
     private String pad(String s, int len) {
-        while (s.length() < len)
+        while (s.length() < len) {
             s += " ";
+        }
         return s;
     }
 
     String toString(Sys sys, SeasonEpisodeResult episode) {
-        return "E" + episode.episode + " (" + episode.imdbRating + "): " + episode.title;
+        return "E" + episode.getEpisode() + " (" + episode.getImdbRating() + "): " + episode.getTitle();
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 2) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             MessageBuilder<?> mb = sys.message();
             Show show = SuperBotShows.getShow(args[0], false);
-            if (show != null)
+            if (show != null) {
                 args[0] = show.imdb;
+            }
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 SeasonResult season = SuperBotController.OMDB.seasonById(args[0], args[1]);
-                mb.bold(true).escaped(season.title).bold(false).escaped(", season " + args[1] + ":");
-                List<SeasonEpisodeResult> episodes = Arrays.asList(season.episodes);
-                List<String> infos = episodes.stream().map(s -> toString(sys, s)).collect(Collectors.toList());
+                mb.bold(true).escaped(season.getTitle()).bold(false).escaped(", season " + args[1] + ":");
+                List<SeasonEpisodeResult> episodes = Arrays.asList(season.getEpisodes());
+                List<String> infos = episodes.stream().map(s -> this.toString(sys, s)).collect(Collectors.toList());
                 boolean cols = sys.columns();
                 int rows = cols ? episodes.size() / 2 + episodes.size() % 2 : episodes.size();
                 int maxLen = infos.subList(0, rows).stream().mapToInt(s -> s.length()).max().orElse(0);
                 mb.newLine().code(true);
                 for (int i = 0; i < rows; i++) {
-                    String s = pad(infos.get(i), maxLen);
+                    String s = this.pad(infos.get(i), maxLen);
                     if (cols && episodes.size() > i + rows) {
                         s += "  |  " + infos.get(i + rows);
                     }
-                    if (i > 0)
+                    if (i > 0) {
                         mb.newLine();
+                    }
                     mb.escaped(s);
                 }
                 mb.code(false);
