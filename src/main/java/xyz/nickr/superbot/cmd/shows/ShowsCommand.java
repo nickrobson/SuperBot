@@ -14,7 +14,7 @@ import xyz.nickr.superbot.sys.User;
 
 public class ShowsCommand implements Command {
 
-    public static final int SHOWS_PER_PAGE = 20;
+    public static final int SHOWS_PER_PAGE = 30;
 
     @Override
     public String[] names() {
@@ -45,12 +45,12 @@ public class ShowsCommand implements Command {
         boolean cols = sys.columns();
         int rows = cols ? send.size() / 2 + send.size() % 2 : send.size();
         MessageBuilder<?> builder = sys.message();
-        int page = 0;
+        int pg = 0;
         if (args.length > 0) {
             try {
-                page = Integer.parseInt(args[0]) - 1;
-                if (page < 0 || page >= rows / ShowsCommand.SHOWS_PER_PAGE) {
-                    final int x = page + 1;
+                pg = Integer.parseInt(args[0]) - 1;
+                if (pg < 0 || pg >= rows / ShowsCommand.SHOWS_PER_PAGE) {
+                    final int x = pg + 1;
                     group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [0, %d)", x, rows / ShowsCommand.SHOWS_PER_PAGE + 1)));
                     return;
                 }
@@ -59,6 +59,7 @@ public class ShowsCommand implements Command {
                 return;
             }
         }
+        final int page = pg;
         send = send.subList(page * ShowsCommand.SHOWS_PER_PAGE, Math.min((page + 1) * ShowsCommand.SHOWS_PER_PAGE, send.size()));
         int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
         for (int i = 0, j = send.size(); i < j; i++) {
@@ -70,11 +71,9 @@ public class ShowsCommand implements Command {
             if (cols && send.size() > rows + i) {
                 builder.escaped("    " + send.get(rows + i));
             }
-            builder.code(false);
-            if (i != rows - 1) {
-                builder.newLine();
-            }
+            builder.code(false).newLine();
         }
+        builder.bold(m -> m.escaped("Page %d of %d", page, rows / ShowsCommand.SHOWS_PER_PAGE));
         group.sendMessage(builder.build());
     }
 
