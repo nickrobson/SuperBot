@@ -28,7 +28,7 @@ public class ShowsCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        List<String> send = new LinkedList<>();
+        List<String> snd = new LinkedList<>();
         for (Show show : SuperBotShows.getShows()) {
             StringBuilder sb = new StringBuilder();
             for (String s : show.links) {
@@ -38,12 +38,11 @@ public class ShowsCommand implements Command {
                 sb.append(s);
             }
             if (sb.length() > 0) {
-                send.add("[" + show.getDisplay() + "] " + sb.toString());
+                snd.add("[" + show.getDisplay() + "] " + sb.toString());
             }
         }
-        send.sort(String.CASE_INSENSITIVE_ORDER);
-        boolean cols = sys.columns();
-        int rows = cols ? send.size() / 2 + send.size() % 2 : send.size();
+        snd.sort(String.CASE_INSENSITIVE_ORDER);
+        int rows = snd.size();
         MessageBuilder<?> builder = sys.message();
         int pg = 0, maxpg = 0;
         if (args.length > 0) {
@@ -61,19 +60,17 @@ public class ShowsCommand implements Command {
             }
         }
         final int page = pg, maxpages = maxpg;
-        send = send.subList(page * ShowsCommand.SHOWS_PER_PAGE, Math.min((page + 1) * ShowsCommand.SHOWS_PER_PAGE, send.size()));
-        int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
+        final List<String> send = snd.subList(page * ShowsCommand.SHOWS_PER_PAGE, Math.min((page + 1) * ShowsCommand.SHOWS_PER_PAGE, snd.size()));
+        int maxLen1 = send.stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
         builder.bold(m -> m.escaped("Page %d of %d", page + 1, maxpages)).newLine();
         for (int i = 0, j = send.size(); i < j; i++) {
-            String spaces = "";
+            final int x = i;
+            String spc = "";
             for (int k = send.get(i).length(); k < maxLen1; k++) {
-                spaces += ' ';
+                spc += ' ';
             }
-            builder.code(true).escaped(send.get(i) + spaces);
-            if (cols && send.size() > rows + i) {
-                builder.escaped("    " + send.get(rows + i));
-            }
-            builder.code(false);
+            final String spaces = spc;
+            builder.code(m -> m.escaped(send.get(x) + spaces));
             if (i != j - 1) {
                 builder.newLine();
             }
