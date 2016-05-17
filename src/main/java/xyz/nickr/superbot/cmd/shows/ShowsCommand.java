@@ -16,12 +16,12 @@ public class ShowsCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "shows" };
+        return new String[] {"shows"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "", "see which shows are being tracked" };
+        return new String[] {"", "see which shows are being tracked"};
     }
 
     @Override
@@ -30,29 +30,47 @@ public class ShowsCommand implements Command {
         for (Show show : SuperBotShows.getShows()) {
             StringBuilder sb = new StringBuilder();
             for (String s : show.links) {
-                if (sb.length() > 0)
+                if (sb.length() > 0) {
                     sb.append(", ");
+                }
                 sb.append(s);
             }
-            if (sb.length() > 0)
+            if (sb.length() > 0) {
                 send.add("[" + show.getDisplay() + "] " + sb.toString());
+            }
         }
         send.sort(String.CASE_INSENSITIVE_ORDER);
         boolean cols = sys.columns();
         int rows = cols ? send.size() / 2 + send.size() % 2 : send.size();
         int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
         MessageBuilder<?> builder = sys.message();
-        for (int i = 0; i < rows; i++) {
+        int page = 0;
+        if (args.length > 0) {
+            try {
+                page = Integer.parseInt(args[0]);
+                if (page < 0 || page > rows / 10) {
+                    final int x = page;
+                    group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [0, %d)", x, rows / 10)));
+                    return;
+                }
+            } catch (Exception ex) {
+                group.sendMessage(sys.message().bold(m -> m.escaped("Not a number: %s", args[0])));
+                return;
+            }
+        }
+        for (int i = page * 10, j = (page + 1) * 10 + rows; i < j; i++) {
             String spaces = "";
-            for (int j = send.get(i).length(); j < maxLen1; j++)
+            for (int k = send.get(i).length(); k < maxLen1; k++) {
                 spaces += ' ';
+            }
             builder.code(true).escaped(send.get(i) + spaces);
             if (cols && send.size() > rows + i) {
                 builder.escaped("    " + send.get(rows + i));
             }
             builder.code(false);
-            if (i != rows - 1)
+            if (i != rows - 1) {
                 builder.newLine();
+            }
         }
         group.sendMessage(builder.build());
     }

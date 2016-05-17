@@ -73,7 +73,7 @@
 		</repository>
 		<repository>
 			<id>nickr</id>
-			<url>http://nickr.xyz/maven/</url>
+			<url>http://nickr.xyz/maven/content/public/</url>
 		</repository>
 	</repositories>
  	 
