@@ -14,6 +14,8 @@ import xyz.nickr.superbot.sys.User;
 
 public class ShowsCommand implements Command {
 
+    public static final int SHOWS_PER_PAGE = 20;
+
     @Override
     public String[] names() {
         return new String[] {"shows"};
@@ -46,10 +48,10 @@ public class ShowsCommand implements Command {
         int page = 0;
         if (args.length > 0) {
             try {
-                page = Integer.parseInt(args[0]);
-                if (page < 0 || page >= rows / 10) {
-                    final int x = page;
-                    group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [0, %d)", x, rows / 10)));
+                page = Integer.parseInt(args[0]) - 1;
+                if (page < 0 || page >= rows / ShowsCommand.SHOWS_PER_PAGE) {
+                    final int x = page + 1;
+                    group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [0, %d)", x, rows / ShowsCommand.SHOWS_PER_PAGE + 1)));
                     return;
                 }
             } catch (Exception ex) {
@@ -57,7 +59,7 @@ public class ShowsCommand implements Command {
                 return;
             }
         }
-        send = send.subList(page * 10, Math.min((page + 1) * 10, send.size()));
+        send = send.subList(page * ShowsCommand.SHOWS_PER_PAGE, Math.min((page + 1) * ShowsCommand.SHOWS_PER_PAGE, send.size()));
         int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
         for (int i = 0, j = send.size(); i < j; i++) {
             String spaces = "";
