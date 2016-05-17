@@ -49,7 +49,7 @@ public class ShowsCommand implements Command {
         if (args.length > 0) {
             try {
                 pg = Integer.parseInt(args[0]) - 1;
-                maxpg = (pg % ShowsCommand.SHOWS_PER_PAGE == 0 ? pg : pg + 1) / ShowsCommand.SHOWS_PER_PAGE;
+                maxpg = rows / ShowsCommand.SHOWS_PER_PAGE + (rows % ShowsCommand.SHOWS_PER_PAGE == 0 ? 0 : 1);
                 if (pg < 0 || pg >= maxpg) {
                     final int x = pg + 1, y = maxpg + 1;
                     group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [0, %d)", x, y)));
