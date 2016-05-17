@@ -45,13 +45,14 @@ public class ShowsCommand implements Command {
         boolean cols = sys.columns();
         int rows = cols ? send.size() / 2 + send.size() % 2 : send.size();
         MessageBuilder<?> builder = sys.message();
-        int pg = 0;
+        int pg = 0, maxpg = 0;
         if (args.length > 0) {
             try {
                 pg = Integer.parseInt(args[0]) - 1;
-                if (pg < 0 || pg >= rows / ShowsCommand.SHOWS_PER_PAGE) {
-                    final int x = pg + 1;
-                    group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [0, %d)", x, rows / ShowsCommand.SHOWS_PER_PAGE + 1)));
+                maxpg = (pg % ShowsCommand.SHOWS_PER_PAGE == 0 ? pg : pg + 1) / ShowsCommand.SHOWS_PER_PAGE;
+                if (pg < 0 || pg >= maxpg) {
+                    final int x = pg + 1, y = maxpg + 1;
+                    group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [0, %d)", x, y)));
                     return;
                 }
             } catch (Exception ex) {
@@ -59,10 +60,10 @@ public class ShowsCommand implements Command {
                 return;
             }
         }
-        final int page = pg;
+        final int page = pg, maxpages = maxpg;
         send = send.subList(page * ShowsCommand.SHOWS_PER_PAGE, Math.min((page + 1) * ShowsCommand.SHOWS_PER_PAGE, send.size()));
         int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
-        builder.bold(m -> m.escaped("Page %d of %d", page + 1, rows / ShowsCommand.SHOWS_PER_PAGE)).newLine();
+        builder.bold(m -> m.escaped("Page %d of %d", page + 1, maxpages)).newLine();
         for (int i = 0, j = send.size(); i < j; i++) {
             String spaces = "";
             for (int k = send.get(i).length(); k < maxLen1; k++) {
