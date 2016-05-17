@@ -62,6 +62,7 @@ public class ShowsCommand implements Command {
         final int page = pg;
         send = send.subList(page * ShowsCommand.SHOWS_PER_PAGE, Math.min((page + 1) * ShowsCommand.SHOWS_PER_PAGE, send.size()));
         int maxLen1 = (cols ? send.subList(0, rows) : send).stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
+        builder.bold(m -> m.escaped("Page %d of %d", page + 1, rows / ShowsCommand.SHOWS_PER_PAGE)).newLine();
         for (int i = 0, j = send.size(); i < j; i++) {
             String spaces = "";
             for (int k = send.get(i).length(); k < maxLen1; k++) {
@@ -71,9 +72,11 @@ public class ShowsCommand implements Command {
             if (cols && send.size() > rows + i) {
                 builder.escaped("    " + send.get(rows + i));
             }
-            builder.code(false).newLine();
+            builder.code(false);
+            if (i != j - 1) {
+                builder.newLine();
+            }
         }
-        builder.bold(m -> m.escaped("Page %d of %d", page, rows / ShowsCommand.SHOWS_PER_PAGE));
         group.sendMessage(builder.build());
     }
 
