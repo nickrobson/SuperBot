@@ -37,7 +37,7 @@ public class SuperBotShows {
 
     public static final Map<String, String> SHOWS_BY_NAME = new HashMap<>();
     public static final Map<String, Show> SHOWS_BY_ID = new HashMap<>();
-    public static final Pattern EPISODE_PATTERN = Pattern.compile("S[1-9][0-9]?E[1-9][0-9]?");
+    public static final Pattern EPISODE_PATTERN = Pattern.compile("S0*([1-9][0-9]*)E0*([1-9][0-9]*)", Pattern.CASE_INSENSITIVE);
 
     private static final Map<Integer, String> days = new HashMap<>();
 
