@@ -48,7 +48,7 @@ public class ShowsCommand implements Command {
         if (args.length > 0) {
             try {
                 page = Integer.parseInt(args[0]);
-                if (page < 0 || page > rows / 10) {
+                if (page < 0 || page >= rows / 10) {
                     final int x = page;
                     group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [0, %d)", x, rows / 10)));
                     return;
