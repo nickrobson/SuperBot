@@ -1,5 +1,7 @@
 package xyz.nickr.superbot.cmd.shows;
 
+import org.apache.commons.lang.ObjectUtils;
+
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,18 +64,18 @@ public class SetProgressCommand implements Command {
                     int de;
                     try {
                         de = args.length > 2 ? Integer.parseInt(args[2]) : 1;
-                    } catch (Exception ex) {
+                    } catch (NumberFormatException ex) {
                         group.sendMessage(mb.escaped("Not a number: %s!", args[2]));
                         return;
                     }
                     int episode = Integer.parseInt(spl[1]) - 1 + de;
                     if (de >= 1) {
-                        SeasonResult res = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
-                        SeasonEpisodeResult[] eps = res.getEpisodes();
                         try {
+                            SeasonResult res = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
+                            SeasonEpisodeResult[] eps = res.getEpisodes();
                             SeasonEpisodeResult r = eps[episode];
                             episodeCodeCommand = String.format("S%sE%s", spl[0], r.getEpisode());
-                        } catch (Exception ex) {
+                        } catch (NullPointerException ex) {
                             ex.printStackTrace();
                             group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode + 1).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
                             return;
