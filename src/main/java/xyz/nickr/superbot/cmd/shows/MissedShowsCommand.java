@@ -43,10 +43,13 @@ public class MissedShowsCommand implements Command {
         Calendar now = Calendar.getInstance();
         List<String> lines = new LinkedList<>();
         for (Entry<Show, String> entry : progress.entrySet()) {
+            Show show = entry.getKey();
+            if (show == null) {
+                continue;
+            }
             String[] spl = entry.getValue().substring(1).split("E");
             int episode = Integer.parseInt(spl[1]);
             try {
-                Show show = entry.getKey();
                 SeasonResult sres = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
                 List<String> missed = new LinkedList<>();
                 for (SeasonEpisodeResult ep : sres) {
