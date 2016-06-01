@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import xyz.nickr.jomdb.JOMDBException;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;
 import xyz.nickr.superbot.Joiner;
@@ -44,23 +45,27 @@ public class MissedShowsCommand implements Command {
         for (Entry<Show, String> entry : progress.entrySet()) {
             String[] spl = entry.getValue().substring(1).split("E");
             int episode = Integer.parseInt(spl[1]);
-            SeasonResult sres = SuperBotController.OMDB.seasonById(entry.getKey().imdb, spl[0]);
-            List<String> missed = new LinkedList<>();
-            for (SeasonEpisodeResult ep : sres) {
-                try {
-                    if (ep.getReleaseDate().after(now)) {
-                        break;
+            try {
+                SeasonResult sres = SuperBotController.OMDB.seasonById(entry.getKey().imdb, spl[0]);
+                List<String> missed = new LinkedList<>();
+                for (SeasonEpisodeResult ep : sres) {
+                    try {
+                        if (ep.getReleaseDate().after(now)) {
+                            break;
+                        }
+                        if (!missed.isEmpty() || Integer.parseInt(ep.getEpisode()) > episode) {
+                            missed.add(String.format("S%sE%s", spl[0], ep.getEpisode()));
+                        }
+                    } catch (NumberFormatException ignored) {
                     }
-                    if (!missed.isEmpty() || Integer.parseInt(ep.getEpisode()) > episode) {
-                        missed.add(String.format("S%sE%s", spl[0], ep.getEpisode()));
-                    }
-                } catch (NumberFormatException ignored) {
                 }
-            }
-            if (!missed.isEmpty()) {
-                MessageBuilder<?> mb = sys.message();
-                String line = Joiner.join(", ", missed);
-                lines.add(mb.bold(m -> m.escaped(entry.getKey().getDisplay())).escaped(": ").escaped(line).build());
+                if (!missed.isEmpty()) {
+                    MessageBuilder<?> mb = sys.message();
+                    String line = Joiner.join(", ", missed);
+                    lines.add(mb.bold(m -> m.escaped(entry.getKey().getDisplay())).escaped(": ").escaped(line).build());
+                }
+            } catch (JOMDBException ex) {
+                ex.printStackTrace();
             }
         }
         MessageBuilder<?> mb = sys.message();
