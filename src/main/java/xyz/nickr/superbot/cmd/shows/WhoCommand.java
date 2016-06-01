@@ -97,7 +97,7 @@ public class WhoCommand implements Command {
                     }
                     season++;
                 }
-                shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" : "               ") + " (" + ep + ")");
+                shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" : "      ") + " (" + ep + ")");
             }
         });
         boolean cols = sys.columns();
