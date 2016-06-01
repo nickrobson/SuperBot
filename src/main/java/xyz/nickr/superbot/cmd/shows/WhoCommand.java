@@ -100,7 +100,7 @@ public class WhoCommand implements Command {
                     }
                     season++;
                 }
-                shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" + this.pad("(", maxEpLen - ep.length() + 1).substring(0, maxEpLen) : "      ") + " (" + ep + ")");
+                shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" + this.pad("(", maxEpLen - ep.length() + 1).substring(0, maxEpLen - ep.length()) : "      ") + " (" + ep + ")");
             }
         });
         boolean cols = sys.columns();
