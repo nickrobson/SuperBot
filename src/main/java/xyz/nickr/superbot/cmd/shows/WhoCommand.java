@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import xyz.nickr.jomdb.model.SeasonEpisodeResult;
+import xyz.nickr.jomdb.model.SeasonResult;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.cmd.Command;
@@ -19,12 +21,12 @@ public class WhoCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "who", "whois" };
+        return new String[]{"who", "whois"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "(username)", "gets (username)'s progress on all shows" };
+        return new String[]{"(username)", "gets (username)'s progress on all shows"};
     }
 
     String pad(String s, int len) {
@@ -57,16 +59,31 @@ public class WhoCommand implements Command {
         }
         List<String> shows = new ArrayList<>();
         Map<Show, String> progress = SuperBotController.getUserProgress(username.toLowerCase());
+
         progress.forEach((show, ep) -> {
-            if (show != null)
-                shows.add(show.getDisplay() + "    (" + ep + ")");
+            if (show != null) {
+                boolean hasNewEpisode = false;
+
+                int season = Integer.parseInt(ep.substring(1, 3));
+                int episode = Integer.parseInt(ep.substring(4,6));
+
+                SeasonResult seasonResult = SuperBotController.OMDB.seasonById(show.imdb, String.valueOf(season));
+                SeasonEpisodeResult[] seasonEpisodeResults = seasonResult.getEpisodes();
+
+                if (seasonEpisodeResults[episode] != null) {
+                    hasNewEpisode = true;
+                }
+
+                shows.add(show.getDisplay() + (hasNewEpisode ? " (New Episode)" : "               ") + " (" + ep + ")");
+            }
         });
         boolean cols = sys.columns();
         int rows = cols ? shows.size() / 2 + shows.size() % 2 : shows.size();
         shows.sort(String.CASE_INSENSITIVE_ORDER);
-        int maxLen1 = shows.subList(0, rows).stream().mapToInt(s -> s.length()).max().orElse(0);
-        int maxLen2 = shows.subList(rows, shows.size()).stream().mapToInt(s -> s.length()).max().orElse(0);
+        int maxLen1 = shows.subList(0, rows).stream().mapToInt(String::length).max().orElse(0);
+        int maxLen2 = shows.subList(rows, shows.size()).stream().mapToInt(String::length).max().orElse(0);
         String s = "";
+
         for (int i = 0; i < rows; i++) {
             if (shows.size() > i) {
                 String t = pad(shows.get(i), maxLen1);
@@ -78,6 +95,7 @@ public class WhoCommand implements Command {
                 s += mb.build();
             }
         }
+
         MessageBuilder<?> mb = sys.message();
         if (shows.size() > 0)
             group.sendMessage(mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false).newLine().escaped("   ").raw(s));
