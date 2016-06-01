@@ -73,7 +73,7 @@ public class WhoCommand implements Command {
                 if (seasonResult != null) {
                     SeasonEpisodeResult[] seasonEpisodeResults = seasonResult.getEpisodes();
 
-                    if (seasonEpisodeResults[episode] != null) {
+                    if (seasonEpisodeResults.length > episode) {
                         hasNewEpisode = true;
                     }
                 }
