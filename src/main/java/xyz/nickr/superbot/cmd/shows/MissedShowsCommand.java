@@ -46,7 +46,8 @@ public class MissedShowsCommand implements Command {
             String[] spl = entry.getValue().substring(1).split("E");
             int episode = Integer.parseInt(spl[1]);
             try {
-                SeasonResult sres = SuperBotController.OMDB.seasonById(entry.getKey().imdb, spl[0]);
+                Show show = entry.getKey();
+                SeasonResult sres = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
                 List<String> missed = new LinkedList<>();
                 for (SeasonEpisodeResult ep : sres) {
                     try {
@@ -62,7 +63,7 @@ public class MissedShowsCommand implements Command {
                 if (!missed.isEmpty()) {
                     MessageBuilder<?> mb = sys.message();
                     String line = Joiner.join(", ", missed);
-                    lines.add(mb.bold(m -> m.escaped(entry.getKey().getDisplay())).escaped(": ").escaped(line).build());
+                    lines.add(mb.bold(m -> m.escaped(show.getDisplay())).escaped(": ").escaped(line).build());
                 }
             } catch (JOMDBException ex) {
                 ex.printStackTrace();
