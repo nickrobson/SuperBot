@@ -1,10 +1,7 @@
 package xyz.nickr.superbot.cmd.shows;
 
-import org.apache.commons.lang.ObjectUtils;
-
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;

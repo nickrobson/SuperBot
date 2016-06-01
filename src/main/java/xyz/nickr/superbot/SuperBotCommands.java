@@ -30,6 +30,7 @@ import xyz.nickr.superbot.cmd.profile.GetProfileCommand;
 import xyz.nickr.superbot.cmd.profile.GetTokenCommand;
 import xyz.nickr.superbot.cmd.profile.RegisterAccountCommand;
 import xyz.nickr.superbot.cmd.shows.AddLinkCommand;
+import xyz.nickr.superbot.cmd.shows.MissedShowsCommand;
 import xyz.nickr.superbot.cmd.shows.ProgressCommand;
 import xyz.nickr.superbot.cmd.shows.RemoveLinkCommand;
 import xyz.nickr.superbot.cmd.shows.SetProgressCommand;
@@ -61,67 +62,69 @@ public class SuperBotCommands {
     public static final Map<String, Command> COMMANDS = new HashMap<>();
 
     public static void register(Command cmd) {
-        for (String name : cmd.names())
-            COMMANDS.put(name, cmd);
+        for (String name : cmd.names()) {
+            SuperBotCommands.COMMANDS.put(name, cmd);
+        }
         cmd.init();
     }
 
     public static void loadCommands() {
-        COMMANDS.clear();
+        SuperBotCommands.COMMANDS.clear();
 
-        register(new HelpCommand());
-        register(new ReloadCommand());
-        register(new StopCommand());
+        SuperBotCommands.register(new HelpCommand());
+        SuperBotCommands.register(new ReloadCommand());
+        SuperBotCommands.register(new StopCommand());
 
-        register(new EditConfigCommand());
-        register(new ShowConfigCommand());
+        SuperBotCommands.register(new EditConfigCommand());
+        SuperBotCommands.register(new ShowConfigCommand());
 
-        register(new AddPermCommand());
-        register(new DelPermCommand());
-        register(new ListPermsCommand());
+        SuperBotCommands.register(new AddPermCommand());
+        SuperBotCommands.register(new DelPermCommand());
+        SuperBotCommands.register(new ListPermsCommand());
 
-        register(new GetProfileCommand());
-        register(new FindProfileCommand());
+        SuperBotCommands.register(new GetProfileCommand());
+        SuperBotCommands.register(new FindProfileCommand());
 
-        register(new CreateProfileCommand());
-        register(new RegisterAccountCommand());
+        SuperBotCommands.register(new CreateProfileCommand());
+        SuperBotCommands.register(new RegisterAccountCommand());
 
-        register(new GetTokenCommand());
-        register(new DeleteTokenCommand());
+        SuperBotCommands.register(new GetTokenCommand());
+        SuperBotCommands.register(new DeleteTokenCommand());
 
-        register(new OmdbSearchCommand());
-        register(new OmdbTitleCommand());
-        register(new OmdbSeasonCommand());
-        register(new OmdbSeasonsCommand());
-        register(new OmdbEpisodeCommand());
+        SuperBotCommands.register(new OmdbSearchCommand());
+        SuperBotCommands.register(new OmdbTitleCommand());
+        SuperBotCommands.register(new OmdbSeasonCommand());
+        SuperBotCommands.register(new OmdbSeasonsCommand());
+        SuperBotCommands.register(new OmdbEpisodeCommand());
 
-        register(new AddLinkCommand());
-        register(new RemoveLinkCommand());
-        register(new ProgressCommand());
-        register(new SetProgressCommand());
-        register(new ShowsCommand());
-        register(new TimetableCommand());
-        register(new UpcomingCommand());
-        register(new ViewingOrderCommand());
-        register(new WhoCommand());
-        register(new WipeCommand());
+        SuperBotCommands.register(new AddLinkCommand());
+        SuperBotCommands.register(new MissedShowsCommand());
+        SuperBotCommands.register(new ProgressCommand());
+        SuperBotCommands.register(new RemoveLinkCommand());
+        SuperBotCommands.register(new SetProgressCommand());
+        SuperBotCommands.register(new ShowsCommand());
+        SuperBotCommands.register(new TimetableCommand());
+        SuperBotCommands.register(new UpcomingCommand());
+        SuperBotCommands.register(new ViewingOrderCommand());
+        SuperBotCommands.register(new WhoCommand());
+        SuperBotCommands.register(new WipeCommand());
 
-        register(new DefineCommand());
-        register(new HangmanCommand());
-        register(new NumberwangCommand());
-        register(new TypeOutCommand());
+        SuperBotCommands.register(new DefineCommand());
+        SuperBotCommands.register(new HangmanCommand());
+        SuperBotCommands.register(new NumberwangCommand());
+        SuperBotCommands.register(new TypeOutCommand());
 
-        register(new ConvertCommand());
-        register(new CurrencyCommand());
-        register(new GitCommand());
-        register(new GraphCommand());
-        register(new JenkinsCommand());
-        register(new MathsCommand());
-        register(new PasteFetchCommand());
-        register(new UidCommand());
-        register(new VersionCommand());
+        SuperBotCommands.register(new ConvertCommand());
+        SuperBotCommands.register(new CurrencyCommand());
+        SuperBotCommands.register(new GitCommand());
+        SuperBotCommands.register(new GraphCommand());
+        SuperBotCommands.register(new JenkinsCommand());
+        SuperBotCommands.register(new MathsCommand());
+        SuperBotCommands.register(new PasteFetchCommand());
+        SuperBotCommands.register(new UidCommand());
+        SuperBotCommands.register(new VersionCommand());
 
-        register(new FCCPointsCommand());
+        SuperBotCommands.register(new FCCPointsCommand());
     }
 
     public static void exec(Sys sys, Group g, User u, Message message) {
@@ -134,16 +137,19 @@ public class SuperBotCommands {
         }
 
         String cmdName = words[0].substring(prefix.length()).toLowerCase();
-        Command cmd = COMMANDS.get(cmdName);
-        if (cmd == null)
+        Command cmd = SuperBotCommands.COMMANDS.get(cmdName);
+        if (cmd == null) {
             return;
+        }
 
         GroupConfiguration cfg = SuperBotController.getGroupConfiguration(g);
         if (g.getType() == GroupType.GROUP) {
-            if (cfg.isDisabled() || !cfg.isCommandEnabled(cmd))
+            if (cfg.isDisabled() || !cfg.isCommandEnabled(cmd)) {
                 return;
-        } else if (!cmd.userchat())
+            }
+        } else if (!cmd.userchat()) {
             return;
+        }
 
         String[] args = new String[words.length - 1];
         System.arraycopy(words, 1, args, 0, args.length);
