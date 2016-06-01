@@ -240,7 +240,10 @@ public class SuperBotShows {
         }
 
         public SeasonResult getSeason(String season) {
-            return this.seasons.computeIfAbsent(season, s -> SuperBotController.OMDB.seasonById(this.imdb, String.valueOf(s)));
+            if (!this.seasons.containsKey(season)) {
+                this.seasons.put(season, SuperBotController.OMDB.seasonById(this.imdb, String.valueOf(season)));
+            }
+            return this.seasons.get(season);
         }
 
         public SeasonResult getSeason() {
