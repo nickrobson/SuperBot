@@ -54,7 +54,8 @@ public class MissedShowsCommand implements Command {
                 List<String> missed = new LinkedList<>();
                 for (SeasonEpisodeResult ep : sres) {
                     try {
-                        if (ep.getReleaseDate().after(now)) {
+                        Calendar release = ep.getReleaseDate();
+                        if (release == null || release.after(now)) {
                             break;
                         }
                         if (!missed.isEmpty() || Integer.parseInt(ep.getEpisode()) > episode) {
