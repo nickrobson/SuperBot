@@ -51,6 +51,10 @@ public class MissedShowsCommand implements Command {
             int episode = Integer.parseInt(spl[1]);
             try {
                 SeasonResult sres = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
+                if (sres == null) {
+                    System.err.format("No season %s for show %s!\n", spl[0], show.getDisplay());
+                    continue;
+                }
                 List<String> missed = new LinkedList<>();
                 for (SeasonEpisodeResult ep : sres) {
                     try {
