@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;
@@ -65,12 +64,7 @@ public class WhoCommand implements Command {
 
         Calendar now = Calendar.getInstance();
 
-        AtomicInteger maxEpLen = new AtomicInteger(0);
-        progress.forEach((s, e) -> {
-            if (e.length() > maxEpLen.get()) {
-                maxEpLen.set(e.length());
-            }
-        });
+        int maxEpLen = progress.values().stream().mapToInt(String::length).max().orElse(0);
 
         progress.forEach((show, ep) -> {
             if (show != null) {
@@ -106,7 +100,7 @@ public class WhoCommand implements Command {
                     }
                     season++;
                 }
-                shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" + (ep.length() < maxEpLen.get() ? this.pad("(", maxEpLen.get() + 1).substring(0, maxEpLen.get()) : "") : "      ") + " (" + ep + ")");
+                shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" + (ep.length() < maxEpLen ? this.pad("(", maxEpLen + 1).substring(0, maxEpLen) : "") : "      ") + " (" + ep + ")");
             }
         });
         boolean cols = sys.columns();
