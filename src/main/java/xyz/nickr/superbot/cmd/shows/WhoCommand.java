@@ -1,6 +1,7 @@
 package xyz.nickr.superbot.cmd.shows;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,18 +22,19 @@ public class WhoCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{"who", "whois"};
+        return new String[] {"who", "whois"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[]{"(username)", "gets (username)'s progress on all shows"};
+        return new String[] {"(username)", "gets (username)'s progress on all shows"};
     }
 
     String pad(String s, int len) {
         StringBuilder builder = new StringBuilder(s);
-        while (builder.length() < len)
+        while (builder.length() < len) {
             builder.insert(builder.indexOf("("), ' ');
+        }
         return builder.toString();
     }
 
@@ -42,23 +44,25 @@ public class WhoCommand implements Command {
         String username;
         if (args.length > 0) {
             Optional<Profile> profile = Profile.getProfile(args[0]);
-            if (profile.isPresent())
+            if (profile.isPresent()) {
                 username = profile.get().getName();
-            else {
+            } else {
                 group.sendMessage("No profile with name: " + args[0]);
                 return;
             }
         } else {
             Optional<Profile> profile = user.getProfile();
-            if (profile.isPresent())
+            if (profile.isPresent()) {
                 username = profile.get().getName();
-            else {
+            } else {
                 group.sendMessage("You need a profile to use this. Use " + prefix + "createprofile.");
                 return;
             }
         }
         List<String> shows = new ArrayList<>();
         Map<Show, String> progress = SuperBotController.getUserProgress(username.toLowerCase());
+
+        Calendar now = Calendar.getInstance();
 
         progress.forEach((show, ep) -> {
             if (show != null) {
@@ -68,17 +72,25 @@ public class WhoCommand implements Command {
                 int season = Integer.parseInt(split[0]);
                 int episode = Integer.parseInt(split[1]);
 
-                SeasonResult seasonResult = SuperBotController.OMDB.seasonById(show.imdb, String.valueOf(season));
+                SeasonResult res = SuperBotController.OMDB.seasonById(show.imdb, String.valueOf(season));
 
-                if (seasonResult != null) {
-                    SeasonEpisodeResult[] seasonEpisodeResults = seasonResult.getEpisodes();
-
-                    if (seasonEpisodeResults[episode] != null) {
-                        hasNewEpisode = true;
+                if (res != null) {
+                    for (SeasonEpisodeResult ser : res) {
+                        try {
+                            Calendar release = ser.getReleaseDate();
+                            if (release == null || release.after(now)) {
+                                break;
+                            }
+                            if (Integer.parseInt(ser.getEpisode()) > episode) {
+                                hasNewEpisode = true;
+                                break;
+                            }
+                        } catch (NumberFormatException ex) {
+                        }
                     }
                 }
 
-                shows.add(show.getDisplay() + (hasNewEpisode ? " (New Episode)" : "               ") + " (" + ep + ")");
+                shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" : "               ") + " (" + ep + ")");
             }
         });
         boolean cols = sys.columns();
@@ -90,21 +102,24 @@ public class WhoCommand implements Command {
 
         for (int i = 0; i < rows; i++) {
             if (shows.size() > i) {
-                String t = pad(shows.get(i), maxLen1);
-                if (cols && shows.size() > rows + i)
-                    t += "   |   " + pad(shows.get(rows + i), maxLen2);
+                String t = this.pad(shows.get(i), maxLen1);
+                if (cols && shows.size() > rows + i) {
+                    t += "   |   " + this.pad(shows.get(rows + i), maxLen2);
+                }
                 MessageBuilder<?> mb = sys.message().code(true).escaped(t).code(false);
-                if (i != rows - 1)
+                if (i != rows - 1) {
                     mb.newLine().escaped("   ");
+                }
                 s += mb.build();
             }
         }
 
         MessageBuilder<?> mb = sys.message();
-        if (shows.size() > 0)
+        if (shows.size() > 0) {
             group.sendMessage(mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false).newLine().escaped("   ").raw(s));
-        else
+        } else {
             group.sendMessage(mb.bold(true).escaped("Error: ").bold(false).escaped("It doesn't look like " + username + " uses me. :("));
+        }
     }
 
 }
