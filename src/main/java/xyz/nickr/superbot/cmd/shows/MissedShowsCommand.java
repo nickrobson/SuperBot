@@ -1,6 +1,7 @@
 package xyz.nickr.superbot.cmd.shows;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -50,22 +51,43 @@ public class MissedShowsCommand implements Command {
             String[] spl = entry.getValue().substring(1).split("E");
             int episode = Integer.parseInt(spl[1]);
             try {
-                SeasonResult sres = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
-                if (sres == null) {
-                    System.err.format("No season %s for show %s!\n", spl[0], show.getDisplay());
-                    continue;
-                }
-                List<String> missed = new LinkedList<>();
-                for (SeasonEpisodeResult ep : sres) {
-                    try {
-                        Calendar release = ep.getReleaseDate();
-                        if (release == null || release.after(now)) {
+                int startSeason = Integer.parseInt(spl[0]);
+                int season = startSeason;
+                Map<Integer, List<Integer>> miss = new HashMap<>();
+                try {
+                    while (true) {
+                        SeasonResult sres = SuperBotController.OMDB.seasonById(show.imdb, String.valueOf(season));
+                        if (sres == null) {
                             break;
                         }
-                        if (!missed.isEmpty() || Integer.parseInt(ep.getEpisode()) > episode) {
-                            missed.add(String.format("S%sE%s", spl[0], ep.getEpisode()));
+                        for (SeasonEpisodeResult ep : sres) {
+                            try {
+                                Calendar release = ep.getReleaseDate();
+                                if (release == null || release.after(now)) {
+                                    break;
+                                }
+                                if (!miss.isEmpty() || startSeason < season || Integer.parseInt(ep.getEpisode()) > episode) {
+                                    List<Integer> eps = miss.computeIfAbsent(season, s -> new LinkedList<>());
+                                    eps.add(Integer.parseInt(ep.getEpisode()));
+                                    miss.put(season, eps);
+                                }
+                            } catch (NumberFormatException ignored) {
+                            }
                         }
-                    } catch (NumberFormatException ignored) {
+                        season++;
+                    }
+                } catch (Exception ignored) {
+                }
+                List<String> missed = new LinkedList<>();
+                for (Entry<Integer, List<Integer>> e : miss.entrySet()) {
+                    if (e.getValue().size() > 2) {
+                        int min = e.getValue().stream().mapToInt(i -> i).min().getAsInt();
+                        int max = e.getValue().stream().mapToInt(i -> i).max().getAsInt();
+                        missed.add("S" + e.getKey() + "E" + min + "-" + max);
+                    } else {
+                        for (int ep : e.getValue()) {
+                            missed.add("S" + e.getKey() + "E" + ep);
+                        }
                     }
                 }
                 if (!missed.isEmpty()) {
