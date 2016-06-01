@@ -56,7 +56,7 @@ public class MissedShowsCommand implements Command {
                 Map<Integer, List<Integer>> miss = new HashMap<>();
                 try {
                     while (true) {
-                        SeasonResult sres = SuperBotController.OMDB.seasonById(show.imdb, String.valueOf(season));
+                        SeasonResult sres = show.getSeason(String.valueOf(season));
                         if (sres == null) {
                             break;
                         }
