@@ -76,20 +76,21 @@ public class WhoCommand implements Command {
                 while (true) {
                     SeasonResult res = show.getSeason(String.valueOf(season));
                     boolean done = false;
-                    if (res != null) {
-                        for (SeasonEpisodeResult ser : res) {
-                            try {
-                                Calendar release = ser.getReleaseDate();
-                                if (release == null || release.after(now)) {
-                                    done = true;
-                                    break;
-                                }
-                                if (season > start || Integer.parseInt(ser.getEpisode()) > episode) {
-                                    done = hasNewEpisode = true;
-                                    break;
-                                }
-                            } catch (NumberFormatException ex) {
+                    if (res == null) {
+                        break;
+                    }
+                    for (SeasonEpisodeResult ser : res) {
+                        try {
+                            Calendar release = ser.getReleaseDate();
+                            if (release == null || release.after(now)) {
+                                done = true;
+                                break;
                             }
+                            if (season > start || Integer.parseInt(ser.getEpisode()) > episode) {
+                                done = hasNewEpisode = true;
+                                break;
+                            }
+                        } catch (NumberFormatException ex) {
                         }
                     }
                     if (done) {
