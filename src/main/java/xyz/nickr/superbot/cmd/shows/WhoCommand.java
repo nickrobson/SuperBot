@@ -69,27 +69,34 @@ public class WhoCommand implements Command {
                 boolean hasNewEpisode = false;
 
                 String[] split = ep.substring(1).split("E");
-                int season = Integer.parseInt(split[0]);
+                int start = Integer.parseInt(split[0]);
+                int season = start;
                 int episode = Integer.parseInt(split[1]);
 
-                SeasonResult res = SuperBotController.OMDB.seasonById(show.imdb, String.valueOf(season));
-
-                if (res != null) {
-                    for (SeasonEpisodeResult ser : res) {
-                        try {
-                            Calendar release = ser.getReleaseDate();
-                            if (release == null || release.after(now)) {
-                                break;
+                while (true) {
+                    SeasonResult res = show.getSeason(String.valueOf(season));
+                    boolean done = false;
+                    if (res != null) {
+                        for (SeasonEpisodeResult ser : res) {
+                            try {
+                                Calendar release = ser.getReleaseDate();
+                                if (release == null || release.after(now)) {
+                                    done = true;
+                                    break;
+                                }
+                                if (season > start || Integer.parseInt(ser.getEpisode()) > episode) {
+                                    done = hasNewEpisode = true;
+                                    break;
+                                }
+                            } catch (NumberFormatException ex) {
                             }
-                            if (Integer.parseInt(ser.getEpisode()) > episode) {
-                                hasNewEpisode = true;
-                                break;
-                            }
-                        } catch (NumberFormatException ex) {
                         }
                     }
+                    if (done) {
+                        break;
+                    }
+                    season++;
                 }
-
                 shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" : "               ") + " (" + ep + ")");
             }
         });

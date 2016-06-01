@@ -219,6 +219,8 @@ public class SuperBotShows {
         private SeasonResult season;
         private Calendar date;
 
+        private Map<String, SeasonResult> seasons = new HashMap<>();
+
         public Show(String imdb, String display, String... links) {
             this(imdb, display, Arrays.asList(links));
         }
@@ -237,11 +239,14 @@ public class SuperBotShows {
             return this.display;
         }
 
+        public SeasonResult getSeason(String season) {
+            return this.seasons.computeIfAbsent(season, s -> SuperBotController.OMDB.seasonById(this.imdb, String.valueOf(s)));
+        }
+
         public SeasonResult getSeason() {
             if (this.season != null) {
                 return this.season;
             }
-            JavaOMDB omdb = SuperBotController.OMDB;
             Calendar today = Calendar.getInstance();
             Calendar now = Calendar.getInstance();
             now.clear();
@@ -250,7 +255,7 @@ public class SuperBotShows {
             int n = 0;
             try {
                 do {
-                    next = omdb.seasonById(this.imdb, String.valueOf(++n));
+                    next = this.getSeason(String.valueOf(++n));
                     if (next != null) {
                         this.season = next;
                     }

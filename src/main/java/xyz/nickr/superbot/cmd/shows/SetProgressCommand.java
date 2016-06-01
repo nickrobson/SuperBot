@@ -68,7 +68,7 @@ public class SetProgressCommand implements Command {
                     int episode = Integer.parseInt(spl[1]) - 1 + de;
                     if (de >= 1) {
                         try {
-                            SeasonResult res = SuperBotController.OMDB.seasonById(show.imdb, spl[0]);
+                            SeasonResult res = show.getSeason(spl[0]);
                             SeasonEpisodeResult[] eps = res.getEpisodes();
                             SeasonEpisodeResult r = eps[episode];
                             episodeCodeCommand = String.format("S%sE%s", spl[0], r.getEpisode());
