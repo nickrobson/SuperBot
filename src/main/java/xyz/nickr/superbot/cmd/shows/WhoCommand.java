@@ -68,10 +68,13 @@ public class WhoCommand implements Command {
                 int episode = Integer.parseInt(ep.substring(4,6));
 
                 SeasonResult seasonResult = SuperBotController.OMDB.seasonById(show.imdb, String.valueOf(season));
-                SeasonEpisodeResult[] seasonEpisodeResults = seasonResult.getEpisodes();
 
-                if (seasonEpisodeResults[episode] != null) {
-                    hasNewEpisode = true;
+                if (seasonResult != null) {
+                    SeasonEpisodeResult[] seasonEpisodeResults = seasonResult.getEpisodes();
+
+                    if (seasonEpisodeResults[episode] != null) {
+                        hasNewEpisode = true;
+                    }
                 }
 
                 shows.add(show.getDisplay() + (hasNewEpisode ? " (New Episode)" : "               ") + " (" + ep + ")");
