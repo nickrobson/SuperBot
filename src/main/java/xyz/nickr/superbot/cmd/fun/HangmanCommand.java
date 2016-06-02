@@ -19,19 +19,19 @@ import xyz.nickr.superbot.sys.User;
 
 public class HangmanCommand implements Command {
 
-    private volatile String               currentPhrase = null;
-    private volatile String               found         = null;
-    private volatile String               guessed       = null;
-    private volatile Map<String, Integer> numCorrect    = null;
+    private volatile String currentPhrase = null;
+    private volatile String found = null;
+    private volatile String guessed = null;
+    private volatile Map<String, Integer> numCorrect = null;
 
     @Override
     public String[] names() {
-        return new String[] { "hangman" };
+        return new String[] {"hangman"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { userChat ? "[phrase]" : "[guess]", userChat ? "start a hangman game with phrase [phrase]" : "take a guess at a letter" };
+        return new String[] {userChat ? "[phrase]" : "[guess]", userChat ? "start a hangman game with phrase [phrase]" : "take a guess at a letter"};
     }
 
     @Override
@@ -46,87 +46,90 @@ public class HangmanCommand implements Command {
         Profile profile = user.getProfile().orElse(null);
         if (profile == null) {
             group.sendMessage("[Hangman] You need a profile to use this. Use " + prefix + "createprofile.");
-        } else if (group.getType() == GroupType.USER)
-            if (currentPhrase != null)
+        } else if (group.getType() == GroupType.USER) {
+            if (this.currentPhrase != null) {
                 group.sendMessage(mb.escaped("[Hangman] There is already a game in progress.").newLine().escaped("[Hangman] To take a guess, send a message in a group."));
-            else if (args.length == 0)
-                sendUsage(sys, user, group);
-            else if (args[0].equalsIgnoreCase("random"))
-                if (SuperBotController.HANGMAN_PHRASES.isEmpty())
+            } else if (args.length == 0) {
+                this.sendUsage(sys, user, group);
+            } else if (args[0].equalsIgnoreCase("random")) {
+                if (SuperBotController.HANGMAN_PHRASES.isEmpty()) {
                     group.sendMessage(mb.escaped("Sorry, you can't do random phrases (file missing)."));
-                else {
+                } else {
                     int n = new Random().nextInt(SuperBotController.HANGMAN_PHRASES.size());
                     String s = SuperBotController.HANGMAN_PHRASES.get(n).toUpperCase();
                     if (s != null) {
-                        currentPhrase = s;
-                        found = currentPhrase.replaceAll("[A-Za-z]", "_");
-                        guessed = "";
-                        numCorrect = new HashMap<>();
-                        group.sendMessage(mb.escaped("[Hangman] The phrase has been set to: ").code(true).escaped(found));
+                        this.currentPhrase = s;
+                        this.found = this.currentPhrase.replaceAll("[A-Za-z]", "_");
+                        this.guessed = "";
+                        this.numCorrect = new HashMap<>();
+                        group.sendMessage(mb.escaped("[Hangman] The phrase has been set to: ").code(true).escaped(this.found));
                     }
                 }
-            else {
+            } else {
                 StringBuilder sb = new StringBuilder();
                 for (String a : args) {
-                    if (sb.length() > 0)
+                    if (sb.length() > 0) {
                         sb.append(" ");
+                    }
                     sb.append(a);
                 }
                 String s = sb.toString().toUpperCase();
-                currentPhrase = s;
-                found = currentPhrase.replaceAll("[A-Za-z]", "_");
-                guessed = "";
-                numCorrect = new HashMap<>();
-                group.sendMessage(mb.escaped("[Hangman] The phrase has been set to: ").code(true).escaped(currentPhrase));
+                this.currentPhrase = s;
+                this.found = this.currentPhrase.replaceAll("[A-Za-z]", "_");
+                this.guessed = "";
+                this.numCorrect = new HashMap<>();
+                group.sendMessage(mb.escaped("[Hangman] The phrase has been set to: ").code(true).escaped(this.currentPhrase));
             }
-        else if (currentPhrase == null)
+        } else if (this.currentPhrase == null) {
             group.sendMessage(mb.escaped("[Hangman] There is no game in progress currently!").newLine().escaped("[Hangman] To set the phrase, PM me `" + prefix + "hangman [phrase]`!"));
-        else if (args.length != 1)
-            group.sendMessage(mb.bold(true).escaped("Usage: ").bold(false).escaped(prefix + "hangman [guess]").raw(currentPhrase != null ? sys.message().newLine().escaped("Phrase so far: ").code(true).escaped(found).build() : ""));
-        else {
+        } else if (args.length != 1) {
+            group.sendMessage(mb.bold(true).escaped("Usage: ").bold(false).escaped(prefix + "hangman [guess]").raw(this.currentPhrase != null ? sys.message().newLine().escaped("Phrase so far: ").code(true).escaped(this.found).build() : ""));
+        } else {
             char first = args[0].trim().toUpperCase().charAt(0);
-            if (args[0].trim().length() != 1)
+            if (args[0].trim().length() != 1) {
                 group.sendMessage(mb.escaped("[Hangman] You can only guess one letter!"));
-            else if (!('A' <= first && first <= 'Z'))
+            } else if (!('A' <= first && first <= 'Z')) {
                 group.sendMessage(mb.escaped("[Hangman] You can only guess letters!"));
-            else {
-                if (found.indexOf(first) != -1)
+            } else {
+                if (this.found.indexOf(first) != -1) {
                     group.sendMessage(mb.escaped("[Hangman] " + first + " has already been guessed and found."));
-                else if (guessed.indexOf(first) != -1)
+                } else if (this.guessed.indexOf(first) != -1) {
                     group.sendMessage(mb.escaped("[Hangman] " + first + " has already been guessed and was not found."));
-                else {
-                    if (currentPhrase.indexOf(first) != -1) {
-                        StringBuilder sb = new StringBuilder(found);
+                } else {
+                    if (this.currentPhrase.indexOf(first) != -1) {
+                        StringBuilder sb = new StringBuilder(this.found);
                         int numChanged = 0;
-                        for (int i = 0; i < currentPhrase.length(); i++) {
-                            if (currentPhrase.charAt(i) == first) {
+                        for (int i = 0; i < this.currentPhrase.length(); i++) {
+                            if (this.currentPhrase.charAt(i) == first) {
                                 sb.setCharAt(i, first);
                                 numChanged++;
                             }
                         }
-                        numCorrect.put(profile.getName(), numCorrect.getOrDefault(profile.getName(), 0) + numChanged);
-                        found = sb.toString();
-                        if (currentPhrase.equals(found)) {
+                        this.numCorrect.put(profile.getName(), this.numCorrect.getOrDefault(profile.getName(), 0) + numChanged);
+                        this.found = sb.toString();
+                        if (this.currentPhrase.equals(this.found)) {
                             MessageBuilder<?> stats = sys.message();
-                            List<Entry<String, Integer>> contrib = numCorrect.entrySet().stream().sorted((e1, e2) -> e2.getValue() - e1.getValue()).collect(Collectors.toList());
-                            String curr = currentPhrase.replaceAll("[^A-Za-z]", "");
+                            List<Entry<String, Integer>> contrib = this.numCorrect.entrySet().stream().sorted((e1, e2) -> e2.getValue() - e1.getValue()).collect(Collectors.toList());
+                            String curr = this.currentPhrase.replaceAll("[^A-Za-z]", "");
                             for (Entry<String, Integer> player : contrib) {
-                                if (stats.length() > 0)
+                                if (stats.length() > 0) {
                                     stats.newLine();
+                                }
                                 String ps = String.valueOf(player.getValue() * 100.0 / curr.length());
                                 stats.bold(true).escaped(player.getKey() + ": ").bold(false);
-                                stats.escaped(player.getValue().toString() + "/" + curr.length() + " (" + (ps.length() > 5 ? ps.substring(0, 5) : ps) + "%)");
+                                stats.escaped(player.getValue().toString() + "/" + curr.length() + " (" + (ps.length() > 5 ? ps.substring(0, 5) : ps) + "%%)");
                             }
-                            group.sendMessage(mb.escaped("[Hangman] Congratulations! You've uncovered the phrase!").newLine().escaped("It was: ").code(true).escaped(currentPhrase).code(false).raw(stats.length() > 0 ? "\n" + stats.build() : ""));
-                            currentPhrase = null;
-                            found = null;
-                            guessed = null;
-                            numCorrect = null;
-                        } else
-                            group.sendMessage(mb.escaped("[Hangman] Congratulations! " + first + " is in the phrase!").newLine().escaped("Phrase so far: ").code(true).escaped(found));
+                            group.sendMessage(mb.escaped("[Hangman] Congratulations! You've uncovered the phrase!").newLine().escaped("It was: ").code(true).escaped(this.currentPhrase).code(false).raw(stats.length() > 0 ? "\n" + stats.build() : ""));
+                            this.currentPhrase = null;
+                            this.found = null;
+                            this.guessed = null;
+                            this.numCorrect = null;
+                        } else {
+                            group.sendMessage(mb.escaped("[Hangman] Congratulations! " + first + " is in the phrase!").newLine().escaped("Phrase so far: ").code(true).escaped(this.found));
+                        }
                     } else {
-                        guessed += first;
-                        group.sendMessage(mb.escaped("[Hangman] Sorry, " + first + " isn't in the phrase!").newLine().escaped("Phrase so far: ").code(true).escaped(found));
+                        this.guessed += first;
+                        group.sendMessage(mb.escaped("[Hangman] Sorry, " + first + " isn't in the phrase!").newLine().escaped("Phrase so far: ").code(true).escaped(this.found));
                     }
                 }
             }
