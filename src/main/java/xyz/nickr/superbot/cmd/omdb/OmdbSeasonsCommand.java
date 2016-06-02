@@ -30,7 +30,7 @@ public class OmdbSeasonsCommand implements Command {
     }
 
     String toString(Calendar c) {
-        return new SimpleDateFormat("dd MM yyyy").format(c.getTime());
+        return c != null ? new SimpleDateFormat("dd MM yyyy").format(c.getTime()) : "not released";
     }
 
     @Override
