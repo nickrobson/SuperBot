@@ -13,9 +13,11 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
@@ -219,7 +221,13 @@ public class SuperBotShows {
         private SeasonResult season;
         private Calendar date;
 
-        private Map<String, SeasonResult> seasons = new HashMap<>();
+        private Map<String, SeasonResult> seasons = new TreeMap<>((s1, s2) -> {
+            try {
+                return Integer.valueOf(s1).compareTo(Integer.valueOf(s2));
+            } catch (Exception ex) {
+                return s1.compareTo(s2);
+            }
+        });
 
         public Show(String imdb, String display, String... links) {
             this(imdb, display, Arrays.asList(links));
@@ -244,6 +252,14 @@ public class SuperBotShows {
                 this.seasons.put(season, SuperBotController.OMDB.seasonById(this.imdb, String.valueOf(season)));
             }
             return this.seasons.get(season);
+        }
+
+        public List<SeasonResult> getSeasons() {
+            List<SeasonResult> ss = new LinkedList<>();
+            for (String key : this.seasons.keySet()) {
+                ss.add(this.seasons.get(key));
+            }
+            return ss;
         }
 
         public SeasonResult getSeason() {

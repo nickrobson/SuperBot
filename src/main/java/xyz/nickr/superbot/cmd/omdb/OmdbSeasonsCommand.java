@@ -2,6 +2,8 @@ package xyz.nickr.superbot.cmd.omdb;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 
 import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
@@ -30,7 +32,7 @@ public class OmdbSeasonsCommand implements Command {
     }
 
     String toString(Calendar c) {
-        return c != null ? new SimpleDateFormat("dd MM yyyy").format(c.getTime()) : "not released";
+        return c != null ? new SimpleDateFormat("d MMM yyyy").format(c.getTime()) : "not released";
     }
 
     @Override
@@ -40,23 +42,31 @@ public class OmdbSeasonsCommand implements Command {
         } else {
             MessageBuilder<?> mb = sys.message();
             Show show = SuperBotShows.getShow(args[0], false);
+            List<SeasonResult> seasons = new LinkedList<>();
             if (show != null) {
                 args[0] = show.imdb;
-            }
-            if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
-                TitleResult title = SuperBotController.OMDB.titleById(args[0]);
-                mb.italic(true).escaped(title.getTitle() + " seasons:").italic(false);
-                for (SeasonResult season : title.seasons()) {
-                    mb.newLine().bold(true).escaped("Season " + season.getSeason()).bold(false);
-                    SeasonEpisodeResult[] episodes = season.getEpisodes();
-                    if (episodes.length > 0) {
-                        SeasonEpisodeResult first = episodes[0],
-                                        last = episodes[episodes.length - 1];
-                        mb.escaped(": " + episodes.length + " episodes, " + this.toString(first.getReleaseDate()) + " - " + this.toString(last.getReleaseDate()));
-                    }
-                }
+                seasons.addAll(show.getSeasons());
             } else {
-                mb.escaped("Invalid IMDB ID (" + args[0] + ")");
+                if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
+                    TitleResult title = SuperBotController.OMDB.titleById(args[0]);
+                    mb.italic(true).escaped(title.getTitle() + " seasons:").italic(false);
+                    for (SeasonResult season : title.seasons()) {
+                        seasons.add(season);
+                    }
+                } else {
+                    mb.escaped("Invalid IMDB ID (" + args[0] + ")");
+                    group.sendMessage(mb);
+                    return;
+                }
+            }
+            for (SeasonResult season : seasons) {
+                mb.newLine().bold(true).escaped("Season " + season.getSeason()).bold(false);
+                SeasonEpisodeResult[] episodes = season.getEpisodes();
+                if (episodes.length > 0) {
+                    SeasonEpisodeResult first = episodes[0],
+                                    last = episodes[episodes.length - 1];
+                    mb.escaped(": " + episodes.length + " episodes, " + this.toString(first.getReleaseDate()) + " - " + this.toString(last.getReleaseDate()));
+                }
             }
             group.sendMessage(mb);
         }
