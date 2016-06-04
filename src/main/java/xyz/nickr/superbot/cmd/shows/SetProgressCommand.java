@@ -74,7 +74,6 @@ public class SetProgressCommand implements Command {
                             SeasonEpisodeResult r = eps[episode];
                             episodeCodeCommand = String.format("S%sE%s", spl[0], r.getEpisode());
                         } catch (NullPointerException | ArrayIndexOutOfBoundsException ex) {
-                            ex.printStackTrace();
                             group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode + 1).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
                             return;
                         }
