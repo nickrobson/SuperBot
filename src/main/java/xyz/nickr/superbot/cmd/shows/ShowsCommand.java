@@ -74,7 +74,7 @@ public class ShowsCommand implements Command {
         MessageBuilder builder = sys.message();
         if (sys.hasKeyboards()) {
             Map<Integer, MessageBuilder> pages = new HashMap<>();
-            for (int i = 0; i < maxpages; i++) {
+            for (int i = 0; i <= maxpages; i++) {
                 pages.put(i, getPage.apply(i));
             }
             builder.raw(pages.get(0).build());
@@ -102,12 +102,12 @@ public class ShowsCommand implements Command {
             int page = 0;
             if (args.length > 0) {
                 try {
-                    page = Integer.parseInt(args[0]) - 1;
-                    if (page < 0 || page >= maxpages) {
-                        final int x = page + 1, y = maxpages + 1;
-                        group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [0, %d)", x, y)));
+                    page = Integer.parseInt(args[0]);
+                    if (page <= 0 || page > maxpages) {
+                        final int x = page;
+                        group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [1, %d]", x, maxpages)));
                     } else {
-                        group.sendMessage(getPage.apply(page));
+                        group.sendMessage(getPage.apply(page - 1));
                     }
                 } catch (Exception ex) {
                     group.sendMessage(sys.message().bold(m -> m.escaped("Not a number: %s", args[0])));
