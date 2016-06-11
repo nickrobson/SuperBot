@@ -35,6 +35,7 @@ import xyz.nickr.superbot.sys.User;
 public class TelegramSys implements Sys {
 
     private TelegramBot bot;
+    private TelegramListener listener;
 
     private final Map<String, GroupConfiguration> configs = new HashMap<>();
     private final Properties usernameCache = new Properties();
@@ -44,7 +45,7 @@ public class TelegramSys implements Sys {
             long now = System.currentTimeMillis();
             System.out.println("Loading SuperBot: Telegram");
             this.bot = TelegramBot.login(key);
-            this.bot.getEventsManager().register(new TelegramListener(this.bot, this));
+            this.bot.getEventsManager().register(this.listener = new TelegramListener(this.bot, this));
             this.bot.startUpdates(true);
 
             try {
@@ -129,7 +130,7 @@ public class TelegramSys implements Sys {
 
     public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, MessageBuilder message) {
         String m = message.build();
-        Keyboard kb = message.getKeyboard();
+        Keyboard kb = message.getKeyboard().lock();
         SendableTextMessageBuilder msg = SendableTextMessage.builder().message(m).parseMode(ParseMode.MARKDOWN);
         if (kb != null) {
             ReplyKeyboardMarkupBuilder reply = ReplyKeyboardMarkup.builder();
@@ -142,7 +143,9 @@ public class TelegramSys implements Sys {
             }
             msg.replyMarkup(reply.build());
         }
-        return this.bot.sendMessage(chat, msg.build());
+        pro.zackpollard.telegrambot.api.chat.message.Message ms = this.bot.sendMessage(chat, msg.build());
+        this.listener.addKeyboard(ms.getMessageId(), kb);
+        return ms;
     }
 
 }

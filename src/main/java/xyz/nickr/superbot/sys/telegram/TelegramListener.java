@@ -5,9 +5,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -25,15 +27,19 @@ import pro.zackpollard.telegrambot.api.chat.inline.send.content.InputTextMessage
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResult;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultArticle;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultPhoto;
+import pro.zackpollard.telegrambot.api.chat.message.MessageCallbackQuery;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
+import pro.zackpollard.telegrambot.api.event.chat.message.MessageCallbackQueryReceivedEvent;
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
+import xyz.nickr.superbot.keyboard.Keyboard;
+import xyz.nickr.superbot.keyboard.KeyboardButton;
 import xyz.nickr.superbot.sys.Conversable;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
@@ -53,10 +59,12 @@ public class TelegramListener implements Listener {
 
     private final TelegramBot bot;
     private final TelegramSys sys;
+    private final Map<Long, Keyboard> keyboards;
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
         this.bot = bot;
         this.sys = sys;
+        this.keyboards = new HashMap<>();
     }
 
     @Override
@@ -78,6 +86,22 @@ public class TelegramListener implements Listener {
             String message = this.sys.message().bold(true).escaped(TelegramMessageBuilder.markdown_escape(welcome, false) + "\n" + TelegramMessageBuilder.markdown_escape(help, false)).bold(false).build();
             convo.sendMessage(message);
         }
+    }
+
+    @Override
+    public void onMessageCallbackQueryReceivedEvent(MessageCallbackQueryReceivedEvent event) {
+        MessageCallbackQuery q = event.getCallbackQuery();
+        Keyboard kb = this.keyboards.get(q.getMessage().getMessageId());
+        if (kb != null) {
+            KeyboardButton btn = kb.getButton(q.getData());
+            if (btn != null) {
+                btn.onClick(this.sys.wrap(q.getFrom()));
+            }
+        }
+    }
+
+    public void addKeyboard(long messageId, Keyboard kb) {
+        this.keyboards.put(messageId, kb);
     }
 
     private static InlineQueryResultArticle res(String title, String desc, String text, boolean web) {
