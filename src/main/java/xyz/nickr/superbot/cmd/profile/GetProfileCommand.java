@@ -1,7 +1,7 @@
 package xyz.nickr.superbot.cmd.profile;
 
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
@@ -16,17 +16,17 @@ public class GetProfileCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "profile", "getprofile" };
+        return new String[] {"profile", "getprofile"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "(profile)", "get yours or (profile)'s profile info" };
+        return new String[] {"(profile)", "get yours or (profile)'s profile info"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         if (args.length == 0) {
             Optional<Profile> profile = user.getProfile();
             if (profile.isPresent()) {
@@ -37,7 +37,7 @@ public class GetProfileCommand implements Command {
                     mb.newLine().escaped("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
-                sendNoProfile(sys, user, group);
+                this.sendNoProfile(sys, user, group);
                 return;
             }
         } else {

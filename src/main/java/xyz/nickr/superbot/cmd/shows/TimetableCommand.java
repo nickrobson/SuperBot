@@ -23,16 +23,16 @@ public class TimetableCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "timetable", "days" };
+        return new String[] {"timetable", "days"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "(search)", "see what days each show is on" };
+        return new String[] {"(search)", "see what days each show is on"};
     }
 
     String get(String day, Set<Show> set, Sys sys) {
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         List<String> names = set.stream().map(s -> s.getDisplay()).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
         return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names)).build();
@@ -49,8 +49,9 @@ public class TimetableCommand implements Command {
         Map<String, Set<Show>> days = new HashMap<>();
         SuperBotShows.getShows().forEach(s -> {
             String day = s.getDay();
-            if (day == null || day.isEmpty() || day.equals("N/A"))
+            if (day == null || day.isEmpty() || day.equals("N/A")) {
                 day = "Not airing";
+            }
             days.merge(day, new HashSet<>(Arrays.asList(s)), this::merge);
         });
         List<String> alldays = new LinkedList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Netflix", "Not airing"));
@@ -59,12 +60,13 @@ public class TimetableCommand implements Command {
         for (String day : alldays) {
             Set<Show> set = days.get(day);
             if (set != null) {
-                lines.add(get(day, set, sys));
+                lines.add(this.get(day, set, sys));
             }
         }
-        if (args.length > 0)
+        if (args.length > 0) {
             lines.removeIf(s -> !s.toLowerCase().contains(Joiner.join(" ", args).toLowerCase()));
-        MessageBuilder<?> builder = sys.message();
+        }
+        MessageBuilder builder = sys.message();
         builder.bold(true).escaped(lines.isEmpty() ? "No matching shows or days." : "Shows by day:").bold(false);
         lines.forEach(l -> builder.newLine().raw(l));
         group.sendMessage(builder);

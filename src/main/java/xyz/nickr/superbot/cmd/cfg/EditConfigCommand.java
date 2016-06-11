@@ -15,17 +15,17 @@ public class EditConfigCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "editcfg" };
+        return new String[] {"editcfg"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[option] [value]", "sets [option] to [value] in this group's config" };
+        return new String[] {"[option] [value]", "sets [option] to [value] in this group's config"};
     }
 
     @Override
     public Permission perm() {
-        return string("cfg.edit");
+        return this.string("cfg.edit");
     }
 
     @Override
@@ -38,14 +38,15 @@ public class EditConfigCommand implements Command {
         if (group.getType() == GroupType.USER) {
             group.sendMessage(sys.message().escaped("User chats don't have configurations."));
         } else if (args.length < 2) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             GroupConfiguration cfg = SuperBotController.getGroupConfiguration(group);
             String prev = cfg.set(args[0], args[1]);
             cfg.save();
-            MessageBuilder<?> mb = sys.message().bold(true).escaped(args[0]).bold(false).escaped(" is now ").bold(true).escaped(args[1]).bold(false);
-            if (prev != null)
+            MessageBuilder mb = sys.message().bold(true).escaped(args[0]).bold(false).escaped(" is now ").bold(true).escaped(args[1]).bold(false);
+            if (prev != null) {
                 mb.escaped(" (was ").bold(true).escaped(prev).bold(false).escaped(")");
+            }
             group.sendMessage(mb.escaped("."));
         }
     }

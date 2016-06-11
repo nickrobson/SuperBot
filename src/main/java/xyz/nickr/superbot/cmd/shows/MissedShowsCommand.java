@@ -71,13 +71,11 @@ public class MissedShowsCommand implements Command {
                                     eps.add(Integer.parseInt(ep.getEpisode()));
                                     miss.put(season, eps);
                                 }
-                            } catch (NumberFormatException ignored) {
-                            }
+                            } catch (NumberFormatException ignored) {}
                         }
                         season++;
                     }
-                } catch (Exception ignored) {
-                }
+                } catch (Exception ignored) {}
                 List<String> missed = new LinkedList<>();
                 for (Entry<Integer, List<Integer>> e : miss.entrySet()) {
                     if (e.getValue().size() > 2) {
@@ -91,7 +89,7 @@ public class MissedShowsCommand implements Command {
                     }
                 }
                 if (!missed.isEmpty()) {
-                    MessageBuilder<?> mb = sys.message();
+                    MessageBuilder mb = sys.message();
                     String line = Joiner.join(", ", missed);
                     lines.add(mb.bold(m -> m.escaped(show.getDisplay())).escaped(": ").escaped(line).build());
                 }
@@ -99,7 +97,7 @@ public class MissedShowsCommand implements Command {
                 ex.printStackTrace();
             }
         }
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         if (lines.isEmpty()) {
             mb.escaped("You're up to date!");
         } else {

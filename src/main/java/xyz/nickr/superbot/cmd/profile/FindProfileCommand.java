@@ -16,17 +16,17 @@ public class FindProfileCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "findprofile" };
+        return new String[] {"findprofile"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "(uid)", "get yours or (uid)'s " + user.getProvider().getName() + " profile" };
+        return new String[] {"(uid)", "get yours or (uid)'s " + user.getProvider().getName() + " profile"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         if (args.length == 0) {
             Optional<Profile> prof = user.getProfile();
             if (prof.isPresent()) {
@@ -36,7 +36,7 @@ public class FindProfileCommand implements Command {
                     mb.newLine().escaped("   " + acc.getKey() + ": " + (sy != null ? sy.getUserFriendlyName(acc.getValue()) : acc.getValue()));
                 }
             } else {
-                sendNoProfile(sys, user, group);
+                this.sendNoProfile(sys, user, group);
                 return;
             }
         } else {

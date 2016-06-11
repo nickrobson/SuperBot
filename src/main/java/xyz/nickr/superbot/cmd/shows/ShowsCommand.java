@@ -43,7 +43,7 @@ public class ShowsCommand implements Command {
         }
         snd.sort(String.CASE_INSENSITIVE_ORDER);
         int rows = snd.size();
-        MessageBuilder<?> builder = sys.message();
+        MessageBuilder builder = sys.message();
         int pg = 0, maxpg = 0;
         if (args.length > 0) {
             try {

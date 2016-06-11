@@ -6,7 +6,7 @@ import xyz.nickr.superbot.sys.User;
 /**
  * Created by bo0tzz
  */
-public class MarkdownMessageBuilder implements MessageBuilder<MarkdownMessageBuilder> {
+public class MarkdownMessageBuilder extends MessageBuilder {
 
     public static String markdown_escape(String text, boolean code) {
         if (!code) {

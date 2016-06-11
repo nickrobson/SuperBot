@@ -29,7 +29,7 @@ public class OmdbTitleCommand implements Command {
         if (args.length == 0) {
             this.sendUsage(sys, user, group);
         } else {
-            MessageBuilder<?> mb = sys.message();
+            MessageBuilder mb = sys.message();
             Show show = SuperBotShows.getShow(args[0], false);
             if (show != null) {
                 args[0] = show.imdb;

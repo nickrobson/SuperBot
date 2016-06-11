@@ -30,10 +30,10 @@ public class SkypeListener implements SkypeErrorHandler {
     public void join(SkypeConversationUserJoinEvent event) {
         in.kyle.ezskypeezlife.api.user.SkypeUser user = event.getUser();
         SkypeConversation convo = event.getConversation();
-        GroupConfiguration cfg = SuperBotController.getGroupConfiguration(sys.wrap(convo));
+        GroupConfiguration cfg = SuperBotController.getGroupConfiguration(this.sys.wrap(convo));
         if (cfg != null && cfg.isShowJoinMessage()) {
             String welcome = String.format(SuperBotController.WELCOME_MESSAGE_JOIN, user.getUsername(), convo.getTopic());
-            String help = "You can access my help menu by typing `" + sys.prefix() + "help`";
+            String help = "You can access my help menu by typing `" + this.sys.prefix() + "help`";
             String message = Chat.bold(HtmlMessageBuilder.html_escape(welcome)) + "\n" + HtmlMessageBuilder.html_escape(help);
             convo.sendMessage(message);
         }
@@ -44,32 +44,32 @@ public class SkypeListener implements SkypeErrorHandler {
     }
 
     public synchronized void chat(SkypeMessageReceivedEvent event) {
-        cmd(event.getMessage());
+        this.cmd(event.getMessage());
     }
 
     public synchronized void chat(SkypeMessageEditedEvent event) {
         SkypeConversation convo = event.getMessage().getConversation();
-        GroupConfiguration conf = SuperBotController.getGroupConfiguration(sys.wrap(convo), false);
+        GroupConfiguration conf = SuperBotController.getGroupConfiguration(this.sys.wrap(convo), false);
         boolean isGroup = convo.getConversationType() == SkypeConversationType.GROUP;
         if (isGroup && conf != null && conf.isShowEditedMessages()) {
-            MessageBuilder<?> mb = sys.message();
+            MessageBuilder mb = this.sys.message();
             mb.bold(true).escaped(event.getUser().getUsername()).bold(false);
             mb.escaped(" edited their message:").newLine();
             mb.raw(Sys.START_OF_LINE.matcher(event.getContentOld()).replaceAll("&gt; ")).newLine().newLine();
             mb.raw(Sys.START_OF_LINE.matcher(event.getContentNew()).replaceAll("&gt; "));
             convo.sendMessage(mb.build());
         }
-        cmd(event.getMessage());
+        this.cmd(event.getMessage());
     }
 
     public synchronized void cmd(in.kyle.ezskypeezlife.api.conversation.message.SkypeMessage message) {
         in.kyle.ezskypeezlife.api.user.SkypeUser user = message.getSender();
         SkypeConversation group = message.getConversation();
 
-        Group g = sys.wrap(group);
-        User u = sys.wrap(user);
+        Group g = this.sys.wrap(group);
+        User u = this.sys.wrap(user);
 
-        SuperBotCommands.exec(sys, g, u, sys.wrap(message));
+        SuperBotCommands.exec(this.sys, g, u, this.sys.wrap(message));
     }
 
     @Override

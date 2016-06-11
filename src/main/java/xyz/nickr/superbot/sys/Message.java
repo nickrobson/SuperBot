@@ -14,7 +14,7 @@ public interface Message {
 
     void edit(String message);
 
-    default void edit(MessageBuilder<?> message) {
+    default void edit(MessageBuilder message) {
         edit(message.build());
     }
 

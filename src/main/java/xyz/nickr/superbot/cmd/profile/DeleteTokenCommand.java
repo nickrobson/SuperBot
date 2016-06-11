@@ -14,19 +14,19 @@ public class DeleteTokenCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "deletetoken" };
+        return new String[] {"deletetoken"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "", "deletes your token" };
+        return new String[] {"", "deletes your token"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         Optional<Profile> profile = user.getProfile();
         if (profile.isPresent()) {
-            MessageBuilder<?> mb = sys.message();
+            MessageBuilder mb = sys.message();
             Profile prof = profile.get();
             if (prof.has("token")) {
                 prof.remove("token");
@@ -37,7 +37,7 @@ public class DeleteTokenCommand implements Command {
             }
             group.sendMessage(mb);
         } else {
-            sendNoProfile(sys, user, group);
+            this.sendNoProfile(sys, user, group);
         }
     }
 

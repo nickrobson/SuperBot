@@ -1,11 +1,11 @@
 package xyz.nickr.superbot.sys.telegram;
 
-import pro.zackpollard.telegrambot.api.TelegramBot;
+import java.util.Optional;
+
 import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
-
-import java.util.Optional;
 
 /**
  * Created by bo0tzz
@@ -22,27 +22,26 @@ public class TelegramUser implements User {
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return this.user.getUsername();
     }
 
     @Override
     public Optional<String> getDisplayName() {
-        return Optional.of(user.getFullName());
+        return Optional.of(this.user.getFullName());
     }
 
     @Override
     public Sys getProvider() {
-        return sys;
+        return this.sys;
     }
 
     @Override
     public String getUniqueId() {
-        return String.valueOf(user.getId());
+        return String.valueOf(this.user.getId());
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public Message sendMessage(String message) {
-        return sys.wrap(message, sys.sendMessage(TelegramBot.getChat(user.getId()), message));
+    public Message sendMessage(MessageBuilder message) {
+        return this.sys.wrap(message, this.sys.sendMessage(this.sys.getBot().getChat(this.user.getId()), message));
     }
 }

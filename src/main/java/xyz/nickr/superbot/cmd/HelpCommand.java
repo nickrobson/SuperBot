@@ -18,12 +18,12 @@ public class HelpCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "help" };
+        return new String[] {"help"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "(search)", "see the help menu, or only matching lines" };
+        return new String[] {"(search)", "see the help menu, or only matching lines"};
     }
 
     @Override
@@ -39,19 +39,22 @@ public class HelpCommand implements Command {
     String getCmdHelp(Command cmd, String pre, User user, boolean userChat) {
         String s = pre;
         for (String n : cmd.names()) {
-            if (s.length() > pre.length())
+            if (s.length() > pre.length()) {
                 s += ",";
+            }
             s += n.trim();
         }
         String cmdHelp = cmd.help(user, userChat)[0];
-        if (cmdHelp.length() > 0)
+        if (cmdHelp.length() > 0) {
             s += " " + cmd.help(user, userChat)[0];
+        }
         return s;
     }
 
     String pad(String str, int len) {
-        while (str.length() < len)
+        while (str.length() < len) {
             str += " "; // + str;
+        }
         return str;
     }
 
@@ -60,19 +63,23 @@ public class HelpCommand implements Command {
         List<Command> cmds = new ArrayList<>(SuperBotCommands.COMMANDS.size());
         SuperBotCommands.COMMANDS.forEach((name, cmd) -> {
             boolean go = true;
-            for (Command c : cmds)
-                if (c == cmd)
+            for (Command c : cmds) {
+                if (c == cmd) {
                     go = false;
-            if (go)
+                }
+            }
+            if (go) {
                 cmds.add(cmd);
+            }
         });
         GroupConfiguration cfg = SuperBotController.getGroupConfiguration(group);
-        if (cfg != null)
+        if (cfg != null) {
             cmds.removeIf(cmd -> !cfg.isCommandEnabled(cmd));
-        else if (group.getType() == GroupType.USER)
+        } else if (group.getType() == GroupType.USER) {
             cmds.removeIf(cmd -> !cmd.userchat());
-        else
+        } else {
             cmds.removeIf(cmd -> !cmd.alwaysEnabled());
+        }
         if (cmds.isEmpty()) {
             group.sendMessage("It looks like there are no commands enabled in this chat.");
             return;
@@ -80,33 +87,34 @@ public class HelpCommand implements Command {
         String prefix = sys.prefix();
         AtomicInteger maxLen = new AtomicInteger(0);
         cmds.forEach(c -> {
-            String cmdHelp = getCmdHelp(c, prefix, user, group.getType() == GroupType.USER);
-            if (c.perm() == Command.DEFAULT_PERMISSION && cmdHelp.length() > maxLen.get())
+            String cmdHelp = this.getCmdHelp(c, prefix, user, group.getType() == GroupType.USER);
+            if (c.perm() == Command.DEFAULT_PERMISSION && cmdHelp.length() > maxLen.get()) {
                 maxLen.set(cmdHelp.length());
+            }
         });
         List<String> strings = new ArrayList<>(SuperBotCommands.COMMANDS.size());
-        boolean cols = sys.columns();
-        if (!cols)
-            maxLen.set(0);
         cmds.forEach(c -> {
             String[] help = c.help(user, group.getType() == GroupType.USER);
-            if (c.perm() == Command.DEFAULT_PERMISSION)
-                strings.add(pad(getCmdHelp(c, prefix, user, group.getType() == GroupType.USER), maxLen.get()) + (cols ? "" : "\n  ") + " - " + help[1]);
+            if (c.perm() == Command.DEFAULT_PERMISSION) {
+                strings.add(this.pad(this.getCmdHelp(c, prefix, user, group.getType() == GroupType.USER), maxLen.get()) + " - " + help[1]);
+            }
         });
         strings.sort(null);
-        if (args.length > 0)
+        if (args.length > 0) {
             strings.removeIf(s -> !s.contains(args[0]));
+        }
         String welcome = String.format(SuperBotController.WELCOME_MESSAGE, group.getDisplayName());
-        if (group.getType() == GroupType.USER)
+        if (group.getType() == GroupType.USER) {
             welcome = "Welcome, " + user.getUsername();
+        }
         if (strings.isEmpty()) {
             group.sendMessage(sys.message().bold(true).escaped(welcome));
             return;
         }
         int mid = welcome.length() / 2;
-        String wel = pad(welcome.substring(0, mid), maxLen.get());
+        String wel = this.pad(welcome.substring(0, mid), maxLen.get());
         String come = welcome.substring(mid);
-        MessageBuilder<?> mb = sys.message().bold(true).escaped(wel.trim() + come).bold(false);
+        MessageBuilder mb = sys.message().bold(true).escaped(wel.trim() + come).bold(false);
         strings.forEach(s -> mb.newLine().code(true).escaped(s).code(false));
         group.sendMessage(mb);
     }

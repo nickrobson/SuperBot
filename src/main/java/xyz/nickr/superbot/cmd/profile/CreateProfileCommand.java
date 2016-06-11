@@ -14,22 +14,22 @@ public class CreateProfileCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "createprofile" };
+        return new String[] {"createprofile"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[name]", "creates a profile with the given name" };
+        return new String[] {"[name]", "creates a profile with the given name"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length == 0) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             Optional<Profile> existing = user.getProfile();
             Optional<Profile> matching = Profile.getProfile(args[0]);
-            MessageBuilder<?> mb = sys.message();
+            MessageBuilder mb = sys.message();
             if (existing.isPresent()) {
                 mb.escaped("You already have a profile (" + existing.get().getName() + ")");
             } else if (matching.isPresent()) {

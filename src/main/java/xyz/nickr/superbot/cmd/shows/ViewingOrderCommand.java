@@ -15,36 +15,37 @@ public class ViewingOrderCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "vo", "viewingorder" };
+        return new String[] {"vo", "viewingorder"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "[mcu,af]", "gets the show's advised viewing order" };
+        return new String[] {"[mcu,af]", "gets the show's advised viewing order"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         try {
-            if (args.length == 0)
-                sendUsage(sys, user, group);
-            else {
-                InputStream stream = getClass().getResourceAsStream("/viewingorder/" + args[0].toLowerCase() + ".txt");
-                if (stream == null)
+            if (args.length == 0) {
+                this.sendUsage(sys, user, group);
+            } else {
+                InputStream stream = this.getClass().getResourceAsStream("/viewingorder/" + args[0].toLowerCase() + ".txt");
+                if (stream == null) {
                     mb.escaped("No viewing order found with name " + args[0].toLowerCase());
-                else {
+                } else {
                     mb.bold(true).escaped("Viewing order for " + args[0].toLowerCase() + ":").bold(false);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
                     String line;
                     while ((line = reader.readLine()) != null) {
                         mb.raw("\n");
-                        if (line.startsWith("**"))
+                        if (line.startsWith("**")) {
                             mb.bold(true).escaped(line.substring(2)).bold(false);
-                        else if (line.startsWith("//"))
+                        } else if (line.startsWith("//")) {
                             mb.italic(true).escaped(line.substring(2)).italic(false);
-                        else
+                        } else {
                             mb.escaped(line);
+                        }
                     }
                     reader.close();
                 }

@@ -33,7 +33,7 @@ public class SetProgressCommand implements Command {
         if (args.length < 2) {
             this.sendUsage(sys, user, group);
         } else {
-            MessageBuilder<?> mb = sys.message();
+            MessageBuilder mb = sys.message();
             Profile profile = user.getProfile().orElse(null);
             if (profile == null) {
                 this.sendNoProfile(sys, user, group);

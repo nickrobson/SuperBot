@@ -18,12 +18,12 @@ public class UpcomingCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "upcoming" };
+        return new String[] {"upcoming"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "", "gets upcoming episodes of shows" };
+        return new String[] {"", "gets upcoming episodes of shows"};
     }
 
     @Override
@@ -46,7 +46,7 @@ public class UpcomingCommand implements Command {
             }
         }
 
-        MessageBuilder<?> mb = sys.message().bold(true).escaped("Upcoming episodes of shows:").bold(false);
+        MessageBuilder mb = sys.message().bold(true).escaped("Upcoming episodes of shows:").bold(false);
         for (Entry<Calendar, String> entry : days.entrySet()) {
             mb.newLine().bold(true).escaped(Show.getDateString(entry.getKey())).bold(false).escaped(": " + entry.getValue());
         }

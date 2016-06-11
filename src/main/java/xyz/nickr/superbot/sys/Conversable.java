@@ -6,10 +6,10 @@ public interface Conversable {
 
     String getUniqueId();
 
-    Message sendMessage(String message);
+    Message sendMessage(MessageBuilder mb);
 
-    default Message sendMessage(MessageBuilder<?> mb) {
-        return sendMessage(mb.build());
+    default Message sendMessage(String message, Object... params) {
+        return sendMessage(getProvider().message().escaped(message, params));
     }
 
 }

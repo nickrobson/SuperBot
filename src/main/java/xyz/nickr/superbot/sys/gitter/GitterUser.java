@@ -3,6 +3,7 @@ package xyz.nickr.superbot.sys.gitter;
 import java.util.Optional;
 
 import xyz.nickr.jitter.api.User;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 
 public class GitterUser implements xyz.nickr.superbot.sys.User {
@@ -17,27 +18,27 @@ public class GitterUser implements xyz.nickr.superbot.sys.User {
 
     @Override
     public Sys getProvider() {
-        return sys;
+        return this.sys;
     }
 
     @Override
     public String getUniqueId() {
-        return user.getUsername();
+        return this.user.getUsername();
     }
 
     @Override
-    public xyz.nickr.superbot.sys.Message sendMessage(String message) {
-        return sys.wrap(user.sendMessage(message));
+    public xyz.nickr.superbot.sys.Message sendMessage(MessageBuilder message) {
+        return this.sys.wrap(this.user.sendMessage(message.build()));
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return this.user.getUsername();
     }
 
     @Override
     public Optional<String> getDisplayName() {
-        return Optional.of(user.getDisplayName());
+        return Optional.of(this.user.getDisplayName());
     }
 
 }

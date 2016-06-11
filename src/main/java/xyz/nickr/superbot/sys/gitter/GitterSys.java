@@ -25,33 +25,33 @@ public class GitterSys implements Sys {
             System.out.println("Loading SuperBot: Gitter");
             if (token == null) {
                 System.err.println("Gitter Token Missing!");
-                jitter = null;
+                this.jitter = null;
                 return;
             }
-            jitter = Jitter.builder().token(token).build();
-            jitter.events().register(new GitterListener(this));
+            this.jitter = Jitter.builder().token(token).build();
+            this.jitter.events().register(new GitterListener(this));
 
-            User user = jitter.getCurrentUser();
+            User user = this.jitter.getCurrentUser();
 
-            jitter.bayeux().subscribeUserRooms(user);
-            jitter.bayeux().subscribeUserInformation(user);
+            this.jitter.bayeux().subscribeUserRooms(user);
+            this.jitter.bayeux().subscribeUserInformation(user);
 
-            jitter.getCurrentRooms().forEach(room -> {
+            this.jitter.getCurrentRooms().forEach(room -> {
                 System.out.println("Found room: " + room.getName());
-                jitter.bayeux().subscribeRoom(room);
-                jitter.bayeux().subscribeRoomUsers(room);
-                jitter.bayeux().subscribeRoomEvents(room);
-                jitter.bayeux().subscribeRoomMessages(room);
-                jitter.bayeux().subscribeUserRoomUnread(user, room);
+                this.jitter.bayeux().subscribeRoom(room);
+                this.jitter.bayeux().subscribeRoomUsers(room);
+                this.jitter.bayeux().subscribeRoomEvents(room);
+                this.jitter.bayeux().subscribeRoomMessages(room);
+                this.jitter.bayeux().subscribeUserRoomUnread(user, room);
             });
-            onLoaded();
+            this.onLoaded();
             System.out.println("Done SuperBot: Gitter (" + (System.currentTimeMillis() - now) + "ms)");
         }).start();
     }
 
     private void loadRooms() {
-        jitter.getCurrentRooms().forEach(room -> {
-            SuperBotController.getGroupConfiguration(wrap(room));
+        this.jitter.getCurrentRooms().forEach(room -> {
+            SuperBotController.getGroupConfiguration(this.wrap(room));
         });
     }
 
@@ -60,8 +60,9 @@ public class GitterSys implements Sys {
     @Override
     public void onLoaded() {
         // only go through on second call to this function
-        if (doneLoading.getAndSet(true))
-            loadRooms();
+        if (this.doneLoading.getAndSet(true)) {
+            this.loadRooms();
+        }
     }
 
     @Override
@@ -80,12 +81,7 @@ public class GitterSys implements Sys {
     }
 
     @Override
-    public boolean columns() {
-        return false;
-    }
-
-    @Override
-    public MessageBuilder<?> message() {
+    public MessageBuilder message() {
         return new MarkdownMessageBuilder();
     }
 
@@ -96,12 +92,12 @@ public class GitterSys implements Sys {
 
     @Override
     public GroupConfiguration getGroupConfiguration(String uniqueId) {
-        return configs.get(uniqueId);
+        return this.configs.get(uniqueId);
     }
 
     @Override
     public void addGroupConfiguration(GroupConfiguration cfg) {
-        configs.put(cfg.getUniqueId(), cfg);
+        this.configs.put(cfg.getUniqueId(), cfg);
     }
 
     GitterMessage wrap(Message message) {

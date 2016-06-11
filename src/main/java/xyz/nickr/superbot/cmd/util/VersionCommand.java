@@ -22,7 +22,7 @@ public class VersionCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> builder = sys.message();
+        MessageBuilder builder = sys.message();
         builder.bold(true).escaped("Version: ").bold(false).escaped(SuperBotController.VERSION).newLine();
         builder.bold(true).escaped("Build Number: ").bold(false);
         int build = SuperBotController.BUILD_NUMBER;

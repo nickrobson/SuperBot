@@ -17,12 +17,12 @@ public class ListPermsCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "listperms", "showperms" };
+        return new String[] {"listperms", "showperms"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return userchat ? new String[]{ "", "shows your permissions" } : new String[]{ "[profile]", "shows [profile]'s permissions" };
+        return userchat ? new String[] {"", "shows your permissions"} : new String[] {"[profile]", "shows [profile]'s permissions"};
     }
 
     @Override
@@ -32,13 +32,14 @@ public class ListPermsCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         Optional<Profile> prof = args.length == 0 ? user.getProfile() : Profile.getProfile(args[0]);
         if (!prof.isPresent()) {
-            if (args.length == 0)
-                sendNoProfile(sys, user, group);
-            else
+            if (args.length == 0) {
+                this.sendNoProfile(sys, user, group);
+            } else {
                 group.sendMessage(mb.escaped("No profile with name = " + args[0].toLowerCase()));
+            }
             return;
         }
         String name = prof.get().getName();

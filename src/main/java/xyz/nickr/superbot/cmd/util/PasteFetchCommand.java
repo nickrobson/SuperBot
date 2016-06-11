@@ -44,7 +44,7 @@ public class PasteFetchCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         String url = "";
         boolean md = false, code = false;
         for (String arg : args) {
@@ -111,7 +111,7 @@ public class PasteFetchCommand implements Command {
         }
     }
 
-    public void scrape(String url, String raw, MessageBuilder<?> mb, List<String> lines, String expectedType) {
+    public void scrape(String url, String raw, MessageBuilder mb, List<String> lines, String expectedType) {
         try {
             URLConnection conn = new URL(raw).openConnection();
             conn.addRequestProperty("User-Agent", "SuperBot by @smudjy");

@@ -22,21 +22,21 @@ public class GraphCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "graph" };
+        return new String[] {"graph"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[equation]", "graphs an equation for you" };
+        return new String[] {"[equation]", "graphs an equation for you"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length == 0) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
             return;
         }
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         try {
             String input = Joiner.join("", args);
             Expression e = new ExpressionBuilder(input).variables("x", "X").build();

@@ -41,7 +41,7 @@ public class HangmanCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         String prefix = sys.prefix();
         Profile profile = user.getProfile().orElse(null);
         if (profile == null) {
@@ -108,7 +108,7 @@ public class HangmanCommand implements Command {
                         this.numCorrect.put(profile.getName(), this.numCorrect.getOrDefault(profile.getName(), 0) + numChanged);
                         this.found = sb.toString();
                         if (this.currentPhrase.equals(this.found)) {
-                            MessageBuilder<?> stats = sys.message();
+                            MessageBuilder stats = sys.message();
                             List<Entry<String, Integer>> contrib = this.numCorrect.entrySet().stream().sorted((e1, e2) -> e2.getValue() - e1.getValue()).collect(Collectors.toList());
                             String curr = this.currentPhrase.replaceAll("[^A-Za-z]", "");
                             for (Entry<String, Integer> player : contrib) {

@@ -2,71 +2,81 @@ package xyz.nickr.superbot.sys;
 
 import java.util.function.Consumer;
 
-public interface MessageBuilder<T extends MessageBuilder<T>> {
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import xyz.nickr.superbot.keyboard.Keyboard;
 
-    int length();
+@Accessors(chain = true)
+public abstract class MessageBuilder {
 
-    String build();
+    @Getter
+    @Setter
+    private Keyboard keyboard;
 
-    T newLine();
+    public abstract int length();
 
-    T name(User user);
+    public abstract String build();
 
-    T escaped(String text, Object... params);
+    public abstract MessageBuilder newLine();
 
-    T raw(String text, Object... params);
+    public abstract MessageBuilder name(User user);
 
-    T link(String url, String text);
+    public abstract MessageBuilder escaped(String text, Object... params);
 
-    default T link(String url) {
+    public abstract MessageBuilder raw(String text, Object... params);
+
+    public abstract MessageBuilder link(String url, String text);
+
+    public abstract MessageBuilder bold(boolean on);
+
+    public abstract MessageBuilder italic(boolean on);
+
+    public abstract MessageBuilder code(boolean on);
+
+    public abstract MessageBuilder underline(boolean on);
+
+    public abstract MessageBuilder strikethrough(boolean on);
+
+    public abstract MessageBuilder blink(boolean on);
+
+    public abstract MessageBuilder size(int s);
+
+    public MessageBuilder link(String url) {
         return this.link(url, url);
     }
 
-    T bold(boolean on);
-
-    T italic(boolean on);
-
-    T code(boolean on);
-
-    T underline(boolean on);
-
-    T strikethrough(boolean on);
-
-    T blink(boolean on);
-
-    T size(int s);
-
-    default T bold(Consumer<T> consumer) {
+    public MessageBuilder bold(Consumer<MessageBuilder> consumer) {
         consumer.accept(this.bold(true));
         return this.bold(false);
     }
 
-    default T italic(Consumer<T> consumer) {
+    public MessageBuilder italic(Consumer<MessageBuilder> consumer) {
         consumer.accept(this.italic(true));
         return this.italic(false);
     }
 
-    default T code(Consumer<T> consumer) {
+    public MessageBuilder code(Consumer<MessageBuilder> consumer) {
         consumer.accept(this.code(true));
         return this.code(false);
     }
 
-    default T underline(Consumer<T> consumer) {
+    public MessageBuilder underline(Consumer<MessageBuilder> consumer) {
         consumer.accept(this.underline(true));
         return this.underline(false);
     }
 
-    default T strikethrough(Consumer<T> consumer) {
+    public MessageBuilder strikethrough(Consumer<MessageBuilder> consumer) {
         consumer.accept(this.strikethrough(true));
         return this.strikethrough(false);
     }
 
-    default T blink(Consumer<T> consumer) {
+    public MessageBuilder blink(Consumer<MessageBuilder> consumer) {
         consumer.accept(this.blink(true));
         return this.blink(false);
     }
 
-    default T size(int size, Consumer<T> consumer) {
+    public MessageBuilder size(int size, Consumer<MessageBuilder> consumer) {
         consumer.accept(this.size(size));
         return this.size(0);
     }

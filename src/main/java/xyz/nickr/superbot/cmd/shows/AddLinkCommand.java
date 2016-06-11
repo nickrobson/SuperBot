@@ -41,7 +41,7 @@ public class AddLinkCommand implements Command {
         if (args.length < 2) {
             this.sendUsage(sys, user, group);
         } else {
-            MessageBuilder<?> mb = sys.message();
+            MessageBuilder mb = sys.message();
             String imdb = args[0];
             if (!JavaOMDB.IMDB_ID_PATTERN.matcher(imdb).matches()) {
                 group.sendMessage(mb.escaped("Not an IMDB ID: " + imdb));

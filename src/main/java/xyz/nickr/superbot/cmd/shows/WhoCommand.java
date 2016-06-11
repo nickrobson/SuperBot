@@ -92,8 +92,7 @@ public class WhoCommand implements Command {
                                 done = hasNewEpisode = true;
                                 break;
                             }
-                        } catch (NumberFormatException ex) {
-                        }
+                        } catch (NumberFormatException ex) {}
                     }
                     if (done) {
                         break;
@@ -103,8 +102,7 @@ public class WhoCommand implements Command {
                 shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" + this.pad("(", maxEpLen - ep.length() + 1).substring(0, maxEpLen - ep.length()) : "      ") + " (" + ep + ")");
             }
         });
-        boolean cols = sys.columns();
-        int rows = cols ? shows.size() / 2 + shows.size() % 2 : shows.size();
+        int rows = shows.size() / 2 + shows.size() % 2;
         shows.sort(String.CASE_INSENSITIVE_ORDER);
         int maxLen1 = shows.subList(0, rows).stream().mapToInt(String::length).max().orElse(0);
         int maxLen2 = shows.subList(rows, shows.size()).stream().mapToInt(String::length).max().orElse(0);
@@ -113,10 +111,10 @@ public class WhoCommand implements Command {
         for (int i = 0; i < rows; i++) {
             if (shows.size() > i) {
                 String t = this.pad(shows.get(i), maxLen1);
-                if (cols && shows.size() > rows + i) {
+                if (shows.size() > rows + i) {
                     t += "   |   " + this.pad(shows.get(rows + i), maxLen2);
                 }
-                MessageBuilder<?> mb = sys.message().code(true).escaped(t).code(false);
+                MessageBuilder mb = sys.message().code(true).escaped(t).code(false);
                 if (i != rows - 1) {
                     mb.newLine().escaped("   ");
                 }
@@ -124,7 +122,7 @@ public class WhoCommand implements Command {
             }
         }
 
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         if (shows.size() > 0) {
             group.sendMessage(mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false).newLine().escaped("   ").raw(s));
         } else {

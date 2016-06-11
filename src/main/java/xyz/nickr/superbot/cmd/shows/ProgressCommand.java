@@ -21,17 +21,17 @@ public class ProgressCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "progress", "prg" };
+        return new String[] {"progress", "prg"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "(-a) [shows...]", "see progress on all or provided shows" };
+        return new String[] {"(-a) [shows...]", "see progress on all or provided shows"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> builder = sys.message();
+        MessageBuilder builder = sys.message();
         boolean sent = false;
         boolean all_eps = false;
 
@@ -49,15 +49,17 @@ public class ProgressCommand implements Command {
             sent = true;
             for (int i = 0; i < argz.size(); i++) {
                 Show show = SuperBotShows.getShow(argz.get(i));
-                if (i > 0)
+                if (i > 0) {
                     builder.raw("\n");
-                if (show == null)
+                }
+                if (show == null) {
                     builder = builder.escaped("Invalid show: " + argz.get(i));
-                else
-                    builder = show(show.imdb, builder, all_eps);
+                } else {
+                    builder = this.show(show.imdb, builder, all_eps);
+                }
             }
         } else {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
             return;
         }
         if (sent) {
@@ -67,13 +69,14 @@ public class ProgressCommand implements Command {
         }
     }
 
-    MessageBuilder<?> show(String show, MessageBuilder<?> builder, boolean all_eps) {
+    MessageBuilder show(String show, MessageBuilder builder, boolean all_eps) {
         Map<String, String> prg = SuperBotController.getProgress(show);
         List<String> eps = prg.values().stream().filter(s -> SuperBotShows.EPISODE_PATTERN.matcher(s).matches()).sorted((e1, e2) -> SuperBotController.whichEarlier(e1, e2).equals(e1) ? -1 : 1).collect(Collectors.toList());
         List<String> epz = new LinkedList<>();
         eps.forEach(e -> {
-            if (!epz.contains(e))
+            if (!epz.contains(e)) {
                 epz.add(e);
+            }
         });
         builder.bold(true).escaped("Episode progress: " + SuperBotShows.getShow(show).getDisplay()).bold(false);
         if (epz.size() > 0) {

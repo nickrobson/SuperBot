@@ -6,7 +6,7 @@ import xyz.nickr.superbot.sys.User;
 /**
  * Created by bo0tzz
  */
-public class TelegramMessageBuilder implements MessageBuilder<TelegramMessageBuilder> {
+public class TelegramMessageBuilder extends MessageBuilder {
 
     public static String markdown_escape(String text, boolean code) {
         if (!code) {

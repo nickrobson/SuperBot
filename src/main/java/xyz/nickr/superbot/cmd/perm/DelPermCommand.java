@@ -14,17 +14,17 @@ public class DelPermCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "delperm" };
+        return new String[] {"delperm"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[]{ "[profile] [perm]", "removes [perm] from [profile]" };
+        return new String[] {"[profile] [perm]", "removes [perm] from [profile]"};
     }
 
     @Override
     public Permission perm() {
-        return string("permissions.modify");
+        return this.string("permissions.modify");
     }
 
     @Override
@@ -35,13 +35,13 @@ public class DelPermCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 2) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             if (!Profile.getProfile(args[0]).isPresent()) {
                 group.sendMessage(sys.message().escaped("No profile with name = " + args[0].toLowerCase()));
                 return;
             }
-            MessageBuilder<?> mb = sys.message().bold(true).escaped(args[0]).bold(false);
+            MessageBuilder mb = sys.message().bold(true).escaped(args[0]).bold(false);
             if (SuperBotPermissions.set(args[0], args[1], false)) {
                 mb.escaped(" no longer has: ");
             } else {

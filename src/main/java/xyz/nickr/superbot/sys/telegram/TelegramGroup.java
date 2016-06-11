@@ -1,16 +1,25 @@
 package xyz.nickr.superbot.sys.telegram;
 
-import pro.zackpollard.telegrambot.api.chat.*;
-import xyz.nickr.superbot.sys.*;
-import xyz.nickr.superbot.sys.User;
-
-import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import pro.zackpollard.telegrambot.api.chat.Chat;
+import pro.zackpollard.telegrambot.api.chat.ChatMember;
+import pro.zackpollard.telegrambot.api.chat.GroupChat;
+import pro.zackpollard.telegrambot.api.chat.IndividualChat;
+import pro.zackpollard.telegrambot.api.chat.SuperGroupChat;
+import xyz.nickr.superbot.sys.Group;
+import xyz.nickr.superbot.sys.GroupType;
+import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
+import xyz.nickr.superbot.sys.Sys;
+import xyz.nickr.superbot.sys.User;
 
 /**
  * Created by bo0tzz
  */
 public class TelegramGroup implements Group {
+
     private final Chat chat;
     private final TelegramSys sys;
 
@@ -21,12 +30,12 @@ public class TelegramGroup implements Group {
 
     @Override
     public String getDisplayName() {
-        if(chat instanceof GroupChat) {
-            return ((GroupChat) chat).getName();
-        } else if (chat instanceof SuperGroupChat) {
-            return ((SuperGroupChat) chat).getName();
-        } else if (chat instanceof IndividualChat) {
-            return ((IndividualChat) chat).getPartner().getUsername();
+        if (this.chat instanceof GroupChat) {
+            return ((GroupChat) this.chat).getName();
+        } else if (this.chat instanceof SuperGroupChat) {
+            return ((SuperGroupChat) this.chat).getName();
+        } else if (this.chat instanceof IndividualChat) {
+            return ((IndividualChat) this.chat).getPartner().getUsername();
         } else {
             return "";
         }
@@ -34,7 +43,7 @@ public class TelegramGroup implements Group {
 
     @Override
     public GroupType getType() {
-        if (chat instanceof IndividualChat) {
+        if (this.chat instanceof IndividualChat) {
             return GroupType.USER;
         }
         return GroupType.GROUP;
@@ -42,26 +51,31 @@ public class TelegramGroup implements Group {
 
     @Override
     public boolean isAdmin(User u) {
+        for (ChatMember cm : this.chat.getChatAdministrators()) {
+            if (cm.getUser().getUsername().equals(this.sys.getBot().getBotUsername())) {
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public Set<User> getUsers() {
-        return Collections.emptySet();
+        return this.chat.getChatAdministrators().stream().map(m -> this.sys.wrap(m.getUser())).collect(Collectors.toSet());
     }
 
     @Override
     public Sys getProvider() {
-        return sys;
+        return this.sys;
     }
 
     @Override
     public String getUniqueId() {
-        return chat.getId();
+        return this.chat.getId();
     }
 
     @Override
-    public Message sendMessage(String message) {
-        return sys.wrap(message, sys.sendMessage(chat, message));
+    public Message sendMessage(MessageBuilder message) {
+        return this.sys.wrap(message, this.sys.sendMessage(this.chat, message));
     }
 }

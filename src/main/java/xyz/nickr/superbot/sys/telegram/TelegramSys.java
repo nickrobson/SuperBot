@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -14,6 +16,12 @@ import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage.SendableTextMessageBuilder;
+import pro.zackpollard.telegrambot.api.keyboards.KeyboardButton;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder;
+import xyz.nickr.superbot.keyboard.Keyboard;
+import xyz.nickr.superbot.keyboard.KeyboardRow;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.Message;
@@ -35,17 +43,21 @@ public class TelegramSys implements Sys {
         new Thread(() -> {
             long now = System.currentTimeMillis();
             System.out.println("Loading SuperBot: Telegram");
-            bot = TelegramBot.login(key);
-            bot.getEventsManager().register(new TelegramListener(bot, this));
-            bot.startUpdates(true);
+            this.bot = TelegramBot.login(key);
+            this.bot.getEventsManager().register(new TelegramListener(this.bot, this));
+            this.bot.startUpdates(true);
 
             try {
-                usernameCache.load(new FileInputStream(new File("tgusers.cache")));
+                this.usernameCache.load(new FileInputStream(new File("tgusers.cache")));
             } catch (IOException e) {
                 e.printStackTrace();
             }
             System.out.println("Done SuperBot: Telegram (" + (System.currentTimeMillis() - now) + "ms)");
         }).start();
+    }
+
+    public TelegramBot getBot() {
+        return this.bot;
     }
 
     @Override
@@ -64,28 +76,28 @@ public class TelegramSys implements Sys {
     }
 
     @Override
-    public boolean columns() {
-        return false;
+    public boolean hasKeyboards() {
+        return true;
     }
 
     @Override
-    public MessageBuilder<?> message() {
+    public MessageBuilder message() {
         return new TelegramMessageBuilder();
     }
 
     @Override
     public String getUserFriendlyName(String uniqueId) {
-        return usernameCache.getProperty(uniqueId, uniqueId);
+        return this.usernameCache.getProperty(uniqueId, uniqueId);
     }
 
     @Override
     public GroupConfiguration getGroupConfiguration(String uniqueId) {
-        return configs.get(uniqueId);
+        return this.configs.get(uniqueId);
     }
 
     @Override
     public void addGroupConfiguration(GroupConfiguration cfg) {
-        configs.put(cfg.getUniqueId(), cfg);
+        this.configs.put(cfg.getUniqueId(), cfg);
     }
 
     Group wrap(Chat chat) {
@@ -95,13 +107,14 @@ public class TelegramSys implements Sys {
     User wrap(pro.zackpollard.telegrambot.api.user.User user) {
         String un = user.getUsername();
         if (un != null) {
-            if (!un.equals(usernameCache.setProperty(String.valueOf(user.getId()), un))) {
+            if (!un.equals(this.usernameCache.setProperty(String.valueOf(user.getId()), un))) {
                 try {
                     Path tmp = Files.createTempFile("superbot-tguserscache-" + System.nanoTime(), ".tmp");
-                    usernameCache.store(Files.newBufferedWriter(tmp), "Telegram Username Cache file");
+                    this.usernameCache.store(Files.newBufferedWriter(tmp), "Telegram Username Cache file");
                     Files.copy(tmp, new File("tgusers.cache").toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    if (!tmp.toFile().delete())
+                    if (!tmp.toFile().delete()) {
                         tmp.toFile().deleteOnExit();
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -110,13 +123,26 @@ public class TelegramSys implements Sys {
         return new TelegramUser(user, this);
     }
 
-    Message wrap(String msg, pro.zackpollard.telegrambot.api.chat.message.Message message) {
-        return new TelegramMessage(this, msg, message);
+    Message wrap(MessageBuilder msg, pro.zackpollard.telegrambot.api.chat.message.Message message) {
+        return new TelegramMessage(this, msg.build(), message);
     }
 
-    public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, String message) {
-        SendableTextMessage msg = SendableTextMessage.builder().message(message).parseMode(ParseMode.MARKDOWN).build();
-        return bot.sendMessage(chat, msg);
+    public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, MessageBuilder message) {
+        String m = message.build();
+        Keyboard kb = message.getKeyboard();
+        SendableTextMessageBuilder msg = SendableTextMessage.builder().message(m).parseMode(ParseMode.MARKDOWN);
+        if (kb != null) {
+            ReplyKeyboardMarkupBuilder reply = ReplyKeyboardMarkup.builder();
+            for (KeyboardRow kbr : kb) {
+                List<KeyboardButton> btns = new LinkedList<>();
+                kbr.forEach(b -> {
+                    btns.add(KeyboardButton.builder().text(b.getText()).build());
+                });
+                reply.addRow(btns);
+            }
+            msg.replyMarkup(reply.build());
+        }
+        return this.bot.sendMessage(chat, msg.build());
     }
 
 }

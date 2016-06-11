@@ -40,16 +40,18 @@ public class OmdbSeasonsCommand implements Command {
         if (args.length < 1) {
             this.sendUsage(sys, user, group);
         } else {
-            MessageBuilder<?> mb = sys.message();
+            MessageBuilder mb = sys.message();
             Show show = SuperBotShows.getShow(args[0], false);
             List<SeasonResult> seasons = new LinkedList<>();
+            String showName = "";
             if (show != null) {
                 args[0] = show.imdb;
                 seasons.addAll(show.getSeasons());
+                showName = show.getDisplay();
             } else {
                 if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                     TitleResult title = SuperBotController.OMDB.titleById(args[0]);
-                    mb.italic(true).escaped(title.getTitle() + " seasons:").italic(false);
+                    showName = title.getTitle();
                     for (SeasonResult season : title.seasons()) {
                         seasons.add(season);
                     }
@@ -59,6 +61,7 @@ public class OmdbSeasonsCommand implements Command {
                     return;
                 }
             }
+            mb.italic(true).escaped(showName + " seasons:").italic(false);
             for (SeasonResult season : seasons) {
                 mb.newLine().bold(true).escaped("Season " + season.getSeason()).bold(false);
                 SeasonEpisodeResult[] episodes = season.getEpisodes();

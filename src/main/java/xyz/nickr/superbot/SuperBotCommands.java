@@ -158,7 +158,7 @@ public class SuperBotCommands {
 
         if (g.getType() == GroupType.GROUP || userchat) {
             if (!cmd.perm().has(sys, g, u, u.getProfile())) {
-                MessageBuilder<?> mb = sys.message();
+                MessageBuilder mb = sys.message();
                 mb.bold(true).escaped("Error: ").bold(false);
                 mb.escaped("You don't have permission to use " + prefix + cmdName + "!");
                 g.sendMessage(mb.toString());

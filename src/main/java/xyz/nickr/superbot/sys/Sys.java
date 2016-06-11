@@ -12,9 +12,11 @@ public interface Sys {
 
     boolean isUIDCaseSensitive();
 
-    boolean columns();
+    default boolean hasKeyboards() {
+        return false;
+    }
 
-    MessageBuilder<? extends MessageBuilder<?>> message();
+    MessageBuilder message();
 
     String getUserFriendlyName(String uniqueId);
 

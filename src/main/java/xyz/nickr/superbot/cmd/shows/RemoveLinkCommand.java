@@ -19,25 +19,25 @@ import xyz.nickr.superbot.sys.User;
 public class RemoveLinkCommand implements Command {
     @Override
     public String[] names() {
-        return new String[] { "removelink" };
+        return new String[] {"removelink"};
     }
 
     @Override
     public Permission perm() {
-        return string("shows.remove");
+        return this.string("shows.remove");
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "[link]", "Remove a link from its associated show" };
+        return new String[] {"[link]", "Remove a link from its associated show"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length == 0) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         } else {
-            MessageBuilder<?> mb = sys.message();
+            MessageBuilder mb = sys.message();
             Show show = SuperBotShows.getShow(args[0]);
             if (show != null) {
                 if (SuperBotShows.removeLink(args[0])) {

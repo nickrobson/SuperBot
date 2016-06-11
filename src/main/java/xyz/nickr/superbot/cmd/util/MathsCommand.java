@@ -25,21 +25,21 @@ public class MathsCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "maths", "math" };
+        return new String[] {"maths", "math"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[maths]", "interprets maths for you" };
+        return new String[] {"[maths]", "interprets maths for you"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length == 0) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
             return;
         }
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         try {
             mb.escaped("[Maths] Query: " + Joiner.join(" ", args)).newLine();
             List<String> ags = new ArrayList<>(Arrays.asList(args));
@@ -47,14 +47,8 @@ public class MathsCommand implements Command {
             vars.entrySet().removeIf(e -> !e.getValue().matches());
             ags.removeIf(a -> vars.containsKey(a));
             String input = Joiner.join("", ags);
-            List<Map.Entry<String, String>> vs = vars.entrySet().stream()
-                                                        .map(e -> e.getValue())
-                                                        .map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2)))
-                                                        .collect(Collectors.toList());
-            Expression e = new ExpressionBuilder(input)
-                    .variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet()))
-                    .variables("e", "Pi")
-                    .build();
+            List<Map.Entry<String, String>> vs = vars.entrySet().stream().map(e -> e.getValue()).map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2))).collect(Collectors.toList());
+            Expression e = new ExpressionBuilder(input).variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet())).variables("e", "Pi").build();
             for (Map.Entry<String, String> ent : vs) {
                 e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
             }

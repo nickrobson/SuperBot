@@ -20,8 +20,9 @@ public class ConvertCommand implements Command {
 
     private void register(String row, String col, Conversion con) {
         Map<String, Conversion> map = conversions.get(row);
-        if (map == null)
+        if (map == null) {
             map = new HashMap<>();
+        }
         map.put(col, con);
         conversions.put(row, map);
     }
@@ -29,7 +30,7 @@ public class ConvertCommand implements Command {
     @Override
     public void init() {
         conversions.clear();
-        register("C", "F", new Conversion("Celsius", "Fahrenheit", true, true, s -> {
+        this.register("C", "F", new Conversion("Celsius", "Fahrenheit", true, true, s -> {
             BigDecimal a = new BigDecimal(s);
             BigDecimal d = a.multiply(BigDecimal.valueOf(9.0 / 5.0)).add(BigDecimal.valueOf(32));
             d = d.round(new MathContext(7, RoundingMode.HALF_UP));
@@ -39,7 +40,7 @@ public class ConvertCommand implements Command {
                 return d.toString();
             }
         }));
-        register("F", "C", new Conversion("Fahrenheit", "Celsius", true, true, s -> {
+        this.register("F", "C", new Conversion("Fahrenheit", "Celsius", true, true, s -> {
             BigDecimal a = new BigDecimal(s);
             BigDecimal d = a.subtract(BigDecimal.valueOf(32)).multiply(BigDecimal.valueOf(5.0 / 9.0));
             d = d.round(new MathContext(7, RoundingMode.HALF_UP));
@@ -50,18 +51,18 @@ public class ConvertCommand implements Command {
             }
         }));
         MultiplierConversion kmmi = new MultiplierConversion("Kilometres", "Miles", true, 0.6214);
-        register("km", "mi", kmmi);
-        register("mi", "km", kmmi.reverse());
+        this.register("km", "mi", kmmi);
+        this.register("mi", "km", kmmi.reverse());
     }
 
     @Override
     public String[] names() {
-        return new String[] { "convert" };
+        return new String[] {"convert"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "[from] [to] [input...]", "converts [input] : [from] => [to]" };
+        return new String[] {"[from] [to] [input...]", "converts [input] : [from] => [to]"};
     }
 
     @Override
@@ -71,23 +72,25 @@ public class ConvertCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> builder = sys.message();
+        MessageBuilder builder = sys.message();
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             for (Map.Entry<String, Map<String, Conversion>> cell : conversions.entrySet()) {
                 for (Map.Entry<String, Conversion> sub : cell.getValue().entrySet()) {
-                    if (builder.length() > 0)
+                    if (builder.length() > 0) {
                         builder.newLine();
+                    }
                     builder.escaped(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(), sub.getValue().from, sub.getValue().to));
                 }
             }
             group.sendMessage(builder.toString());
         } else if (args.length < 3) {
-            sendUsage(null, user, group);
+            this.sendUsage(null, user, group);
         } else {
             StringBuilder sb = new StringBuilder();
             for (int i = 2; i < args.length; i++) {
-                if (sb.length() > 0)
+                if (sb.length() > 0) {
                     sb.append(" ");
+                }
                 sb.append(args[i]);
             }
             String from = args[0];
@@ -105,10 +108,11 @@ public class ConvertCommand implements Command {
                 }
                 try {
                     String res = conv.apply(input);
-                    if (conv.appendSymbol)
+                    if (conv.appendSymbol) {
                         group.sendMessage(sys.message().escaped("[Convert] " + String.format("%s%s => %s%s", input, from, res, to)));
-                    else
+                    } else {
                         group.sendMessage(sys.message().escaped("[Convert] " + String.format("(%s => %s) %s => %s", from, to, input, res)));
+                    }
                 } catch (Throwable t) {
                     group.sendMessage(sys.message().escaped("[Convert] An error occurred while converting : " + t.getClass().getSimpleName() + "\n" + t.getMessage()));
                 }
@@ -120,8 +124,8 @@ public class ConvertCommand implements Command {
 
     public static class Conversion {
 
-        public final String            from, to;
-        final boolean                  numbers, appendSymbol;
+        public final String from, to;
+        final boolean numbers, appendSymbol;
         final Function<String, String> func;
 
         public Conversion(String from, String to, boolean numbers, boolean appendSymbol, Function<String, String> func) {
@@ -133,7 +137,7 @@ public class ConvertCommand implements Command {
         }
 
         public String apply(String s) {
-            return func.apply(s);
+            return this.func.apply(s);
         }
 
     }
@@ -157,7 +161,7 @@ public class ConvertCommand implements Command {
         }
 
         public MultiplierConversion reverse() {
-            return new MultiplierConversion(to, from, appendSymbol, 1.0 / multiplier);
+            return new MultiplierConversion(this.to, this.from, this.appendSymbol, 1.0 / this.multiplier);
         }
 
     }
@@ -181,7 +185,7 @@ public class ConvertCommand implements Command {
         }
 
         public AdderConversion reverse() {
-            return new AdderConversion(to, from, appendSymbol, -add);
+            return new AdderConversion(this.to, this.from, this.appendSymbol, -this.add);
         }
 
     }

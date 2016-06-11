@@ -14,19 +14,19 @@ public class RegisterAccountCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "register" };
+        return new String[] {"register"};
     }
 
     @Override
     public String[] help(User user, boolean userchat) {
-        return new String[]{ "[profile] [token]", "register your account" };
+        return new String[] {"[profile] [token]", "register your account"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         if (args.length < 2) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             Optional<Profile> profile = Profile.getProfile(args[0]);
             if (profile.isPresent()) {

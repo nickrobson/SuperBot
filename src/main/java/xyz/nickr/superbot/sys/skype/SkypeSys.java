@@ -25,10 +25,10 @@ public class SkypeSys implements Sys {
             System.out.println("Loading SuperBot: Skype");
             try {
                 SkypeListener listener = new SkypeListener(this);
-                skype = new EzSkype(new SkypeCredentials(username, password));
-                skype.setErrorHandler(listener);
-                skype.login();
-                skype.getEventManager().registerEvents(listener);
+                this.skype = new EzSkype(new SkypeCredentials(username, password));
+                this.skype.setErrorHandler(listener);
+                this.skype.login();
+                this.skype.getEventManager().registerEvents(listener);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -52,12 +52,7 @@ public class SkypeSys implements Sys {
     }
 
     @Override
-    public boolean columns() {
-        return true;
-    }
-
-    @Override
-    public MessageBuilder<?> message() {
+    public MessageBuilder message() {
         return new HtmlMessageBuilder();
     }
 
@@ -68,12 +63,12 @@ public class SkypeSys implements Sys {
 
     @Override
     public GroupConfiguration getGroupConfiguration(String uniqueId) {
-        return configs.get(uniqueId);
+        return this.configs.get(uniqueId);
     }
 
     @Override
     public void addGroupConfiguration(GroupConfiguration cfg) {
-        configs.put(cfg.getUniqueId(), cfg);
+        this.configs.put(cfg.getUniqueId(), cfg);
     }
 
     Group wrap(SkypeConversation group) {

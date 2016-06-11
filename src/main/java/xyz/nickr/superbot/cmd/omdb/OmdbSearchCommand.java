@@ -27,7 +27,7 @@ public class OmdbSearchCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         JavaOMDB omdb = SuperBotController.OMDB;
-        MessageBuilder<?> mb = sys.message();
+        MessageBuilder mb = sys.message();
         String search = "";
         int page = 1;
         for (String arg : args) {

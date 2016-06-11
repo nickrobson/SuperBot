@@ -9,6 +9,7 @@ import xyz.nickr.jitter.api.RoomUser;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -24,27 +25,27 @@ public class GitterGroup implements Group {
 
     @Override
     public Sys getProvider() {
-        return sys;
+        return this.sys;
     }
 
     @Override
     public String getUniqueId() {
-        return room.getID();
+        return this.room.getID();
     }
 
     @Override
-    public Message sendMessage(String message) {
-        return sys.wrap(room.sendMessage(message));
+    public Message sendMessage(MessageBuilder message) {
+        return this.sys.wrap(this.room.sendMessage(message.build()));
     }
 
     @Override
     public String getDisplayName() {
-        return room.getName();
+        return this.room.getName();
     }
 
     @Override
     public GroupType getType() {
-        switch (room.getType()) {
+        switch (this.room.getType()) {
             case USER:
                 return GroupType.USER;
             default:
@@ -54,13 +55,13 @@ public class GitterGroup implements Group {
 
     @Override
     public boolean isAdmin(User u) {
-        Optional<RoomUser> ru = room.getUsers().stream().filter(g -> g.getID().equals(u.getUniqueId())).findAny();
+        Optional<RoomUser> ru = this.room.getUsers().stream().filter(g -> g.getID().equals(u.getUniqueId())).findAny();
         return ru.isPresent() && ru.get().isAdmin();
     }
 
     @Override
     public Set<User> getUsers() {
-        return room.getUsers().stream().map(u -> sys.wrap(u)).collect(Collectors.toSet());
+        return this.room.getUsers().stream().map(u -> this.sys.wrap(u)).collect(Collectors.toSet());
     }
 
 }

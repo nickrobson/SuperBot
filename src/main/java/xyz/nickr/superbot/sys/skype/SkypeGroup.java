@@ -7,6 +7,7 @@ import in.kyle.ezskypeezlife.api.conversation.SkypeConversation;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -22,29 +23,27 @@ public class SkypeGroup implements Group {
 
     @Override
     public Sys getProvider() {
-        return sys;
+        return this.sys;
     }
 
     @Override
     public String getUniqueId() {
-        return conv.getLongId();
+        return this.conv.getLongId();
     }
 
     @Override
     public String getDisplayName() {
-        return conv.getTopic();
+        return this.conv.getTopic();
     }
 
     @Override
-    public Message sendMessage(String message) {
-        if (conv != null)
-            return sys.wrap(conv.sendMessage(message));
-        return null;
+    public Message sendMessage(MessageBuilder message) {
+        return this.sys.wrap(this.conv.sendMessage(message.build()));
     }
 
     @Override
     public GroupType getType() {
-        switch (conv.getConversationType()) {
+        switch (this.conv.getConversationType()) {
             case USER:
                 return GroupType.USER;
             case GROUP:
@@ -56,12 +55,12 @@ public class SkypeGroup implements Group {
 
     @Override
     public Set<User> getUsers() {
-        return conv.getUsers().stream().map(u -> sys.wrap(u)).collect(Collectors.toSet());
+        return this.conv.getUsers().stream().map(u -> this.sys.wrap(u)).collect(Collectors.toSet());
     }
 
     @Override
     public boolean isAdmin(User u) {
-        return conv.isAdmin(((SkypeUser) u).user);
+        return this.conv.isAdmin(((SkypeUser) u).user);
     }
 
 }

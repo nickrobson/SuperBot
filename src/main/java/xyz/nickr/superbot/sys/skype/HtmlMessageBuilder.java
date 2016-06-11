@@ -3,7 +3,7 @@ package xyz.nickr.superbot.sys.skype;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.User;
 
-public class HtmlMessageBuilder implements MessageBuilder<HtmlMessageBuilder> {
+public class HtmlMessageBuilder extends MessageBuilder {
 
     public static String html_escape(String text) {
         text = text.replace("&", "&amp;"); // & is replaced with &amp;
