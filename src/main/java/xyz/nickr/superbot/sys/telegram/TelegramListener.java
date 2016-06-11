@@ -408,7 +408,8 @@ public class TelegramListener implements Listener {
         @Override
         public void edit(MessageBuilder message) {
             System.out.format("Editing %s to %s\n", this.messageId, message);
-            TelegramListener.this.sys.getBot().editInlineMessageText(this.messageId, message.build(), ParseMode.MARKDOWN, true, null);
+            boolean status = TelegramListener.this.sys.getBot().editInlineMessageText(this.messageId, message.build(), ParseMode.MARKDOWN, true, null);
+            System.out.println(status ? "Success!" : "Failed.");
         }
 
         @Override
