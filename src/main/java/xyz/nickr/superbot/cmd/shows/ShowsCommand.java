@@ -52,7 +52,6 @@ public class ShowsCommand implements Command {
         snd.sort(String.CASE_INSENSITIVE_ORDER);
         int rows = snd.size();
         final int maxpages = rows / ShowsCommand.SHOWS_PER_PAGE + (rows % ShowsCommand.SHOWS_PER_PAGE == 0 ? 0 : 1);
-        MessageBuilder builder = sys.message();
         Function<Integer, MessageBuilder> getPage = p -> {
             MessageBuilder b = sys.message();
             final List<String> send = snd.subList(p * ShowsCommand.SHOWS_PER_PAGE, Math.min((p + 1) * ShowsCommand.SHOWS_PER_PAGE, snd.size()));
@@ -65,13 +64,14 @@ public class ShowsCommand implements Command {
                     spc += ' ';
                 }
                 final String spaces = spc;
-                builder.code(m -> m.escaped(send.get(x) + spaces));
+                b.code(m -> m.escaped(send.get(x) + spaces));
                 if (i != j - 1) {
-                    builder.newLine();
+                    b.newLine();
                 }
             }
             return b;
         };
+        MessageBuilder builder = sys.message();
         if (sys.hasKeyboards()) {
             Map<Integer, MessageBuilder> pages = new HashMap<>();
             for (int i = 0; i < maxpages; i++) {
