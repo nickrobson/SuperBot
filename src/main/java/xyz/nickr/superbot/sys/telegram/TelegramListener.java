@@ -235,7 +235,7 @@ public class TelegramListener implements Listener {
                 String cmd = "/" + Joiner.join(" ", words);
                 List<DummyMessage> msgs = new LinkedList<>();
                 DummyUser user = new DummyUser(event, results, msgs);
-                SuperBotCommands.exec(this.inlineSys, new DummyGroup(user), user, new DummyMessage(this.sys.wrap(event.getQuery().getSender()), cmd, null));
+                SuperBotCommands.exec(this.inlineSys, new DummyGroup(user), user, new DummyMessage(this.sys.wrap(event.getQuery().getSender()), cmd, null, null));
                 for (DummyMessage dm : msgs) {
                     this.dummies.put(dm.inlineId, dm);
                 }
@@ -256,7 +256,6 @@ public class TelegramListener implements Listener {
 
     @Override
     public void onInlineResultChosen(InlineResultChosenEvent event) {
-        System.out.println(event.getChosenResult().getResultId());
         DummyMessage dm = this.dummies.get(event.getChosenResult().getResultId());
         if (dm != null) {
             dm.messageId = event.getChosenResult().getInlineMessageId();
@@ -352,7 +351,7 @@ public class TelegramListener implements Listener {
             }
             String id = ConsecutiveId.next(RESULT_ID_NAMESPACE);
             this.results.add(res(id, "Result:", msg, msg, false, ikm));
-            DummyMessage m = new DummyMessage(this, msg, id);
+            DummyMessage m = new DummyMessage(this, msg, id, ikm);
             this.messages.add(m);
             return m;
         }
@@ -374,11 +373,13 @@ public class TelegramListener implements Listener {
         private Conversable convo;
         private String message;
         String messageId, inlineId;
+        InlineReplyMarkup ikm;
 
-        public DummyMessage(Conversable convo, String message, String inlineId) {
+        public DummyMessage(Conversable convo, String message, String inlineId, InlineReplyMarkup ikm) {
             this.convo = convo;
             this.message = message;
             this.inlineId = inlineId;
+            this.ikm = ikm;
         }
 
         @Override
@@ -409,7 +410,7 @@ public class TelegramListener implements Listener {
         @Override
         public void edit(MessageBuilder message) {
             System.out.format("Editing %s to %s\n", this.messageId, message);
-            boolean status = TelegramListener.this.sys.getBot().editInlineMessageText(this.messageId, message.build(), ParseMode.MARKDOWN, true, null);
+            boolean status = TelegramListener.this.sys.getBot().editInlineMessageText(this.messageId, message.build(), ParseMode.MARKDOWN, true, this.ikm);
             System.out.println(status ? "Success!" : "Failed.");
         }
 
