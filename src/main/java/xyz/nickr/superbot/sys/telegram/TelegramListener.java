@@ -69,11 +69,13 @@ public class TelegramListener implements Listener {
 
     private final TelegramBot bot;
     private final TelegramSys sys;
+    private final TelegramInlineSys inlineSys;
     private final Map<String, Keyboard> keyboards;
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
         this.bot = bot;
         this.sys = sys;
+        this.inlineSys = new TelegramInlineSys(sys);
         this.keyboards = new HashMap<>();
     }
 
@@ -280,7 +282,7 @@ public class TelegramListener implements Listener {
 
         @Override
         public Sys getProvider() {
-            return TelegramListener.this.sys;
+            return TelegramListener.this.inlineSys;
         }
 
         @Override
@@ -331,7 +333,7 @@ public class TelegramListener implements Listener {
 
         @Override
         public Sys getProvider() {
-            return TelegramListener.this.sys;
+            return TelegramListener.this.inlineSys;
         }
 
         @Override

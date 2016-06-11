@@ -69,11 +69,6 @@ public class TelegramSys implements Sys {
     }
 
     @Override
-    public boolean hasKeyboards() {
-        return false;
-    }
-
-    @Override
     public MessageBuilder message() {
         return new TelegramMessageBuilder();
     }
