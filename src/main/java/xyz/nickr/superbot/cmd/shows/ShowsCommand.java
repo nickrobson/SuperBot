@@ -55,16 +55,10 @@ public class ShowsCommand implements Command {
         Function<Integer, MessageBuilder> getPage = p -> {
             MessageBuilder b = sys.message();
             final List<String> send = snd.subList(p * ShowsCommand.SHOWS_PER_PAGE, Math.min((p + 1) * ShowsCommand.SHOWS_PER_PAGE, snd.size()));
-            int maxLen = send.stream().max((s1, s2) -> s1.length() - s2.length()).orElse("").length();
             b.bold(m -> m.escaped("Page %d of %d", p + 1, maxpages)).newLine();
             for (int i = 0, j = send.size(); i < j; i++) {
                 final int x = i;
-                String spc = "";
-                for (int k = send.get(i).length(); k < maxLen; k++) {
-                    spc += ' ';
-                }
-                final String spaces = spc;
-                b.code(m -> m.escaped(send.get(x) + spaces));
+                b.code(m -> m.escaped(send.get(x)));
                 if (i != j - 1) {
                     b.newLine();
                 }
@@ -85,14 +79,12 @@ public class ShowsCommand implements Command {
                 Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("«", () -> {
                     int cPage = currentPage.get();
                     int prevPage = (cPage == 0 ? maxpages : cPage) - 1;
-                    System.out.println("Showing page " + prevPage);
-                    System.out.println(msg.get());
+                    System.out.println("Showing page " + (prevPage + 1));
                     msg.get().edit(pages.get(prevPage));
                 })).add(new KeyboardButton("»", () -> {
                     int cPage = currentPage.get() + 1;
-                    int nextPage = cPage > maxpages ? 0 : cPage;
-                    System.out.println("Showing page " + nextPage);
-                    System.out.println(msg.get());
+                    int nextPage = cPage == maxpages ? 0 : cPage;
+                    System.out.println("Showing page " + (nextPage + 1));
                     msg.get().edit(pages.get(nextPage));
                 })));
                 builder.setKeyboard(kb);
