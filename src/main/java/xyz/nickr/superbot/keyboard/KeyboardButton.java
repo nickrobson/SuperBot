@@ -6,12 +6,10 @@ import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import xyz.nickr.superbot.sys.User;
 
-@AllArgsConstructor()
-@RequiredArgsConstructor()
+@AllArgsConstructor
 public class KeyboardButton {
 
     @NonNull
@@ -29,7 +27,7 @@ public class KeyboardButton {
     }
 
     public KeyboardButton(String text, Runnable onClick) {
-        this(text, u -> null);
+        this(text, u -> onClick.run());
     }
 
     public ButtonResponse onClick(User wrap) {

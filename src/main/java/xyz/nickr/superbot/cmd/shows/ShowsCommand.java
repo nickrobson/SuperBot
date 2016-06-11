@@ -86,16 +86,17 @@ public class ShowsCommand implements Command {
                     int cPage = currentPage.get();
                     int prevPage = (cPage == 0 ? maxpages : cPage) - 1;
                     System.out.println("Showing page " + prevPage);
+                    System.out.println(msg.get());
                     msg.get().edit(pages.get(prevPage));
                 })).add(new KeyboardButton("»", () -> {
                     int cPage = currentPage.get() + 1;
                     int nextPage = cPage == maxpages ? 0 : cPage;
                     System.out.println("Showing page " + nextPage);
+                    System.out.println(msg.get());
                     msg.get().edit(pages.get(nextPage));
                 })));
                 builder.setKeyboard(kb);
             }
-
             msg.set(group.sendMessage(builder));
         } else {
             int page = 0;
