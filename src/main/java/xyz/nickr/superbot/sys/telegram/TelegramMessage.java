@@ -1,5 +1,6 @@
 package xyz.nickr.superbot.sys.telegram;
 
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import xyz.nickr.superbot.sys.Conversable;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.Sys;
@@ -12,42 +13,45 @@ public class TelegramMessage implements Message {
 
     private final TelegramSys sys;
     private final String strmsg;
-    private final pro.zackpollard.telegrambot.api.chat.message.Message message;
+    private pro.zackpollard.telegrambot.api.chat.message.Message message;
 
     public TelegramMessage(TelegramSys sys, String strmsg, pro.zackpollard.telegrambot.api.chat.message.Message message) {
         this.sys = sys;
-        this.strmsg = strmsg;
         this.message = message;
+        this.strmsg = strmsg;
     }
 
     @Override
     public Sys getProvider() {
-        return sys;
+        return this.sys;
     }
 
     @Override
     public String getUniqueId() {
-        return String.valueOf(message.getMessageId());
+        return String.valueOf(this.message.getMessageId());
     }
 
     @Override
     public Conversable getConversation() {
-        return sys.wrap(message.getChat());
+        return this.sys.wrap(this.message.getChat());
     }
 
     @Override
     public User getSender() {
-        return sys.wrap(message.getSender());
+        return this.sys.wrap(this.message.getSender());
     }
 
     @Override
     public String getMessage() {
-        return strmsg;
+        return this.strmsg;
     }
 
     @Override
     public void edit(String message) {
-        return;
+        pro.zackpollard.telegrambot.api.chat.message.Message n = this.sys.getBot().editMessageText(this.message, message, ParseMode.MARKDOWN, true, null);
+        if (n != null) {
+            this.message = n;
+        }
     }
 
     @Override
