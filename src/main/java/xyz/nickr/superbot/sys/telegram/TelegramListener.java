@@ -86,7 +86,7 @@ public class TelegramListener implements Listener {
     @Override
     public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
         if (event.getCommand().equals("fixkb")) {
-            event.getChat().sendMessage(SendableTextMessage.builder().message("").replyMarkup(ReplyKeyboardHide.builder().build()).build());
+            event.getChat().sendMessage(SendableTextMessage.builder().message("hi").replyMarkup(ReplyKeyboardHide.builder().build()).build());
         }
         Group g = this.sys.wrap(event.getChat());
         User u = this.sys.wrap(event.getMessage().getSender());
