@@ -1,27 +1,39 @@
 package xyz.nickr.superbot.keyboard;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import xyz.nickr.superbot.sys.User;
 
-@AllArgsConstructor(staticName = "of")
-@RequiredArgsConstructor(staticName = "of")
+@AllArgsConstructor()
+@RequiredArgsConstructor()
 public class KeyboardButton {
 
     @NonNull
     @Getter
     private final String text;
 
-    private Consumer<User> onClick;
+    @Setter
+    private Function<User, ButtonResponse> onClick;
 
-    public void onClick(User wrap) {
-        if (this.onClick != null) {
-            this.onClick.accept(wrap);
-        }
+    public KeyboardButton(String text, Consumer<User> onClick) {
+        this(text, u -> {
+            onClick.accept(u);
+            return null;
+        });
+    }
+
+    public KeyboardButton(String text, Runnable onClick) {
+        this(text, u -> null);
+    }
+
+    public ButtonResponse onClick(User wrap) {
+        return this.onClick != null ? this.onClick.apply(wrap) : null;
     }
 
 }

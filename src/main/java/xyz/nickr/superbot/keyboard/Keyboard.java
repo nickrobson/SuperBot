@@ -34,9 +34,9 @@ public class Keyboard implements Iterable<KeyboardRow> {
         return this.buttons.get(data);
     }
 
-    public Keyboard addButton(KeyboardRow button) {
+    public Keyboard add(KeyboardRow row) {
         if (!this.locked) {
-            this.rows.add(button);
+            this.rows.add(row);
         }
         return this;
     }

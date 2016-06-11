@@ -38,6 +38,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.MessageCallbackQueryRe
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
+import xyz.nickr.superbot.keyboard.ButtonResponse;
 import xyz.nickr.superbot.keyboard.Keyboard;
 import xyz.nickr.superbot.keyboard.KeyboardButton;
 import xyz.nickr.superbot.sys.Conversable;
@@ -92,11 +93,19 @@ public class TelegramListener implements Listener {
     public void onMessageCallbackQueryReceivedEvent(MessageCallbackQueryReceivedEvent event) {
         MessageCallbackQuery q = event.getCallbackQuery();
         Keyboard kb = this.keyboards.get(q.getMessage().getMessageId());
+        boolean answer = false;
         if (kb != null) {
             KeyboardButton btn = kb.getButton(q.getData());
             if (btn != null) {
-                btn.onClick(this.sys.wrap(q.getFrom()));
+                ButtonResponse res = btn.onClick(this.sys.wrap(q.getFrom()));
+                if (res != null) {
+                    q.answer(res.getText(), res.isShowAlert());
+                    answer = true;
+                }
             }
+        }
+        if (!answer) {
+            q.answer("", false);
         }
     }
 

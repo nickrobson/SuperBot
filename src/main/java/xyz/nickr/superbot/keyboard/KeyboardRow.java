@@ -21,7 +21,7 @@ public class KeyboardRow implements Iterable<KeyboardButton> {
         this.locked = true;
     }
 
-    public KeyboardRow addButton(KeyboardButton button) {
+    public KeyboardRow add(KeyboardButton button) {
         if (!this.locked) {
             this.buttons.add(button);
         }
