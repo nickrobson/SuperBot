@@ -130,9 +130,10 @@ public class TelegramSys implements Sys {
 
     public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, MessageBuilder message) {
         String m = message.build();
-        Keyboard kb = message.getKeyboard().lock();
+        Keyboard kb = message.getKeyboard();
         SendableTextMessageBuilder msg = SendableTextMessage.builder().message(m).parseMode(ParseMode.MARKDOWN);
         if (kb != null) {
+            kb.lock();
             ReplyKeyboardMarkupBuilder reply = ReplyKeyboardMarkup.builder();
             for (KeyboardRow kbr : kb) {
                 List<KeyboardButton> btns = new LinkedList<>();
@@ -144,7 +145,9 @@ public class TelegramSys implements Sys {
             msg.replyMarkup(reply.build());
         }
         pro.zackpollard.telegrambot.api.chat.message.Message ms = this.bot.sendMessage(chat, msg.build());
-        this.listener.addKeyboard(ms.getMessageId(), kb);
+        if (kb != null) {
+            this.listener.addKeyboard(ms.getMessageId(), kb);
+        }
         return ms;
     }
 
