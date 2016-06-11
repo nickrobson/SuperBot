@@ -238,7 +238,6 @@ public class TelegramListener implements Listener {
                 SuperBotCommands.exec(this.inlineSys, new DummyGroup(user), user, new DummyMessage(this.sys.wrap(event.getQuery().getSender()), cmd, null));
                 for (DummyMessage dm : msgs) {
                     this.dummies.put(dm.inlineId, dm);
-                    System.out.println(dm.inlineId);
                 }
             }
         }
@@ -257,8 +256,8 @@ public class TelegramListener implements Listener {
 
     @Override
     public void onInlineResultChosen(InlineResultChosenEvent event) {
-        System.out.println(event.getChosenResult().getInlineMessageId());
-        DummyMessage dm = this.dummies.get(event.getChosenResult().getInlineMessageId());
+        System.out.println(event.getChosenResult().getResultId());
+        DummyMessage dm = this.dummies.get(event.getChosenResult().getResultId());
         if (dm != null) {
             dm.messageId = event.getChosenResult().getInlineMessageId();
         }
