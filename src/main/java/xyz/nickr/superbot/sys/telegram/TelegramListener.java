@@ -30,6 +30,7 @@ import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResul
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultArticle;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultPhoto;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineCallbackQueryReceivedEvent;
@@ -39,6 +40,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardButton;
 import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardMarkup.InlineKeyboardMarkupBuilder;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
 import xyz.nickr.superbot.ConsecutiveId;
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
@@ -83,6 +85,9 @@ public class TelegramListener implements Listener {
 
     @Override
     public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
+        if (event.getCommand().equals("fixkb")) {
+            event.getChat().sendMessage(SendableTextMessage.builder().message("").replyMarkup(ReplyKeyboardHide.builder().build()).build());
+        }
         Group g = this.sys.wrap(event.getChat());
         User u = this.sys.wrap(event.getMessage().getSender());
         String msg = this.sys.prefix() + event.getCommand().trim() + " " + event.getArgsString().trim();
