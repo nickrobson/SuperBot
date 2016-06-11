@@ -27,11 +27,15 @@ public class KeyboardButton {
     }
 
     public KeyboardButton(String text, Runnable onClick) {
-        this(text, u -> onClick.run());
+        this(text, u -> {
+            onClick.run();
+            return null;
+        });
     }
 
-    public ButtonResponse onClick(User wrap) {
-        return this.onClick != null ? this.onClick.apply(wrap) : null;
+    public ButtonResponse onClick(User user) {
+        System.out.println("Button#onClick");
+        return this.onClick != null ? this.onClick.apply(user) : null;
     }
 
 }
