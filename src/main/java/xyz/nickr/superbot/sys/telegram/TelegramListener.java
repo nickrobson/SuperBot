@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
@@ -21,26 +22,32 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.inline.InlineCallbackQuery;
+import pro.zackpollard.telegrambot.api.chat.inline.InlineReplyMarkup;
 import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
 import pro.zackpollard.telegrambot.api.chat.inline.send.content.InputMessageContent;
 import pro.zackpollard.telegrambot.api.chat.inline.send.content.InputTextMessageContent;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResult;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultArticle;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultPhoto;
-import pro.zackpollard.telegrambot.api.chat.message.MessageCallbackQuery;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
+import pro.zackpollard.telegrambot.api.event.chat.inline.InlineCallbackQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
-import pro.zackpollard.telegrambot.api.event.chat.message.MessageCallbackQueryReceivedEvent;
+import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardButton;
+import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardMarkup;
+import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardMarkup.InlineKeyboardMarkupBuilder;
+import xyz.nickr.superbot.ConsecutiveId;
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.keyboard.ButtonResponse;
 import xyz.nickr.superbot.keyboard.Keyboard;
 import xyz.nickr.superbot.keyboard.KeyboardButton;
+import xyz.nickr.superbot.keyboard.KeyboardRow;
 import xyz.nickr.superbot.sys.Conversable;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
@@ -58,9 +65,11 @@ public class TelegramListener implements Listener {
 
     public static final Pattern PATTERN_HEXCOLOUR_FREE = Pattern.compile("(?:[A-F0-9]{2,3})|(?:[A-F0-9]{5,6})");
 
+    private static final String KEYBOARD_ID_NAMESPACE = "SuperBot::InlineKeyboard";
+
     private final TelegramBot bot;
     private final TelegramSys sys;
-    private final Map<Long, Keyboard> keyboards;
+    private final Map<String, Keyboard> keyboards;
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
         this.bot = bot;
@@ -90,17 +99,21 @@ public class TelegramListener implements Listener {
     }
 
     @Override
-    public void onMessageCallbackQueryReceivedEvent(MessageCallbackQueryReceivedEvent event) {
-        MessageCallbackQuery q = event.getCallbackQuery();
-        Keyboard kb = this.keyboards.get(q.getMessage().getMessageId());
+    public void onInlineCallbackQueryReceivedEvent(InlineCallbackQueryReceivedEvent event) {
+        InlineCallbackQuery q = event.getCallbackQuery();
+        String callback = q.getData();
         boolean answer = false;
-        if (kb != null) {
-            KeyboardButton btn = kb.getButton(q.getData());
-            if (btn != null) {
-                ButtonResponse res = btn.onClick(this.sys.wrap(q.getFrom()));
-                if (res != null) {
-                    q.answer(res.getText(), res.isShowAlert());
-                    answer = true;
+        if (callback.contains("-")) {
+            String[] spl = callback.split("-", 2);
+            Keyboard kb = this.keyboards.get(spl[0]);
+            if (kb != null) {
+                KeyboardButton btn = kb.getButton(spl[1]);
+                if (btn != null) {
+                    ButtonResponse res = btn.onClick(this.sys.wrap(q.getFrom()));
+                    if (res != null) {
+                        q.answer(res.getText(), res.isShowAlert());
+                        answer = true;
+                    }
                 }
             }
         }
@@ -109,13 +122,17 @@ public class TelegramListener implements Listener {
         }
     }
 
-    public void addKeyboard(long messageId, Keyboard kb) {
+    public void addKeyboard(String messageId, Keyboard kb) {
         this.keyboards.put(messageId, kb);
     }
 
     private static InlineQueryResultArticle res(String title, String desc, String text, boolean web) {
+        return res(title, desc, text, web, null);
+    }
+
+    private static InlineQueryResultArticle res(String title, String desc, String text, boolean web, InlineReplyMarkup mkup) {
         InputMessageContent imc = InputTextMessageContent.builder().parseMode(ParseMode.MARKDOWN).disableWebPagePreview(!web).messageText(text).build();
-        return InlineQueryResultArticle.builder().title(title).description(desc).inputMessageContent(imc).build();
+        return InlineQueryResultArticle.builder().title(title).description(desc).inputMessageContent(imc).replyMarkup(mkup).build();
     }
 
     @Override
@@ -211,8 +228,14 @@ public class TelegramListener implements Listener {
                 }
             } else {
                 String cmd = "/" + Joiner.join(" ", words);
-                DummyUser user = new DummyUser(event, results);
-                SuperBotCommands.exec(this.sys, new DummyGroup(user), user, new DummyMessage(user, cmd));
+                AtomicReference<Keyboard> k = new AtomicReference<>();
+                String prefix = ConsecutiveId.next(KEYBOARD_ID_NAMESPACE);
+                DummyUser user = new DummyUser(event, results, k, prefix);
+                SuperBotCommands.exec(this.sys, new DummyGroup(user), user, new DummyMessage(this.sys.wrap(event.getQuery().getSender()), cmd));
+                Keyboard kk = k.get();
+                if (kk != null) {
+                    this.addKeyboard(prefix, kk);
+                }
             }
         }
         if (results.isEmpty()) {
@@ -296,10 +319,14 @@ public class TelegramListener implements Listener {
 
         private List<InlineQueryResult> results;
         private pro.zackpollard.telegrambot.api.user.User user;
+        private AtomicReference<Keyboard> k;
+        private String prefix;
 
-        public DummyUser(InlineQueryReceivedEvent event, List<InlineQueryResult> results) {
+        public DummyUser(InlineQueryReceivedEvent event, List<InlineQueryResult> results, AtomicReference<Keyboard> k, String prefix) {
             this.results = results;
             this.user = event.getQuery().getSender();
+            this.k = k;
+            this.prefix = prefix;
         }
 
         @Override
@@ -315,7 +342,22 @@ public class TelegramListener implements Listener {
         @Override
         public Message sendMessage(MessageBuilder message) {
             String msg = message.build();
-            this.results.add(res("Result:", msg, msg, false));
+            Keyboard kb = message.getKeyboard();
+            InlineReplyMarkup ikm = null;
+            if (kb != null) {
+                kb.lock();
+                InlineKeyboardMarkupBuilder reply = InlineKeyboardMarkup.builder();
+                for (KeyboardRow kbr : kb) {
+                    List<InlineKeyboardButton> btns = new LinkedList<>();
+                    kbr.forEach(b -> {
+                        btns.add(InlineKeyboardButton.builder().callbackData(this.prefix + "-" + b.getText()).text(b.getText()).build());
+                    });
+                    reply.addRow(btns);
+                }
+                this.k.set(kb);
+                ikm = reply.build();
+            }
+            this.results.add(res("Result:", msg, msg, false, ikm));
             return new DummyMessage(this, msg);
         }
 

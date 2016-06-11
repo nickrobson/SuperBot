@@ -7,8 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -17,11 +15,6 @@ import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage.SendableTextMessageBuilder;
-import pro.zackpollard.telegrambot.api.keyboards.KeyboardButton;
-import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
-import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder;
-import xyz.nickr.superbot.keyboard.Keyboard;
-import xyz.nickr.superbot.keyboard.KeyboardRow;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.Message;
@@ -35,7 +28,6 @@ import xyz.nickr.superbot.sys.User;
 public class TelegramSys implements Sys {
 
     private TelegramBot bot;
-    private TelegramListener listener;
 
     private final Map<String, GroupConfiguration> configs = new HashMap<>();
     private final Properties usernameCache = new Properties();
@@ -45,7 +37,7 @@ public class TelegramSys implements Sys {
             long now = System.currentTimeMillis();
             System.out.println("Loading SuperBot: Telegram");
             this.bot = TelegramBot.login(key);
-            this.bot.getEventsManager().register(this.listener = new TelegramListener(this.bot, this));
+            this.bot.getEventsManager().register(new TelegramListener(this.bot, this));
             this.bot.startUpdates(true);
 
             try {
@@ -130,24 +122,8 @@ public class TelegramSys implements Sys {
 
     public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, MessageBuilder message) {
         String m = message.build();
-        Keyboard kb = message.getKeyboard();
         SendableTextMessageBuilder msg = SendableTextMessage.builder().message(m).parseMode(ParseMode.MARKDOWN);
-        if (kb != null) {
-            kb.lock();
-            ReplyKeyboardMarkupBuilder reply = ReplyKeyboardMarkup.builder();
-            for (KeyboardRow kbr : kb) {
-                List<KeyboardButton> btns = new LinkedList<>();
-                kbr.forEach(b -> {
-                    btns.add(KeyboardButton.builder().text(b.getText()).build());
-                });
-                reply.addRow(btns);
-            }
-            msg.replyMarkup(reply.build());
-        }
         pro.zackpollard.telegrambot.api.chat.message.Message ms = this.bot.sendMessage(chat, msg.build());
-        if (kb != null) {
-            this.listener.addKeyboard(ms.getMessageId(), kb);
-        }
         return ms;
     }
 
