@@ -79,14 +79,12 @@ public class ShowsCommand implements Command {
                 Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("«", () -> {
                     int cPage = currentPage.get();
                     int prevPage = (cPage == 0 ? maxpages : cPage) - 1;
-                    System.out.println("Showing page " + (prevPage + 1));
                     currentPage.set(prevPage);
                     msg.get().edit(pages.get(prevPage));
                 })).add(new KeyboardButton("»", () -> {
                     int cPage = currentPage.get() + 1;
                     int nextPage = cPage == maxpages ? 0 : cPage;
                     currentPage.set(nextPage);
-                    System.out.println("Showing page " + (nextPage + 1));
                     msg.get().edit(pages.get(nextPage));
                 })));
                 builder.setKeyboard(kb);

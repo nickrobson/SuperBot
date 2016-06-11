@@ -34,7 +34,6 @@ public class KeyboardButton {
     }
 
     public ButtonResponse onClick(User user) {
-        System.out.println("Button#onClick");
         return this.onClick != null ? this.onClick.apply(user) : null;
     }
 

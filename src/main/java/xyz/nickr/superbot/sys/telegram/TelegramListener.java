@@ -108,13 +108,11 @@ public class TelegramListener implements Listener {
         String callback = q.getData();
         boolean answer = false;
         if (callback.contains("-")) {
-            System.out.println("Found callback: " + callback);
             String[] spl = callback.split("-", 2);
             Keyboard kb = this.keyboards.get(spl[0]);
             if (kb != null) {
                 KeyboardButton btn = kb.getButton(spl[1]);
                 if (btn != null) {
-                    System.out.println("Found button: " + btn.getText());
                     ButtonResponse res = btn.onClick(this.sys.wrap(q.getFrom()));
                     if (res != null) {
                         q.answer(res.getText(), res.isShowAlert());
@@ -346,7 +344,6 @@ public class TelegramListener implements Listener {
                     reply.addRow(btns);
                 }
                 ikm = reply.build();
-                System.out.println("Registering keyboard: " + prefix);
                 TelegramListener.this.addKeyboard(prefix, kb);
             }
             String id = ConsecutiveId.next(RESULT_ID_NAMESPACE);
