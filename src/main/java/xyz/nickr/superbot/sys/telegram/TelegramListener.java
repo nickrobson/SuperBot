@@ -65,17 +65,20 @@ public class TelegramListener implements Listener {
     public static final Pattern PATTERN_HEXCOLOUR_FREE = Pattern.compile("(?:[A-F0-9]{2,3})|(?:[A-F0-9]{5,6})");
 
     private static final String KEYBOARD_ID_NAMESPACE = "SuperBot::InlineKeyboard";
+    private static final String RESULT_ID_NAMESPACE = "SuperBot::InlineResult";
 
     private final TelegramBot bot;
     private final TelegramSys sys;
     private final TelegramInlineSys inlineSys;
     private final Map<String, Keyboard> keyboards;
+    private final Map<String, DummyMessage> dummies;
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
         this.bot = bot;
         this.sys = sys;
         this.inlineSys = new TelegramInlineSys(sys);
         this.keyboards = new HashMap<>();
+        this.dummies = new HashMap<>();
     }
 
     @Override
@@ -136,6 +139,11 @@ public class TelegramListener implements Listener {
     private static InlineQueryResultArticle res(String title, String desc, String text, boolean web, InlineReplyMarkup mkup) {
         InputMessageContent imc = InputTextMessageContent.builder().parseMode(ParseMode.MARKDOWN).disableWebPagePreview(!web).messageText(text).build();
         return InlineQueryResultArticle.builder().title(title).description(desc).inputMessageContent(imc).replyMarkup(mkup).build();
+    }
+
+    private static InlineQueryResultArticle res(String id, String title, String desc, String text, boolean web, InlineReplyMarkup mkup) {
+        InputMessageContent imc = InputTextMessageContent.builder().parseMode(ParseMode.MARKDOWN).disableWebPagePreview(!web).messageText(text).build();
+        return InlineQueryResultArticle.builder().id(id).title(title).description(desc).inputMessageContent(imc).replyMarkup(mkup).build();
     }
 
     @Override
@@ -223,16 +231,14 @@ public class TelegramListener implements Listener {
                         e.printStackTrace();
                     }
                 }
-            } else if (words[0].equalsIgnoreCase("flip")) {
-                if (words.length > 1) {
-                    String[] args = Arrays.copyOfRange(words, 1, words.length);
-                    String text = Joiner.join(" ", args);
-                    results.add(res("flip text", this.flip(text), this.flip(text), false));
-                }
             } else {
                 String cmd = "/" + Joiner.join(" ", words);
-                DummyUser user = new DummyUser(event, results);
-                SuperBotCommands.exec(this.inlineSys, new DummyGroup(user), user, new DummyMessage(this.sys.wrap(event.getQuery().getSender()), cmd));
+                List<DummyMessage> msgs = new LinkedList<>();
+                DummyUser user = new DummyUser(event, results, msgs);
+                SuperBotCommands.exec(this.inlineSys, new DummyGroup(user), user, new DummyMessage(this.sys.wrap(event.getQuery().getSender()), cmd, null));
+                for (DummyMessage dm : msgs) {
+                    this.dummies.put(dm.inlineId, dm);
+                }
             }
         }
         if (results.isEmpty()) {
@@ -248,24 +254,13 @@ public class TelegramListener implements Listener {
         event.getQuery().answer(this.bot, res);
     }
 
-    String alphabet = "abcdefghijklmnopqrstuvwxyz',\\/`?!";
-    String flippedalph = "ɐqɔpǝɟbɥıظʞןɯuodbɹsʇnʌʍxʎz,'/\\,¿¡";
-
-    private String flip(String text) {
-        StringBuilder sb = new StringBuilder();
-        for (char c : text.toCharArray()) {
-            int idx;
-            char r = Character.isAlphabetic(c) ? Character.toLowerCase(c) : c;
-            if ((idx = this.alphabet.indexOf(r)) >= 0) {
-                c = this.flippedalph.charAt(idx);
-            }
-            sb.append(c);
-        }
-        return sb.toString();
-    }
-
     @Override
-    public void onInlineResultChosen(InlineResultChosenEvent event) {}
+    public void onInlineResultChosen(InlineResultChosenEvent event) {
+        DummyMessage dm = this.dummies.get(event.getChosenResult().getInlineMessageId());
+        if (dm != null) {
+            dm.messageId = event.getChosenResult().getInlineMessageId();
+        }
+    }
 
     public class DummyGroup implements Group {
 
@@ -316,10 +311,12 @@ public class TelegramListener implements Listener {
 
         private List<InlineQueryResult> results;
         private pro.zackpollard.telegrambot.api.user.User user;
+        private List<DummyMessage> messages;
 
-        public DummyUser(InlineQueryReceivedEvent event, List<InlineQueryResult> results) {
+        public DummyUser(InlineQueryReceivedEvent event, List<InlineQueryResult> results, List<DummyMessage> messages) {
             this.results = results;
             this.user = event.getQuery().getSender();
+            this.messages = messages;
         }
 
         @Override
@@ -352,8 +349,11 @@ public class TelegramListener implements Listener {
                 System.out.println("Registering keyboard: " + prefix);
                 TelegramListener.this.addKeyboard(prefix, kb);
             }
-            this.results.add(res("Result:", msg, msg, false, ikm));
-            return new DummyMessage(this, msg);
+            String id = ConsecutiveId.next(RESULT_ID_NAMESPACE);
+            this.results.add(res(id, "Result:", msg, msg, false, ikm));
+            DummyMessage m = new DummyMessage(this, msg, id);
+            this.messages.add(m);
+            return m;
         }
 
         @Override
@@ -372,10 +372,12 @@ public class TelegramListener implements Listener {
 
         private Conversable convo;
         private String message;
+        String messageId, inlineId;
 
-        public DummyMessage(Conversable convo, String message) {
+        public DummyMessage(Conversable convo, String message, String inlineId) {
             this.convo = convo;
             this.message = message;
+            this.inlineId = inlineId;
         }
 
         @Override
@@ -405,7 +407,7 @@ public class TelegramListener implements Listener {
 
         @Override
         public void edit(MessageBuilder message) {
-
+            TelegramListener.this.sys.getBot().editInlineMessageText(this.messageId, message.build(), ParseMode.MARKDOWN, true, null);
         }
 
         @Override
