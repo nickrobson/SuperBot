@@ -256,6 +256,7 @@ public class TelegramListener implements Listener {
 
     @Override
     public void onInlineResultChosen(InlineResultChosenEvent event) {
+        System.out.println(event.getChosenResult().getInlineMessageId());
         DummyMessage dm = this.dummies.get(event.getChosenResult().getInlineMessageId());
         if (dm != null) {
             dm.messageId = event.getChosenResult().getInlineMessageId();
