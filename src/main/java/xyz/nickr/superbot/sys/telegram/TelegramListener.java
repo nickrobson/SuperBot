@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
@@ -106,11 +105,13 @@ public class TelegramListener implements Listener {
         String callback = q.getData();
         boolean answer = false;
         if (callback.contains("-")) {
+            System.out.println("Found callback: " + callback);
             String[] spl = callback.split("-", 2);
             Keyboard kb = this.keyboards.get(spl[0]);
             if (kb != null) {
                 KeyboardButton btn = kb.getButton(spl[1]);
                 if (btn != null) {
+                    System.out.println("Found button: " + btn.getText());
                     ButtonResponse res = btn.onClick(this.sys.wrap(q.getFrom()));
                     if (res != null) {
                         q.answer(res.getText(), res.isShowAlert());
@@ -230,14 +231,8 @@ public class TelegramListener implements Listener {
                 }
             } else {
                 String cmd = "/" + Joiner.join(" ", words);
-                AtomicReference<Keyboard> k = new AtomicReference<>();
-                String prefix = ConsecutiveId.next(KEYBOARD_ID_NAMESPACE);
-                DummyUser user = new DummyUser(event, results, k, prefix);
+                DummyUser user = new DummyUser(event, results);
                 SuperBotCommands.exec(this.inlineSys, new DummyGroup(user), user, new DummyMessage(this.sys.wrap(event.getQuery().getSender()), cmd));
-                Keyboard kk = k.get();
-                if (kk != null) {
-                    this.addKeyboard(prefix, kk);
-                }
             }
         }
         if (results.isEmpty()) {
@@ -321,14 +316,10 @@ public class TelegramListener implements Listener {
 
         private List<InlineQueryResult> results;
         private pro.zackpollard.telegrambot.api.user.User user;
-        private AtomicReference<Keyboard> k;
-        private String prefix;
 
-        public DummyUser(InlineQueryReceivedEvent event, List<InlineQueryResult> results, AtomicReference<Keyboard> k, String prefix) {
+        public DummyUser(InlineQueryReceivedEvent event, List<InlineQueryResult> results) {
             this.results = results;
             this.user = event.getQuery().getSender();
-            this.k = k;
-            this.prefix = prefix;
         }
 
         @Override
@@ -348,16 +339,18 @@ public class TelegramListener implements Listener {
             InlineReplyMarkup ikm = null;
             if (kb != null) {
                 kb.lock();
+                String prefix = ConsecutiveId.next(KEYBOARD_ID_NAMESPACE);
                 InlineKeyboardMarkupBuilder reply = InlineKeyboardMarkup.builder();
                 for (KeyboardRow kbr : kb) {
                     List<InlineKeyboardButton> btns = new LinkedList<>();
                     kbr.forEach(b -> {
-                        btns.add(InlineKeyboardButton.builder().callbackData(this.prefix + "-" + b.getText()).text(b.getText()).build());
+                        btns.add(InlineKeyboardButton.builder().callbackData(prefix + "-" + b.getText()).text(b.getText()).build());
                     });
                     reply.addRow(btns);
                 }
-                this.k.set(kb);
                 ikm = reply.build();
+                System.out.println("Registering keyboard: " + prefix);
+                TelegramListener.this.addKeyboard(prefix, kb);
             }
             this.results.add(res("Result:", msg, msg, false, ikm));
             return new DummyMessage(this, msg);
