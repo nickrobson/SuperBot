@@ -78,7 +78,7 @@ public class TelegramSys implements Sys {
 
     @Override
     public boolean hasKeyboards() {
-        return true;
+        return false;
     }
 
     @Override
