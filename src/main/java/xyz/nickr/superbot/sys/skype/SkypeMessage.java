@@ -2,6 +2,7 @@ package xyz.nickr.superbot.sys.skype;
 
 import xyz.nickr.superbot.sys.Conversable;
 import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -21,37 +22,37 @@ public class SkypeMessage implements Message {
 
     @Override
     public Sys getProvider() {
-        return sys;
+        return this.sys;
     }
 
     @Override
     public String getUniqueId() {
-        return msg.getId();
+        return this.msg.getId();
     }
 
     @Override
     public Conversable getConversation() {
-        return conv;
+        return this.conv;
     }
 
     @Override
     public User getSender() {
-        return user;
+        return this.user;
     }
 
     @Override
     public String getMessage() {
-        return msg.getMessage();
+        return this.msg.getMessage();
     }
 
     @Override
-    public void edit(String message) {
-        msg.edit(message);
+    public void edit(MessageBuilder message) {
+        this.msg.edit(message.build());
     }
 
     @Override
     public boolean isEdited() {
-        return msg.isEdited();
+        return this.msg.isEdited();
     }
 
 }

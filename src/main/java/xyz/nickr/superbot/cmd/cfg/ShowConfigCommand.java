@@ -49,7 +49,7 @@ public class ShowConfigCommand implements Command {
             } else {
                 mb.bold(true).escaped("No configuration settings!").bold(false);
             }
-            group.sendMessage(mb.toString());
+            group.sendMessage(mb);
         }
     }
 

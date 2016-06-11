@@ -2,6 +2,7 @@ package xyz.nickr.superbot.sys.gitter;
 
 import xyz.nickr.jitter.api.Message;
 import xyz.nickr.superbot.sys.Conversable;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -17,32 +18,32 @@ public class GitterMessage implements xyz.nickr.superbot.sys.Message {
 
     @Override
     public Sys getProvider() {
-        return sys;
+        return this.sys;
     }
 
     @Override
     public String getUniqueId() {
-        return message.getID();
+        return this.message.getID();
     }
 
     @Override
     public Conversable getConversation() {
-        return sys.wrap(message.getRoom());
+        return this.sys.wrap(this.message.getRoom());
     }
 
     @Override
     public User getSender() {
-        return sys.wrap(message.getSender());
+        return this.sys.wrap(this.message.getSender());
     }
 
     @Override
     public String getMessage() {
-        return message.getText();
+        return this.message.getText();
     }
 
     @Override
-    public void edit(String message) {
-        this.message.edit(message);
+    public void edit(MessageBuilder message) {
+        this.message.edit(message.build());
     }
 
     @Override

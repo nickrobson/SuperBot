@@ -161,7 +161,7 @@ public class SuperBotCommands {
                 MessageBuilder mb = sys.message();
                 mb.bold(true).escaped("Error: ").bold(false);
                 mb.escaped("You don't have permission to use " + prefix + cmdName + "!");
-                g.sendMessage(mb.toString());
+                g.sendMessage(mb);
             } else {
                 try {
                     cmd.exec(sys, u, g, cmdName, args, message);

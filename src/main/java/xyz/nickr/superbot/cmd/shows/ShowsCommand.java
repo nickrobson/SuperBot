@@ -75,7 +75,7 @@ public class ShowsCommand implements Command {
                 builder.newLine();
             }
         }
-        group.sendMessage(builder.build());
+        group.sendMessage(builder);
     }
 
 }

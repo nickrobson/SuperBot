@@ -8,8 +8,4 @@ public interface Conversable {
 
     Message sendMessage(MessageBuilder mb);
 
-    default Message sendMessage(String message, Object... params) {
-        return sendMessage(getProvider().message().escaped(message, params));
-    }
-
 }

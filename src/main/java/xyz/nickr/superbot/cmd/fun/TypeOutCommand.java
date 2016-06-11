@@ -11,22 +11,22 @@ public class TypeOutCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{ "typeout" };
+        return new String[] {"typeout"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[]{ "[message]", "slowly types a message out" };
+        return new String[] {"[message]", "slowly types a message out"};
     }
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length == 0) {
-            sendUsage(sys, user, group);
+            this.sendUsage(sys, user, group);
             return;
         }
         String str = Joiner.join(" ", args);
-        Message msg = group.sendMessage(" ");
+        Message msg = group.sendMessage(sys.message().escaped("."));
         new Thread(() -> {
             int c = 0;
             while (c < str.length()) {

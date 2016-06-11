@@ -63,7 +63,7 @@ public class ProgressCommand implements Command {
             return;
         }
         if (sent) {
-            group.sendMessage(builder.build());
+            group.sendMessage(builder);
         } else {
             group.sendMessage(sys.message().escaped("No progress submitted for any show."));
         }

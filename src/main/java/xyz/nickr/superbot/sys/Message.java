@@ -12,11 +12,7 @@ public interface Message {
 
     String getMessage();
 
-    void edit(String message);
-
-    default void edit(MessageBuilder message) {
-        edit(message.build());
-    }
+    void edit(MessageBuilder message);
 
     boolean isEdited();
 

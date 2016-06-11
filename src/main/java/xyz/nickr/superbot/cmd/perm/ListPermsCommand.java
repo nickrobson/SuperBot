@@ -50,7 +50,7 @@ public class ListPermsCommand implements Command {
             mb.bold(true).escaped("Profile " + name + " has the following permissions:").bold(false).newLine();
             mb.escaped(Joiner.join(", ", perms));
         }
-        group.sendMessage(mb.toString());
+        group.sendMessage(mb);
     }
 
 }

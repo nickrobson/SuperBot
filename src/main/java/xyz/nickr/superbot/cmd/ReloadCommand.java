@@ -10,17 +10,17 @@ public class ReloadCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] { "reload" };
+        return new String[] {"reload"};
     }
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] { "", "reloads the bot" };
+        return new String[] {"", "reloads the bot"};
     }
 
     @Override
     public Permission perm() {
-        return string("admin.reload");
+        return this.string("admin.reload");
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ReloadCommand implements Command {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                msg.edit("Reloading... " + s);
+                msg.edit(sys.message().escaped("Reloading... " + s));
             });
         }, "Reload Thread").start();
     }

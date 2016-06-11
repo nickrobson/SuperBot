@@ -40,14 +40,13 @@ public class WhoCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        String prefix = sys.prefix();
         String username;
         if (args.length > 0) {
             Optional<Profile> profile = Profile.getProfile(args[0]);
             if (profile.isPresent()) {
                 username = profile.get().getName();
             } else {
-                group.sendMessage("No profile with name: " + args[0]);
+                group.sendMessage(sys.message().escaped("No profile with name: " + args[0]));
                 return;
             }
         } else {
@@ -55,7 +54,7 @@ public class WhoCommand implements Command {
             if (profile.isPresent()) {
                 username = profile.get().getName();
             } else {
-                group.sendMessage("You need a profile to use this. Use " + prefix + "createprofile.");
+                this.sendNoProfile(sys, user, group);
                 return;
             }
         }

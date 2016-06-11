@@ -40,7 +40,7 @@ public class VersionCommand implements Command {
             String author = SuperBotController.GIT_COMMIT_AUTHORS[i];
             builder.newLine().italic(true).escaped(author + " ").italic(false).escaped(msg).italic(true).escaped(" (%s)", id.substring(0, 8)).italic(false).build();
         }
-        group.sendMessage(builder.toString());
+        group.sendMessage(builder);
     }
 
     @Override

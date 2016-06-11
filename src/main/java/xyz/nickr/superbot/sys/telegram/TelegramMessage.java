@@ -3,6 +3,7 @@ package xyz.nickr.superbot.sys.telegram;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import xyz.nickr.superbot.sys.Conversable;
 import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -47,8 +48,8 @@ public class TelegramMessage implements Message {
     }
 
     @Override
-    public void edit(String message) {
-        pro.zackpollard.telegrambot.api.chat.message.Message n = this.sys.getBot().editMessageText(this.message, message, ParseMode.MARKDOWN, true, null);
+    public void edit(MessageBuilder message) {
+        pro.zackpollard.telegrambot.api.chat.message.Message n = this.sys.getBot().editMessageText(this.message, message.build(), ParseMode.MARKDOWN, true, null);
         if (n != null) {
             this.message = n;
         }

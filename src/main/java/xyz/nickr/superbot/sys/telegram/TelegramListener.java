@@ -83,7 +83,7 @@ public class TelegramListener implements Listener {
         if (cfg != null && cfg.isShowJoinMessage()) {
             String welcome = String.format(SuperBotController.WELCOME_MESSAGE_JOIN, user.getUsername(), convo.getDisplayName());
             String help = "You can access my help menu by typing `" + this.sys.prefix() + "help`";
-            String message = this.sys.message().bold(true).escaped(TelegramMessageBuilder.markdown_escape(welcome, false) + "\n" + TelegramMessageBuilder.markdown_escape(help, false)).bold(false).build();
+            MessageBuilder message = this.sys.message().bold(true).escaped(TelegramMessageBuilder.markdown_escape(welcome, false) + "\n" + TelegramMessageBuilder.markdown_escape(help, false)).bold(false);
             convo.sendMessage(message);
         }
     }
@@ -258,7 +258,7 @@ public class TelegramListener implements Listener {
 
         @Override
         public Message sendMessage(MessageBuilder message) {
-            return this.dummy.sendMessage(message.build());
+            return this.dummy.sendMessage(message);
         }
 
         @Override
@@ -358,7 +358,7 @@ public class TelegramListener implements Listener {
         }
 
         @Override
-        public void edit(String message) {
+        public void edit(MessageBuilder message) {
 
         }
 

@@ -82,7 +82,7 @@ public class ConvertCommand implements Command {
                     builder.escaped(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(), sub.getValue().from, sub.getValue().to));
                 }
             }
-            group.sendMessage(builder.toString());
+            group.sendMessage(builder);
         } else if (args.length < 3) {
             this.sendUsage(null, user, group);
         } else {

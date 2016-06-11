@@ -81,7 +81,7 @@ public class HelpCommand implements Command {
             cmds.removeIf(cmd -> !cmd.alwaysEnabled());
         }
         if (cmds.isEmpty()) {
-            group.sendMessage("It looks like there are no commands enabled in this chat.");
+            group.sendMessage(sys.message().escaped("It looks like there are no commands enabled in this chat."));
             return;
         }
         String prefix = sys.prefix();

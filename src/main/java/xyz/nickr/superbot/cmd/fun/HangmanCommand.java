@@ -45,7 +45,7 @@ public class HangmanCommand implements Command {
         String prefix = sys.prefix();
         Profile profile = user.getProfile().orElse(null);
         if (profile == null) {
-            group.sendMessage("[Hangman] You need a profile to use this. Use " + prefix + "createprofile.");
+            group.sendMessage(sys.message().escaped("[Hangman] You need a profile to use this. Use " + prefix + "createprofile."));
         } else if (group.getType() == GroupType.USER) {
             if (this.currentPhrase != null) {
                 group.sendMessage(mb.escaped("[Hangman] There is already a game in progress.").newLine().escaped("[Hangman] To take a guess, send a message in a group."));

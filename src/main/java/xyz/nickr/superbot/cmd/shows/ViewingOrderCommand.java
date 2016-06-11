@@ -50,7 +50,7 @@ public class ViewingOrderCommand implements Command {
                     reader.close();
                 }
             }
-            group.sendMessage(mb.build());
+            group.sendMessage(mb);
         } catch (Exception ex) {
             group.sendMessage(mb.escaped("Looks like an error occurred!"));
             ex.printStackTrace();
