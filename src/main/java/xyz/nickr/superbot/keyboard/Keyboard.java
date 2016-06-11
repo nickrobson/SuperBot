@@ -23,7 +23,8 @@ public class Keyboard implements Iterable<KeyboardRow> {
 
     public Keyboard lock() {
         this.locked = true;
-        if (this.rows.isEmpty()) {
+        this.rows.forEach(KeyboardRow::lock);
+        if (this.buttons.isEmpty()) {
             this.rows.forEach(r -> r.forEach(b -> this.buttons.put(b.getText(), b)));
         }
         return this;

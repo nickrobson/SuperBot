@@ -17,6 +17,10 @@ public class KeyboardRow implements Iterable<KeyboardButton> {
     @Setter(AccessLevel.PACKAGE)
     private boolean locked;
 
+    void lock() {
+        this.locked = true;
+    }
+
     public KeyboardRow addButton(KeyboardButton button) {
         if (!this.locked) {
             this.buttons.add(button);
