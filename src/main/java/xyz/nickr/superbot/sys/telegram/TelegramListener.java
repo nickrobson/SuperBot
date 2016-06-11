@@ -233,7 +233,7 @@ public class TelegramListener implements Listener {
                 AtomicReference<Keyboard> k = new AtomicReference<>();
                 String prefix = ConsecutiveId.next(KEYBOARD_ID_NAMESPACE);
                 DummyUser user = new DummyUser(event, results, k, prefix);
-                SuperBotCommands.exec(this.sys, new DummyGroup(user), user, new DummyMessage(this.sys.wrap(event.getQuery().getSender()), cmd));
+                SuperBotCommands.exec(this.inlineSys, new DummyGroup(user), user, new DummyMessage(this.sys.wrap(event.getQuery().getSender()), cmd));
                 Keyboard kk = k.get();
                 if (kk != null) {
                     this.addKeyboard(prefix, kk);
