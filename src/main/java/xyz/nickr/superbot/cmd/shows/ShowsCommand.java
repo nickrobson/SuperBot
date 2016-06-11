@@ -74,7 +74,7 @@ public class ShowsCommand implements Command {
         MessageBuilder builder = sys.message();
         if (sys.hasKeyboards()) {
             Map<Integer, MessageBuilder> pages = new HashMap<>();
-            for (int i = 0; i <= maxpages; i++) {
+            for (int i = 0; i < maxpages; i++) {
                 pages.put(i, getPage.apply(i));
             }
             builder.raw(pages.get(0).build());
@@ -84,7 +84,7 @@ public class ShowsCommand implements Command {
             if (pages.size() > 1) {
                 Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("«", () -> {
                     int cPage = currentPage.get();
-                    int prevPage = cPage == 0 ? maxpages : cPage - 1;
+                    int prevPage = (cPage == 0 ? maxpages : cPage) - 1;
                     System.out.println("Showing page " + prevPage);
                     System.out.println(msg.get());
                     msg.get().edit(pages.get(prevPage));
