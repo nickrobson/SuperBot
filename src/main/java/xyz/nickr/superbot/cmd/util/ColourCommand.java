@@ -62,6 +62,8 @@ public class ColourCommand implements Command {
                         }
                     }
                     colours.add(c);
+                } else {
+                    group.sendMessage(sys.message().escaped("Invalid colour."));
                 }
                 for (String co : colours) {
                     try {
