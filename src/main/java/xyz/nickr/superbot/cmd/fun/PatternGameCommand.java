@@ -74,7 +74,7 @@ public class PatternGameCommand implements Command {
                 if (out.length() < pattern.length()) {
                     char clicked = this.alphabet.charAt(i);
                     if (clicked == pattern.charAt(out.length())) {
-                        prg.put(key, out + clicked);
+                        prg.put(key, out += clicked);
                         this.progress.put(game, prg);
                     } else {
                         prg.put(key, null);
@@ -114,7 +114,7 @@ public class PatternGameCommand implements Command {
             int count = 0;
             try {
                 while (count <= pattern.length()) {
-                    Thread.sleep(2000);
+                    Thread.sleep(2000L);
                     if (count == pattern.length()) {
                         m.edit(msg.apply(-1));
                         hasShown.set(true);
