@@ -23,7 +23,6 @@ public class PaginatedData {
             MessageBuilder m = mb.get();
             for (int i = page * pageHeight, j = Math.min((page + 1) * pageHeight, lines.size()); i < j; i++) {
                 final int x = i;
-                m.bold(true).escaped("Page %d of %d", page + 1, this.pages.size()).bold(false);
                 if (code) {
                     m.code(z -> z.escaped(lines.get(x)));
                 } else {
@@ -35,6 +34,14 @@ public class PaginatedData {
             }
             this.pages.add(m);
             page++;
+        }
+        for (int i = 0; i < this.pages.size(); i++) {
+            MessageBuilder m = this.pages.get(i);
+            MessageBuilder z = mb.get();
+            z.bold(true).escaped("Page %d of %d", i + 1, this.pages.size()).bold(false);
+            z.raw(m.build());
+            z.setKeyboard(m.getKeyboard());
+            this.pages.set(i, z);
         }
     }
 
