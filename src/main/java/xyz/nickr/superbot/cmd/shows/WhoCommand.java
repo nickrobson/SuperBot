@@ -106,7 +106,7 @@ public class WhoCommand implements Command {
         if (shows.size() > 0) {
             mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false);
             for (int i = 0; i < shows.size(); i++) {
-                mb.newLine().escaped(shows.get(i));
+                mb.newLine().code(true).escaped(shows.get(i)).code(false);
             }
             group.sendMessage(mb);
         } else {
