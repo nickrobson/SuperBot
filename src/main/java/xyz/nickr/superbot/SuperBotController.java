@@ -43,7 +43,6 @@ import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.gitter.GitterSys;
 import xyz.nickr.superbot.sys.skype.SkypeSys;
 import xyz.nickr.superbot.sys.telegram.TelegramSys;
-import xyz.nickr.superbot.web.SuperBotServer;
 
 /**
  * @author Nick Robson
@@ -81,13 +80,6 @@ public class SuperBotController {
 
             PasteFetchCommand.VILSOL_PASTE_TOKEN = properties.getProperty("vilsol.paste.token");
             Imgur.IMGUR_CLIENT_ID = properties.getProperty("imgur.clientid");
-
-            try {
-                // HTTP Server
-                new SuperBotServer();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
 
             SuperBotShows.setup();
 
