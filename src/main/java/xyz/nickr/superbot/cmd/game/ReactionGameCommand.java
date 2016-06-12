@@ -43,6 +43,7 @@ public class ReactionGameCommand implements Command {
                 MessageBuilder mb = sys.message().escaped("Click the button below when it says GO");
                 Keyboard k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Click me when I say 'GO'", () -> {})));
                 mb.setKeyboard(k);
+                m.get().edit(mb);
                 try {
                     Thread.sleep(4000 + this.random.nextInt(10000));
                 } catch (InterruptedException e) {}
@@ -54,7 +55,7 @@ public class ReactionGameCommand implements Command {
                         m.get().edit(onWin.escaped("Winner: " + u.getProvider().getUserFriendlyName(u.getUniqueId())));
                     }
                 })));
-                mb = sys.message().setKeyboard(k);
+                mb = sys.message().escaped("Click GO").setKeyboard(k);
                 m.get().edit(mb);
             }
         })));
