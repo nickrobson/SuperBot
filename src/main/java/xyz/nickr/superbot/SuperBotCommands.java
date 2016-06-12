@@ -16,6 +16,7 @@ import xyz.nickr.superbot.cmd.fun.DefineCommand;
 import xyz.nickr.superbot.cmd.fun.FCCPointsCommand;
 import xyz.nickr.superbot.cmd.fun.HangmanCommand;
 import xyz.nickr.superbot.cmd.fun.NumberwangCommand;
+import xyz.nickr.superbot.cmd.fun.PatternGameCommand;
 import xyz.nickr.superbot.cmd.fun.TypeOutCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbEpisodeCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbSearchCommand;
@@ -118,6 +119,7 @@ public class SuperBotCommands {
         SuperBotCommands.register(new DefineCommand());
         SuperBotCommands.register(new HangmanCommand());
         SuperBotCommands.register(new NumberwangCommand());
+        SuperBotCommands.register(new PatternGameCommand());
         SuperBotCommands.register(new TypeOutCommand());
 
         SuperBotCommands.register(new ColourCommand());
