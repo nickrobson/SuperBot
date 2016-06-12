@@ -101,29 +101,14 @@ public class WhoCommand implements Command {
                 shows.add(show.getDisplay() + (hasNewEpisode ? " (new)" + this.pad("(", maxEpLen - ep.length() + 1).substring(0, maxEpLen - ep.length()) : "      ") + " (" + ep + ")");
             }
         });
-        int rows = shows.size() / 2 + shows.size() % 2;
         shows.sort(String.CASE_INSENSITIVE_ORDER);
-        int maxLen1 = shows.subList(0, rows).stream().mapToInt(String::length).max().orElse(0);
-        int maxLen2 = shows.subList(rows, shows.size()).stream().mapToInt(String::length).max().orElse(0);
-        String s = "";
-
-        for (int i = 0; i < rows; i++) {
-            if (shows.size() > i) {
-                String t = this.pad(shows.get(i), maxLen1);
-                if (shows.size() > rows + i) {
-                    t += "   |   " + this.pad(shows.get(rows + i), maxLen2);
-                }
-                MessageBuilder mb = sys.message().code(true).escaped(t).code(false);
-                if (i != rows - 1) {
-                    mb.newLine().escaped("   ");
-                }
-                s += mb.build();
-            }
-        }
-
         MessageBuilder mb = sys.message();
         if (shows.size() > 0) {
-            group.sendMessage(mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false).newLine().escaped("   ").raw(s));
+            mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false);
+            for (int i = 0; i < shows.size(); i++) {
+                mb.newLine().escaped(shows.get(i));
+            }
+            group.sendMessage(mb);
         } else {
             group.sendMessage(mb.bold(true).escaped("Error: ").bold(false).escaped("It doesn't look like " + username + " uses me. :("));
         }
