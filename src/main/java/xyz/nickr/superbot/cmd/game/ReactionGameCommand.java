@@ -2,6 +2,7 @@ package xyz.nickr.superbot.cmd.game;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.keyboard.Keyboard;
@@ -35,13 +36,13 @@ public class ReactionGameCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         AtomicBoolean started = new AtomicBoolean(false);
+        AtomicReference<Message> m = new AtomicReference<>();
         Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Begin", () -> {
             if (!started.get()) {
                 started.set(true);
                 MessageBuilder mb = sys.message().escaped("Click the button below when it says GO");
                 Keyboard k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Click me when I say 'GO'", () -> {})));
                 mb.setKeyboard(k);
-                Message m = group.sendMessage(mb);
                 try {
                     Thread.sleep(4000 + this.random.nextInt(10000));
                 } catch (InterruptedException e) {}
@@ -50,15 +51,14 @@ public class ReactionGameCommand implements Command {
                 k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("GO", u -> {
                     if (!won.get()) {
                         won.set(true);
-                        m.edit(onWin.escaped("Winner: " + u.getProvider().getUserFriendlyName(u.getUniqueId())));
+                        m.get().edit(onWin.escaped("Winner: " + u.getProvider().getUserFriendlyName(u.getUniqueId())));
                     }
                 })));
                 mb = sys.message().setKeyboard(k);
-                m.edit(mb);
+                m.get().edit(mb);
             }
         })));
-        group.sendMessage(sys.message().escaped("Click to begin:").setKeyboard(kb));
-
+        m.set(group.sendMessage(sys.message().escaped("Click to begin:").setKeyboard(kb)));
     }
 
 }
