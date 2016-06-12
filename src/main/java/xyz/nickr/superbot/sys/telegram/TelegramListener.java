@@ -79,7 +79,7 @@ public class TelegramListener implements Listener {
         if (cfg != null && cfg.isShowJoinMessage()) {
             String welcome = String.format(SuperBotController.WELCOME_MESSAGE_JOIN, user.getUsername(), convo.getDisplayName());
             String help = "You can access my help menu by typing `" + this.sys.prefix() + "help`";
-            MessageBuilder message = this.sys.message().bold(true).escaped(TelegramMessageBuilder.markdown_escape(welcome, false) + "\n" + TelegramMessageBuilder.markdown_escape(help, false)).bold(false);
+            MessageBuilder message = this.sys.message().bold(true).escaped(welcome).newLine().escaped(help).bold(false);
             convo.sendMessage(message);
         }
     }

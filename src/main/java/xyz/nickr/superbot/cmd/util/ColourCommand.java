@@ -34,7 +34,7 @@ public class ColourCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length > 0) {
-            String colour = args[0].toLowerCase();
+            String colour = args[0].toUpperCase();
             while (colour.startsWith("#")) {
                 colour = colour.substring(1);
             }
@@ -71,6 +71,8 @@ public class ColourCommand implements Command {
                         e.printStackTrace();
                     }
                 }
+            } else {
+                group.sendMessage(sys.message().escaped("Not hexadecimal: '%s'", colour));
             }
         } else {
             this.sendUsage(sys, user, group);
