@@ -92,7 +92,9 @@ public class PatternGameCommand implements Command {
                 }
             };
             return f.andThen(br -> {
-                amsg.get().edit(ar.get().apply(-1));
+                if (hasShown.get()) {
+                    amsg.get().edit(ar.get().apply(-1));
+                }
                 return br;
             });
         };
