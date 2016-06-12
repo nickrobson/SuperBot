@@ -42,6 +42,7 @@ import xyz.nickr.superbot.cmd.shows.UpcomingCommand;
 import xyz.nickr.superbot.cmd.shows.ViewingOrderCommand;
 import xyz.nickr.superbot.cmd.shows.WhoCommand;
 import xyz.nickr.superbot.cmd.shows.WipeCommand;
+import xyz.nickr.superbot.cmd.util.ColourCommand;
 import xyz.nickr.superbot.cmd.util.ConvertCommand;
 import xyz.nickr.superbot.cmd.util.CurrencyCommand;
 import xyz.nickr.superbot.cmd.util.DistanceCommand;
@@ -119,6 +120,7 @@ public class SuperBotCommands {
         SuperBotCommands.register(new NumberwangCommand());
         SuperBotCommands.register(new TypeOutCommand());
 
+        SuperBotCommands.register(new ColourCommand());
         SuperBotCommands.register(new ConvertCommand());
         SuperBotCommands.register(new CurrencyCommand());
         SuperBotCommands.register(new DistanceCommand());

@@ -58,6 +58,11 @@ public class TelegramDummy {
         }
 
         @Override
+        public boolean supportsMultiplePhotos() {
+            return true;
+        }
+
+        @Override
         public void sendPhoto(URL url) {
             this.dummy.sendPhoto(url);
         }
@@ -106,6 +111,11 @@ public class TelegramDummy {
         @Override
         public String getUniqueId() {
             return String.valueOf(this.user.getId());
+        }
+
+        @Override
+        public boolean supportsMultiplePhotos() {
+            return true;
         }
 
         @Override

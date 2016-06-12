@@ -13,6 +13,10 @@ public interface Conversable {
 
     Message sendMessage(MessageBuilder mb);
 
+    default boolean supportsMultiplePhotos() {
+        return false;
+    }
+
     default void sendPhoto(File file) {
         sendPhoto(Imgur.upload(file));
     }
