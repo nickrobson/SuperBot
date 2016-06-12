@@ -14,8 +14,6 @@ import xyz.nickr.superbot.sys.User;
 
 public class ShowsCommand implements Command {
 
-    public static final int SHOWS_PER_PAGE = 30;
-
     @Override
     public String[] names() {
         return new String[] {"shows"};
@@ -42,7 +40,7 @@ public class ShowsCommand implements Command {
             }
         }
         snd.sort(String.CASE_INSENSITIVE_ORDER);
-        PaginatedData pages = new PaginatedData(sys::message, snd, SHOWS_PER_PAGE, true);
+        PaginatedData pages = new PaginatedData(sys::message, snd, 20, true);
         final int maxpages = pages.getNumberOfPages();
         int page = 0;
         if (args.length > 0) {

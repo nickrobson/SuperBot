@@ -63,7 +63,11 @@ public class PaginatedData {
             }
             msg.set(group.sendMessage(builder));
         } else {
-            group.sendMessage(this.pages.get(page));
+            MessageBuilder m = this.pages.get(page);
+            builder.bold(true).escaped("Page %d of %d", page + 1, this.pages.size()).bold(false);
+            builder.raw(m.build());
+            builder.setKeyboard(m.getKeyboard());
+            group.sendMessage(builder);
         }
     }
 
