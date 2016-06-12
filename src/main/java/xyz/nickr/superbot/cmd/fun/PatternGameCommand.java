@@ -112,7 +112,7 @@ public class PatternGameCommand implements Command {
         Function<Integer, MessageBuilder> msg = i -> {
             MessageBuilder mb = sys.message().bold(z -> z.escaped("Difficulty: ")).escaped(args[0].toUpperCase());
             this.progress.get(game).entrySet().stream().filter(e -> e.getValue() != null && e.getValue().length() == pattern.length()).forEach(e -> {
-                mb.newLine().escaped("- " + e.getKey());
+                mb.newLine().escaped("- " + sys.getUserFriendlyName(e.getKey().split("-", 2)[1]));
             });
             mb.setKeyboard(getKeyboard.apply(i));
             return mb;
