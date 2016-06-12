@@ -22,11 +22,11 @@ public class Profile {
     }
 
     public static Optional<Profile> get(Sys sys, User user) {
-        return get(sys.getName(), sys.isUIDCaseSensitive() ? user.getUniqueId() : user.getUniqueId().toLowerCase());
+        return get(sys, sys.isUIDCaseSensitive() ? user.getUniqueId() : user.getUniqueId().toLowerCase());
     }
 
     public static Optional<Profile> get(Sys sys, String uniqueId) {
-        return get(sys.getName(), sys.isUIDCaseSensitive() ? uniqueId : uniqueId.toLowerCase());
+        return get(sys.getName(), sys.getUserFriendlyName(sys.isUIDCaseSensitive() ? uniqueId : uniqueId.toLowerCase()));
     }
 
     public static Optional<Profile> get(String provider, User user) {
@@ -36,8 +36,9 @@ public class Profile {
     public static Optional<Profile> get(String provider, String uniqueId) {
         for (Profile prof : ALL.values()) {
             Optional<String> acc = prof.getAccount(provider);
-            if (acc.isPresent() && acc.get().equals(uniqueId))
+            if (acc.isPresent() && acc.get().equals(uniqueId)) {
                 return Optional.of(prof);
+            }
         }
         return Optional.empty();
     }
@@ -52,14 +53,14 @@ public class Profile {
         this.name = name;
         this.file = file;
 
-        load();
-        props.setProperty("name", name);
+        this.load();
+        this.props.setProperty("name", name);
     }
 
     public Profile(File file) {
         this.file = file;
-        load();
-        this.name = props.getProperty("name");
+        this.load();
+        this.name = this.props.getProperty("name");
     }
 
     public Profile(String name) {
@@ -67,55 +68,57 @@ public class Profile {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public boolean has(String key) {
-        return props.containsKey(key);
+        return this.props.containsKey(key);
     }
 
     public String get(String key) {
-        return props.getProperty(key);
+        return this.props.getProperty(key);
     }
 
     public void remove(String key) {
-        props.remove(key);
+        this.props.remove(key);
     }
 
     public void set(String key, String val) {
-        props.setProperty(key, val);
+        this.props.setProperty(key, val);
     }
 
     public Map<String, String> getAccounts() {
         Map<String, String> accs = new HashMap<>();
-        for (String key : props.stringPropertyNames()) {
-            if (key.startsWith("acc."))
-                accs.put(key.substring(4), props.getProperty(key));
+        for (String key : this.props.stringPropertyNames()) {
+            if (key.startsWith("acc.")) {
+                accs.put(key.substring(4), this.props.getProperty(key));
+            }
         }
         return accs;
     }
 
     public Optional<String> getAccount(String provider) {
-        return Optional.ofNullable(props.getProperty("acc." + provider));
+        return Optional.ofNullable(this.props.getProperty("acc." + provider));
     }
 
     public void setAccount(Sys sys, User user, boolean save) {
-        setAccount(sys.getName(), user.getUniqueId(), save);
+        this.setAccount(sys.getName(), user.getUniqueId(), save);
     }
 
     public void setAccount(String provider, String uniqueId, boolean save) {
-        props.setProperty("acc." + provider, uniqueId);
-        if (save)
-            save();
+        this.props.setProperty("acc." + provider, uniqueId);
+        if (save) {
+            this.save();
+        }
     }
 
     public Profile register() {
-        return ALL.computeIfAbsent(name.toLowerCase(), s -> this);
+        return ALL.computeIfAbsent(this.name.toLowerCase(), s -> this);
     }
 
     public void load() {
         try {
-            props.load(Files.newBufferedReader(file.toPath()));
+            this.props.load(Files.newBufferedReader(this.file.toPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -123,11 +126,12 @@ public class Profile {
 
     public void save() {
         try {
-            Path tmp = Files.createTempFile("superbot-profile-" + name + "-" + System.nanoTime(), ".tmp");
-            props.store(Files.newBufferedWriter(tmp), "User Profile: " + name);
-            Files.copy(tmp, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            if (!tmp.toFile().delete())
+            Path tmp = Files.createTempFile("superbot-profile-" + this.name + "-" + System.nanoTime(), ".tmp");
+            this.props.store(Files.newBufferedWriter(tmp), "User Profile: " + this.name);
+            Files.copy(tmp, this.file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            if (!tmp.toFile().delete()) {
                 tmp.toFile().deleteOnExit();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
