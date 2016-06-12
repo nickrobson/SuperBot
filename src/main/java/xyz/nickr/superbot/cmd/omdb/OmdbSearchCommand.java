@@ -68,6 +68,7 @@ public class OmdbSearchCommand implements Command {
                         MessageBuilder m = sys.message();
                         m.newLine().bold(true).escaped(sr.getTitle()).bold(false);
                         m.escaped(" (" + sr.getYear() + "): " + sr.getImdbId() + ", a " + sr.getType());
+                        lines.add(m.build());
                     }
                 }
                 PaginatedData pages = new PaginatedData(sys::message, lines, 20, false);
