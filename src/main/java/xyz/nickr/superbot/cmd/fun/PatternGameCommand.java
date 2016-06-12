@@ -49,8 +49,9 @@ public class PatternGameCommand implements Command {
             return;
         }
         List<String> modes = Arrays.asList("easy", "medium", "hard");
-        int size = 3 + modes.indexOf(args[0].toLowerCase());
-        if (size < 3) {
+        int size = 3;
+        int count = 4 + modes.indexOf(args[0].toLowerCase());
+        if (count < 4) {
             group.sendMessage(sys.message().escaped("Gamemode must be easy, medium, or hard."));
             return;
         }
@@ -58,7 +59,11 @@ public class PatternGameCommand implements Command {
         this.progress.put(game, new HashMap<>());
         final StringBuilder pattern = new StringBuilder();
         for (int i = 0; i < 6; i++) {
-            pattern.append(this.alphabet.charAt(this.random.nextInt(size * size)));
+            char c;
+            do {
+                c = this.alphabet.charAt(this.random.nextInt(size * size));
+            } while (pattern.length() > 0 && c == pattern.charAt(pattern.length() - 1));
+            pattern.append(c);
         }
         AtomicBoolean hasShown = new AtomicBoolean();
         AtomicReference<Message> amsg = new AtomicReference<>();
@@ -123,17 +128,17 @@ public class PatternGameCommand implements Command {
         ar.set(msg);
         amsg.set(m);
         new Thread(() -> {
-            int count = 0;
+            int c = 0;
             try {
-                while (count <= pattern.length()) {
+                while (c <= pattern.length()) {
                     Thread.sleep(2000L);
-                    if (count == pattern.length()) {
+                    if (c == pattern.length()) {
                         m.edit(msg.apply(-1));
                         hasShown.set(true);
                     } else {
-                        m.edit(msg.apply(this.alphabet.indexOf(pattern.charAt(count))));
+                        m.edit(msg.apply(this.alphabet.indexOf(pattern.charAt(c))));
                     }
-                    count++;
+                    c++;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
