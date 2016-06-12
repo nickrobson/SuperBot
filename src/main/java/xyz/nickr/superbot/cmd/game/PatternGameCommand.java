@@ -125,8 +125,8 @@ public class PatternGameCommand implements Command {
             mb.setKeyboard(getKeyboard.apply(i));
             return mb;
         };
-        Message m = group.sendMessage(msg.apply(this.alphabet.indexOf(pattern.charAt(0))));
         ar.set(msg);
+        Message m = group.sendMessage(msg.apply(this.alphabet.indexOf(pattern.charAt(0))));
         amsg.set(m);
         new Thread(() -> {
             try {

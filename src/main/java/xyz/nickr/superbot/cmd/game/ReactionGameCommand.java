@@ -34,23 +34,31 @@ public class ReactionGameCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        MessageBuilder mb = sys.message().escaped("Click the button below when it says GO");
-        Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Click me when I say 'GO'", () -> {})));
-        mb.setKeyboard(kb);
-        Message m = group.sendMessage(mb);
-        try {
-            Thread.sleep(4000L + this.random.nextInt(1000));
-        } catch (InterruptedException e) {}
-        AtomicBoolean won = new AtomicBoolean(false);
-        MessageBuilder onWin = sys.message().setKeyboard(new Keyboard());
-        kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("GO", u -> {
-            if (!won.get()) {
-                won.set(true);
-                m.edit(onWin.escaped("Winner: " + u.getProvider().getUserFriendlyName(u.getUniqueId())));
+        AtomicBoolean started = new AtomicBoolean(false);
+        Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Begin", () -> {
+            if (!started.get()) {
+                started.set(true);
+                MessageBuilder mb = sys.message().escaped("Click the button below when it says GO");
+                Keyboard k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Click me when I say 'GO'", () -> {})));
+                mb.setKeyboard(k);
+                Message m = group.sendMessage(mb);
+                try {
+                    Thread.sleep(4000 + this.random.nextInt(10000));
+                } catch (InterruptedException e) {}
+                AtomicBoolean won = new AtomicBoolean(false);
+                MessageBuilder onWin = sys.message().setKeyboard(new Keyboard());
+                k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("GO", u -> {
+                    if (!won.get()) {
+                        won.set(true);
+                        m.edit(onWin.escaped("Winner: " + u.getProvider().getUserFriendlyName(u.getUniqueId())));
+                    }
+                })));
+                mb = sys.message().setKeyboard(k);
+                m.edit(mb);
             }
         })));
-        mb = sys.message().setKeyboard(kb);
-        m.edit(mb);
+        group.sendMessage(sys.message().escaped("Click to begin:").setKeyboard(kb));
+
     }
 
 }
