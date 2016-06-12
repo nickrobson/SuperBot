@@ -118,8 +118,7 @@ public class TelegramSys implements Sys {
     public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, MessageBuilder message) {
         String m = message.build();
         SendableTextMessageBuilder msg = SendableTextMessage.builder().message(m).parseMode(ParseMode.MARKDOWN);
-        pro.zackpollard.telegrambot.api.chat.message.Message ms = this.bot.sendMessage(chat, msg.build());
-        return ms;
+        return this.bot.sendMessage(chat, msg.build());
     }
 
 }

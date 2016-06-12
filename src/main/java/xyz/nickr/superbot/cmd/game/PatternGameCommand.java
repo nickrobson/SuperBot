@@ -118,7 +118,8 @@ public class PatternGameCommand implements Command {
             return kb;
         };
         Function<Integer, MessageBuilder> msg = i -> {
-            MessageBuilder mb = sys.message().bold(z -> z.escaped("Difficulty: ")).escaped(args[0].toUpperCase());
+            MessageBuilder mb = sys.message().bold(z -> z.escaped("Pattern:")).escaped(" Game created by " + sys.getUserFriendlyName(user.getUniqueId())).newLine();
+            mb.bold(z -> z.escaped("Difficulty: ")).escaped(args[0].toUpperCase());
             this.progress.get(game).entrySet().stream().filter(e -> e.getValue() != null && e.getValue().length() == pattern.length()).forEach(e -> {
                 mb.newLine().escaped("- " + sys.getUserFriendlyName(e.getKey().split("-", 2)[1]));
             });
@@ -148,7 +149,7 @@ public class PatternGameCommand implements Command {
                 }).start();
             }
         })));
-        m.set(group.sendMessage(sys.message().escaped("Click to begin:").setKeyboard(kb)));
+        m.set(group.sendMessage(sys.message().escaped(" Click to begin ").bold(z -> z.escaped("Pattern")).setKeyboard(kb)));
     }
 
 }
