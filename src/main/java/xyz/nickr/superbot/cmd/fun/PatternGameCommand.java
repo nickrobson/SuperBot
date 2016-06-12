@@ -131,7 +131,7 @@ public class PatternGameCommand implements Command {
             try {
                 int c = 0;
                 while (c <= pattern.length()) {
-                    Thread.sleep(2000L);
+                    Thread.sleep(2500L);
                     if (c == pattern.length()) {
                         m.edit(msg.apply(-1));
                         hasShown.set(true);
