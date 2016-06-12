@@ -24,6 +24,9 @@ import java.util.function.Consumer;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -56,14 +59,14 @@ public class SuperBotController {
     public static final String WELCOME_MESSAGE_JOIN = "Welcome, %s, to %s";
 
     public static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
-
-    public static String VERSION = "Unknown";
-    public static int BUILD_NUMBER = 0;
-    public static String[] GIT_COMMIT_IDS = new String[] { "Unknown" };
-    public static String[] GIT_COMMIT_MESSAGES = new String[] { "Unknown" };
-    public static String[] GIT_COMMIT_AUTHORS = new String[] { "Unknown" };
-
+    public static final CloseableHttpClient HTTP = HttpClients.createDefault();
     public static final JavaOMDB OMDB = new JavaOMDB(false);
+
+    public static int BUILD_NUMBER = 0;
+    public static String VERSION = "Unknown";
+    public static String[] GIT_COMMIT_IDS = new String[] {"Unknown"};
+    public static String[] GIT_COMMIT_MESSAGES = new String[] {"Unknown"};
+    public static String[] GIT_COMMIT_AUTHORS = new String[] {"Unknown"};
 
     public static void main(String[] args) {
         try {
@@ -77,6 +80,7 @@ public class SuperBotController {
             register(new GitterSys(properties.getProperty("gitter.api")));
 
             PasteFetchCommand.VILSOL_PASTE_TOKEN = properties.getProperty("vilsol.paste.token");
+            Imgur.IMGUR_CLIENT_ID = properties.getProperty("imgur.clientid");
 
             try {
                 // HTTP Server
@@ -117,6 +121,14 @@ public class SuperBotController {
                 }
             }, "SuperBot FileWatch Thread").start();
 
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    HTTP.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, "SuperBot Shutdown Thread"));
+
             while (true) {
                 Thread.sleep(100_000);
             }
@@ -130,8 +142,9 @@ public class SuperBotController {
     }
 
     public static void load(Consumer<String> callback) {
-        if (callback == null)
+        if (callback == null) {
             callback = s -> {};
+        }
         callback.accept("0/6");
         loadProgress();
         callback.accept("1/6");
@@ -150,9 +163,9 @@ public class SuperBotController {
     public static void loadPermissions() {
         SuperBotPermissions.clear();
         File permsFolder = new File("permissions");
-        if (!permsFolder.exists())
+        if (!permsFolder.exists()) {
             permsFolder.mkdirs();
-        else {
+        } else {
             for (File f : permsFolder.listFiles()) {
                 try {
                     String username = f.getName().toLowerCase();
@@ -166,13 +179,15 @@ public class SuperBotController {
 
     public static void savePermissions() {
         File permsFolder = new File("permissions");
-        if (!permsFolder.exists())
+        if (!permsFolder.exists()) {
             permsFolder.mkdirs();
+        }
         for (Entry<String, Set<String>> entry : SuperBotPermissions.permissions.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
                 File f = new File(permsFolder, entry.getKey().toLowerCase());
-                if (f.exists())
+                if (f.exists()) {
                     f.delete();
+                }
                 try {
                     Files.write(f.toPath(), entry.getValue(), StandardOpenOption.CREATE);
                 } catch (IOException ex) {
@@ -188,9 +203,11 @@ public class SuperBotController {
         if (f.exists()) {
             try (BufferedReader reader = Files.newBufferedReader(f.toPath())) {
                 String line;
-                while ((line = reader.readLine()) != null)
-                    if (!line.startsWith("Chapter"))
+                while ((line = reader.readLine()) != null) {
+                    if (!line.startsWith("Chapter")) {
                         HANGMAN_PHRASES.add(line.toUpperCase());
+                    }
+                }
                 HANGMAN_PHRASES.sort((s1, s2) -> s1.substring(3, 5).compareTo(s2.substring(3, 5)));
             } catch (IOException ex) {}
         }
@@ -198,8 +215,9 @@ public class SuperBotController {
 
     public static void loadProgress() {
         File dir = new File("superchat_data");
-        if (!dir.exists())
+        if (!dir.exists()) {
             dir.mkdir();
+        }
         for (File file : dir.listFiles()) {
             if (file.isFile() && file.getName().endsWith(".json")) {
                 try {
@@ -217,8 +235,9 @@ public class SuperBotController {
     public static void saveProgress() {
         Map<String, Map<String, String>> map = PROGRESS;
         File dir = new File("superchat_data");
-        if (!dir.exists())
+        if (!dir.exists()) {
             dir.mkdir();
+        }
         for (Entry<String, Map<String, String>> entry : map.entrySet()) {
             try {
                 File file = new File(dir, entry.getKey() + ".json");
@@ -235,14 +254,16 @@ public class SuperBotController {
 
     public static void loadGroups() {
         File dir = new File("groups");
-        if (!dir.exists())
+        if (!dir.exists()) {
             dir.mkdir();
+        }
         for (File f : dir.listFiles()) {
             GroupConfiguration cfg = new GroupConfiguration(f);
             if (cfg.getProvider() != null && cfg.getUniqueId() != null) {
                 Sys provider = PROVIDERS.get(cfg.getProvider());
-                if (provider != null)
+                if (provider != null) {
                     provider.addGroupConfiguration(cfg);
+                }
             }
         }
     }
@@ -275,8 +296,9 @@ public class SuperBotController {
     public static GroupConfiguration newGroupConfiguration() {
         File file = null, dir = new File("groups");
         int n = 0;
-        do file = new File(dir, n++ + ".cfg");
-        while (file.exists());
+        do {
+            file = new File(dir, n++ + ".cfg");
+        } while (file.exists());
         return new GroupConfiguration(file);
     }
 
@@ -287,10 +309,12 @@ public class SuperBotController {
         int ae = Integer.parseInt(ad[1]);
         int bs = Integer.parseInt(bd[0]);
         int be = Integer.parseInt(bd[1]);
-        if (as < bs)
+        if (as < bs) {
             return a;
-        if (bs < as)
+        }
+        if (bs < as) {
             return b;
+        }
         return ae < be ? a : b;
     }
 
@@ -307,15 +331,17 @@ public class SuperBotController {
     }
 
     public static String getUsersOn(String show, String ep) {
-        if (!SuperBotShows.EPISODE_PATTERN.matcher(ep).matches())
+        if (!SuperBotShows.EPISODE_PATTERN.matcher(ep).matches()) {
             return null;
+        }
 
         List<String> users = getProgress(show).entrySet().stream().filter(e -> e.getValue().equals(ep)).map(Entry::getKey).collect(Collectors.toList());
 
         StringBuilder sb = new StringBuilder();
         for (String s : users) {
-            if (sb.length() > 0)
+            if (sb.length() > 0) {
                 sb.append(", ");
+            }
             Optional<Profile> p = Profile.getProfile(s);
             sb.append(p.isPresent() ? p.get().getName() : s);
         }
@@ -327,16 +353,18 @@ public class SuperBotController {
     }
 
     public static Map<String, String> getProgress(String show) {
-        if (show == null)
+        if (show == null) {
             return null;
+        }
         return PROGRESS.computeIfAbsent(show, s -> new HashMap<>());
     }
 
     public static Map<Show, String> getUserProgress(String username) {
         Map<Show, String> prg = new HashMap<>();
         PROGRESS.forEach((s, m) -> {
-            if (m.containsKey(username.toLowerCase()))
+            if (m.containsKey(username.toLowerCase())) {
                 prg.put(SuperBotShows.getShow(s), m.get(username.toLowerCase()));
+            }
         });
         return prg;
     }

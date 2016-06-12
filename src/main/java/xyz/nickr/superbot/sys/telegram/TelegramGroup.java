@@ -1,5 +1,6 @@
 package xyz.nickr.superbot.sys.telegram;
 
+import java.io.File;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,8 @@ import pro.zackpollard.telegrambot.api.chat.ChatMember;
 import pro.zackpollard.telegrambot.api.chat.GroupChat;
 import pro.zackpollard.telegrambot.api.chat.IndividualChat;
 import pro.zackpollard.telegrambot.api.chat.SuperGroupChat;
+import pro.zackpollard.telegrambot.api.chat.message.send.InputFile;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendablePhotoMessage;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
@@ -77,6 +80,11 @@ public class TelegramGroup implements Group {
     @Override
     public Message sendMessage(MessageBuilder message) {
         return this.sys.wrap(message, this.sys.sendMessage(this.chat, message));
+    }
+
+    @Override
+    public void sendPhoto(File file) {
+        this.chat.sendMessage(SendablePhotoMessage.builder().photo(new InputFile(file)).build());
     }
 
 }
