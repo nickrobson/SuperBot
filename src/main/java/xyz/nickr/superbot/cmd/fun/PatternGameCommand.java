@@ -58,7 +58,7 @@ public class PatternGameCommand implements Command {
         String game = ConsecutiveId.next("SuperBot::PatternGame");
         this.progress.put(game, new HashMap<>());
         final StringBuilder pattern = new StringBuilder();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < count; i++) {
             char c;
             do {
                 c = this.alphabet.charAt(this.random.nextInt(size * size));
