@@ -206,9 +206,12 @@ public class TelegramListener implements Listener {
             String un = this.bot.getBotUsername();
             for (Command cmd : SuperBotCommands.CMDS) {
                 String name = cmd.names()[0];
-                String[] usage = cmd.help(new DummyUser(event, new LinkedList<>(), new LinkedList<>()), false);
-                String txt = "@" + un + " " + name + " " + usage[0];
-                results.add(res(name + " - " + usage[1], txt, this.sys.message().escaped(txt).build(), false));
+                User u = this.sys.wrap(event.getQuery().getSender());
+                if (cmd.perm() == Command.DEFAULT_PERMISSION) {
+                    String[] usage = cmd.help(u, false);
+                    String txt = "@" + un + " " + name + " " + usage[0];
+                    results.add(res(name + " - " + usage[1], txt, this.sys.message().escaped(txt).build(), false));
+                }
             }
         }
         InlineQueryResponse res = InlineQueryResponse.builder().is_personal(is_personal).results(results).cache_time(cache_time).build();
