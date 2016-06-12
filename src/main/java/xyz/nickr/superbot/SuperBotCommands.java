@@ -2,6 +2,8 @@
 package xyz.nickr.superbot;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import xyz.nickr.superbot.cmd.Command;
@@ -42,6 +44,7 @@ import xyz.nickr.superbot.cmd.shows.WhoCommand;
 import xyz.nickr.superbot.cmd.shows.WipeCommand;
 import xyz.nickr.superbot.cmd.util.ConvertCommand;
 import xyz.nickr.superbot.cmd.util.CurrencyCommand;
+import xyz.nickr.superbot.cmd.util.DistanceCommand;
 import xyz.nickr.superbot.cmd.util.GitCommand;
 import xyz.nickr.superbot.cmd.util.GraphCommand;
 import xyz.nickr.superbot.cmd.util.JenkinsCommand;
@@ -59,12 +62,14 @@ import xyz.nickr.superbot.sys.User;
 
 public class SuperBotCommands {
 
+    public static final List<Command> CMDS = new LinkedList<>();
     public static final Map<String, Command> COMMANDS = new HashMap<>();
 
     public static void register(Command cmd) {
         for (String name : cmd.names()) {
             SuperBotCommands.COMMANDS.put(name, cmd);
         }
+        CMDS.add(cmd);
         cmd.init();
     }
 
@@ -116,6 +121,7 @@ public class SuperBotCommands {
 
         SuperBotCommands.register(new ConvertCommand());
         SuperBotCommands.register(new CurrencyCommand());
+        SuperBotCommands.register(new DistanceCommand());
         SuperBotCommands.register(new GitCommand());
         SuperBotCommands.register(new GraphCommand());
         SuperBotCommands.register(new JenkinsCommand());
@@ -125,6 +131,8 @@ public class SuperBotCommands {
         SuperBotCommands.register(new VersionCommand());
 
         SuperBotCommands.register(new FCCPointsCommand());
+
+        CMDS.sort((c1, c2) -> c1.names()[0].compareTo(c2.names()[0]));
     }
 
     public static void exec(Sys sys, Group g, User u, Message message) {

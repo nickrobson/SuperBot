@@ -1,9 +1,7 @@
 package xyz.nickr.superbot.sys.telegram;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,12 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.inline.InlineCallbackQuery;
@@ -45,6 +37,7 @@ import xyz.nickr.superbot.ConsecutiveId;
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
+import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.keyboard.ButtonResponse;
 import xyz.nickr.superbot.keyboard.Keyboard;
 import xyz.nickr.superbot.keyboard.KeyboardButton;
@@ -199,41 +192,6 @@ public class TelegramListener implements Listener {
                     }
                 }
                 cache_time = 30;
-            } else if (words[0].equalsIgnoreCase("distance")) {
-                if (words.length >= 3) {
-                    String from = words[1], to = words[2];
-                    try {
-                        JSONObject res = Unirest.get(String.format("http://www.distance24.org/route.json?stops=%s", URLEncoder.encode(from + "|" + to, "UTF-8"))).asJson().getBody().getObject();
-                        JSONArray arr = res.getJSONArray("stops");
-                        boolean fromValid = true, toValid = true;
-                        if (arr.getJSONObject(0).getString("type").equalsIgnoreCase("Invalid")) {
-                            fromValid = false;
-                        } else {
-                            from = arr.getJSONObject(0).getString("city") + (arr.getJSONObject(0).has("region") ? ", " + arr.getJSONObject(0).getString("region") : "");
-                        }
-                        if (arr.getJSONObject(1).getString("type").equalsIgnoreCase("Invalid")) {
-                            toValid = false;
-                        } else {
-                            to = arr.getJSONObject(1).getString("city") + ", " + (arr.getJSONObject(1).has("region") ? ", " + arr.getJSONObject(1).getString("region") : "");
-                        }
-                        if (fromValid && toValid) {
-                            double dist = res.getDouble("distance");
-                            String text = "\\[Distance] " + " " + from + " -> " + to + " = " + dist + "km";
-                            results.add(res(from + " => " + to, "Distance: " + dist + "km", text, false));
-                        } else {
-                            String disp = "";
-                            if (!fromValid) {
-                                disp += from;
-                            }
-                            if (!toValid) {
-                                disp += (disp.isEmpty() ? "" : ", ") + to;
-                            }
-                            results.add(res("Invalid city name(s): " + disp, "Try another query", "\\[Distance] Invalid city name(s): " + disp, false));
-                        }
-                    } catch (IOException | UnirestException e) {
-                        e.printStackTrace();
-                    }
-                }
             } else {
                 String cmd = "/" + Joiner.join(" ", words);
                 List<DummyMessage> msgs = new LinkedList<>();
@@ -246,12 +204,12 @@ public class TelegramListener implements Listener {
         }
         if (results.isEmpty()) {
             String un = this.bot.getBotUsername();
-            results.add(res("Flip", "@" + un + " flip [text]", "@" + un.replace("_", "\\_") + " flip \\[text]", false));
-            results.add(res("Colour", "@" + un + " #[colour]", "@" + un.replace("_", "\\_") + " #\\[colour]", false));
-            results.add(res("Distance", "@" + un + " distance [from] [to]", "@" + un.replace("_", "\\_") + " distance \\[from] \\[to]", false));
-            results.add(res("Maths", "@" + un + " maths [query]", "/math@" + un.replace("_", "\\_"), false));
-            results.add(res("Convert", "@" + un + " convert [from] [to] [quantity]", "/convert@" + un.replace("_", "\\_"), false));
-            results.add(res("Currency", "@" + un + " currency [from] [to] [quantity]", "/currency@" + un.replace("_", "\\_"), false));
+            for (Command cmd : SuperBotCommands.CMDS) {
+                String name = cmd.names()[0];
+                String[] usage = cmd.help(new DummyUser(event, new LinkedList<>(), new LinkedList<>()), false);
+                String txt = "@" + un + " " + name + " " + usage[0];
+                results.add(res(name + " - " + usage[1], txt, this.sys.message().escaped(txt).build(), false));
+            }
         }
         InlineQueryResponse res = InlineQueryResponse.builder().is_personal(is_personal).results(results).cache_time(cache_time).build();
         event.getQuery().answer(this.bot, res);
