@@ -64,7 +64,7 @@ public class TelegramMessageBuilder extends MessageBuilder {
 
     @Override
     public TelegramMessageBuilder raw(String text, Object... params) {
-        this.msg.append(String.format(text, params));
+        this.msg.append(params.length > 0 ? String.format(text, params) : text);
         return this;
     }
 

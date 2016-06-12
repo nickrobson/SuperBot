@@ -67,7 +67,7 @@ public class HtmlMessageBuilder extends MessageBuilder {
 
     @Override
     public HtmlMessageBuilder raw(String text, Object... params) {
-        this.msg.append(String.format(text, params));
+        this.msg.append(params.length > 0 ? String.format(text, params) : text);
         return this;
     }
 

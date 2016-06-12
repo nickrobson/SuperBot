@@ -65,7 +65,7 @@ public class MarkdownMessageBuilder extends MessageBuilder {
 
     @Override
     public MarkdownMessageBuilder raw(String text, Object... params) {
-        this.msg.append(String.format(text, params));
+        this.msg.append(params.length > 0 ? String.format(text, params) : text);
         return this;
     }
 
