@@ -59,20 +59,10 @@ public class OmdbSeasonCommand implements Command {
                 mb.bold(true).escaped(season.getTitle()).bold(false).escaped(", season " + args[1] + ":");
                 List<SeasonEpisodeResult> episodes = Arrays.asList(season.getEpisodes());
                 List<String> infos = episodes.stream().map(s -> this.toString(sys, s)).collect(Collectors.toList());
-                int rows = episodes.size() / 2 + episodes.size() % 2;
-                int maxLen = infos.subList(0, rows).stream().mapToInt(s -> s.length()).max().orElse(0);
-                mb.newLine().code(true);
-                for (int i = 0; i < rows; i++) {
-                    String s = this.pad(infos.get(i), maxLen);
-                    if (episodes.size() > i + rows) {
-                        s += "  |  " + infos.get(i + rows);
-                    }
-                    if (i > 0) {
-                        mb.newLine();
-                    }
-                    mb.escaped(s);
+                int maxLen = infos.stream().mapToInt(s -> s.length()).max().orElse(0);
+                for (int i = 0; i < infos.size(); i++) {
+                    mb.newLine().code(true).escaped(this.pad(infos.get(i), maxLen)).code(false);
                 }
-                mb.code(false);
             } else {
                 mb.escaped("Invalid IMDB ID (" + args[0] + ")");
             }
