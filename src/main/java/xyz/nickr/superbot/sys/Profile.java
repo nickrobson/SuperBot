@@ -22,11 +22,11 @@ public class Profile {
     }
 
     public static Optional<Profile> get(Sys sys, User user) {
-        return get(sys, sys.isUIDCaseSensitive() ? user.getUniqueId() : user.getUniqueId().toLowerCase());
+        return get(sys, user.getUniqueId());
     }
 
     public static Optional<Profile> get(Sys sys, String uniqueId) {
-        return get(sys.getName(), sys.getUserFriendlyName(sys.isUIDCaseSensitive() ? uniqueId : uniqueId.toLowerCase()));
+        return get(sys.getName(), sys.isUIDCaseSensitive() ? uniqueId : uniqueId.toLowerCase());
     }
 
     public static Optional<Profile> get(String provider, User user) {
