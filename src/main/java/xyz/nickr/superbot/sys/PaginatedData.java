@@ -38,7 +38,7 @@ public class PaginatedData {
         for (int i = 0; i < this.pages.size(); i++) {
             MessageBuilder m = this.pages.get(i);
             MessageBuilder z = mb.get();
-            z.bold(true).escaped("Page %d of %d", i + 1, this.pages.size()).bold(false);
+            z.bold(true).escaped("Page %d of %d", i + 1, this.pages.size()).bold(false).newLine();
             z.raw(m.build());
             z.setKeyboard(m.getKeyboard());
             this.pages.set(i, z);
