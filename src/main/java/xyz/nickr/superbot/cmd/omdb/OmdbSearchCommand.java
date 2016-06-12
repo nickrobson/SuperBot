@@ -66,7 +66,7 @@ public class OmdbSearchCommand implements Command {
                     SearchResultsPage pa = res.getPage(i);
                     for (SearchResult sr : pa) {
                         MessageBuilder m = sys.message();
-                        m.newLine().bold(true).escaped(sr.getTitle()).bold(false);
+                        m.bold(true).escaped(sr.getTitle()).bold(false);
                         m.escaped(" (" + sr.getYear() + "): " + sr.getImdbId() + ", a " + sr.getType());
                         lines.add(m.build());
                     }
