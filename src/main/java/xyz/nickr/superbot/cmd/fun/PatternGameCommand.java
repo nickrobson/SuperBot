@@ -69,7 +69,7 @@ public class PatternGameCommand implements Command {
                 String key = u.getProvider().getName() + "-" + u.getUniqueId();
                 String out = prg.containsKey(key) ? prg.get(key) : "";
                 if (out == null) {
-                    return new ButtonResponse("You've chosen the wrong pattern!", true);
+                    return new ButtonResponse("You have already lost!", true);
                 }
                 if (out.length() < pattern.length()) {
                     char clicked = this.alphabet.charAt(i);
@@ -114,7 +114,7 @@ public class PatternGameCommand implements Command {
             int count = 0;
             try {
                 while (count <= pattern.length()) {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                     if (count == pattern.length()) {
                         m.edit(msg.apply(-1));
                         hasShown.set(true);
