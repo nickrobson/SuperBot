@@ -61,7 +61,7 @@ public class OmdbSearchCommand implements Command {
             }
             if (maxPages > 0) {
                 List<String> lines = new LinkedList<>();
-                for (int i = 0; i < maxPages; i++) {
+                for (int i = 1; i <= maxPages; i++) {
                     SearchResultsPage pa = res.getPage(i);
                     for (SearchResult sr : pa) {
                         MessageBuilder m = sys.message();
