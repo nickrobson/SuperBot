@@ -59,7 +59,7 @@ public class MarkdownMessageBuilder extends MessageBuilder {
 
     @Override
     public MarkdownMessageBuilder escaped(String text, Object... params) {
-        this.msg.append(MarkdownMessageBuilder.markdown_escape(String.format(text, params), this.code));
+        this.msg.append(MarkdownMessageBuilder.markdown_escape(params.length > 0 ? String.format(text, params) : text, this.code));
         return this;
     }
 

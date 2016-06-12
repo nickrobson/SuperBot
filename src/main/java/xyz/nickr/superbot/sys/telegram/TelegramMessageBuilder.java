@@ -58,7 +58,7 @@ public class TelegramMessageBuilder extends MessageBuilder {
 
     @Override
     public TelegramMessageBuilder escaped(String text, Object... params) {
-        this.msg.append(TelegramMessageBuilder.markdown_escape(String.format(text, params), this.code));
+        this.msg.append(TelegramMessageBuilder.markdown_escape(params.length > 0 ? String.format(text, params) : text, this.code));
         return this;
     }
 

@@ -61,7 +61,7 @@ public class HtmlMessageBuilder extends MessageBuilder {
 
     @Override
     public HtmlMessageBuilder escaped(String text, Object... params) {
-        this.msg.append(HtmlMessageBuilder.html_escape(String.format(text, params)));
+        this.msg.append(HtmlMessageBuilder.html_escape(params.length > 0 ? String.format(text, params) : text));
         return this;
     }
 
