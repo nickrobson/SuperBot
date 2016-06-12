@@ -78,4 +78,5 @@ public class TelegramGroup implements Group {
     public Message sendMessage(MessageBuilder message) {
         return this.sys.wrap(message, this.sys.sendMessage(this.chat, message));
     }
+
 }

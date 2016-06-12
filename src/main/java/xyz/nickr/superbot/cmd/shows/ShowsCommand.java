@@ -1,22 +1,14 @@
 package xyz.nickr.superbot.cmd.shows;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 
 import xyz.nickr.superbot.SuperBotShows;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.cmd.Command;
-import xyz.nickr.superbot.keyboard.Keyboard;
-import xyz.nickr.superbot.keyboard.KeyboardButton;
-import xyz.nickr.superbot.keyboard.KeyboardRow;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
-import xyz.nickr.superbot.sys.MessageBuilder;
+import xyz.nickr.superbot.sys.PaginatedData;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -50,63 +42,23 @@ public class ShowsCommand implements Command {
             }
         }
         snd.sort(String.CASE_INSENSITIVE_ORDER);
-        int rows = snd.size();
-        final int maxpages = rows / ShowsCommand.SHOWS_PER_PAGE + (rows % ShowsCommand.SHOWS_PER_PAGE == 0 ? 0 : 1);
-        Function<Integer, MessageBuilder> getPage = p -> {
-            MessageBuilder b = sys.message();
-            final List<String> send = snd.subList(p * ShowsCommand.SHOWS_PER_PAGE, Math.min((p + 1) * ShowsCommand.SHOWS_PER_PAGE, snd.size()));
-            b.bold(m -> m.escaped("Page %d of %d", p + 1, maxpages)).newLine();
-            for (int i = 0, j = send.size(); i < j; i++) {
-                final int x = i;
-                b.code(m -> m.escaped(send.get(x)));
-                if (i != j - 1) {
-                    b.newLine();
+        PaginatedData pages = new PaginatedData(sys::message, snd, SHOWS_PER_PAGE, true);
+        final int maxpages = pages.getNumberOfPages();
+        int page = 0;
+        if (args.length > 0) {
+            try {
+                page = Integer.parseInt(args[0]);
+                if (page <= 0 || page > maxpages) {
+                    final int x = page;
+                    group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [1, %d]", x, maxpages)));
+                } else {
+                    pages.send(sys, group, page - 1);
                 }
+            } catch (Exception ex) {
+                group.sendMessage(sys.message().bold(m -> m.escaped("Not a number: %s", args[0])));
             }
-            return b;
-        };
-        MessageBuilder builder = sys.message();
-        if (sys.hasKeyboards()) {
-            Map<Integer, MessageBuilder> pages = new HashMap<>();
-            for (int i = 0; i < maxpages; i++) {
-                pages.put(i, getPage.apply(i));
-            }
-            builder.raw(pages.get(0).build());
-            AtomicInteger currentPage = new AtomicInteger(0);
-            AtomicReference<Message> msg = new AtomicReference<>();
-
-            if (pages.size() > 1) {
-                Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("«", () -> {
-                    int cPage = currentPage.get();
-                    int prevPage = (cPage == 0 ? maxpages : cPage) - 1;
-                    currentPage.set(prevPage);
-                    msg.get().edit(pages.get(prevPage));
-                })).add(new KeyboardButton("»", () -> {
-                    int cPage = currentPage.get() + 1;
-                    int nextPage = cPage == maxpages ? 0 : cPage;
-                    currentPage.set(nextPage);
-                    msg.get().edit(pages.get(nextPage));
-                })));
-                builder.setKeyboard(kb);
-            }
-            msg.set(group.sendMessage(builder));
         } else {
-            int page = 0;
-            if (args.length > 0) {
-                try {
-                    page = Integer.parseInt(args[0]);
-                    if (page <= 0 || page > maxpages) {
-                        final int x = page;
-                        group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [1, %d]", x, maxpages)));
-                    } else {
-                        group.sendMessage(getPage.apply(page - 1));
-                    }
-                } catch (Exception ex) {
-                    group.sendMessage(sys.message().bold(m -> m.escaped("Not a number: %s", args[0])));
-                }
-            } else {
-                group.sendMessage(getPage.apply(0));
-            }
+            pages.send(sys, group, 0);
         }
     }
 

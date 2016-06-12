@@ -411,6 +411,21 @@ public class TelegramListener implements Listener {
 
         @Override
         public void edit(MessageBuilder message) {
+            Keyboard kb = message.getKeyboard();
+            if (kb != null) {
+                kb.lock();
+                String prefix = ConsecutiveId.next(KEYBOARD_ID_NAMESPACE);
+                InlineKeyboardMarkupBuilder reply = InlineKeyboardMarkup.builder();
+                for (KeyboardRow kbr : kb) {
+                    List<InlineKeyboardButton> btns = new LinkedList<>();
+                    kbr.forEach(b -> {
+                        btns.add(InlineKeyboardButton.builder().callbackData(prefix + "-" + b.getText()).text(b.getText()).build());
+                    });
+                    reply.addRow(btns);
+                }
+                this.ikm = reply.build();
+                TelegramListener.this.addKeyboard(prefix, kb);
+            }
             TelegramListener.this.sys.getBot().editInlineMessageText(this.messageId, message.build(), ParseMode.MARKDOWN, true, this.ikm);
         }
 
