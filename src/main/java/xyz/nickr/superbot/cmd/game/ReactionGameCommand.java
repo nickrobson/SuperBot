@@ -38,8 +38,7 @@ public class ReactionGameCommand implements Command {
         AtomicBoolean started = new AtomicBoolean(false);
         AtomicReference<Message> m = new AtomicReference<>();
         Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Begin", () -> {
-            if (!started.get()) {
-                started.set(true);
+            if (!started.getAndSet(true)) {
                 MessageBuilder mb = sys.message().escaped("Click the button below when it says GO");
                 Keyboard k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Click me when I say 'GO'", () -> {})));
                 mb.setKeyboard(k);
@@ -50,8 +49,7 @@ public class ReactionGameCommand implements Command {
                 AtomicBoolean won = new AtomicBoolean(false);
                 MessageBuilder onWin = sys.message().setKeyboard(new Keyboard());
                 k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("GO", u -> {
-                    if (!won.get()) {
-                        won.set(true);
+                    if (!won.getAndSet(true)) {
                         m.get().edit(onWin.escaped("Winner: " + u.getProvider().getUserFriendlyName(u.getUniqueId())));
                     }
                 })));

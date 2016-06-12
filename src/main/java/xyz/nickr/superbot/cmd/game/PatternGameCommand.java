@@ -66,7 +66,7 @@ public class PatternGameCommand implements Command {
             pattern.append(c);
         }
         AtomicBoolean hasShown = new AtomicBoolean();
-        AtomicReference<Message> amsg = new AtomicReference<>();
+        AtomicReference<Message> m = new AtomicReference<>();
         AtomicReference<Function<Integer, MessageBuilder>> ar = new AtomicReference<>();
         Function<Integer, Function<User, ButtonResponse>> btnAction = i -> {
             Function<User, ButtonResponse> f = u -> {
@@ -99,7 +99,7 @@ public class PatternGameCommand implements Command {
             };
             return f.andThen(br -> {
                 if (hasShown.get()) {
-                    amsg.get().edit(ar.get().apply(-1));
+                    m.get().edit(ar.get().apply(-1));
                 }
                 return br;
             });
@@ -126,25 +126,29 @@ public class PatternGameCommand implements Command {
             return mb;
         };
         ar.set(msg);
-        Message m = group.sendMessage(msg.apply(this.alphabet.indexOf(pattern.charAt(0))));
-        amsg.set(m);
-        new Thread(() -> {
-            try {
-                int c = 0;
-                while (c <= pattern.length()) {
-                    Thread.sleep(2500L);
-                    if (c == pattern.length()) {
-                        m.edit(msg.apply(-1));
-                        hasShown.set(true);
-                    } else {
-                        m.edit(msg.apply(this.alphabet.indexOf(pattern.charAt(c))));
+        AtomicBoolean started = new AtomicBoolean(false);
+        Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Begin", () -> {
+            if (!started.getAndSet(true)) {
+                new Thread(() -> {
+                    try {
+                        int c = 0;
+                        while (c <= pattern.length()) {
+                            Thread.sleep(2500L);
+                            if (c == pattern.length()) {
+                                m.get().edit(msg.apply(-1));
+                                hasShown.set(true);
+                            } else {
+                                m.get().edit(msg.apply(this.alphabet.indexOf(pattern.charAt(c))));
+                            }
+                            c++;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    c++;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                }).start();
             }
-        }).start();
+        })));
+        m.set(group.sendMessage(sys.message().escaped("Click to begin:").setKeyboard(kb)));
     }
 
 }
