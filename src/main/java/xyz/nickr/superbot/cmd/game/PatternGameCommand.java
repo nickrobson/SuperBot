@@ -1,4 +1,4 @@
-package xyz.nickr.superbot.cmd.fun;
+package xyz.nickr.superbot.cmd.game;
 
 import java.util.Arrays;
 import java.util.HashMap;
