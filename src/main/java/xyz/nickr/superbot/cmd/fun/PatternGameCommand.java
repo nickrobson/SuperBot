@@ -65,7 +65,6 @@ public class PatternGameCommand implements Command {
             } while (pattern.length() > 0 && c == pattern.charAt(pattern.length() - 1));
             pattern.append(c);
         }
-        System.out.println("chosen: " + pattern);
         AtomicBoolean hasShown = new AtomicBoolean();
         AtomicReference<Message> amsg = new AtomicReference<>();
         AtomicReference<Function<Integer, MessageBuilder>> ar = new AtomicReference<>();
@@ -131,6 +130,7 @@ public class PatternGameCommand implements Command {
         new Thread(() -> {
             try {
                 int c = 0;
+                m.edit(msg.apply(this.alphabet.indexOf(pattern.charAt(0))));
                 while (c <= pattern.length()) {
                     Thread.sleep(2000L);
                     if (c == pattern.length()) {
