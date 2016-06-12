@@ -39,21 +39,18 @@ public class ReactionGameCommand implements Command {
         AtomicReference<Message> m = new AtomicReference<>();
         Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Begin", () -> {
             if (!started.getAndSet(true)) {
-                MessageBuilder mb = sys.message().bold(z -> z.escaped("Reaction:")).escaped(" Click the button below when it says GO");
-                Keyboard k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Click me when I say 'GO'", () -> {})));
-                mb.setKeyboard(k);
-                m.get().edit(mb);
+                m.get().edit(sys.message().bold(z -> z.escaped("Reaction:")).escaped(" Click the button below when it says GO"));
                 try {
                     Thread.sleep(4000 + this.random.nextInt(10000));
                 } catch (InterruptedException e) {}
                 AtomicBoolean won = new AtomicBoolean(false);
                 MessageBuilder onWin = sys.message().setKeyboard(new Keyboard());
-                k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("GO", u -> {
+                Keyboard k = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("GO", u -> {
                     if (!won.getAndSet(true)) {
                         m.get().edit(onWin.bold(z -> z.escaped("Reaction:")).escaped(" Winner: " + u.getProvider().getUserFriendlyName(u.getUniqueId())));
                     }
                 })));
-                mb = sys.message().escaped("Click GO").setKeyboard(k);
+                MessageBuilder mb = sys.message().escaped("Click GO").setKeyboard(k);
                 m.get().edit(mb);
             }
         })));
