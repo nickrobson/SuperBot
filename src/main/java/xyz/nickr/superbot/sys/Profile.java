@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.SuperBotProfiles;
 
 public class Profile {
@@ -34,9 +35,10 @@ public class Profile {
     }
 
     public static Optional<Profile> get(String provider, String uniqueId) {
+        Sys sys = SuperBotController.PROVIDERS.get(provider);
         for (Profile prof : ALL.values()) {
             Optional<String> acc = prof.getAccount(provider);
-            if (acc.isPresent() && acc.get().equals(uniqueId)) {
+            if (acc.isPresent() && (acc.get().equals(uniqueId) || sys.getUserFriendlyName(acc.get()).equals(sys.getUserFriendlyName(uniqueId)))) {
                 return Optional.of(prof);
             }
         }
