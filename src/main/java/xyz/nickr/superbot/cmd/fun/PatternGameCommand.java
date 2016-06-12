@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import xyz.nickr.superbot.ConsecutiveId;
@@ -60,8 +61,10 @@ public class PatternGameCommand implements Command {
             pattern.append(this.alphabet.charAt(this.random.nextInt(size * size)));
         }
         AtomicBoolean hasShown = new AtomicBoolean();
+        AtomicReference<Message> amsg = new AtomicReference<>();
+        AtomicReference<Function<Integer, MessageBuilder>> ar = new AtomicReference<>();
         Function<Integer, Function<User, ButtonResponse>> btnAction = i -> {
-            return u -> {
+            Function<User, ButtonResponse> f = u -> {
                 if (!hasShown.get()) {
                     return null;
                 }
@@ -84,9 +87,14 @@ public class PatternGameCommand implements Command {
                 }
                 if (out.length() == pattern.length()) {
                     return new ButtonResponse("Congratulations, you won!", true);
+                } else {
+                    return new ButtonResponse("Just enter the remaining " + (pattern.length() - out.length()) + " steps!", false);
                 }
-                return null;
             };
+            return f.andThen(br -> {
+                amsg.get().edit(ar.get().apply(-1));
+                return br;
+            });
         };
         Function<Integer, Keyboard> getKeyboard = i -> {
             Keyboard kb = new Keyboard();
@@ -103,13 +111,15 @@ public class PatternGameCommand implements Command {
         };
         Function<Integer, MessageBuilder> msg = i -> {
             MessageBuilder mb = sys.message().bold(z -> z.escaped("Difficulty: ")).escaped(args[0].toUpperCase());
-            this.progress.get(game).entrySet().stream().filter(e -> e.getValue().length() == pattern.length()).forEach(e -> {
+            this.progress.get(game).entrySet().stream().filter(e -> e.getValue() != null && e.getValue().length() == pattern.length()).forEach(e -> {
                 mb.newLine().escaped("- " + e.getKey());
             });
             mb.setKeyboard(getKeyboard.apply(i));
             return mb;
         };
         Message m = group.sendMessage(msg.apply(-1));
+        ar.set(msg);
+        amsg.set(m);
         new Thread(() -> {
             int count = 0;
             try {
