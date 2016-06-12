@@ -39,7 +39,7 @@ public class ReactionGameCommand implements Command {
         AtomicReference<Message> m = new AtomicReference<>();
         Keyboard kb = new Keyboard().add(new KeyboardRow().add(new KeyboardButton("Begin", () -> {
             if (!started.getAndSet(true)) {
-                m.get().edit(sys.message().bold(z -> z.escaped("Reaction:")).escaped(" Click the button below when it says GO"));
+                m.get().edit(sys.message().bold(z -> z.escaped("Reaction:")).escaped(" Click the button below when it says GO").setKeyboard(new Keyboard()));
                 try {
                     Thread.sleep(4000 + this.random.nextInt(10000));
                 } catch (InterruptedException e) {}
