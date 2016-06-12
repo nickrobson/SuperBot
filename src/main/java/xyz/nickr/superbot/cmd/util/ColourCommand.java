@@ -81,8 +81,8 @@ public class ColourCommand implements Command {
                 }
                 for (String co : colours) {
                     try {
-                        File cache = new File("web/photo/" + co + ".png");
-                        if (!cache.exists()) {
+                        File f = new File("web/photo/" + co + ".png");
+                        if (!f.exists()) {
                             BufferedImage img = new BufferedImage(PHOTO_WIDTH, PHOTO_HEIGHT, BufferedImage.TYPE_INT_RGB);
                             int rgb = Integer.parseInt(co, 16);
                             Graphics2D g = img.createGraphics();
@@ -90,11 +90,11 @@ public class ColourCommand implements Command {
                             g.fillRect(0, 0, PHOTO_WIDTH, PHOTO_HEIGHT);
                             g.setColor(Color.WHITE);
                             drawCenteredString(g, "#" + co, new Rectangle(0, 0, PHOTO_WIDTH, PHOTO_HEIGHT), FONT);
-                            cache.getParentFile().mkdirs();
-                            cache.createNewFile();
-                            ImageIO.write(img, "png", cache);
+                            f.getParentFile().mkdirs();
+                            f.createNewFile();
+                            ImageIO.write(img, "png", f);
                         }
-                        group.sendPhoto(cache);
+                        group.sendPhoto(f, true);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                         group.sendMessage(sys.message().escaped("Something went wrong!"));

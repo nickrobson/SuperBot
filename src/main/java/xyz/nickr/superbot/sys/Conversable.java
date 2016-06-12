@@ -18,7 +18,11 @@ public interface Conversable {
     }
 
     default void sendPhoto(File file) {
-        sendPhoto(Imgur.upload(file));
+        sendPhoto(file, false);
+    }
+
+    default void sendPhoto(File file, boolean cache) {
+        sendPhoto(Imgur.upload(file, cache));
     }
 
     default void sendPhoto(URL url) {
