@@ -1,5 +1,8 @@
 package xyz.nickr.superbot.cmd.omdb;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.jomdb.model.SearchResult;
 import xyz.nickr.jomdb.model.SearchResults;
@@ -9,6 +12,7 @@ import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
+import xyz.nickr.superbot.sys.PaginatedData;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -27,7 +31,6 @@ public class OmdbSearchCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         JavaOMDB omdb = SuperBotController.OMDB;
-        MessageBuilder mb = sys.message();
         String search = "";
         int page = 1;
         for (String arg : args) {
@@ -36,7 +39,7 @@ public class OmdbSearchCommand implements Command {
                 try {
                     page = Integer.parseInt(pg);
                 } catch (NumberFormatException ex) {
-                    group.sendMessage(mb.escaped("Invalid page number (" + pg + ")"));
+                    group.sendMessage(sys.message().escaped("Invalid page number (" + pg + ")"));
                     return;
                 }
             } else {
@@ -48,26 +51,29 @@ public class OmdbSearchCommand implements Command {
         }
         if (search.length() > 0) {
             SearchResults res = omdb.search(search);
-            if (res == null || res.getPageCount() == 0) {
-                mb.escaped("No results.");
-            } else if (page < 1 || page > res.getPageCount()) {
-                mb.escaped(String.format("Page number not in [1,%d]", res.getPageCount()));
-            } else {
-                SearchResultsPage pa = res.getPage(page);
-                if (pa.size() > 0) {
-                    mb.bold(true).italic(true).escaped("Results (" + page + "/" + res.getPageCount() + "): ").italic(false).bold(false);
-                } else {
-                    mb.bold(true).italic(true).escaped("No results.").italic(false).bold(false);
-                }
-                for (SearchResult sr : pa) {
-                    mb.newLine().bold(true).escaped(sr.getTitle()).bold(false);
-                    mb.escaped(" (" + sr.getYear() + "): " + sr.getImdbId() + ", a " + sr.getType());
-                }
-                if (page != res.getPageCount()) {
-                    mb.newLine().escaped("For more results, use ").bold(true).escaped(sys.prefix() + this.names()[0] + " " + search + " -page=" + (page + 1));
-                }
+            int maxPages = Math.min(10, res.getPageCount());
+            if (maxPages <= 0) {
+                group.sendMessage(sys.message().escaped("No results."));
+                return;
+            } else if (page <= 0 || page > maxPages) {
+                group.sendMessage(sys.message().escaped("Invalid page: %d, not in [%d, %d]", page, 1, maxPages));
+                return;
             }
-            group.sendMessage(mb);
+            if (maxPages > 0) {
+                List<String> lines = new LinkedList<>();
+                for (int i = 0; i < maxPages; i++) {
+                    SearchResultsPage pa = res.getPage(i);
+                    for (SearchResult sr : pa) {
+                        MessageBuilder m = sys.message();
+                        m.newLine().bold(true).escaped(sr.getTitle()).bold(false);
+                        m.escaped(" (" + sr.getYear() + "): " + sr.getImdbId() + ", a " + sr.getType());
+                    }
+                }
+                PaginatedData pages = new PaginatedData(sys::message, lines, 20, false);
+                pages.send(sys, group, page);
+            } else {
+                group.sendMessage(sys.message().escaped("No results."));
+            }
         } else {
             this.sendUsage(sys, user, group);
         }
