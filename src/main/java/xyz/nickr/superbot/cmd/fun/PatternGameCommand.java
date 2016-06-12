@@ -93,7 +93,8 @@ public class PatternGameCommand implements Command {
                 if (out.length() == pattern.length()) {
                     return new ButtonResponse("Congratulations, you won!", true);
                 } else {
-                    return new ButtonResponse("Just enter the remaining " + (pattern.length() - out.length()) + " steps!", false);
+                    int dl = pattern.length() - out.length();
+                    return new ButtonResponse("Just enter the remaining " + dl + " step" + (dl == 1 ? "" : "s") + "!", false);
                 }
             };
             return f.andThen(br -> {
