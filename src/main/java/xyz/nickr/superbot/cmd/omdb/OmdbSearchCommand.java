@@ -51,11 +51,12 @@ public class OmdbSearchCommand implements Command {
         }
         if (search.length() > 0) {
             SearchResults res = omdb.search(search);
-            int maxPages = Math.min(10, res.getPageCount());
-            if (maxPages <= 0) {
+            if (res == null || res.getPageCount() == 0) {
                 group.sendMessage(sys.message().escaped("No results."));
                 return;
-            } else if (page <= 0 || page > maxPages) {
+            }
+            int maxPages = Math.min(10, res.getPageCount());
+            if (page <= 0 || page > maxPages) {
                 group.sendMessage(sys.message().escaped("Invalid page: %d, not in [%d, %d]", page, 1, maxPages));
                 return;
             }
@@ -70,7 +71,7 @@ public class OmdbSearchCommand implements Command {
                     }
                 }
                 PaginatedData pages = new PaginatedData(sys::message, lines, 20, false);
-                pages.send(sys, group, page);
+                pages.send(sys, group, page - 1);
             } else {
                 group.sendMessage(sys.message().escaped("No results."));
             }
