@@ -16,17 +16,21 @@ public class PaginatedData {
     @Getter
     private List<MessageBuilder> pages;
 
-    public PaginatedData(Supplier<MessageBuilder> mb, List<String> lines, int pageHeight, boolean code) {
+    public PaginatedData(Supplier<MessageBuilder> mb, List<String> lines, int pageHeight, boolean escaped, boolean code) {
         this.pages = new LinkedList<>();
         int page = 0;
         while (page * pageHeight < lines.size()) {
             MessageBuilder m = mb.get();
             for (int i = page * pageHeight, j = Math.min((page + 1) * pageHeight, lines.size()); i < j; i++) {
                 final int x = i;
-                if (code) {
+                if (code && escaped) {
                     m.code(z -> z.escaped(lines.get(x)));
-                } else {
+                } else if (escaped) {
                     m.escaped(lines.get(x));
+                } else if (code) {
+                    m.code(z -> z.raw(lines.get(x)));
+                } else {
+                    m.raw(lines.get(x));
                 }
                 if (i != j - 1) {
                     m.newLine();

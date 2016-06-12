@@ -40,7 +40,7 @@ public class ShowsCommand implements Command {
             }
         }
         snd.sort(String.CASE_INSENSITIVE_ORDER);
-        PaginatedData pages = new PaginatedData(sys::message, snd, 20, true);
+        PaginatedData pages = new PaginatedData(sys::message, snd, 20, true, true);
         final int maxpages = pages.getNumberOfPages();
         int page = 0;
         if (args.length > 0) {
