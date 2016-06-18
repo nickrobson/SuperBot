@@ -1,4 +1,4 @@
-package xyz.nickr.superbot.cmd.cfg;
+package xyz.nickr.superbot.cmd.config;
 
 import java.util.Properties;
 

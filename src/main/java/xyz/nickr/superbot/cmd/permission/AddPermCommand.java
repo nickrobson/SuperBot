@@ -1,4 +1,4 @@
-package xyz.nickr.superbot.cmd.perm;
+package xyz.nickr.superbot.cmd.permission;
 
 import xyz.nickr.superbot.SuperBotPermissions;
 import xyz.nickr.superbot.cmd.Command;

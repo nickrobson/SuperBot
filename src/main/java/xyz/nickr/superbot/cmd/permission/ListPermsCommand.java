@@ -1,4 +1,4 @@
-package xyz.nickr.superbot.cmd.perm;
+package xyz.nickr.superbot.cmd.permission;
 
 import java.util.Optional;
 import java.util.Set;
