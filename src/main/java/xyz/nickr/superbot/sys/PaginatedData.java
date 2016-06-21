@@ -7,9 +7,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import lombok.Getter;
-import xyz.nickr.superbot.keyboard.Keyboard;
-import xyz.nickr.superbot.keyboard.KeyboardButton;
-import xyz.nickr.superbot.keyboard.KeyboardRow;
 
 public class PaginatedData {
 

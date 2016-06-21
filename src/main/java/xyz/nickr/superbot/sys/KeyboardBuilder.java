@@ -1,4 +1,4 @@
-package xyz.nickr.superbot.keyboard;
+package xyz.nickr.superbot.sys;
 
 public class KeyboardBuilder {
 

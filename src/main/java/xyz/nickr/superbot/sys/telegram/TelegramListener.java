@@ -26,11 +26,11 @@ import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
-import xyz.nickr.superbot.keyboard.ButtonResponse;
-import xyz.nickr.superbot.keyboard.Keyboard;
-import xyz.nickr.superbot.keyboard.KeyboardButton;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
+import xyz.nickr.superbot.sys.Keyboard;
+import xyz.nickr.superbot.sys.KeyboardButton;
+import xyz.nickr.superbot.sys.KeyboardButtonResponse;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.User;
 import xyz.nickr.superbot.sys.telegram.TelegramDummy.DummyGroup;
@@ -95,7 +95,7 @@ public class TelegramListener implements Listener {
             if (kb != null) {
                 KeyboardButton btn = kb.getButton(spl[1]);
                 if (btn != null) {
-                    ButtonResponse res = btn.onClick(this.sys.wrap(q.getFrom()));
+                    KeyboardButtonResponse res = btn.onClick(this.sys.wrap(q.getFrom()));
                     if (res != null) {
                         q.answer(res.getText(), res.isShowAlert());
                         answer = true;

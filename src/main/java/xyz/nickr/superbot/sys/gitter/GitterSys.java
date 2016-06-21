@@ -1,7 +1,5 @@
 package xyz.nickr.superbot.sys.gitter;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import xyz.nickr.jitter.Jitter;
@@ -9,13 +7,10 @@ import xyz.nickr.jitter.api.Message;
 import xyz.nickr.jitter.api.Room;
 import xyz.nickr.jitter.api.User;
 import xyz.nickr.superbot.SuperBotController;
-import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 
-public class GitterSys implements Sys {
-
-    private final Map<String, GroupConfiguration> configs = new HashMap<>();
+public class GitterSys extends Sys {
 
     Jitter jitter;
 
@@ -88,16 +83,6 @@ public class GitterSys implements Sys {
     @Override
     public String getUserFriendlyName(String uniqueId) {
         return uniqueId;
-    }
-
-    @Override
-    public GroupConfiguration getGroupConfiguration(String uniqueId) {
-        return this.configs.get(uniqueId);
-    }
-
-    @Override
-    public void addGroupConfiguration(GroupConfiguration cfg) {
-        this.configs.put(cfg.getUniqueId(), cfg);
     }
 
     GitterMessage wrap(Message message) {

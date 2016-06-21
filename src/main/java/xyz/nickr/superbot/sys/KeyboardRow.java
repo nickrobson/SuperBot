@@ -1,4 +1,4 @@
-package xyz.nickr.superbot.keyboard;
+package xyz.nickr.superbot.sys;
 
 import java.util.Iterator;
 import java.util.LinkedList;

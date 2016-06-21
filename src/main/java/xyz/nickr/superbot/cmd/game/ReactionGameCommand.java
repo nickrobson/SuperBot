@@ -5,10 +5,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import xyz.nickr.superbot.cmd.Command;
-import xyz.nickr.superbot.keyboard.Keyboard;
-import xyz.nickr.superbot.keyboard.KeyboardButton;
-import xyz.nickr.superbot.keyboard.KeyboardRow;
 import xyz.nickr.superbot.sys.Group;
+import xyz.nickr.superbot.sys.Keyboard;
+import xyz.nickr.superbot.sys.KeyboardButton;
+import xyz.nickr.superbot.sys.KeyboardRow;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;

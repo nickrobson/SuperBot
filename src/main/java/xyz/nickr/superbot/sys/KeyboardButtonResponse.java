@@ -1,9 +1,9 @@
-package xyz.nickr.superbot.keyboard;
+package xyz.nickr.superbot.sys;
 
 import lombok.Data;
 
 @Data
-public class ButtonResponse {
+public class KeyboardButtonResponse {
 
     private final String text;
     private final boolean showAlert;

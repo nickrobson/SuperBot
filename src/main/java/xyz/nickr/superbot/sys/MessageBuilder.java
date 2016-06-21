@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import xyz.nickr.superbot.keyboard.Keyboard;
 
 @Accessors(chain = true)
 public abstract class MessageBuilder {

@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -16,7 +14,6 @@ import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage.SendableTextMessageBuilder;
 import xyz.nickr.superbot.sys.Group;
-import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
@@ -25,11 +22,10 @@ import xyz.nickr.superbot.sys.User;
 /**
  * Created by bo0tzz
  */
-public class TelegramSys implements Sys {
+public class TelegramSys extends Sys {
 
     private TelegramBot bot;
 
-    private final Map<String, GroupConfiguration> configs = new HashMap<>();
     private final Properties usernameCache = new Properties();
 
     public TelegramSys(String key) {
@@ -76,16 +72,6 @@ public class TelegramSys implements Sys {
     @Override
     public String getUserFriendlyName(String uniqueId) {
         return this.usernameCache.getProperty(uniqueId, uniqueId);
-    }
-
-    @Override
-    public GroupConfiguration getGroupConfiguration(String uniqueId) {
-        return this.configs.get(uniqueId);
-    }
-
-    @Override
-    public void addGroupConfiguration(GroupConfiguration cfg) {
-        this.configs.put(cfg.getUniqueId(), cfg);
     }
 
     Group wrap(Chat chat) {

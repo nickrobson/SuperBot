@@ -1,23 +1,17 @@
 package xyz.nickr.superbot.sys.skype;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import in.kyle.ezskypeezlife.EzSkype;
 import in.kyle.ezskypeezlife.api.conversation.SkypeConversation;
 import in.kyle.ezskypeezlife.api.skype.SkypeCredentials;
 import xyz.nickr.superbot.sys.Group;
-import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
-public class SkypeSys implements Sys {
+public class SkypeSys extends Sys {
 
-    private final Map<String, GroupConfiguration> configs = new HashMap<>();
-
-    public EzSkype skype;
+    private EzSkype skype;
 
     public SkypeSys(String username, String password) {
         new Thread(() -> {
@@ -59,16 +53,6 @@ public class SkypeSys implements Sys {
     @Override
     public String getUserFriendlyName(String uniqueId) {
         return uniqueId;
-    }
-
-    @Override
-    public GroupConfiguration getGroupConfiguration(String uniqueId) {
-        return this.configs.get(uniqueId);
-    }
-
-    @Override
-    public void addGroupConfiguration(GroupConfiguration cfg) {
-        this.configs.put(cfg.getUniqueId(), cfg);
     }
 
     Group wrap(SkypeConversation group) {

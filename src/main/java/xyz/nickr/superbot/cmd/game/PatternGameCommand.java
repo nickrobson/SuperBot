@@ -11,11 +11,11 @@ import java.util.function.Function;
 
 import xyz.nickr.superbot.ConsecutiveId;
 import xyz.nickr.superbot.cmd.Command;
-import xyz.nickr.superbot.keyboard.ButtonResponse;
-import xyz.nickr.superbot.keyboard.Keyboard;
-import xyz.nickr.superbot.keyboard.KeyboardButton;
-import xyz.nickr.superbot.keyboard.KeyboardRow;
 import xyz.nickr.superbot.sys.Group;
+import xyz.nickr.superbot.sys.Keyboard;
+import xyz.nickr.superbot.sys.KeyboardButton;
+import xyz.nickr.superbot.sys.KeyboardButtonResponse;
+import xyz.nickr.superbot.sys.KeyboardRow;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
@@ -68,8 +68,8 @@ public class PatternGameCommand implements Command {
         AtomicBoolean hasShown = new AtomicBoolean();
         AtomicReference<Message> m = new AtomicReference<>();
         AtomicReference<Function<Integer, MessageBuilder>> ar = new AtomicReference<>();
-        Function<Integer, Function<User, ButtonResponse>> btnAction = i -> {
-            Function<User, ButtonResponse> f = u -> {
+        Function<Integer, Function<User, KeyboardButtonResponse>> btnAction = i -> {
+            Function<User, KeyboardButtonResponse> f = u -> {
                 if (!hasShown.get()) {
                     return null;
                 }
@@ -77,7 +77,7 @@ public class PatternGameCommand implements Command {
                 String key = u.getProvider().getName() + "-" + u.getUniqueId();
                 String out = prg.containsKey(key) ? prg.get(key) : "";
                 if (out == null) {
-                    return new ButtonResponse("You have already lost!", true);
+                    return new KeyboardButtonResponse("You have already lost!", true);
                 }
                 if (out.length() < pattern.length()) {
                     char clicked = this.alphabet.charAt(i);
@@ -87,11 +87,11 @@ public class PatternGameCommand implements Command {
                     } else {
                         prg.put(key, null);
                         this.progress.put(game, prg);
-                        return new ButtonResponse("Wrong button! You lose!", true);
+                        return new KeyboardButtonResponse("Wrong button! You lose!", true);
                     }
                 }
                 if (out.length() == pattern.length()) {
-                    return new ButtonResponse("Congratulations, you won!", true);
+                    return new KeyboardButtonResponse("Congratulations, you won!", true);
                 } else {
                     // int dl = pattern.length() - out.length();
                     // return new ButtonResponse("Just enter the remaining " + dl + " step" + (dl ==

@@ -6,7 +6,7 @@ import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 
 @AllArgsConstructor
-public class TelegramInlineSys implements Sys {
+public class TelegramInlineSys extends Sys {
 
     private TelegramSys sys;
 

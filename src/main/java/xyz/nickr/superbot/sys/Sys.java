@@ -1,29 +1,37 @@
 package xyz.nickr.superbot.sys;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-public interface Sys {
+public abstract class Sys {
 
-    final Pattern START_OF_LINE = Pattern.compile("^", Pattern.MULTILINE);
+    public static final Pattern START_OF_LINE = Pattern.compile("^", Pattern.MULTILINE);
 
-    String getName();
+    private final Map<String, GroupConfiguration> configs = new HashMap<>();
 
-    String prefix();
+    public abstract String getName();
 
-    boolean isUIDCaseSensitive();
+    public abstract String prefix();
 
-    default boolean hasKeyboards() {
+    public abstract boolean isUIDCaseSensitive();
+
+    public boolean hasKeyboards() {
         return false;
     }
 
-    MessageBuilder message();
+    public abstract MessageBuilder message();
 
-    String getUserFriendlyName(String uniqueId);
+    public abstract String getUserFriendlyName(String uniqueId);
 
-    GroupConfiguration getGroupConfiguration(String uniqueId);
+    public GroupConfiguration getGroupConfiguration(String uniqueId) {
+        return this.configs.get(uniqueId);
+    }
 
-    void addGroupConfiguration(GroupConfiguration cfg);
+    public void addGroupConfiguration(GroupConfiguration cfg) {
+        this.configs.put(cfg.getUniqueId(), cfg);
+    }
 
-    default void onLoaded() {}
+    public void onLoaded() {}
 
 }

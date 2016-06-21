@@ -42,6 +42,11 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+	        <groupId>org.pircbotx</groupId>
+	        <artifactId>pircbotx</artifactId>
+	        <version>2.1</version>
+		</dependency>
+		<dependency>
 		    <groupId>net.objecthunter</groupId>
 		    <artifactId>exp4j</artifactId>
 		    <version>0.4.5</version>
@@ -60,20 +65,20 @@
 
 	<repositories>
 		<repository>
-			<id>EzSkype-mvn-repo</id>
-			<url>https://raw.github.com/AkHo1ic/EzSkype/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>jcenter</id>
 			<url>http://jcenter.bintray.com/</url>
 		</repository>
 		<repository>
 			<id>nickr</id>
 			<url>http://nickr.xyz/maven/content/public/</url>
+		</repository>
+		<repository>
+			<id>EzSkype-mvn-repo</id>
+			<url>https://raw.github.com/AkHo1ic/EzSkype/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
 		</repository>
 	</repositories>
  	 
