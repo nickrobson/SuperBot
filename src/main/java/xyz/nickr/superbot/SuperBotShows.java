@@ -217,7 +217,8 @@ public class SuperBotShows {
         public final String imdb, display;
         public final Set<String> links;
 
-        private boolean dateCached = false;
+        private Integer totalSeasons;
+        private boolean dateCached;
         private SeasonResult season;
         private Calendar date;
 
@@ -292,6 +293,7 @@ public class SuperBotShows {
                     }
                 } while (next != null);
             } catch (Exception ex) {
+                ex.printStackTrace();
             }
             return this.season;
         }
@@ -301,21 +303,37 @@ public class SuperBotShows {
                 return this.date;
             }
             this.dateCached = true;
-            SeasonResult season = this.getSeason();
-            Calendar today = Calendar.getInstance();
-            Calendar now = Calendar.getInstance();
-            now.clear();
-            now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-            if (season != null) {
-                List<SeasonEpisodeResult> eps = Arrays.asList(season.getEpisodes());
-                for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
-                    Calendar cal = it.next().getReleaseDate();
-                    if (cal != null && cal.after(now)) {
-                        return this.date = cal;
+            try {
+                SeasonResult season = this.getSeason();
+                Calendar today = Calendar.getInstance();
+                Calendar now = Calendar.getInstance();
+                now.clear();
+                now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+                if (season != null) {
+                    List<SeasonEpisodeResult> eps = Arrays.asList(season.getEpisodes());
+                    for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
+                        Calendar cal = it.next().getReleaseDate();
+                        if (cal != null && cal.after(now)) {
+                            return this.date = cal;
+                        }
                     }
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
             return null;
+        }
+
+        public int getTotalSeasons() {
+            if (this.totalSeasons == null) {
+                try {
+                    this.totalSeasons = SuperBotController.OMDB.titleById(this.imdb).getTotalSeasons();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    return -1;
+                }
+            }
+            return this.totalSeasons;
         }
 
         public String getDateString() {
