@@ -1,6 +1,5 @@
 package xyz.nickr.superbot.cmd.shows;
 
-import java.lang.ArrayIndexOutOfBoundsException;
 import java.util.Map;
 import java.util.regex.Matcher;
 
@@ -66,15 +65,20 @@ public class SetProgressCommand implements Command {
                         group.sendMessage(mb.escaped("Not a number: %s!", args[2]));
                         return;
                     }
-                    int episode = Integer.parseInt(spl[1]) - 1 + de;
                     if (de >= 1) {
+                        int episode = Integer.parseInt(spl[1]) + de;
                         try {
                             SeasonResult res = show.getSeason(spl[0]);
                             SeasonEpisodeResult[] eps = res.getEpisodes();
-                            SeasonEpisodeResult r = eps[episode];
-                            episodeCodeCommand = String.format("S%sE%s", spl[0], r.getEpisode());
+                            SeasonEpisodeResult last = eps[eps.length - 1];
+                            if (Integer.parseInt(last.getEpisode().substring(1)) >= episode) {
+                                episodeCodeCommand = String.format("S%sE%s", spl[0], episode);
+                            } else {
+                                group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
+                                return;
+                            }
                         } catch (NullPointerException | ArrayIndexOutOfBoundsException ex) {
-                            group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode + 1).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
+                            group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
                             return;
                         }
                     } else {
