@@ -71,10 +71,9 @@ public class SetProgressCommand implements Command {
                             SeasonResult res = show.getSeason(spl[0]);
                             SeasonEpisodeResult[] eps = res.getEpisodes();
                             SeasonEpisodeResult last = eps[eps.length - 1];
-                            if (Integer.parseInt(last.getEpisode().substring(1)) >= episode) {
+                            if (Integer.parseInt(last.getEpisode()) >= episode) {
                                 episodeCodeCommand = String.format("S%sE%s", spl[0], episode);
                             } else {
-                                System.out.println(last.getEpisode() + " " + episode);
                                 group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
                                 return;
                             }
