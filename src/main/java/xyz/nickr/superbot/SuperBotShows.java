@@ -284,7 +284,9 @@ public class SuperBotShows {
                         SeasonEpisodeResult first = next.getEpisodes()[0],
                                         last = episodes[episodes.length - 1];
                         Calendar a = first.getReleaseDate(), b = last.getReleaseDate();
-                        if (a.after(now) && b.after(now)) {
+                        if (a == null || b == null) {
+                            break;
+                        } else if (a.after(now) && b.after(now)) {
                             this.season = next;
                         } else if (!a.after(now) && !b.before(now)) {
                             this.season = next;
