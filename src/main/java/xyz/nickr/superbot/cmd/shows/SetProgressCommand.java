@@ -78,6 +78,7 @@ public class SetProgressCommand implements Command {
                                 return;
                             }
                         } catch (NullPointerException | ArrayIndexOutOfBoundsException ex) {
+                            ex.printStackTrace();
                             group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
                             return;
                         }
