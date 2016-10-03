@@ -36,7 +36,7 @@ public class CurrencyCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         if (args.length < 3) {
-            sendUsage(null, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             String from = args[0].toUpperCase();
             String to = args[1].toUpperCase();

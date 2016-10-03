@@ -84,7 +84,7 @@ public class ConvertCommand implements Command {
             }
             group.sendMessage(builder);
         } else if (args.length < 3) {
-            this.sendUsage(null, user, group);
+            this.sendUsage(sys, user, group);
         } else {
             StringBuilder sb = new StringBuilder();
             for (int i = 2; i < args.length; i++) {
