@@ -41,8 +41,8 @@ public class TicTacToeGameCommand implements Command {
             if (!started.getAndSet(true)) {
                 board.get().playerTwo = clicker.getUniqueId();
                 resultMessage.set(sys.message().escaped("Tic Tac Toe").newLine().escaped(user.getUsername()).escaped(" vs ").escaped(clicker.getUsername()));
-                Consumer<Boolean> onWin = playerOne -> m.get().edit(sys.message().escaped("Congratulations, " + (playerOne ? user.getUsername() : clicker.getUsername())).setKeyboard(board.get().toKeyboard(() -> {}, () -> {}, u -> {})));
-                Runnable onDraw = () -> m.get().edit(sys.message().escaped("It's a draw between " + user.getUsername() + " and " + clicker.getUsername()).setKeyboard(board.get().toKeyboard(() -> {}, () -> {}, u -> {})));
+                Consumer<Boolean> onWin = playerOne -> m.get().edit(sys.message().escaped("Congratulations, " + (playerOne ? user.getUsername() : clicker.getUsername())).newLine().raw(board.get().toTextKeyboard(sys)).setKeyboard(null));
+                Runnable onDraw = () -> m.get().edit(sys.message().escaped("It's a draw between " + user.getUsername() + " and " + clicker.getUsername()).newLine().raw(board.get().toTextKeyboard(sys)).setKeyboard(null));
                 onClick.set(() -> m.get().edit(sys.message().raw(resultMessage.get().build()).newLine().escaped("It's " + (board.get().playerOneTurn ? user.getUsername() : clicker.getUsername()) + "'s turn!").setKeyboard(board.get().toKeyboard(onClick.get(), onDraw, onWin))));
                 onClick.get().run();
             }
@@ -86,6 +86,22 @@ public class TicTacToeGameCommand implements Command {
                     }
                 }
             };
+        }
+
+        public String toTextKeyboard(Sys sys) {
+            MessageBuilder mb = sys.message();
+            for (int y = 0; y < 3; y++) {
+                for (int x = 0; x < 3; x++) {
+                    mb.code(true).escaped("   |   |   ");
+                    mb.escaped(" " + grid[y][x] + " ");
+                    if (x != 2)
+                        mb.escaped("|");
+                    mb.escaped("   |   |   ").code(false);
+                }
+                if (y != 2)
+                    mb.code(false).newLine().code(true).escaped("---+---+---");
+            }
+            return mb.build();
         }
 
         public Keyboard toKeyboard(Runnable onClick, Runnable onDraw, Consumer<Boolean> onWin) {
