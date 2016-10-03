@@ -18,6 +18,7 @@ import xyz.nickr.superbot.cmd.fun.HangmanCommand;
 import xyz.nickr.superbot.cmd.fun.NumberwangCommand;
 import xyz.nickr.superbot.cmd.game.PatternGameCommand;
 import xyz.nickr.superbot.cmd.game.ReactionGameCommand;
+import xyz.nickr.superbot.cmd.game.TicTacToeGameCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbEpisodeCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbSearchCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbSeasonCommand;
@@ -122,6 +123,7 @@ public class SuperBotCommands {
 
         SuperBotCommands.register(new PatternGameCommand());
         SuperBotCommands.register(new ReactionGameCommand());
+        SuperBotCommands.register(new TicTacToeGameCommand());
 
         SuperBotCommands.register(new ColourCommand());
         SuperBotCommands.register(new ConvertCommand());
