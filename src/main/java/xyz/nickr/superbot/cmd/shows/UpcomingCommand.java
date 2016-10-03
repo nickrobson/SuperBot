@@ -42,13 +42,16 @@ public class UpcomingCommand implements Command {
         for (Show show : SuperBotShows.getShows()) {
             Calendar date = show.getDate();
             if (date != null && !date.before(now) && !date.after(week)) {
-                days.merge(date, show.display, (a, b) -> a + ", " + b);
+                days.merge(date, show.display, (a, b) -> a + "\n" + b);
             }
         }
 
         MessageBuilder mb = sys.message().bold(true).escaped("Upcoming episodes of shows:").bold(false);
         for (Entry<Calendar, String> entry : days.entrySet()) {
-            mb.newLine().bold(true).escaped(Show.getDateString(entry.getKey())).bold(false).escaped(": " + entry.getValue());
+            mb.newLine().bold(true).escaped(Show.getDateString(entry.getKey())).bold(false);
+            for (String show : entry.getValue().split("\\n")) {
+                mb.newLine().escaped("   - " + show);
+            }
         }
         group.sendMessage(mb);
     }
