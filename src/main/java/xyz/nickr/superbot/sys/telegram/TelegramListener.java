@@ -90,10 +90,10 @@ public class TelegramListener implements Listener {
         String callback = q.getData();
         boolean answer = false;
         if (callback.contains("-")) {
-            String[] spl = callback.split("-", 2);
+            String[] spl = callback.split("-");
             Keyboard kb = this.keyboards.get(spl[0]);
             if (kb != null) {
-                KeyboardButton btn = kb.getButton(spl[1]);
+                KeyboardButton btn = kb.getRows().get(Integer.parseInt(spl[1])).getButtons().get(Integer.parseInt(spl[2]));
                 if (btn != null) {
                     KeyboardButtonResponse res = btn.onClick(this.sys.wrap(q.getFrom()));
                     if (res != null) {

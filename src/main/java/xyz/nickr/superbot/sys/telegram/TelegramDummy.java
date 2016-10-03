@@ -17,15 +17,7 @@ import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardButton;
 import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardMarkup.InlineKeyboardMarkupBuilder;
 import xyz.nickr.superbot.ConsecutiveId;
-import xyz.nickr.superbot.sys.Conversable;
-import xyz.nickr.superbot.sys.Group;
-import xyz.nickr.superbot.sys.GroupType;
-import xyz.nickr.superbot.sys.Keyboard;
-import xyz.nickr.superbot.sys.KeyboardRow;
-import xyz.nickr.superbot.sys.Message;
-import xyz.nickr.superbot.sys.MessageBuilder;
-import xyz.nickr.superbot.sys.Sys;
-import xyz.nickr.superbot.sys.User;
+import xyz.nickr.superbot.sys.*;
 
 public class TelegramDummy {
 
@@ -132,12 +124,16 @@ public class TelegramDummy {
                 kb.lock();
                 String prefix = ConsecutiveId.next(KEYBOARD_ID_NAMESPACE);
                 InlineKeyboardMarkupBuilder reply = InlineKeyboardMarkup.builder();
+                int row = 0;
                 for (KeyboardRow kbr : kb) {
                     List<InlineKeyboardButton> btns = new LinkedList<>();
-                    kbr.forEach(b -> {
-                        btns.add(InlineKeyboardButton.builder().callbackData(prefix + "-" + b.getText()).text(b.getText()).build());
-                    });
+                    int rowb = 0;
+                    for (KeyboardButton b : kbr) {
+                        btns.add(InlineKeyboardButton.builder().callbackData(prefix + "-" + row + "-" + rowb).text(b.getText()).build());
+                        rowb++;
+                    }
                     reply.addRow(btns);
+                    row++;
                 }
                 ikm = reply.build();
                 this.listener.addKeyboard(prefix, kb);
@@ -209,12 +205,16 @@ public class TelegramDummy {
                 kb.lock();
                 String prefix = ConsecutiveId.next(KEYBOARD_ID_NAMESPACE);
                 InlineKeyboardMarkupBuilder reply = InlineKeyboardMarkup.builder();
+                int row = 0;
                 for (KeyboardRow kbr : kb) {
                     List<InlineKeyboardButton> btns = new LinkedList<>();
-                    kbr.forEach(b -> {
-                        btns.add(InlineKeyboardButton.builder().callbackData(prefix + "-" + b.getText()).text(b.getText()).build());
-                    });
+                    int rowb = 0;
+                    for (KeyboardButton b : kbr) {
+                        btns.add(InlineKeyboardButton.builder().callbackData(prefix + "-" + row + "-" + rowb).text(b.getText()).build());
+                        rowb++;
+                    }
                     reply.addRow(btns);
+                    row++;
                 }
                 this.ikm = reply.build();
                 this.listener.addKeyboard(prefix, kb);
