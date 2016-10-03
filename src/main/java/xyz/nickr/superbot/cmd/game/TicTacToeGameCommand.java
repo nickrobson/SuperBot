@@ -43,6 +43,7 @@ public class TicTacToeGameCommand implements Command {
                 resultMessage.set(sys.message().escaped("Tic Tac Toe").newLine().escaped("@" + user.getUsername()).newLine().escaped("vs").newLine().escaped("@" + clicker.getUsername()));
                 Consumer<Boolean> onWin = playerOne -> m.get().edit(sys.message().escaped("Congratulations, @" + (playerOne ? user.getUsername() : clicker.getUsername())));
                 onClick.set(() -> m.get().edit(resultMessage.get().setKeyboard(board.get().toKeyboard(onClick.get(), onWin))));
+                onClick.get().run();
             }
         })));
         m.set(group.sendMessage(sys.message().escaped("Click to begin ").bold(z -> z.escaped("Tic Tac Toe")).setKeyboard(kb)));
