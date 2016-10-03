@@ -40,7 +40,7 @@ public class TicTacToeGameCommand implements Command {
                 return;
             if (!started.getAndSet(true)) {
                 board.get().playerTwo = clicker.getUniqueId();
-                resultMessage.set(sys.message().escaped("Tic Tac Toe").newLine().escaped(user.getUsername()).newLine().escaped("vs").newLine().escaped(clicker.getUsername()));
+                resultMessage.set(sys.message().escaped("Tic Tac Toe").newLine().escaped(user.getUsername()).escaped(" vs ").escaped(clicker.getUsername()));
                 Consumer<Boolean> onWin = playerOne -> m.get().edit(sys.message().escaped("Congratulations, " + (playerOne ? user.getUsername() : clicker.getUsername())).setKeyboard(board.get().toKeyboard(() -> {}, () -> {}, u -> {})));
                 Runnable onDraw = () -> m.get().edit(sys.message().escaped("It's a draw between " + user.getUsername() + " and " + clicker.getUsername()).setKeyboard(board.get().toKeyboard(() -> {}, () -> {}, u -> {})));
                 onClick.set(() -> m.get().edit(sys.message().raw(resultMessage.get().build()).newLine().escaped("It's " + (board.get().playerOneTurn ? user.getUsername() : clicker.getUsername()) + "'s turn!").setKeyboard(board.get().toKeyboard(onClick.get(), onDraw, onWin))));
@@ -73,16 +73,16 @@ public class TicTacToeGameCommand implements Command {
                         if (grid[y][x] != ' ')
                             return;
                         grid[y][x] = playerOneTurn ? 'x' : 'o';
+                        playerOneTurn = !playerOneTurn;
                         String winner = getWinner();
                         if (winner != null) {
                             if (winner.isEmpty())
                                 onDraw.run();
                             else
-                                onWin.accept(playerOneTurn);
+                                onWin.accept(!playerOneTurn);
                         } else {
                             onClick.run();
                         }
-                        playerOneTurn = !playerOneTurn;
                     }
                 }
             };
