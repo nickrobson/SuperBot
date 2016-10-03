@@ -97,9 +97,9 @@ public class TicTacToeGameCommand implements Command {
                     if (x != 2)
                         mb.escaped("|");
                 }
-                mb.code(false).newLine().code(true).escaped("   |   |   ").code(false);
+                mb.code(false).newLine().code(true).escaped("   |   |   ").code(false).newLine();
                 if (y != 2)
-                    mb.code(true).escaped("---+---+---").code(false);
+                    mb.code(true).escaped("---+---+---").code(false).newLine();
             }
             return mb.build();
         }
