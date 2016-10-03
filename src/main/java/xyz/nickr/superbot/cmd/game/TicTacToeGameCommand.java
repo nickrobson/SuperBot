@@ -91,13 +91,13 @@ public class TicTacToeGameCommand implements Command {
         public String toTextKeyboard(Sys sys) {
             MessageBuilder mb = sys.message();
             for (int y = 0; y < 3; y++) {
-                mb.code(true).escaped("   |   |   ").code(false).newLine().code(true);
+                mb.code(true);
                 for (int x = 0; x < 3; x++) {
                     mb.escaped(" " + grid[y][x] + " ");
                     if (x != 2)
                         mb.escaped("|");
                 }
-                mb.code(false).newLine().code(true).escaped("   |   |   ").code(false).newLine();
+                mb.code(false).newLine();
                 if (y != 2)
                     mb.code(true).escaped("---+---+---").code(false).newLine();
             }
