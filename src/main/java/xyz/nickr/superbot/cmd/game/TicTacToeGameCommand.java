@@ -40,8 +40,8 @@ public class TicTacToeGameCommand implements Command {
                 return;
             if (!started.getAndSet(true)) {
                 board.get().playerTwo = clicker.getUniqueId();
-                resultMessage.set(sys.message().escaped("Tic Tac Toe").newLine().escaped("@" + user.getUsername()).newLine().escaped("vs").newLine().escaped("@" + clicker.getUsername()));
-                Consumer<Boolean> onWin = playerOne -> m.get().edit(sys.message().escaped("Congratulations, @" + (playerOne ? user.getUsername() : clicker.getUsername())));
+                resultMessage.set(sys.message().escaped("Tic Tac Toe").newLine().escaped(user.getUsername()).newLine().escaped("vs").newLine().escaped(clicker.getUsername()));
+                Consumer<Boolean> onWin = playerOne -> m.get().edit(sys.message().escaped("Congratulations, " + (playerOne ? user.getUsername() : clicker.getUsername())));
                 onClick.set(() -> m.get().edit(resultMessage.get().setKeyboard(board.get().toKeyboard(onClick.get(), onWin))));
                 onClick.get().run();
             }
@@ -53,7 +53,7 @@ public class TicTacToeGameCommand implements Command {
 
         char[][] grid = new char[3][3]; {
             for (int i = 0; i < 3; i++) {
-                Arrays.fill(grid[i], '-');
+                Arrays.fill(grid[i], ' ');
             }
         }
         boolean playerOneTurn = true, won = false;
@@ -69,6 +69,8 @@ public class TicTacToeGameCommand implements Command {
                     return;
                 if (clicker.getUniqueId() != null && clicker.getUniqueId().equals(playerOneTurn ? playerOne : playerTwo)) {
                     if (y >= 0 && y < 3 && x >= 0 && x < 3) {
+                        if (grid[y][x] != ' ')
+                            return;
                         grid[y][x] = playerOneTurn ? 'x' : 'o';
                         String winner = getWinner();
                         if (winner != null) {
@@ -98,13 +100,13 @@ public class TicTacToeGameCommand implements Command {
             won = true;
             for (int i = 0; i < 3; i++) {
                 char[] row = grid[i];
-                if ('-' != row[0] && row[0] == row[1] && row[0] == row[2]) {
+                if (' ' != row[0] && row[0] == row[1] && row[0] == row[2]) {
                     return row[0] == 'x' ? playerOne : playerTwo;
                 }
             }
             for (int i = 0; i < 3; i++) {
                 char[] col = new char[]{ grid[0][i], grid[1][i], grid[2][i] };
-                if ('-' != col[0] && col[0] == col[1] && col[0] == col[2]) {
+                if (' ' != col[0] && col[0] == col[1] && col[0] == col[2]) {
                     return col[0] == 'x' ? playerOne : playerTwo;
                 }
             }
@@ -113,7 +115,7 @@ public class TicTacToeGameCommand implements Command {
             diags[1] = new char[]{ grid[0][2], grid[1][1], grid[2][0] };
             for (int i = 0; i < 2; i++) {
                 char[] diag = diags[i];
-                if ('-' != diag[0] && diag[0] == diag[1] && diag[0] == diag[2]) {
+                if (' ' != diag[0] && diag[0] == diag[1] && diag[0] == diag[2]) {
                     return diag[0] == 'x' ? playerOne : playerTwo;
                 }
             }
