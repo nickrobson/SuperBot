@@ -9,9 +9,11 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public abstract class MessageBuilder {
 
-    @Getter
-    @Setter
+    @Getter @Setter
     private Keyboard keyboard;
+
+    @Getter @Setter
+    private boolean preview;
 
     public abstract int length();
 

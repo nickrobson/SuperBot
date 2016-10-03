@@ -49,7 +49,7 @@ public class TelegramMessage implements Message {
 
     @Override
     public void edit(MessageBuilder message) {
-        pro.zackpollard.telegrambot.api.chat.message.Message n = this.sys.getBot().editMessageText(this.message, message.build(), ParseMode.MARKDOWN, true, null);
+        pro.zackpollard.telegrambot.api.chat.message.Message n = this.sys.getBot().editMessageText(this.message, message.build(), ParseMode.MARKDOWN, !message.isPreview(), null);
         if (n != null) {
             this.message = n;
         }
