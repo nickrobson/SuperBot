@@ -41,8 +41,9 @@ public class TicTacToeGameCommand implements Command {
             if (!started.getAndSet(true)) {
                 board.get().playerTwo = clicker.getUniqueId();
                 resultMessage.set(sys.message().escaped("Tic Tac Toe").newLine().escaped(user.getUsername()).newLine().escaped("vs").newLine().escaped(clicker.getUsername()));
-                Consumer<Boolean> onWin = playerOne -> m.get().edit(sys.message().escaped("Congratulations, " + (playerOne ? user.getUsername() : clicker.getUsername())).setKeyboard(board.get().toKeyboard(() -> {}, u -> {})));
-                onClick.set(() -> m.get().edit(sys.message().raw(resultMessage.get().build()).newLine().escaped("It's " + (board.get().playerOneTurn ? user.getUsername() : clicker.getUsername()) + "'s turn!").setKeyboard(board.get().toKeyboard(onClick.get(), onWin))));
+                Consumer<Boolean> onWin = playerOne -> m.get().edit(sys.message().escaped("Congratulations, " + (playerOne ? user.getUsername() : clicker.getUsername())).setKeyboard(board.get().toKeyboard(() -> {}, () -> {}, u -> {})));
+                Runnable onDraw = () -> m.get().edit(sys.message().escaped("It's a draw between " + user.getUsername() + " and " + clicker.getUsername()).setKeyboard(board.get().toKeyboard(() -> {}, () -> {}, u -> {})));
+                onClick.set(() -> m.get().edit(sys.message().raw(resultMessage.get().build()).newLine().escaped("It's " + (board.get().playerOneTurn ? user.getUsername() : clicker.getUsername()) + "'s turn!").setKeyboard(board.get().toKeyboard(onClick.get(), onDraw, onWin))));
                 onClick.get().run();
             }
         })));
@@ -63,7 +64,7 @@ public class TicTacToeGameCommand implements Command {
             this.playerOne = playerOne;
         }
 
-        public Consumer<User> handler(Runnable onClick, Consumer<Boolean> onWin, int x, int y) {
+        public Consumer<User> handler(Runnable onClick, Runnable onDraw, Consumer<Boolean> onWin, int x, int y) {
             return clicker -> {
                 if (won || playerOne == null || playerTwo == null)
                     return;
@@ -74,7 +75,10 @@ public class TicTacToeGameCommand implements Command {
                         grid[y][x] = playerOneTurn ? 'x' : 'o';
                         String winner = getWinner();
                         if (winner != null) {
-                            onWin.accept(playerOneTurn);
+                            if (winner.isEmpty())
+                                onDraw.run();
+                            else
+                                onWin.accept(playerOneTurn);
                         } else {
                             onClick.run();
                         }
@@ -84,12 +88,12 @@ public class TicTacToeGameCommand implements Command {
             };
         }
 
-        public Keyboard toKeyboard(Runnable onClick, Consumer<Boolean> onWin) {
+        public Keyboard toKeyboard(Runnable onClick, Runnable onDraw, Consumer<Boolean> onWin) {
             Keyboard kb = new Keyboard();
             for (int y = 0; y < 3; y++) {
                 KeyboardRow kbr = new KeyboardRow();
                 for (int x = 0; x < 3; x++) {
-                    kbr.add(new KeyboardButton(String.valueOf(grid[y][x]), handler(onClick, onWin, x, y)));
+                    kbr.add(new KeyboardButton(String.valueOf(grid[y][x]), handler(onClick, onDraw, onWin, x, y)));
                 }
                 kb.add(kbr);
             }
@@ -118,6 +122,17 @@ public class TicTacToeGameCommand implements Command {
                 if (' ' != diag[0] && diag[0] == diag[1] && diag[0] == diag[2]) {
                     return diag[0] == 'x' ? playerOne : playerTwo;
                 }
+            }
+            boolean draw = true;
+            for (char[] row : grid) {
+                for (char x : row) {
+                    if (x == ' ') {
+                        draw = false;
+                    }
+                }
+            }
+            if (draw) {
+                return "";
             }
             won = false;
             return null;
