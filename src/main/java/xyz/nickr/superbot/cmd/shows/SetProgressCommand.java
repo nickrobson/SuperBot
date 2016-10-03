@@ -41,22 +41,22 @@ public class SetProgressCommand implements Command {
             }
             String profileName = profile.getName();
             Show show = SuperBotShows.getShow(args[0]);
-            String episodeCodeCommand = args[1].toUpperCase();
+            String episodeCode = args[1].toUpperCase();
             String oldprg = show != null ? SuperBotController.getUserProgress(profileName).get(show) : null;
             if (show == null) {
                 mb.escaped("Invalid show name: ").bold(true).escaped(args[0]).bold(false);
-            } else if (episodeCodeCommand.equalsIgnoreCase("none") || episodeCodeCommand.equalsIgnoreCase("remove")) {
+            } else if (episodeCode.equalsIgnoreCase("none") || episodeCode.equalsIgnoreCase("remove")) {
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.remove(profileName.toLowerCase());
                 SuperBotController.PROGRESS.put(show.imdb, prg);
                 mb.escaped("Removed ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay());
                 SuperBotController.saveProgress();
-            } else if (!SuperBotShows.EPISODE_PATTERN.matcher(episodeCodeCommand).matches() && !episodeCodeCommand.equals("NEXT")) {
-                mb.escaped("Invalid episode: ").bold(true).escaped(episodeCodeCommand).bold(false).escaped(" (doesn't match S<season>E<episode> format)");
-            } else if (oldprg == null && episodeCodeCommand.equals("NEXT")) {
+            } else if (!SuperBotShows.EPISODE_PATTERN.matcher(episodeCode).matches() && !episodeCode.equals("NEXT")) {
+                mb.escaped("Invalid episode: ").bold(true).escaped(episodeCode).bold(false).escaped(" (doesn't match S<season>E<episode> format)");
+            } else if (oldprg == null && episodeCode.equals("NEXT")) {
                 mb.escaped("You have no progress registered.");
             } else {
-                if (oldprg != null && episodeCodeCommand.equals("NEXT")) {
+                if (oldprg != null && episodeCode.equals("NEXT")) {
                     String[] spl = oldprg.substring(1).split("E");
                     int de;
                     try {
@@ -71,14 +71,11 @@ public class SetProgressCommand implements Command {
                             SeasonResult res = show.getSeason(spl[0]);
                             SeasonEpisodeResult[] eps = res.getEpisodes();
                             SeasonEpisodeResult last = eps[eps.length - 1];
-                            if (Integer.parseInt(last.getEpisode()) >= episode) {
-                                episodeCodeCommand = String.format("S%sE%s", spl[0], episode);
-                            } else {
-                                group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
-                                return;
+                            if (Integer.parseInt(last.getEpisode()) < episode) {
+                                throw new NullPointerException(); // gets caught right below
                             }
+                            episodeCode = String.format("S%sE%s", spl[0], episode);
                         } catch (NullPointerException | ArrayIndexOutOfBoundsException ex) {
-                            ex.printStackTrace();
                             group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
                             return;
                         }
@@ -88,12 +85,12 @@ public class SetProgressCommand implements Command {
                     }
                 }
 
-                Matcher matcher = SuperBotShows.EPISODE_PATTERN.matcher(episodeCodeCommand);
+                Matcher matcher = SuperBotShows.EPISODE_PATTERN.matcher(episodeCode);
                 matcher.matches();
                 int season = Integer.parseInt(matcher.group(1));
                 int episode = Integer.parseInt(matcher.group(2));
 
-                episodeCodeCommand = String.format("S%dE%d", season, episode);
+                final String epCode = String.format("S%dE%d", season, episode);
 
                 if (season == 0 || episode == 0) {
                     group.sendMessage(mb.escaped("Invalid season or episode number."));
@@ -101,9 +98,9 @@ public class SetProgressCommand implements Command {
                 }
 
                 Map<String, String> prg = SuperBotController.getProgress(show);
-                prg.put(profileName.toLowerCase(), episodeCodeCommand);
+                prg.put(profileName.toLowerCase(), epCode);
                 SuperBotController.PROGRESS.put(show.imdb, prg);
-                mb.escaped("Set ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay()).bold(false).escaped(" to ").bold(true).escaped(episodeCodeCommand).bold(false);
+                mb.escaped("Set ").bold(m -> m.escaped(profileName)).escaped("'s progress on ").bold(m -> m.escaped(show.getDisplay())).escaped(" to ").bold(m -> m.escaped(epCode));
                 if (oldprg != null) {
                     mb.escaped(" (was %s)", oldprg);
                 }
