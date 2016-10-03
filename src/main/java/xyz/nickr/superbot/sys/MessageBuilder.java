@@ -13,7 +13,7 @@ public abstract class MessageBuilder {
     private Keyboard keyboard;
 
     @Getter @Setter
-    private boolean preview;
+    private boolean preview = true;
 
     public abstract int length();
 
