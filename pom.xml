@@ -14,13 +14,13 @@
         <dependency>
             <groupId>xyz.nickr</groupId>
             <artifactId>jomdb</artifactId>
-            <version>2.1.0</version>
+            <version>3.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>xyz.nickr</groupId>
-            <artifactId>Jitter</artifactId>
-            <version>3.0.0</version>
+            <artifactId>jitter</artifactId>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
