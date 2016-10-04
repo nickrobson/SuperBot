@@ -154,7 +154,7 @@ public class TelegramListener implements Listener {
                 }
             }
         }
-        InlineQueryResponse res = InlineQueryResponse.builder().is_personal(is_personal).results(results).cache_time(cache_time).build();
+        InlineQueryResponse res = InlineQueryResponse.builder().isPersonal(is_personal).results(results).cacheTime(cache_time).build();
         event.getQuery().answer(this.bot, res);
     }
 
