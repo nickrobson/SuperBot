@@ -55,7 +55,7 @@ public class OmdbSeasonsCommand implements Command {
                     TitleResult title = SuperBotController.OMDB.titleById(args[0]);
                     showName = title.getTitle();
                     totalSeasons = title.getTotalSeasons();
-                    for (SeasonResult season : title.seasons()) {
+                    for (SeasonResult season : title) {
                         seasons.add(season);
                     }
                 } else {
