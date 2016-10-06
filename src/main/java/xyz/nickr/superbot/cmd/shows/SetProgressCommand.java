@@ -112,10 +112,10 @@ public class SetProgressCommand implements Command {
                         }
                     }));
                     kb.add(kbr);
-                    mb.escaped(show.getDisplay());
+                    mb.bold(z -> z.escaped(show.getDisplay()));
                     String latest = show.getLatestEpisode();
                     if (latest != null && !latest.isEmpty())
-                        mb.newLine().escaped("Latest: " + latest);
+                        mb.newLine().italic(true).escaped("Latest: ").italic(false).escaped(latest);
                     mb.setKeyboard(kb);
                 } else {
                     sendUsage(sys, user, group);
