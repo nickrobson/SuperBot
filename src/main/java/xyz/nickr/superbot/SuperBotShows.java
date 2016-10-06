@@ -217,6 +217,7 @@ public class SuperBotShows {
 
         private final String imdb, display;
         private final Set<String> links;
+        private String latest;
         private Integer totalSeasons;
         private boolean dateCached;
         private SeasonResult season;
@@ -353,6 +354,35 @@ public class SuperBotShows {
             return this.totalSeasons;
         }
 
+        public String getLatestEpisode() {
+            if (this.latest != null)
+                return this.latest;
+            Calendar now = Calendar.getInstance();
+            int season = 1;
+            while (true) {
+                SeasonResult res = getSeason(String.valueOf(season));
+                boolean done = false;
+                if (res == null) {
+                    break;
+                }
+                for (SeasonEpisodeResult ser : res) {
+                    try {
+                        Calendar release = ser.getReleaseDate();
+                        if (release == null || release.after(now)) {
+                            done = true;
+                            break;
+                        }
+                        this.latest = String.format("S%sE%s", season, ser.getEpisode());
+                    } catch (NumberFormatException ex) {}
+                }
+                if (done) {
+                    break;
+                }
+                season++;
+            }
+            return this.latest;
+        }
+
         public String getDateString() {
             return Show.getDateString(this.getDate());
         }
@@ -379,6 +409,7 @@ public class SuperBotShows {
         public static String getDateString(Calendar date) {
             return date != null ? new SimpleDateFormat("E, d MMM yyyy").format(date.getTime()) : "N/A";
         }
+
     }
 
 }
