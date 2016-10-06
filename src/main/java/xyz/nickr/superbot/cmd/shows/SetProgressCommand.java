@@ -76,7 +76,16 @@ public class SetProgressCommand implements Command {
                         if (nextEp >= 1) {
                             return setProgress.apply(p.get().getName(), newCode);
                         } else {
-                            return new KeyboardButtonResponse("There is no episode " + newCode, true);
+                            String latest = show.getLatestEpisode();
+                            int prevSe = Integer.parseInt(spl[0]) - 1;
+                            SeasonResult prevSeason = show.getSeason(String.valueOf(prevSe));
+                            SeasonEpisodeResult[] ser = prevSeason.getEpisodes();
+                            if (prevSe >= 1 && prevSeason != null) {
+                                newCode = String.format("S%sE%s", prevSe, ser[ser.length - 1].getEpisode());
+                                return setProgress.apply(p.get().getName(), newCode);
+                            } else {
+                                return new KeyboardButtonResponse("There is no episode " + newCode + "!\nThere is no season " + prevSe + "!", true);
+                            }
                         }
                     }));
                     kbr.add(new KeyboardButton("Check", u -> {
@@ -108,7 +117,15 @@ public class SetProgressCommand implements Command {
                         if (Integer.parseInt(last.getEpisode()) >= nextEp) {
                             return setProgress.apply(p.get().getName(), newCode);
                         } else {
-                            return new KeyboardButtonResponse("There is no episode " + newCode, true);
+                            String latest = show.getLatestEpisode();
+                            int nextSe = Integer.parseInt(spl[0]) + 1;
+                            String[] latSpl = latest.substring(1).split("E");
+                            if (nextSe <= Integer.parseInt(latSpl[0])) {
+                                newCode = String.format("S%sE%s", nextSe, 1);
+                                return setProgress.apply(p.get().getName(), newCode);
+                            } else {
+                                return new KeyboardButtonResponse("There is no episode " + newCode + "!\nThere is no season " + nextSe + "!", true);
+                            }
                         }
                     }));
                     kb.add(kbr);
