@@ -75,7 +75,7 @@ public class SetProgressCommand implements Command {
                         if (nextEp >= 1) {
                             return setProgress.apply(p.get().getName(), newCode);
                         } else {
-                            return new KeyboardButtonResponse("This no episode " + newCode, true);
+                            return new KeyboardButtonResponse("There is no episode " + newCode, true);
                         }
                     }));
                     kbr.add(new KeyboardButton("Check", u -> {
@@ -107,7 +107,7 @@ public class SetProgressCommand implements Command {
                         if (Integer.parseInt(last.getEpisode()) >= nextEp) {
                             return setProgress.apply(p.get().getName(), newCode);
                         } else {
-                            return new KeyboardButtonResponse("This no episode " + newCode, true);
+                            return new KeyboardButtonResponse("There is no episode " + newCode, true);
                         }
                     }));
                     kb.add(kbr);
