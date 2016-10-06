@@ -49,11 +49,12 @@ public class SetProgressCommand implements Command {
                     Keyboard kb = new Keyboard();
                     KeyboardRow kbr = new KeyboardRow();
                     BiFunction<String, String, KeyboardButtonResponse> setProgress = (pname, s) -> {
+                        pname = pname.toLowerCase();
                         Map<String, String> prg = SuperBotController.getProgress(show);
                         String opr = prg.get(pname);
                         prg.put(pname, s);
                         SuperBotController.PROGRESS.put(show.getIMDB(), prg);
-                        return new KeyboardButtonResponse("Set progress to " + s + " (was " + opr + ")", true);
+                        return new KeyboardButtonResponse("Set progress to " + s + (opr != null ? " (was " + opr + ")" : ""), true);
                     };
                     kbr.add(new KeyboardButton("«", u -> {
                         Optional<Profile> p = u.getProfile();
@@ -69,14 +70,12 @@ public class SetProgressCommand implements Command {
                         if (season == null) {
                             return new KeyboardButtonResponse("Invalid season!", true);
                         }
-                        SeasonEpisodeResult[] episodes = season.getEpisodes();
-                        SeasonEpisodeResult last = episodes[episodes.length - 1];
                         int nextEp = Integer.parseInt(spl[1]) - 1;
+                        String newCode = String.format("S%sE%s", spl[0], nextEp);
                         if (nextEp >= 1) {
-                            String newCode = String.format("S%sE%s", spl[0], nextEp);
                             return setProgress.apply(p.get().getName(), newCode);
                         } else {
-                            return new KeyboardButtonResponse("This no episode " + nextEp + " in season " + spl[0], true);
+                            return new KeyboardButtonResponse("This no episode " + newCode, true);
                         }
                     }));
                     kbr.add(new KeyboardButton("Check", u -> {
@@ -85,8 +84,7 @@ public class SetProgressCommand implements Command {
                             return new KeyboardButtonResponse("You need to make a profile!", true);
                         }
                         String epCode = SuperBotController.getUserProgress(p.get().getName()).get(show);
-                        String[] spl = epCode.substring(1).split("E");
-                        return new KeyboardButtonResponse(String.format("You are currently on season " + spl[0] + ", episode " + spl[1]), true);
+                        return new KeyboardButtonResponse(String.format("You are currently on " + epCode), true);
                     }));
                     kbr.add(new KeyboardButton("»", u -> {
                         Optional<Profile> p = u.getProfile();
@@ -105,15 +103,15 @@ public class SetProgressCommand implements Command {
                         SeasonEpisodeResult[] episodes = season.getEpisodes();
                         SeasonEpisodeResult last = episodes[episodes.length - 1];
                         int nextEp = Integer.parseInt(spl[1]) + 1;
+                        String newCode = String.format("S%sE%s", spl[0], nextEp);
                         if (Integer.parseInt(last.getEpisode()) >= nextEp) {
-                            String newCode = String.format("S%sE%s", spl[0], nextEp);
                             return setProgress.apply(p.get().getName(), newCode);
                         } else {
-                            return new KeyboardButtonResponse("This no episode " + nextEp + " in season " + spl[0], true);
+                            return new KeyboardButtonResponse("This no episode " + newCode, true);
                         }
                     }));
                     kb.add(kbr);
-                    mb.escaped("Currently modifying progress for " + show.getDisplay()).setKeyboard(kb);
+                    mb.escaped("Currently checking: " + show.getDisplay()).setKeyboard(kb);
                 } else {
                     sendUsage(sys, user, group);
                 }
