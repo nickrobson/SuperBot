@@ -94,6 +94,9 @@ public class SetProgressCommand implements Command {
                             return new KeyboardButtonResponse("You need to make a profile!", true);
                         }
                         String epCode = SuperBotController.getUserProgress(p.get().getName()).get(show);
+                        if (epCode == null) {
+                            return new KeyboardButtonResponse("You have no progress on " + show.getDisplay(), true);
+                        }
                         return new KeyboardButtonResponse(String.format("You are currently on " + epCode), true);
                     }));
                     kbr.add(new KeyboardButton("»", u -> {
