@@ -257,10 +257,15 @@ public class SuperBotShows {
         }
 
         public SeasonResult getSeason(String season) {
-            if (!this.seasons.containsKey(season)) {
-                this.seasons.put(season, SuperBotController.OMDB.seasonById(this.imdb, String.valueOf(season)));
+            try {
+                if (!this.seasons.containsKey(season)) {
+                    this.seasons.put(season, SuperBotController.OMDB.seasonById(this.imdb, String.valueOf(season)));
+                }
+                return this.seasons.get(season);
+            } catch (JOMDBException ex) {
+                this.seasons.put(season, null);
+                return null;
             }
-            return this.seasons.get(season);
         }
 
         public List<SeasonResult> getSeasons() {
