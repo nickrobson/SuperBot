@@ -25,6 +25,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import xyz.nickr.jomdb.JOMDBException;
 import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;
@@ -327,6 +328,8 @@ public class SuperBotShows {
                         }
                     }
                 }
+            } catch (JOMDBException ex) {
+                // noop
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
