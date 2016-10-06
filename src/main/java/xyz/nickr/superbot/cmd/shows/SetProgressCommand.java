@@ -1,5 +1,6 @@
 package xyz.nickr.superbot.cmd.shows;
 
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -111,7 +112,34 @@ public class SetProgressCommand implements Command {
                         }
                     }));
                     kb.add(kbr);
-                    mb.escaped("Currently checking: " + show.getDisplay()).setKeyboard(kb);
+                    Calendar now = Calendar.getInstance();
+                    int season = 1;
+                    String latest = "";
+                    while (true) {
+                        SeasonResult res = show.getSeason(String.valueOf(season));
+                        boolean done = false;
+                        if (res == null) {
+                            break;
+                        }
+                        for (SeasonEpisodeResult ser : res) {
+                            try {
+                                Calendar release = ser.getReleaseDate();
+                                if (release == null || release.after(now)) {
+                                    done = true;
+                                    break;
+                                }
+                                latest = String.format("S%sE%s", season, ser.getEpisode());
+                            } catch (NumberFormatException ex) {}
+                        }
+                        if (done) {
+                            break;
+                        }
+                        season++;
+                    }
+                    mb.escaped(show.getDisplay());
+                    if (!latest.isEmpty())
+                        mb.newLine().escaped("Latest: " + latest);
+                    mb.setKeyboard(kb);
                 } else {
                     sendUsage(sys, user, group);
                 }
