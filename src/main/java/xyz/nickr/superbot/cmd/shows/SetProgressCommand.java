@@ -113,7 +113,7 @@ public class SetProgressCommand implements Command {
                         }
                     }));
                     kb.add(kbr);
-                    mb.escaped("Currently modifying progress for " + show.getDisplay());
+                    mb.escaped("Currently modifying progress for " + show.getDisplay()).setKeyboard(kb);
                 } else {
                     sendUsage(sys, user, group);
                 }
