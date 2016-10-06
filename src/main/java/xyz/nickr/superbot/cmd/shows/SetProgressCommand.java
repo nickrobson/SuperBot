@@ -55,6 +55,7 @@ public class SetProgressCommand implements Command {
                         String opr = prg.get(pname);
                         prg.put(pname, s);
                         SuperBotController.PROGRESS.put(show.getIMDB(), prg);
+                        SuperBotController.saveProgress();
                         return new KeyboardButtonResponse("Set progress to " + s + (opr != null ? " (was " + opr + ")" : ""), true);
                     };
                     kbr.add(new KeyboardButton("«", u -> {
@@ -76,7 +77,6 @@ public class SetProgressCommand implements Command {
                         if (nextEp >= 1) {
                             return setProgress.apply(p.get().getName(), newCode);
                         } else {
-                            String latest = show.getLatestEpisode();
                             int prevSe = Integer.parseInt(spl[0]) - 1;
                             SeasonResult prevSeason = show.getSeason(String.valueOf(prevSe));
                             SeasonEpisodeResult[] ser = prevSeason.getEpisodes();
