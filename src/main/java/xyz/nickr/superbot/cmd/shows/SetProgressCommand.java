@@ -40,7 +40,7 @@ public class SetProgressCommand implements Command {
             }
             String profileName = profile.getName();
             Show show = SuperBotShows.getShow(args[0]);
-            String episodeCode = args[1].toUpperCase();
+            String episodeCode = args.length > 1 ? args[1].toUpperCase() : null;
             String oldprg = show != null ? SuperBotController.getUserProgress(profileName).get(show) : null;
             if (show == null) {
                 mb.escaped("Invalid show name: ").bold(true).escaped(args[0]).bold(false);
