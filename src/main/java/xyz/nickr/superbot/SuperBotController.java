@@ -84,7 +84,7 @@ public class SuperBotController {
             SuperBotShows.setup();
 
             new Thread(() -> SuperBotShows.getShows().forEach(show -> {
-                System.out.println("Fetched day for: " + show.display + " (" + show.getDay() + ")");
+                System.out.println("Fetched day for: " + show.getDisplay() + " (" + show.getDay() + ")");
             })).start();
 
             load(null);
@@ -341,7 +341,7 @@ public class SuperBotController {
     }
 
     public static Map<String, String> getProgress(Show show) {
-        return getProgress(show == null ? null : show.imdb);
+        return getProgress(show == null ? null : show.getIMDB());
     }
 
     public static Map<String, String> getProgress(String show) {

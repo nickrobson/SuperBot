@@ -42,7 +42,7 @@ public class UpcomingCommand implements Command {
         for (Show show : SuperBotShows.getShows()) {
             Calendar date = show.getDate();
             if (date != null && !date.before(now) && !date.after(week)) {
-                days.merge(date, show.display, (a, b) -> a + "\n" + b);
+                days.merge(date, show.getDisplay(), (a, b) -> a + "\n" + b);
             }
         }
 

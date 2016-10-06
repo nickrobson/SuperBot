@@ -29,7 +29,7 @@ public class ShowsCommand implements Command {
         List<String> snd = new LinkedList<>();
         for (Show show : SuperBotShows.getShows()) {
             StringBuilder sb = new StringBuilder();
-            for (String s : show.links) {
+            for (String s : show.getLinks()) {
                 if (sb.length() > 0) {
                     sb.append(", ");
                 }

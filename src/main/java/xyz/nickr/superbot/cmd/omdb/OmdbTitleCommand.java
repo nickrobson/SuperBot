@@ -32,7 +32,7 @@ public class OmdbTitleCommand implements Command {
             MessageBuilder mb = sys.message();
             Show show = SuperBotShows.getShow(args[0], false);
             if (show != null) {
-                args[0] = show.imdb;
+                args[0] = show.getIMDB();
             }
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 boolean fullPlot = args.length > 1 && args[1].equalsIgnoreCase("true");

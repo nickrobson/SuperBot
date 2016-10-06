@@ -1,6 +1,10 @@
 package xyz.nickr.superbot.cmd.shows;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
@@ -9,12 +13,7 @@ import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.SuperBotShows;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.cmd.Command;
-import xyz.nickr.superbot.sys.Group;
-import xyz.nickr.superbot.sys.Message;
-import xyz.nickr.superbot.sys.MessageBuilder;
-import xyz.nickr.superbot.sys.Profile;
-import xyz.nickr.superbot.sys.Sys;
-import xyz.nickr.superbot.sys.User;
+import xyz.nickr.superbot.sys.*;
 
 public class SetProgressCommand implements Command {
 
@@ -30,7 +29,7 @@ public class SetProgressCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        if (args.length < 2) {
+        if (args.length < 1) {
             this.sendUsage(sys, user, group);
         } else {
             MessageBuilder mb = sys.message();
@@ -45,10 +44,83 @@ public class SetProgressCommand implements Command {
             String oldprg = show != null ? SuperBotController.getUserProgress(profileName).get(show) : null;
             if (show == null) {
                 mb.escaped("Invalid show name: ").bold(true).escaped(args[0]).bold(false);
+            } else if (args.length < 2) {
+                if (sys.hasKeyboards()) {
+                    Keyboard kb = new Keyboard();
+                    KeyboardRow kbr = new KeyboardRow();
+                    BiFunction<String, String, KeyboardButtonResponse> setProgress = (pname, s) -> {
+                        Map<String, String> prg = SuperBotController.getProgress(show);
+                        String opr = prg.get(pname);
+                        prg.put(pname, s);
+                        SuperBotController.PROGRESS.put(show.getIMDB(), prg);
+                        return new KeyboardButtonResponse("Set progress to " + s + " (was " + opr + ")", true);
+                    };
+                    kbr.add(new KeyboardButton("«", u -> {
+                        Optional<Profile> p = u.getProfile();
+                        if (p.isPresent()) {
+                            return new KeyboardButtonResponse("You need to make a profile!", true);
+                        }
+                        String epCode = SuperBotController.getUserProgress(p.get().getName()).get(show);
+                        if (epCode == null) {
+                            return new KeyboardButtonResponse("You have no progress on " + show.getDisplay(), true);
+                        }
+                        String[] spl = epCode.substring(1).split("E");
+                        SeasonResult season = show.getSeason(spl[0]);
+                        if (season == null) {
+                            return new KeyboardButtonResponse("Invalid season!", true);
+                        }
+                        SeasonEpisodeResult[] episodes = season.getEpisodes();
+                        SeasonEpisodeResult last = episodes[episodes.length - 1];
+                        int nextEp = Integer.parseInt(spl[1]) - 1;
+                        if (nextEp >= 1) {
+                            String newCode = String.format("S%sE%s", spl[0], nextEp);
+                            return setProgress.apply(p.get().getName(), newCode);
+                        } else {
+                            return new KeyboardButtonResponse("This no episode " + nextEp + " in season " + spl[0], true);
+                        }
+                    }));
+                    kbr.add(new KeyboardButton("Check", u -> {
+                        Optional<Profile> p = u.getProfile();
+                        if (p.isPresent()) {
+                            return new KeyboardButtonResponse("You need to make a profile!", true);
+                        }
+                        String epCode = SuperBotController.getUserProgress(p.get().getName()).get(show);
+                        String[] spl = epCode.substring(1).split("E");
+                        return new KeyboardButtonResponse(String.format("You are currently on season " + spl[0] + ", episode " + spl[1]), true);
+                    }));
+                    kbr.add(new KeyboardButton("»", u -> {
+                        Optional<Profile> p = u.getProfile();
+                        if (p.isPresent()) {
+                            return new KeyboardButtonResponse("You need to make a profile!", true);
+                        }
+                        String epCode = SuperBotController.getUserProgress(p.get().getName()).get(show);
+                        if (epCode == null) {
+                            return new KeyboardButtonResponse("You have no progress on " + show.getDisplay(), true);
+                        }
+                        String[] spl = epCode.substring(1).split("E");
+                        SeasonResult season = show.getSeason(spl[0]);
+                        if (season == null) {
+                            return new KeyboardButtonResponse("Invalid season!", true);
+                        }
+                        SeasonEpisodeResult[] episodes = season.getEpisodes();
+                        SeasonEpisodeResult last = episodes[episodes.length - 1];
+                        int nextEp = Integer.parseInt(spl[1]) + 1;
+                        if (Integer.parseInt(last.getEpisode()) >= nextEp) {
+                            String newCode = String.format("S%sE%s", spl[0], nextEp);
+                            return setProgress.apply(p.get().getName(), newCode);
+                        } else {
+                            return new KeyboardButtonResponse("This no episode " + nextEp + " in season " + spl[0], true);
+                        }
+                    }));
+                    kb.add(kbr);
+                    mb.escaped("Currently modifying progress for " + show.getDisplay());
+                } else {
+                    sendUsage(sys, user, group);
+                }
             } else if (episodeCode.equalsIgnoreCase("none") || episodeCode.equalsIgnoreCase("remove")) {
                 Map<String, String> prg = SuperBotController.getProgress(show);
                 prg.remove(profileName.toLowerCase());
-                SuperBotController.PROGRESS.put(show.imdb, prg);
+                SuperBotController.PROGRESS.put(show.getIMDB(), prg);
                 mb.escaped("Removed ").bold(true).escaped(profileName).bold(false).escaped("'s progress on ").bold(true).escaped(show.getDisplay());
                 SuperBotController.saveProgress();
             } else if (!SuperBotShows.EPISODE_PATTERN.matcher(episodeCode).matches() && !episodeCode.equals("NEXT")) {
@@ -76,7 +148,7 @@ public class SetProgressCommand implements Command {
                             }
                             episodeCode = String.format("S%sE%s", spl[0], episode);
                         } catch (NullPointerException | ArrayIndexOutOfBoundsException ex) {
-                            group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode).bold(false).escaped(" for ").bold(true).escaped(show.display).bold(false));
+                            group.sendMessage(mb.escaped("There is no episode ").bold(true).escaped("S%sE%s", spl[0], episode).bold(false).escaped(" for ").bold(true).escaped(show.getDisplay()).bold(false));
                             return;
                         }
                     } else {
@@ -86,25 +158,28 @@ public class SetProgressCommand implements Command {
                 }
 
                 Matcher matcher = SuperBotShows.EPISODE_PATTERN.matcher(episodeCode);
-                matcher.matches();
-                int season = Integer.parseInt(matcher.group(1));
-                int episode = Integer.parseInt(matcher.group(2));
+                if (matcher.matches()) {
+                    int season = Integer.parseInt(matcher.group(1));
+                    int episode = Integer.parseInt(matcher.group(2));
 
-                final String epCode = String.format("S%dE%d", season, episode);
+                    final String epCode = String.format("S%dE%d", season, episode);
 
-                if (season == 0 || episode == 0) {
-                    group.sendMessage(mb.escaped("Invalid season or episode number."));
-                    return;
+                    if (season == 0 || episode == 0) {
+                        group.sendMessage(mb.escaped("Invalid season or episode number."));
+                        return;
+                    }
+
+                    Map<String, String> prg = SuperBotController.getProgress(show);
+                    prg.put(profileName.toLowerCase(), epCode);
+                    SuperBotController.PROGRESS.put(show.getIMDB(), prg);
+                    mb.escaped("Set ").bold(m -> m.escaped(profileName)).escaped("'s progress on ").bold(m -> m.escaped(show.getDisplay())).escaped(" to ").bold(m -> m.escaped(epCode));
+                    if (oldprg != null) {
+                        mb.escaped(" (was %s)", oldprg);
+                    }
+                    SuperBotController.saveProgress();
+                } else {
+                    group.sendMessage(mb.escaped("Invalid episode code format."));
                 }
-
-                Map<String, String> prg = SuperBotController.getProgress(show);
-                prg.put(profileName.toLowerCase(), epCode);
-                SuperBotController.PROGRESS.put(show.imdb, prg);
-                mb.escaped("Set ").bold(m -> m.escaped(profileName)).escaped("'s progress on ").bold(m -> m.escaped(show.getDisplay())).escaped(" to ").bold(m -> m.escaped(epCode));
-                if (oldprg != null) {
-                    mb.escaped(" (was %s)", oldprg);
-                }
-                SuperBotController.saveProgress();
             }
             group.sendMessage(mb);
         }
