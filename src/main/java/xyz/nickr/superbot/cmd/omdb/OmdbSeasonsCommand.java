@@ -46,7 +46,7 @@ public class OmdbSeasonsCommand implements Command {
             String showName = "";
             int totalSeasons = -1;
             if (show != null) {
-                args[0] = show.imdb;
+                args[0] = show.getIMDB();
                 seasons.addAll(show.getSeasons());
                 showName = show.getDisplay();
                 totalSeasons = show.getTotalSeasons();

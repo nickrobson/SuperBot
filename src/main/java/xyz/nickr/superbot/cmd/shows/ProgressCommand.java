@@ -55,7 +55,7 @@ public class ProgressCommand implements Command {
                 if (show == null) {
                     builder = builder.escaped("Invalid show: " + argz.get(i));
                 } else {
-                    builder = this.show(show.imdb, builder, all_eps);
+                    builder = this.show(show.getIMDB(), builder, all_eps);
                 }
             }
         } else {

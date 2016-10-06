@@ -214,9 +214,8 @@ public class SuperBotShows {
 
     public static final class Show {
 
-        public final String imdb, display;
-        public final Set<String> links;
-
+        private final String imdb, display;
+        private final Set<String> links;
         private Integer totalSeasons;
         private boolean dateCached;
         private SeasonResult season;
@@ -240,12 +239,20 @@ public class SuperBotShows {
             this.links = new TreeSet<>(links);
         }
 
-        public void addLink(String link) {
-            this.links.add(link.toLowerCase());
-        }
-
         public String getDisplay() {
             return this.display;
+        }
+
+        public String getIMDB() {
+            return this.imdb;
+        }
+
+        public Set<String> getLinks() {
+            return links;
+        }
+
+        public void addLink(String link) {
+            this.links.add(link.toLowerCase());
         }
 
         public SeasonResult getSeason(String season) {
@@ -364,7 +371,6 @@ public class SuperBotShows {
         public static String getDateString(Calendar date) {
             return date != null ? new SimpleDateFormat("E, d MMM yyyy").format(date.getTime()) : "N/A";
         }
-
     }
 
 }

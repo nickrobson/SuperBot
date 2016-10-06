@@ -33,7 +33,7 @@ public class OmdbEpisodeCommand implements Command {
             MessageBuilder mb = sys.message();
             Show show = SuperBotShows.getShow(args[0], false);
             if (show != null) {
-                args[0] = show.imdb;
+                args[0] = show.getIMDB();
             }
             if (JavaOMDB.IMDB_ID_PATTERN.matcher(args[0]).matches()) {
                 SeasonResult season = SuperBotController.OMDB.seasonById(args[0], args[1]);
