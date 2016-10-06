@@ -57,7 +57,7 @@ public class SetProgressCommand implements Command {
                     };
                     kbr.add(new KeyboardButton("«", u -> {
                         Optional<Profile> p = u.getProfile();
-                        if (p.isPresent()) {
+                        if (!p.isPresent()) {
                             return new KeyboardButtonResponse("You need to make a profile!", true);
                         }
                         String epCode = SuperBotController.getUserProgress(p.get().getName()).get(show);
@@ -81,7 +81,7 @@ public class SetProgressCommand implements Command {
                     }));
                     kbr.add(new KeyboardButton("Check", u -> {
                         Optional<Profile> p = u.getProfile();
-                        if (p.isPresent()) {
+                        if (!p.isPresent()) {
                             return new KeyboardButtonResponse("You need to make a profile!", true);
                         }
                         String epCode = SuperBotController.getUserProgress(p.get().getName()).get(show);
@@ -90,7 +90,7 @@ public class SetProgressCommand implements Command {
                     }));
                     kbr.add(new KeyboardButton("»", u -> {
                         Optional<Profile> p = u.getProfile();
-                        if (p.isPresent()) {
+                        if (!p.isPresent()) {
                             return new KeyboardButtonResponse("You need to make a profile!", true);
                         }
                         String epCode = SuperBotController.getUserProgress(p.get().getName()).get(show);
