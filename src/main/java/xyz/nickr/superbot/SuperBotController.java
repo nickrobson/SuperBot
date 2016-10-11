@@ -213,10 +213,13 @@ public class SuperBotController {
         for (File file : dir.listFiles()) {
             if (file.isFile() && file.getName().endsWith(".json")) {
                 try {
-                    BufferedReader reader = Files.newBufferedReader(file.toPath());
-                    Map<String, String> map = new HashMap<>();
-                    GSON.fromJson(reader, JsonObject.class).entrySet().forEach(e -> map.put(e.getKey(), e.getValue().getAsString()));
-                    PROGRESS.put(file.getName().substring(0, file.getName().length() - 5), map);
+                    String showID = file.getName().substring(0, file.getName().length() - 5);
+                    if (JavaOMDB.IMDB_ID_PATTERN.matcher(showID).matches()) {
+                        BufferedReader reader = Files.newBufferedReader(file.toPath());
+                        Map<String, String> map = new HashMap<>();
+                        GSON.fromJson(reader, JsonObject.class).entrySet().forEach(e -> map.put(e.getKey(), e.getValue().getAsString()));
+                        PROGRESS.put(showID, map);
+                    }
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
