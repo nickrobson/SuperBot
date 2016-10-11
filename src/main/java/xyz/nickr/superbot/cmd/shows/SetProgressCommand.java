@@ -79,7 +79,7 @@ public class SetProgressCommand implements Command {
                         } else {
                             int prevSe = Integer.parseInt(spl[0]) - 1;
                             SeasonResult prevSeason = show.getSeason(String.valueOf(prevSe));
-                            SeasonEpisodeResult[] ser = prevSeason.getEpisodes();
+                            SeasonEpisodeResult[] ser = prevSeason != null ? prevSeason.getEpisodes() : null;
                             if (prevSe >= 1 && prevSeason != null) {
                                 newCode = String.format("S%sE%s", prevSe, ser[ser.length - 1].getEpisode());
                                 return setProgress.apply(p.get().getName(), newCode);
