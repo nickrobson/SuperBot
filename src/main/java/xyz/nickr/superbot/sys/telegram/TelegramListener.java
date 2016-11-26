@@ -21,11 +21,13 @@ import pro.zackpollard.telegrambot.api.event.chat.inline.InlineCallbackQueryRece
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
+import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
+import xyz.nickr.superbot.cmd.link.LinkCommand;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.Keyboard;
@@ -58,6 +60,13 @@ public class TelegramListener implements Listener {
 
     public TelegramBot getBot() {
         return this.sys.getBot();
+    }
+
+    @Override
+    public void onTextMessageReceived(TextMessageReceivedEvent event) {
+        Group g = this.sys.wrap(event.getChat());
+        User u = this.sys.wrap(event.getMessage().getSender());
+        LinkCommand.propagate(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(event.getContent().getContent()), event.getMessage()));
     }
 
     @Override

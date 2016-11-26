@@ -24,6 +24,8 @@ public abstract class Sys {
 
     public abstract String getUserFriendlyName(String uniqueId);
 
+    public abstract Group getGroup(String uniqueId);
+
     public GroupConfiguration getGroupConfiguration(String uniqueId) {
         return this.configs.get(uniqueId);
     }
@@ -33,5 +35,4 @@ public abstract class Sys {
     }
 
     public void onLoaded() {}
-
 }

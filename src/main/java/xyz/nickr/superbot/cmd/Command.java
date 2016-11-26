@@ -9,7 +9,7 @@ import xyz.nickr.superbot.sys.User;
 
 public interface Command {
 
-    static final Permission DEFAULT_PERMISSION = (s, c, u, p) -> true;
+    Permission DEFAULT_PERMISSION = (s, c, u, p) -> true;
 
     String[] names();
 

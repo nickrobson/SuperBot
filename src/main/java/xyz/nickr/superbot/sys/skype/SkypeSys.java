@@ -55,6 +55,11 @@ public class SkypeSys extends Sys {
         return uniqueId;
     }
 
+    @Override
+    public Group getGroup(String uniqueId) {
+        return wrap(skype.getSkypeConversation(uniqueId));
+    }
+
     Group wrap(SkypeConversation group) {
         return new SkypeGroup(this, group);
     }
