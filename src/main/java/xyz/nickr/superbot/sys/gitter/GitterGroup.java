@@ -35,7 +35,9 @@ public class GitterGroup implements Group {
 
     @Override
     public Message sendMessage(MessageBuilder message) {
-        return this.sys.wrap(this.room.sendMessage(message.build()));
+        Message m = this.sys.wrap(this.room.sendMessage(message.build()));
+        share(message);
+        return m;
     }
 
     @Override

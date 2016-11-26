@@ -71,7 +71,17 @@ public class TelegramSys extends Sys {
 
     @Override
     public String getUserFriendlyName(String uniqueId) {
+        Chat chat = bot.getChat(uniqueId);
+        if (chat != null) {
+            return chat.getName();
+        }
         return this.usernameCache.getProperty(uniqueId, uniqueId);
+    }
+
+    @Override
+    public Group getGroup(String uniqueId) {
+        Chat c = bot.getChat(uniqueId);
+        return c != null ? wrap(c) : null;
     }
 
     Group wrap(Chat chat) {

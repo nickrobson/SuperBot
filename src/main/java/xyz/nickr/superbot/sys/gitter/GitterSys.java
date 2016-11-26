@@ -7,6 +7,7 @@ import xyz.nickr.jitter.api.Message;
 import xyz.nickr.jitter.api.Room;
 import xyz.nickr.jitter.api.User;
 import xyz.nickr.superbot.SuperBotController;
+import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 
@@ -83,6 +84,11 @@ public class GitterSys extends Sys {
     @Override
     public String getUserFriendlyName(String uniqueId) {
         return uniqueId;
+    }
+
+    @Override
+    public Group getGroup(String uniqueId) {
+        return wrap(jitter.getRoom(uniqueId));
     }
 
     GitterMessage wrap(Message message) {

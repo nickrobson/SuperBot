@@ -38,7 +38,9 @@ public class SkypeGroup implements Group {
 
     @Override
     public Message sendMessage(MessageBuilder message) {
-        return this.sys.wrap(this.conv.sendMessage(message.build()));
+        Message m = this.sys.wrap(this.conv.sendMessage(message.build()));
+        share(message);
+        return m;
     }
 
     @Override

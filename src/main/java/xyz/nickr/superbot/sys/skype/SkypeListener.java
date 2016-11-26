@@ -11,8 +11,10 @@ import in.kyle.ezskypeezlife.events.conversation.SkypeConversationUserJoinEvent;
 import in.kyle.ezskypeezlife.events.conversation.message.SkypeMessageEditedEvent;
 import in.kyle.ezskypeezlife.events.conversation.message.SkypeMessageReceivedEvent;
 import in.kyle.ezskypeezlife.events.user.SkypeContactRequestEvent;
+import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
+import xyz.nickr.superbot.cmd.link.LinkCommand;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.MessageBuilder;
@@ -70,6 +72,7 @@ public class SkypeListener implements SkypeErrorHandler {
         User u = this.sys.wrap(user);
 
         SuperBotCommands.exec(this.sys, g, u, this.sys.wrap(message));
+        LinkCommand.propagate(this.sys, g, u, this.sys.wrap(message));
     }
 
     @Override

@@ -3,6 +3,8 @@ package xyz.nickr.superbot.sys;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import xyz.nickr.superbot.SuperBotController;
+import xyz.nickr.superbot.cmd.link.LinkCommand;
 
 public interface Group extends Conversable {
 
@@ -16,6 +18,27 @@ public interface Group extends Conversable {
 
     default Map<String, User> getUserMap() {
         return getUsers().stream().collect(Collectors.toMap(u -> u.getUsername(), u -> u));
+    }
+
+    default void share(MessageBuilder m) {
+        try {
+            Set<Map.Entry<String, String>> linkedGroups = LinkCommand.getLinkedGroups(this);
+            for (Map.Entry<String, String> linkedGroup : linkedGroups) {
+                try {
+                    Sys sys = SuperBotController.PROVIDERS.get(linkedGroup.getKey());
+                    if (sys != null) {
+                        Group o = sys.getGroup(linkedGroup.getValue());
+                        if (o != null) {
+                            o.sendMessage(m);
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 }
