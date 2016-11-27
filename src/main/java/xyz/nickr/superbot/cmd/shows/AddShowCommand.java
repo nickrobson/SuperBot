@@ -19,11 +19,11 @@ import xyz.nickr.superbot.sys.User;
  * @author Horrgs
  * @author Nick Robson
  */
-public class AddLinkCommand implements Command {
+public class AddShowCommand implements Command {
 
     @Override
     public String[] names() {
-        return new String[] {"addlink"};
+        return new String[] {"addshow"};
     }
 
     @Override
