@@ -3,6 +3,8 @@ package xyz.nickr.superbot.sys.skype;
 import com.samczsun.skype4j.Skype;
 import com.samczsun.skype4j.SkypeBuilder;
 import com.samczsun.skype4j.chat.Chat;
+import com.samczsun.skype4j.exceptions.ChatNotFoundException;
+import com.samczsun.skype4j.exceptions.ConnectionException;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
@@ -56,7 +58,12 @@ public class SkypeSys extends Sys {
 
     @Override
     public Group getGroup(String uniqueId) {
-        return wrap(skype.getChat(uniqueId));
+        try {
+            return wrap(skype.getOrLoadChat(uniqueId));
+        } catch (ConnectionException | ChatNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     Group wrap(Chat group) {
