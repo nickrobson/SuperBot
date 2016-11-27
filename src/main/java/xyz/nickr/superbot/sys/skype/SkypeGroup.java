@@ -3,6 +3,8 @@ package xyz.nickr.superbot.sys.skype;
 import com.samczsun.skype4j.chat.Chat;
 import com.samczsun.skype4j.chat.GroupChat;
 import com.samczsun.skype4j.chat.IndividualChat;
+import com.samczsun.skype4j.chat.messages.ChatMessage;
+import com.samczsun.skype4j.chat.messages.SentMessage;
 import com.samczsun.skype4j.exceptions.ConnectionException;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,7 +57,9 @@ public class SkypeGroup implements Group {
     @Override
     public Message sendMessageNoShare(MessageBuilder message) {
         try {
-            return this.sys.wrap(this.conv.sendMessage(com.samczsun.skype4j.formatting.Message.fromHtml(message.build())));
+            com.samczsun.skype4j.formatting.Message m = com.samczsun.skype4j.formatting.Message.fromHtml(message.build());
+            ChatMessage sent = this.conv.sendMessage(m);
+            return this.sys.wrap(sent);
         } catch (ConnectionException e) {
             e.printStackTrace();
             return null;
