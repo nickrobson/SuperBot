@@ -24,9 +24,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>in.kyle</groupId>
-            <artifactId>EzSkypeEzLife</artifactId>
-            <version>1.3.0</version>
+            <groupId>com.samczsun</groupId>
+            <artifactId>skype4j</artifactId>
+            <version>0.1.5</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

@@ -1,5 +1,8 @@
 package xyz.nickr.superbot.sys.skype;
 
+import com.samczsun.skype4j.chat.messages.ChatMessage;
+import com.samczsun.skype4j.chat.messages.SentMessage;
+import com.samczsun.skype4j.exceptions.ConnectionException;
 import xyz.nickr.superbot.sys.Conversable;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
@@ -9,14 +12,14 @@ import xyz.nickr.superbot.sys.User;
 public class SkypeMessage implements Message {
 
     private final SkypeSys sys;
-    private final in.kyle.ezskypeezlife.api.conversation.message.SkypeMessage msg;
+    private final ChatMessage msg;
     private final Conversable conv;
     private final User user;
 
-    public SkypeMessage(SkypeSys sys, in.kyle.ezskypeezlife.api.conversation.message.SkypeMessage msg) {
+    public SkypeMessage(SkypeSys sys, ChatMessage msg) {
         this.sys = sys;
         this.msg = msg;
-        this.conv = sys.wrap(msg.getConversation());
+        this.conv = sys.wrap(msg.getChat());
         this.user = sys.wrap(msg.getSender());
     }
 
@@ -42,17 +45,23 @@ public class SkypeMessage implements Message {
 
     @Override
     public String getMessage() {
-        return this.msg.getMessage();
+        return this.msg.getContent().asPlaintext();
     }
 
     @Override
     public void edit(MessageBuilder message) {
-        this.msg.edit(message.build());
+        if (this.msg instanceof SentMessage) {
+            try {
+                ((SentMessage) this.msg).edit(com.samczsun.skype4j.formatting.Message.fromHtml(message.build()));
+            } catch (ConnectionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public boolean isEdited() {
-        return this.msg.isEdited();
+        return false;
     }
 
 }
