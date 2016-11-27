@@ -78,7 +78,7 @@ public class GitterSys extends Sys {
 
     @Override
     public MessageBuilder message() {
-        return new MarkdownMessageBuilder();
+        return new GitterMessageBuilder();
     }
 
     @Override

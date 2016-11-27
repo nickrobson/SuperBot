@@ -50,7 +50,7 @@ public class ProgressCommand implements Command {
             for (int i = 0; i < argz.size(); i++) {
                 Show show = SuperBotShows.getShow(argz.get(i));
                 if (i > 0) {
-                    builder.raw("\n");
+                    builder.newLine();
                 }
                 if (show == null) {
                     builder = builder.escaped("Invalid show: " + argz.get(i));

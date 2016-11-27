@@ -42,7 +42,7 @@ public class MissedShowsCommand implements Command {
         }
         Map<Show, String> progress = SuperBotController.getUserProgress(prof.getName());
         Calendar now = Calendar.getInstance();
-        List<String> lines = new LinkedList<>();
+        List<MessageBuilder> lines = new LinkedList<>();
         for (Entry<Show, String> entry : progress.entrySet()) {
             Show show = entry.getKey();
             if (show == null) {
@@ -91,7 +91,7 @@ public class MissedShowsCommand implements Command {
                 if (!missed.isEmpty()) {
                     MessageBuilder mb = sys.message();
                     String line = Joiner.join(", ", missed);
-                    lines.add(mb.bold(m -> m.escaped(show.getDisplay())).escaped(": ").escaped(line).build());
+                    lines.add(mb.bold(m -> m.escaped(show.getDisplay())).escaped(": ").escaped(line));
                 }
             } catch (JOMDBException ex) {
                 ex.printStackTrace();

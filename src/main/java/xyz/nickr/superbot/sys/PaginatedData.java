@@ -53,7 +53,7 @@ public class PaginatedData {
     public void send(Sys sys, Group group, int page) {
         MessageBuilder builder = sys.message();
         if (sys.hasKeyboards()) {
-            builder.raw(this.pages.get(page).build());
+            builder.raw(this.pages.get(page));
             AtomicInteger currentPage = new AtomicInteger(0);
             AtomicReference<Message> msg = new AtomicReference<>();
             if (this.pages.size() > 1) {

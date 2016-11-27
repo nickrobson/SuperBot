@@ -83,7 +83,7 @@ public class HangmanCommand implements Command {
         } else if (this.currentPhrase == null) {
             group.sendMessage(mb.escaped("[Hangman] There is no game in progress currently!").newLine().escaped("[Hangman] To set the phrase, PM me `" + prefix + "hangman [phrase]`!"));
         } else if (args.length != 1) {
-            group.sendMessage(mb.bold(true).escaped("Usage: ").bold(false).escaped(prefix + "hangman [guess]").raw(this.currentPhrase != null ? sys.message().newLine().escaped("Phrase so far: ").code(true).escaped(this.found).build() : ""));
+            group.sendMessage(mb.bold(true).escaped("Usage: ").bold(false).escaped(prefix + "hangman [guess]").raw(this.currentPhrase != null ? sys.message().newLine().escaped("Phrase so far: ").code(true).escaped(this.found) : sys.message()));
         } else {
             char first = args[0].trim().toUpperCase().charAt(0);
             if (args[0].trim().length() != 1) {
@@ -119,7 +119,7 @@ public class HangmanCommand implements Command {
                                 stats.bold(true).escaped(player.getKey() + ": ").bold(false);
                                 stats.escaped(player.getValue().toString() + "/" + curr.length() + " (" + (ps.length() > 5 ? ps.substring(0, 5) : ps) + "%%)");
                             }
-                            group.sendMessage(mb.escaped("[Hangman] Congratulations! You've uncovered the phrase!").newLine().escaped("It was: ").code(true).escaped(this.currentPhrase).code(false).raw(stats.length() > 0 ? "\n" + stats.build() : ""));
+                            group.sendMessage(mb.escaped("[Hangman] Congratulations! You've uncovered the phrase!").newLine().escaped("It was: ").code(true).escaped(this.currentPhrase).code(false).raw(stats.length() > 0 ? sys.message().newLine().raw(stats) : sys.message()));
                             this.currentPhrase = null;
                             this.found = null;
                             this.guessed = null;

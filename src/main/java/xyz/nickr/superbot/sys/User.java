@@ -16,4 +16,8 @@ public interface User extends Conversable {
         return Profile.get(getProvider(), this);
     }
 
+    default Message sendMessageNoShare(MessageBuilder m) {
+        return sendMessage(m);
+    }
+
 }

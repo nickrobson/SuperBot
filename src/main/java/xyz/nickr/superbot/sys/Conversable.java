@@ -13,6 +13,8 @@ public interface Conversable {
 
     Message sendMessage(MessageBuilder mb);
 
+    Message sendMessageNoShare(MessageBuilder mb);
+
     default boolean supportsMultiplePhotos() {
         return false;
     }

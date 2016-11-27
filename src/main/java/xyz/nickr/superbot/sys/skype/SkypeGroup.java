@@ -44,6 +44,11 @@ public class SkypeGroup implements Group {
     }
 
     @Override
+    public Message sendMessageNoShare(MessageBuilder message) {
+        return this.sys.wrap(this.conv.sendMessage(message.build()));
+    }
+
+    @Override
     public GroupType getType() {
         switch (this.conv.getConversationType()) {
             case USER:

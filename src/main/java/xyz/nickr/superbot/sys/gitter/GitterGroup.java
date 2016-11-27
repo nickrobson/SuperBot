@@ -41,6 +41,11 @@ public class GitterGroup implements Group {
     }
 
     @Override
+    public Message sendMessageNoShare(MessageBuilder message) {
+        return this.sys.wrap(this.room.sendMessage(message.build()));
+    }
+
+    @Override
     public String getDisplayName() {
         return this.room.getName();
     }

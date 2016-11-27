@@ -1,16 +1,20 @@
-package xyz.nickr.superbot.sys.skype;
+package xyz.nickr.superbot.sys.gitter;
 
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.User;
+import xyz.nickr.superbot.sys.telegram.TelegramMessageBuilder;
 
-public class HtmlMessageBuilder extends MessageBuilder {
+/**
+ * Created by bo0tzz
+ */
+public class GitterMessageBuilder extends MessageBuilder {
 
-    public static String html_escape(String text) {
-        text = text.replace("&", "&amp;"); // & is replaced with &amp;
-        text = text.replace("'", "&apos;"); // ' is replaced with &apos;
-        text = text.replace("\"", "&quot;"); // " is replaced with &quot;
-        text = text.replace("<", "&lt;"); // < is replaced with &lt;
-        text = text.replace(">", "&gt;"); // > is replaced with &gt;
+    public static String markdown_escape(String text, boolean code) {
+        if (!code) {
+            text = text.replace("*", "\\*");
+            text = text.replace("_", "\\_");
+            text = text.replace("[", "\\[");
+        }
         return text;
     }
 
@@ -24,6 +28,7 @@ public class HtmlMessageBuilder extends MessageBuilder {
         this.italic(false).bold(false).code(false);
 
         String message = "";
+        boolean isInCode = false;
         for (Token token : getTokens()) {
             switch (token.getType()) {
                 case TOKEN_NEWLINE: {
@@ -32,7 +37,7 @@ public class HtmlMessageBuilder extends MessageBuilder {
                 }
                 case TOKEN_ESCAPED_STRING: {
                     EscapedStringToken est = (EscapedStringToken) token;
-                    message += html_escape(est.getString());
+                    message += markdown_escape(est.getString(), isInCode);
                     break;
                 }
                 case TOKEN_RAW_STRING: {
@@ -42,22 +47,20 @@ public class HtmlMessageBuilder extends MessageBuilder {
                 }
                 case TOKEN_LINK: {
                     LinkToken link = (LinkToken) token;
-                    message += "<a href=\"" + link.getUrl() + "\">" + link.getText() + "</a>";
+                    message += "[" + link.getText() + "](" + link.getUrl() + ")";
                     break;
                 }
                 case TOKEN_BOLD: {
-                    FormatToken ft = (FormatToken) token;
-                    message += ft.isState() ? "<b>" : "</b>";
+                    message += "*";
                     break;
                 }
                 case TOKEN_ITALIC: {
-                    FormatToken ft = (FormatToken) token;
-                    message += ft.isState() ? "<i>" : "</i>";
+                    message += "_";
                     break;
                 }
                 case TOKEN_CODE: {
-                    FormatToken ft = (FormatToken) token;
-                    message += ft.isState() ? "<pre>" : "</pre>";
+                    message += "`";
+                    isInCode = true;
                     break;
                 }
             }

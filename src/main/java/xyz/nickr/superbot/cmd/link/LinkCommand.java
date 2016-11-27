@@ -44,25 +44,11 @@ public class LinkCommand implements Command {
 
     public static void propagate(Sys sys, Group group, User user, Message message) {
         try {
-            Set<Map.Entry<String, String>> linkedGroups = getLinkedGroups(group);
             Optional<Profile> profile = user.getProfile();
-            String msg = String.format("Message from %s user %s%s:", sys.getName(), profile.map(Profile::getName).orElse(user.getUsername()), profile.isPresent() ? " (profile)" : "");
-            for (Map.Entry<String, String> linkedGroup : linkedGroups) {
-                try {
-                    Sys s = SuperBotController.PROVIDERS.get(linkedGroup.getKey());
-                    if (s != null) {
-                        Group o = s.getGroup(linkedGroup.getValue());
-                        if (o != null) {
-                            MessageBuilder m = s.message();
-                            m.italic(x -> x.escaped(msg));
-                            m.newLine().escaped(message.getMessage());
-                            o.sendMessage(m);
-                        }
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
+            MessageBuilder m = sys.message();
+            m.italic(x -> x.escaped("Message from %s user %s%s:", sys.getName(), profile.map(Profile::getName).orElse(user.getUsername()), profile.isPresent() ? " (profile)" : ""));
+            m.newLine().escaped(message.getMessage());
+            group.share(m);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -112,8 +112,10 @@ public class TelegramSys extends Sys {
     }
 
     public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, MessageBuilder message) {
-        String m = message.build();
-        SendableTextMessageBuilder msg = SendableTextMessage.builder().disableWebPagePreview(!message.isPreview()).message(m).parseMode(ParseMode.MARKDOWN);
+        SendableTextMessageBuilder msg = SendableTextMessage.builder();
+        msg.disableWebPagePreview(!message.isPreview());
+        msg.message(message.build());
+        msg.parseMode(ParseMode.MARKDOWN);
         return this.bot.sendMessage(chat, msg.build());
     }
 
