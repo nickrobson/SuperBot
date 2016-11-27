@@ -31,7 +31,7 @@ public class SkypeListener implements Listener {
     }
 
     @EventHandler
-    public synchronized void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
         this.cmd(event.getMessage());
     }
 
@@ -42,8 +42,7 @@ public class SkypeListener implements Listener {
         Group g = this.sys.wrap(group);
         User u = this.sys.wrap(user);
 
-        if (!user.getUsername().equalsIgnoreCase(sys.skype.getUsername()))
-            LinkCommand.propagate(this.sys, g, u, this.sys.wrap(message));
+        LinkCommand.propagate(this.sys, g, u, this.sys.wrap(message));
         SuperBotCommands.exec(this.sys, g, u, this.sys.wrap(message));
     }
 

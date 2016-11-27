@@ -18,10 +18,10 @@ public class SkypeSys extends Sys {
             long now = System.currentTimeMillis();
             System.out.println("Loading SuperBot: Skype");
             try {
-                SkypeListener listener = new SkypeListener(this);
                 this.skype = new SkypeBuilder(username, password).withAllResources().build();
                 this.skype.login();
-                this.skype.getEventDispatcher().registerListener(listener);
+                this.skype.getEventDispatcher().registerListener(new SkypeListener(this));
+                this.skype.subscribe();
             } catch (Exception e) {
                 e.printStackTrace();
             }
