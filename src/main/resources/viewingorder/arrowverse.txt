@@ -1,0 +1,25 @@
+// Arrow S1 & S2
+Arrow (S1, E1-23)
+Arrow (S2, E1-23)
+// The Flash S1 & Arrow S3
+The Flash (S1, E1-7) & Arrow (S3, E1-7)
+**The Flash (S1, E8)
+**Arrow (S3, E8)
+The Flash (S1, E9-E14) & Arrow (S3, E9-E15)
+Vixen (S1, E1-6)
+The Flash (S1, E15-17)
+**The Flash (S1, E18)
+The Flash (S1, E19-23) & Arrow (S3, E16-23)
+// The Flash S2 & Arrow S4
+The Flash (S2, E1-7) & Arrow (S4, E1-7)
+**The Flash (S2, E8)
+**Arrow (S4, E8)
+// Supergirl S1 & Legends of Tomorrow S1
+The Flash (S2, E9-23) & Arrow (S4, E9-23) & Legends of Tomorrow (S1-16) & Supergirl (S1, E1-20)
+// Supergirl S2 & The Flash S3 & Arrow S5 & Legends of Tomorrow S2
+Supergirl (S1, E1-7) & The Flash (S3, E1-7) & Arrow (S5, E1-7) & Legends of Tomorrow (S1, E1-6)
+**Supergirl (S1, E8)
+**The Flash (S3, E8)
+**Arrow (S5, E8)
+**Legends of Tomorrow (S2, E7)
+Supergirl (S1, E8-) & The Flash (S3, E8-) & Arrow (S5, E8-) & Legends of Tomorrow (S2, E7-)

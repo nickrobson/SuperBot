@@ -16,10 +16,10 @@ import xyz.nickr.superbot.sys.User;
  * @author Horrgs
  * @author Nick Robson
  */
-public class RemoveLinkCommand implements Command {
+public class RemoveShowCommand implements Command {
     @Override
     public String[] names() {
-        return new String[] {"removelink"};
+        return new String[] {"delshow"};
     }
 
     @Override

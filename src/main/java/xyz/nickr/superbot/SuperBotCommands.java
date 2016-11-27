@@ -34,10 +34,10 @@ import xyz.nickr.superbot.cmd.profile.FindProfileCommand;
 import xyz.nickr.superbot.cmd.profile.GetProfileCommand;
 import xyz.nickr.superbot.cmd.profile.GetTokenCommand;
 import xyz.nickr.superbot.cmd.profile.RegisterAccountCommand;
-import xyz.nickr.superbot.cmd.shows.AddLinkCommand;
+import xyz.nickr.superbot.cmd.shows.AddShowCommand;
 import xyz.nickr.superbot.cmd.shows.MissedShowsCommand;
 import xyz.nickr.superbot.cmd.shows.ProgressCommand;
-import xyz.nickr.superbot.cmd.shows.RemoveLinkCommand;
+import xyz.nickr.superbot.cmd.shows.RemoveShowCommand;
 import xyz.nickr.superbot.cmd.shows.SetProgressCommand;
 import xyz.nickr.superbot.cmd.shows.ShowsCommand;
 import xyz.nickr.superbot.cmd.shows.TimetableCommand;
@@ -108,10 +108,10 @@ public class SuperBotCommands {
         SuperBotCommands.register(new OmdbSeasonsCommand());
         SuperBotCommands.register(new OmdbEpisodeCommand());
 
-        SuperBotCommands.register(new AddLinkCommand());
+        SuperBotCommands.register(new AddShowCommand());
         SuperBotCommands.register(new MissedShowsCommand());
         SuperBotCommands.register(new ProgressCommand());
-        SuperBotCommands.register(new RemoveLinkCommand());
+        SuperBotCommands.register(new RemoveShowCommand());
         SuperBotCommands.register(new SetProgressCommand());
         SuperBotCommands.register(new ShowsCommand());
         SuperBotCommands.register(new TimetableCommand());

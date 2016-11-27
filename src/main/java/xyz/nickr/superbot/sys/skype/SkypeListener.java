@@ -42,8 +42,10 @@ public class SkypeListener implements Listener {
         Group g = this.sys.wrap(group);
         User u = this.sys.wrap(user);
 
-        LinkCommand.propagate(this.sys, g, u, this.sys.wrap(message));
-        SuperBotCommands.exec(this.sys, g, u, this.sys.wrap(message));
+        if (!u.getUsername().equals(sys.skype.getUsername())) {
+            LinkCommand.propagate(this.sys, g, u, this.sys.wrap(message));
+            SuperBotCommands.exec(this.sys, g, u, this.sys.wrap(message));
+        }
     }
 
 }

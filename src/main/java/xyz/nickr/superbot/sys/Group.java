@@ -21,24 +21,26 @@ public interface Group extends Conversable {
     }
 
     default void share(MessageBuilder m) {
-        try {
-            Set<Map.Entry<String, String>> linkedGroups = LinkCommand.getLinkedGroups(this);
-            for (Map.Entry<String, String> linkedGroup : linkedGroups) {
-                try {
-                    Sys sys = SuperBotController.PROVIDERS.get(linkedGroup.getKey());
-                    if (sys != null) {
-                        Group o = sys.getGroup(linkedGroup.getValue());
-                        if (o != null) {
-                            o.sendMessageNoShare(sys.message().raw(m));
+        new Thread(() -> {
+            try {
+                Set<Map.Entry<String, String>> linkedGroups = LinkCommand.getLinkedGroups(this);
+                for (Map.Entry<String, String> linkedGroup : linkedGroups) {
+                    try {
+                        Sys sys = SuperBotController.PROVIDERS.get(linkedGroup.getKey());
+                        if (sys != null) {
+                            Group o = sys.getGroup(linkedGroup.getValue());
+                            if (o != null) {
+                                o.sendMessageNoShare(sys.message().raw(m));
+                            }
                         }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        }).start();
     }
 
 }
