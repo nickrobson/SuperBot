@@ -85,6 +85,11 @@ public class TelegramGroup implements Group {
     }
 
     @Override
+    public Message sendMessageNoShare(MessageBuilder message) {
+        return this.sys.wrap(message, this.sys.sendMessage(this.chat, message));
+    }
+
+    @Override
     public void sendPhoto(File file) {
         this.chat.sendMessage(SendablePhotoMessage.builder().photo(new InputFile(file)).build());
     }

@@ -50,6 +50,11 @@ public class TelegramDummy {
         }
 
         @Override
+        public Message sendMessageNoShare(MessageBuilder message) {
+            return this.dummy.sendMessage(message);
+        }
+
+        @Override
         public boolean supportsMultiplePhotos() {
             return true;
         }

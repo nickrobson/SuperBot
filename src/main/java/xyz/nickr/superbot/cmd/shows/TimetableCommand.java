@@ -31,11 +31,11 @@ public class TimetableCommand implements Command {
         return new String[] {"(search)", "see what days each show is on"};
     }
 
-    String get(String day, Set<Show> set, Sys sys) {
+    MessageBuilder get(String day, Set<Show> set, Sys sys) {
         MessageBuilder mb = sys.message();
         List<String> names = set.stream().map(s -> s.getDisplay()).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
-        return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names)).build();
+        return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names));
     }
 
     <T> Set<T> merge(Set<T> a, Set<T> b) {
@@ -56,7 +56,7 @@ public class TimetableCommand implements Command {
         });
         List<String> alldays = new LinkedList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Netflix", "Not airing"));
         days.keySet().stream().filter(s -> !alldays.contains(s)).forEach(alldays::add);
-        List<String> lines = new LinkedList<>();
+        List<MessageBuilder> lines = new LinkedList<>();
         for (String day : alldays) {
             Set<Show> set = days.get(day);
             if (set != null) {
@@ -64,7 +64,7 @@ public class TimetableCommand implements Command {
             }
         }
         if (args.length > 0) {
-            lines.removeIf(s -> !s.toLowerCase().contains(Joiner.join(" ", args).toLowerCase()));
+            lines.removeIf(s -> !s.build().toLowerCase().contains(Joiner.join(" ", args).toLowerCase()));
         }
         MessageBuilder builder = sys.message();
         builder.bold(true).escaped(lines.isEmpty() ? "No matching shows or days." : "Shows by day:").bold(false);

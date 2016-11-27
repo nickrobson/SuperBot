@@ -38,7 +38,7 @@ public class ViewingOrderCommand implements Command {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        mb.raw("\n");
+                        mb.newLine();
                         if (line.startsWith("**")) {
                             mb.bold(true).escaped(line.substring(2)).bold(false);
                         } else if (line.startsWith("//")) {

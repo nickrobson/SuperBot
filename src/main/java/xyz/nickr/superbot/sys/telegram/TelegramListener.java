@@ -13,16 +13,14 @@ import pro.zackpollard.telegrambot.api.chat.inline.send.content.InputMessageCont
 import pro.zackpollard.telegrambot.api.chat.inline.send.content.InputTextMessageContent;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResult;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultArticle;
+import pro.zackpollard.telegrambot.api.chat.message.content.TextContent;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
-import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineCallbackQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
-import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
-import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
-import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
+import pro.zackpollard.telegrambot.api.event.chat.message.MessageReceivedEvent;
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
@@ -63,20 +61,24 @@ public class TelegramListener implements Listener {
     }
 
     @Override
-    public void onTextMessageReceived(TextMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
+        if (!(event.getMessage().getContent() instanceof TextContent))
+            return;
         Group g = this.sys.wrap(event.getChat());
         User u = this.sys.wrap(event.getMessage().getSender());
-        LinkCommand.propagate(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(event.getContent().getContent()), event.getMessage()));
-    }
+        String content = ((TextContent) event.getMessage().getContent()).getContent();
+        LinkCommand.propagate(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(content), event.getMessage()));
 
-    @Override
-    public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
-        if (event.getCommand().equals("fixkb")) {
-            event.getChat().sendMessage(SendableTextMessage.builder().message("hi").replyMarkup(ReplyKeyboardHide.builder().build()).build());
+        String command = content.substring(1).split(" ")[0].split("@")[0];
+
+        int argsStart = content.indexOf(" ");
+        String args = "";
+
+        if (argsStart != -1) {
+            args = content.substring(argsStart).trim();
         }
-        Group g = this.sys.wrap(event.getChat());
-        User u = this.sys.wrap(event.getMessage().getSender());
-        String msg = this.sys.prefix() + event.getCommand().trim() + " " + event.getArgsString().trim();
+
+        String msg = this.sys.prefix() + command.trim() + " " + args.trim();
         SuperBotCommands.exec(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(msg), event.getMessage()));
     }
 

@@ -71,8 +71,9 @@ public class SkypeListener implements SkypeErrorHandler {
         Group g = this.sys.wrap(group);
         User u = this.sys.wrap(user);
 
+        if (!user.getUsername().equalsIgnoreCase(sys.skype.getLocalUser().getUsername()))
+            LinkCommand.propagate(this.sys, g, u, this.sys.wrap(message));
         SuperBotCommands.exec(this.sys, g, u, this.sys.wrap(message));
-        LinkCommand.propagate(this.sys, g, u, this.sys.wrap(message));
     }
 
     @Override

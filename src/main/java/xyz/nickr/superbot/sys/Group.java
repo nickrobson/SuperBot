@@ -29,7 +29,7 @@ public interface Group extends Conversable {
                     if (sys != null) {
                         Group o = sys.getGroup(linkedGroup.getValue());
                         if (o != null) {
-                            o.sendMessage(m);
+                            o.sendMessageNoShare(sys.message().raw(m));
                         }
                     }
                 } catch (Exception ex) {

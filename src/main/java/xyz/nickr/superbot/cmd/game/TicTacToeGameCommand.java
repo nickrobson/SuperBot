@@ -43,7 +43,7 @@ public class TicTacToeGameCommand implements Command {
                 resultMessage.set(sys.message().escaped("Tic Tac Toe").newLine().escaped(user.getUsername()).escaped(" vs ").escaped(clicker.getUsername()));
                 Consumer<Boolean> onWin = playerOne -> m.get().edit(sys.message().escaped("Congratulations, " + (playerOne ? user.getUsername() : clicker.getUsername())).newLine().raw(board.get().toTextKeyboard(sys)).setKeyboard(new Keyboard()));
                 Runnable onDraw = () -> m.get().edit(sys.message().escaped("It's a draw between " + user.getUsername() + " and " + clicker.getUsername()).newLine().raw(board.get().toTextKeyboard(sys)).setKeyboard(new Keyboard()));
-                onClick.set(() -> m.get().edit(sys.message().raw(resultMessage.get().build()).newLine().escaped("It's " + (board.get().playerOneTurn ? user.getUsername() : clicker.getUsername()) + "'s turn!").setKeyboard(board.get().toKeyboard(onClick.get(), onDraw, onWin))));
+                onClick.set(() -> m.get().edit(sys.message().raw(resultMessage.get()).newLine().escaped("It's " + (board.get().playerOneTurn ? user.getUsername() : clicker.getUsername()) + "'s turn!").setKeyboard(board.get().toKeyboard(onClick.get(), onDraw, onWin))));
                 onClick.get().run();
             }
         })));
@@ -88,7 +88,7 @@ public class TicTacToeGameCommand implements Command {
             };
         }
 
-        public String toTextKeyboard(Sys sys) {
+        public MessageBuilder toTextKeyboard(Sys sys) {
             MessageBuilder mb = sys.message();
             for (int y = 0; y < 3; y++) {
                 mb.code(true);
@@ -101,7 +101,7 @@ public class TicTacToeGameCommand implements Command {
                 if (y != 2)
                     mb.code(true).escaped("---+---+---").code(false).newLine();
             }
-            return mb.build();
+            return mb;
         }
 
         public Keyboard toKeyboard(Runnable onClick, Runnable onDraw, Consumer<Boolean> onWin) {

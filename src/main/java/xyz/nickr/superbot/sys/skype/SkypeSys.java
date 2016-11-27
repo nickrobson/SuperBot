@@ -11,7 +11,7 @@ import xyz.nickr.superbot.sys.User;
 
 public class SkypeSys extends Sys {
 
-    private EzSkype skype;
+    EzSkype skype;
 
     public SkypeSys(String username, String password) {
         new Thread(() -> {

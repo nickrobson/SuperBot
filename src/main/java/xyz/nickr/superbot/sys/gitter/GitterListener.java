@@ -16,8 +16,9 @@ public class GitterListener implements JitterListener {
 
     public void onMessage(MessageReceivedEvent event) {
         Message m = event.getMessage();
+        if (!m.getSender().getUsername().equalsIgnoreCase(sys.jitter.getCurrentUser().getUsername()))
+            LinkCommand.propagate(sys, sys.wrap(m.getRoom()), sys.wrap(m.getSender()), sys.wrap(m));
         SuperBotCommands.exec(sys, sys.wrap(m.getRoom()), sys.wrap(m.getSender()), sys.wrap(m));
-        LinkCommand.propagate(sys, sys.wrap(m.getRoom()), sys.wrap(m.getSender()), sys.wrap(m));
         m.getRoom().getMessageHistory().markRead();
     }
 

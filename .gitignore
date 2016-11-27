@@ -9,3 +9,14 @@
 *.jar
 *.xml
 *.iml
+
+/groups/
+/permissions/
+/profiles/
+/superchat_data/
+
+/imgurCache.json
+/tgusers.cache
+/linked_chats.json
+/config.cfg
+/shows.json
