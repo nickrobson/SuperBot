@@ -1,8 +1,8 @@
 package xyz.nickr.superbot.sys.skype;
 
-import in.kyle.ezskypeezlife.EzSkype;
-import in.kyle.ezskypeezlife.api.conversation.SkypeConversation;
-import in.kyle.ezskypeezlife.api.skype.SkypeCredentials;
+import com.samczsun.skype4j.Skype;
+import com.samczsun.skype4j.SkypeBuilder;
+import com.samczsun.skype4j.chat.Chat;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
@@ -11,7 +11,7 @@ import xyz.nickr.superbot.sys.User;
 
 public class SkypeSys extends Sys {
 
-    EzSkype skype;
+    Skype skype;
 
     public SkypeSys(String username, String password) {
         new Thread(() -> {
@@ -19,10 +19,9 @@ public class SkypeSys extends Sys {
             System.out.println("Loading SuperBot: Skype");
             try {
                 SkypeListener listener = new SkypeListener(this);
-                this.skype = new EzSkype(new SkypeCredentials(username, password));
-                this.skype.setErrorHandler(listener);
+                this.skype = new SkypeBuilder(username, password).withAllResources().build();
                 this.skype.login();
-                this.skype.getEventManager().registerEvents(listener);
+                this.skype.getEventDispatcher().registerListener(listener);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -57,18 +56,18 @@ public class SkypeSys extends Sys {
 
     @Override
     public Group getGroup(String uniqueId) {
-        return wrap(skype.getSkypeConversation(uniqueId));
+        return wrap(skype.getChat(uniqueId));
     }
 
-    Group wrap(SkypeConversation group) {
+    Group wrap(Chat group) {
         return new SkypeGroup(this, group);
     }
 
-    User wrap(in.kyle.ezskypeezlife.api.user.SkypeUser user) {
+    User wrap(com.samczsun.skype4j.user.User user) {
         return new SkypeUser(this, user);
     }
 
-    Message wrap(in.kyle.ezskypeezlife.api.conversation.message.SkypeMessage message) {
+    Message wrap(com.samczsun.skype4j.chat.messages.ChatMessage message) {
         return new SkypeMessage(this, message);
     }
 

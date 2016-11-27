@@ -1,5 +1,6 @@
 package xyz.nickr.superbot.sys.skype;
 
+import com.samczsun.skype4j.exceptions.ConnectionException;
 import java.util.Optional;
 
 import xyz.nickr.superbot.sys.Message;
@@ -10,9 +11,9 @@ import xyz.nickr.superbot.sys.User;
 public class SkypeUser implements User {
 
     private final SkypeSys sys;
-    final in.kyle.ezskypeezlife.api.user.SkypeUser user;
+    final com.samczsun.skype4j.user.User user;
 
-    public SkypeUser(SkypeSys sys, in.kyle.ezskypeezlife.api.user.SkypeUser user) {
+    public SkypeUser(SkypeSys sys, com.samczsun.skype4j.user.User user) {
         this.sys = sys;
         this.user = user;
     }
@@ -29,7 +30,12 @@ public class SkypeUser implements User {
 
     @Override
     public Message sendMessage(MessageBuilder message) {
-        return this.sys.wrap(this.user.sendMessage(message.build()));
+        try {
+            return this.sys.wrap(this.user.getChat().sendMessage(message.build()));
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -39,7 +45,11 @@ public class SkypeUser implements User {
 
     @Override
     public Optional<String> getDisplayName() {
-        return this.user.getDisplayName();
+        try {
+            return Optional.of(this.user.getDisplayName());
+        } catch (ConnectionException e) {
+            return Optional.of(this.user.getUsername());
+        }
     }
 
 }

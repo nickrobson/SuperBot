@@ -1,9 +1,12 @@
 package xyz.nickr.superbot.sys.skype;
 
+import com.samczsun.skype4j.chat.Chat;
+import com.samczsun.skype4j.chat.GroupChat;
+import com.samczsun.skype4j.chat.IndividualChat;
+import com.samczsun.skype4j.exceptions.ConnectionException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import in.kyle.ezskypeezlife.api.conversation.SkypeConversation;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
@@ -14,9 +17,9 @@ import xyz.nickr.superbot.sys.User;
 public class SkypeGroup implements Group {
 
     private final SkypeSys sys;
-    private final SkypeConversation conv;
+    private final Chat conv;
 
-    public SkypeGroup(SkypeSys sys, SkypeConversation conv) {
+    public SkypeGroup(SkypeSys sys, Chat conv) {
         this.sys = sys;
         this.conv = conv;
     }
@@ -28,46 +31,55 @@ public class SkypeGroup implements Group {
 
     @Override
     public String getUniqueId() {
-        return this.conv.getLongId();
+        return this.conv.getIdentity();
     }
 
     @Override
     public String getDisplayName() {
-        return this.conv.getTopic();
+        if (conv instanceof GroupChat) {
+            return ((GroupChat) conv).getTopic();
+        } else if (conv instanceof IndividualChat) {
+            return ((IndividualChat) conv).getPartner().getUsername();
+        }
+        return this.conv.getIdentity();
     }
 
     @Override
     public Message sendMessage(MessageBuilder message) {
-        Message m = this.sys.wrap(this.conv.sendMessage(message.build()));
-        share(message);
+        Message m = sendMessageNoShare(message);
+        if (m != null)
+            share(message);
         return m;
     }
 
     @Override
     public Message sendMessageNoShare(MessageBuilder message) {
-        return this.sys.wrap(this.conv.sendMessage(message.build()));
-    }
-
-    @Override
-    public GroupType getType() {
-        switch (this.conv.getConversationType()) {
-            case USER:
-                return GroupType.USER;
-            case GROUP:
-                return GroupType.GROUP;
-            default:
-                return null;
+        try {
+            return this.sys.wrap(this.conv.sendMessage(message.build()));
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
     @Override
+    public GroupType getType() {
+        if (conv instanceof GroupChat) {
+            return GroupType.GROUP;
+        } else if (conv instanceof IndividualChat) {
+            return GroupType.USER;
+        }
+        return null;
+    }
+
+    @Override
     public Set<User> getUsers() {
-        return this.conv.getUsers().stream().map(u -> this.sys.wrap(u)).collect(Collectors.toSet());
+        return this.conv.getAllUsers().stream().map(this.sys::wrap).collect(Collectors.toSet());
     }
 
     @Override
     public boolean isAdmin(User u) {
-        return this.conv.isAdmin(((SkypeUser) u).user);
+        return this.conv.getUser(u.getUsername()).getRole() == com.samczsun.skype4j.user.User.Role.ADMIN;
     }
 
 }
