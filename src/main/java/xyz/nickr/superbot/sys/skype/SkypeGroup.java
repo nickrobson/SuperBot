@@ -55,7 +55,7 @@ public class SkypeGroup implements Group {
     @Override
     public Message sendMessageNoShare(MessageBuilder message) {
         try {
-            return this.sys.wrap(this.conv.sendMessage(message.build()));
+            return this.sys.wrap(this.conv.sendMessage(com.samczsun.skype4j.formatting.Message.fromHtml(message.build())));
         } catch (ConnectionException e) {
             e.printStackTrace();
             return null;
