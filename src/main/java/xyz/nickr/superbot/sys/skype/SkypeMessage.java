@@ -15,12 +15,14 @@ public class SkypeMessage implements Message {
     private final ChatMessage msg;
     private final Conversable conv;
     private final User user;
+    private final String content;
 
-    public SkypeMessage(SkypeSys sys, ChatMessage msg) {
+    public SkypeMessage(SkypeSys sys, ChatMessage msg, String content) {
         this.sys = sys;
         this.msg = msg;
         this.conv = sys.wrap(msg.getChat());
         this.user = sys.wrap(msg.getSender());
+        this.content = content != null ? content : this.msg.getContent().asPlaintext();
     }
 
     @Override
@@ -45,7 +47,7 @@ public class SkypeMessage implements Message {
 
     @Override
     public String getMessage() {
-        return this.msg.getContent().asPlaintext();
+        return content;
     }
 
     @Override

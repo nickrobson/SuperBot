@@ -20,6 +20,8 @@ import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineCallbackQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
+import pro.zackpollard.telegrambot.api.event.chat.message.MessageEditReceivedEvent;
+import pro.zackpollard.telegrambot.api.event.chat.message.MessageEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageReceivedEvent;
 import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
@@ -62,6 +64,15 @@ public class TelegramListener implements Listener {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        cmd(event);
+    }
+
+    @Override
+    public void onMessageEditReceived(MessageEditReceivedEvent event) {
+        cmd(event);
+    }
+
+    private synchronized void cmd(MessageEvent event) {
         if (!(event.getMessage().getContent() instanceof TextContent))
             return;
         Group g = this.sys.wrap(event.getChat());

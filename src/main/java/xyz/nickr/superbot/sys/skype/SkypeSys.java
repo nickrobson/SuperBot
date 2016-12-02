@@ -74,8 +74,8 @@ public class SkypeSys extends Sys {
         return new SkypeUser(this, user);
     }
 
-    Message wrap(com.samczsun.skype4j.chat.messages.ChatMessage message) {
-        return new SkypeMessage(this, message);
+    Message wrap(com.samczsun.skype4j.chat.messages.ChatMessage message, String msg) {
+        return new SkypeMessage(this, message, msg);
     }
 
 }

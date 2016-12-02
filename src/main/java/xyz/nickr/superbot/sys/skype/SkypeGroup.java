@@ -59,7 +59,7 @@ public class SkypeGroup implements Group {
         try {
             com.samczsun.skype4j.formatting.Message m = com.samczsun.skype4j.formatting.Message.fromHtml(message.build());
             ChatMessage sent = this.conv.sendMessage(m);
-            return this.sys.wrap(sent);
+            return this.sys.wrap(sent, null);
         } catch (ConnectionException e) {
             e.printStackTrace();
             return null;
