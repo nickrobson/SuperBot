@@ -13,22 +13,23 @@ public class PaginatedData {
     @Getter
     private List<MessageBuilder> pages;
 
-    public PaginatedData(Supplier<MessageBuilder> mb, List<String> lines, int pageHeight, boolean escaped, boolean code) {
+    public PaginatedData(List<MessageBuilder> lines, int pageHeight) {
         this.pages = new LinkedList<>();
         int page = 0;
         while (page * pageHeight < lines.size()) {
-            MessageBuilder m = mb.get();
+            MessageBuilder m = new MessageBuilder();
             for (int i = page * pageHeight, j = Math.min((page + 1) * pageHeight, lines.size()); i < j; i++) {
                 final int x = i;
-                if (code && escaped) {
-                    m.code(z -> z.escaped(lines.get(x)));
-                } else if (escaped) {
-                    m.escaped(lines.get(x));
-                } else if (code) {
-                    m.code(z -> z.raw(lines.get(x)));
-                } else {
-                    m.raw(lines.get(x));
-                }
+//                if (code && escaped) {
+//                    m.code(z -> z.escaped(lines.get(x)));
+//                } else if (escaped) {
+//                    m.escaped(lines.get(x));
+//                } else if (code) {
+//                    m.code(z -> z.raw(lines.get(x)));
+//                } else {
+//                    m.raw(lines.get(x));
+//                }
+                m.raw(lines.get(x));
                 if (i != j - 1) {
                     m.newLine();
                 }
@@ -38,9 +39,9 @@ public class PaginatedData {
         }
         for (int i = 0; i < this.pages.size(); i++) {
             MessageBuilder m = this.pages.get(i);
-            MessageBuilder z = mb.get();
+            MessageBuilder z = new MessageBuilder();
             z.bold(true).escaped("Page %d of %d", i + 1, this.pages.size()).bold(false).newLine();
-            z.raw(m.build());
+            z.raw(m);
             z.setKeyboard(m.getKeyboard());
             this.pages.set(i, z);
         }

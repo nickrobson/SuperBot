@@ -1,9 +1,10 @@
 package xyz.nickr.superbot.sys.skype;
 
 import xyz.nickr.superbot.sys.MessageBuilder;
-import xyz.nickr.superbot.sys.User;
 
-public class HtmlMessageBuilder extends MessageBuilder {
+import static xyz.nickr.superbot.sys.MessageBuilder.*;
+
+public class HtmlMessageBuilder {
 
     public static String html_escape(String text) {
         text = text.replace("&", "&amp;"); // & is replaced with &amp;
@@ -14,17 +15,11 @@ public class HtmlMessageBuilder extends MessageBuilder {
         return text;
     }
 
-    @Override
-    public String toString() {
-        return this.build();
-    }
-
-    @Override
-    public String build() {
-        this.italic(false).bold(false).code(false);
+    public static String build(MessageBuilder m) {
+        m.italic(false).bold(false).code(false);
 
         String message = "";
-        for (Token token : getTokens()) {
+        for (MessageBuilder.Token token : m.getTokens()) {
             switch (token.getType()) {
                 case TOKEN_NEWLINE: {
                     message += "\n";

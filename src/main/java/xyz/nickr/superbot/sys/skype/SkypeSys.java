@@ -2,6 +2,7 @@ package xyz.nickr.superbot.sys.skype;
 
 import com.samczsun.skype4j.Skype;
 import com.samczsun.skype4j.SkypeBuilder;
+import com.samczsun.skype4j.Visibility;
 import com.samczsun.skype4j.chat.Chat;
 import com.samczsun.skype4j.exceptions.ChatNotFoundException;
 import com.samczsun.skype4j.exceptions.ConnectionException;
@@ -22,6 +23,7 @@ public class SkypeSys extends Sys {
             try {
                 this.skype = new SkypeBuilder(username, password).withAllResources().build();
                 this.skype.login();
+                this.skype.setVisibility(Visibility.ONLINE);
                 this.skype.getEventDispatcher().registerListener(new SkypeListener(this));
                 this.skype.subscribe();
             } catch (Exception e) {
@@ -44,11 +46,6 @@ public class SkypeSys extends Sys {
     @Override
     public boolean isUIDCaseSensitive() {
         return false;
-    }
-
-    @Override
-    public MessageBuilder message() {
-        return new HtmlMessageBuilder();
     }
 
     @Override

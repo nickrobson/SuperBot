@@ -28,7 +28,7 @@ public class GitterUser implements xyz.nickr.superbot.sys.User {
 
     @Override
     public xyz.nickr.superbot.sys.Message sendMessage(MessageBuilder message) {
-        return this.sys.wrap(this.user.sendMessage(message.build()));
+        return this.sys.wrap(this.user.sendMessage(GitterMessageBuilder.build(message)));
     }
 
     @Override

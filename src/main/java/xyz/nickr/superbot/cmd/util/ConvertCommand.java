@@ -76,7 +76,7 @@ public class ConvertCommand implements Command {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             for (Map.Entry<String, Map<String, Conversion>> cell : conversions.entrySet()) {
                 for (Map.Entry<String, Conversion> sub : cell.getValue().entrySet()) {
-                    if (builder.length() > 0) {
+                    if (!builder.isEmpty()) {
                         builder.newLine();
                     }
                     builder.escaped(String.format("%s => %s (%s => %s)", cell.getKey(), sub.getKey(), sub.getValue().from, sub.getValue().to));

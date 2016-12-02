@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 public abstract class Sys {
 
-    public static final Pattern START_OF_LINE = Pattern.compile("^", Pattern.MULTILINE);
-
     private final Map<String, GroupConfiguration> configs = new HashMap<>();
 
     public abstract String getName();
@@ -19,8 +17,6 @@ public abstract class Sys {
     public boolean hasKeyboards() {
         return false;
     }
-
-    public abstract MessageBuilder message();
 
     public abstract String getUserFriendlyName(String uniqueId);
 
@@ -35,4 +31,13 @@ public abstract class Sys {
     }
 
     public void onLoaded() {}
+
+    public final MessageBuilder message() {
+        return new MessageBuilder();
+    }
+
+    public final MessageBuilder message(MessageBuilder mb) {
+        return new MessageBuilder(mb);
+    }
+
 }

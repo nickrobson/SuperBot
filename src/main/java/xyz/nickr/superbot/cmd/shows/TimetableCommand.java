@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import xyz.nickr.superbot.Joiner;
@@ -31,11 +32,12 @@ public class TimetableCommand implements Command {
         return new String[] {"(search)", "see what days each show is on"};
     }
 
-    MessageBuilder get(String day, Set<Show> set, Sys sys) {
+    MessageBuilder get(String day, Set<Show> set, Sys sys, Predicate<String> checkAdd) {
         MessageBuilder mb = sys.message();
-        List<String> names = set.stream().map(s -> s.getDisplay()).collect(Collectors.toList());
+        List<String> names = set.stream().map(Show::getDisplay).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
-        return mb.bold(true).escaped(day + ": ").bold(false).escaped(Joiner.join(", ", names));
+        String n = Joiner.join(", ", names);
+        return checkAdd.test(day + ": " + n) ? mb.bold(true).escaped(day + ": ").bold(false).escaped(n) : null;
     }
 
     <T> Set<T> merge(Set<T> a, Set<T> b) {
@@ -57,14 +59,16 @@ public class TimetableCommand implements Command {
         List<String> alldays = new LinkedList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Netflix", "Not airing"));
         days.keySet().stream().filter(s -> !alldays.contains(s)).forEach(alldays::add);
         List<MessageBuilder> lines = new LinkedList<>();
+        String checkAgainst = Joiner.join(" ", args).toLowerCase();
+        Predicate<String> checkAdd = s -> s.toLowerCase().contains(checkAgainst);
         for (String day : alldays) {
             Set<Show> set = days.get(day);
             if (set != null) {
-                lines.add(this.get(day, set, sys));
+                MessageBuilder m = this.get(day, set, sys, checkAdd);
+                if (m != null) {
+                    lines.add(m);
+                }
             }
-        }
-        if (args.length > 0) {
-            lines.removeIf(s -> !s.build().toLowerCase().contains(Joiner.join(" ", args).toLowerCase()));
         }
         MessageBuilder builder = sys.message();
         builder.bold(true).escaped(lines.isEmpty() ? "No matching shows or days." : "Shows by day:").bold(false);

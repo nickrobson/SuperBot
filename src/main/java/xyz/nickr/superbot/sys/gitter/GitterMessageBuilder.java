@@ -1,13 +1,13 @@
 package xyz.nickr.superbot.sys.gitter;
 
 import xyz.nickr.superbot.sys.MessageBuilder;
-import xyz.nickr.superbot.sys.User;
-import xyz.nickr.superbot.sys.telegram.TelegramMessageBuilder;
+
+import static xyz.nickr.superbot.sys.MessageBuilder.*;
 
 /**
  * Created by bo0tzz
  */
-public class GitterMessageBuilder extends MessageBuilder {
+public class GitterMessageBuilder {
 
     public static String markdown_escape(String text, boolean code) {
         if (!code) {
@@ -18,18 +18,12 @@ public class GitterMessageBuilder extends MessageBuilder {
         return text;
     }
 
-    @Override
-    public String toString() {
-        return this.build();
-    }
-
-    @Override
-    public String build() {
-        this.italic(false).bold(false).code(false);
+    public static String build(MessageBuilder mb) {
+        mb.italic(false).bold(false).code(false);
 
         String message = "";
         boolean isInCode = false;
-        for (Token token : getTokens()) {
+        for (MessageBuilder.Token token : mb.getTokens()) {
             switch (token.getType()) {
                 case TOKEN_NEWLINE: {
                     message += "\n";

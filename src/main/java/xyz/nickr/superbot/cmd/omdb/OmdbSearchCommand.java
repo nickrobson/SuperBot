@@ -61,17 +61,17 @@ public class OmdbSearchCommand implements Command {
                 return;
             }
             if (maxPages > 0) {
-                List<String> lines = new LinkedList<>();
+                List<MessageBuilder> lines = new LinkedList<>();
                 for (int i = 1; i <= maxPages; i++) {
                     SearchResultsPage pa = res.getPage(i);
                     for (SearchResult sr : pa) {
                         MessageBuilder m = sys.message();
                         m.bold(true).escaped(sr.getTitle()).bold(false);
                         m.escaped(" (" + sr.getYear() + "): " + sr.getImdbId() + ", a " + sr.getType());
-                        lines.add(m.build());
+                        lines.add(m);
                     }
                 }
-                PaginatedData pages = new PaginatedData(sys::message, lines, 20, false, false);
+                PaginatedData pages = new PaginatedData(lines, 20);
                 pages.send(sys, group, page - 1);
             } else {
                 group.sendMessage(sys.message().escaped("No results."));

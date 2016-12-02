@@ -47,7 +47,7 @@ public class OmdbEpisodeCommand implements Command {
                         break;
                     }
                 }
-                if (mb.length() == 0) {
+                if (mb.isEmpty()) {
                     mb.escaped("No such episode.");
                 }
             } else {

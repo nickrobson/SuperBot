@@ -65,11 +65,6 @@ public class TelegramSys extends Sys {
     }
 
     @Override
-    public MessageBuilder message() {
-        return new TelegramMessageBuilder();
-    }
-
-    @Override
     public String getUserFriendlyName(String uniqueId) {
         Chat chat = bot.getChat(uniqueId);
         if (chat != null) {
@@ -108,13 +103,13 @@ public class TelegramSys extends Sys {
     }
 
     Message wrap(MessageBuilder msg, pro.zackpollard.telegrambot.api.chat.message.Message message) {
-        return new TelegramMessage(this, msg.build(), message);
+        return new TelegramMessage(this, TelegramMessageBuilder.build(msg), message);
     }
 
     public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, MessageBuilder message) {
         SendableTextMessageBuilder msg = SendableTextMessage.builder();
         msg.disableWebPagePreview(!message.isPreview());
-        msg.message(message.build());
+        msg.message(TelegramMessageBuilder.build(message));
         msg.parseMode(ParseMode.MARKDOWN);
         return this.bot.sendMessage(chat, msg.build());
     }

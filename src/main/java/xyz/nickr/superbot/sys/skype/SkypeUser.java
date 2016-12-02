@@ -31,7 +31,9 @@ public class SkypeUser implements User {
     @Override
     public Message sendMessage(MessageBuilder message) {
         try {
-            return this.sys.wrap(this.user.getChat().sendMessage(com.samczsun.skype4j.formatting.Message.fromHtml(message.build())), null);
+            String html = HtmlMessageBuilder.build(message);
+            com.samczsun.skype4j.formatting.Message m = com.samczsun.skype4j.formatting.Message.fromHtml(html);
+            return this.sys.wrap(this.user.getChat().sendMessage(m), null);
         } catch (ConnectionException e) {
             e.printStackTrace();
             return null;

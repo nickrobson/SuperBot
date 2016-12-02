@@ -77,11 +77,6 @@ public class GitterSys extends Sys {
     }
 
     @Override
-    public MessageBuilder message() {
-        return new GitterMessageBuilder();
-    }
-
-    @Override
     public String getUserFriendlyName(String uniqueId) {
         return uniqueId;
     }

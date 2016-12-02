@@ -172,7 +172,8 @@ public class TelegramListener implements Listener {
                 if (cmd.perm() == Command.DEFAULT_PERMISSION) {
                     String[] usage = cmd.help(u, false);
                     String txt = "@" + un + " " + name + " " + usage[0];
-                    results.add(res(name + " - " + usage[1], txt, this.sys.message().escaped(txt).build(), false));
+                    MessageBuilder mb = this.sys.message().escaped(txt);
+                    results.add(res(name + " - " + usage[1], txt, TelegramMessageBuilder.build(mb), false));
                 }
             }
         }

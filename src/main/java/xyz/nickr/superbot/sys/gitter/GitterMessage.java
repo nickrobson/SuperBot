@@ -43,7 +43,7 @@ public class GitterMessage implements xyz.nickr.superbot.sys.Message {
 
     @Override
     public void edit(MessageBuilder message) {
-        this.message.edit(message.build());
+        this.message.edit(GitterMessageBuilder.build(message));
     }
 
     @Override
