@@ -12,7 +12,6 @@ import xyz.nickr.superbot.cmd.ReloadCommand;
 import xyz.nickr.superbot.cmd.StopCommand;
 import xyz.nickr.superbot.cmd.config.EditConfigCommand;
 import xyz.nickr.superbot.cmd.config.ShowConfigCommand;
-import xyz.nickr.superbot.cmd.fun.DefineCommand;
 import xyz.nickr.superbot.cmd.fun.FCCPointsCommand;
 import xyz.nickr.superbot.cmd.fun.HangmanCommand;
 import xyz.nickr.superbot.cmd.fun.NumberwangCommand;
@@ -120,9 +119,9 @@ public class SuperBotCommands {
         SuperBotCommands.register(new WhoCommand());
         SuperBotCommands.register(new WipeCommand());
 
-        SuperBotCommands.register(new DefineCommand());
         SuperBotCommands.register(new HangmanCommand());
         SuperBotCommands.register(new NumberwangCommand());
+        SuperBotCommands.register(new FCCPointsCommand());
 
         SuperBotCommands.register(new PatternGameCommand());
         SuperBotCommands.register(new ReactionGameCommand());
@@ -139,8 +138,6 @@ public class SuperBotCommands {
         SuperBotCommands.register(new PasteFetchCommand());
         SuperBotCommands.register(new UidCommand());
         SuperBotCommands.register(new VersionCommand());
-
-        SuperBotCommands.register(new FCCPointsCommand());
 
         CMDS.sort((c1, c2) -> c1.names()[0].compareTo(c2.names()[0]));
     }

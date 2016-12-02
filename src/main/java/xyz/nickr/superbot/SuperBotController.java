@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -200,7 +201,7 @@ public class SuperBotController {
                         HANGMAN_PHRASES.add(line.toUpperCase());
                     }
                 }
-                HANGMAN_PHRASES.sort((s1, s2) -> s1.substring(3, 5).compareTo(s2.substring(3, 5)));
+                Collections.shuffle(HANGMAN_PHRASES);
             } catch (IOException ex) {}
         }
     }
