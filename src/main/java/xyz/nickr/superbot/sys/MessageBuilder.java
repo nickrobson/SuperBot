@@ -13,10 +13,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
-public abstract class MessageBuilder {
+public final class MessageBuilder {
 
     public static final String TOKEN_NEWLINE = "newline";
-    public static final String TOKEN_USER_NAME = "user_name";
     public static final String TOKEN_ESCAPED_STRING = "string_escaped";
     public static final String TOKEN_RAW_STRING = "string_raw";
     public static final String TOKEN_LINK = "format_link";
@@ -32,44 +31,41 @@ public abstract class MessageBuilder {
     @Getter @Setter
     private boolean preview = true;
 
-    /*
-     * The only method requiring implementation.
-     */
-    public abstract String build();
+    public MessageBuilder() {}
 
-    protected final List<Token> getTokens() {
+    public MessageBuilder(MessageBuilder copyFrom) {
+        this.raw(copyFrom);
+    }
+
+    public List<Token> getTokens() {
         return Collections.unmodifiableList(tokens);
     }
 
-    public final int length() {
-        return build().length();
-    }
-
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return tokens.isEmpty();
     }
 
-    public final MessageBuilder newLine() {
+    public MessageBuilder newLine() {
         tokens.add(new NewlineToken());
         return this;
     }
 
-    public final MessageBuilder name(User user) {
+    public MessageBuilder name(User user) {
         tokens.add(new UserToken(user));
         return this;
     }
 
-    public final MessageBuilder escaped(String text, Object... params) {
+    public MessageBuilder escaped(String text, Object... params) {
         tokens.add(new EscapedStringToken(params.length == 0 ? text : String.format(text, params)));
         return this;
     }
 
-    public final MessageBuilder raw(String text, Object... params) {
+    public MessageBuilder raw(String text, Object... params) {
         tokens.add(new RawStringToken(params.length == 0 ? text : String.format(text, params)));
         return this;
     }
 
-    public final MessageBuilder raw(MessageBuilder mb) {
+    public MessageBuilder raw(MessageBuilder mb) {
         for (Token token : mb.tokens) {
             if (token instanceof FormatToken) {
                 FormatToken ft = (FormatToken) token;
@@ -81,12 +77,12 @@ public abstract class MessageBuilder {
         return this;
     }
 
-    public final MessageBuilder link(String url, String text) {
+    public MessageBuilder link(String url, String text) {
         tokens.add(new LinkToken(url, text));
         return this;
     }
 
-    private final MessageBuilder format(String tokenType, boolean newState) {
+    private MessageBuilder format(String tokenType, boolean newState) {
         FormatToken on = new FormatToken(tokenType, true);
         FormatToken off = new FormatToken(tokenType, false);
 
@@ -101,15 +97,15 @@ public abstract class MessageBuilder {
         return this;
     }
 
-    public final MessageBuilder bold(boolean on) {
+    public MessageBuilder bold(boolean on) {
         return format(TOKEN_BOLD, on);
     }
 
-    public final MessageBuilder italic(boolean on) {
+    public MessageBuilder italic(boolean on) {
         return format(TOKEN_ITALIC, on);
     }
 
-    public final MessageBuilder code(boolean on) {
+    public MessageBuilder code(boolean on) {
         return format(TOKEN_CODE, on);
     }
 
@@ -134,7 +130,7 @@ public abstract class MessageBuilder {
 
     @Data
     @AllArgsConstructor
-    protected class Token {
+    public static class Token {
 
         private final String type;
 
@@ -142,7 +138,7 @@ public abstract class MessageBuilder {
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    protected class NewlineToken extends Token {
+    public static class NewlineToken extends Token {
 
         public NewlineToken() {
             super(TOKEN_NEWLINE);
@@ -151,7 +147,7 @@ public abstract class MessageBuilder {
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    protected class UserToken extends EscapedStringToken {
+    public static class UserToken extends EscapedStringToken {
 
         public UserToken(User user) {
             super(user.name());
@@ -161,7 +157,7 @@ public abstract class MessageBuilder {
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    protected class EscapedStringToken extends Token {
+    public static class EscapedStringToken extends Token {
 
         private final String string;
 
@@ -174,7 +170,7 @@ public abstract class MessageBuilder {
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    protected class RawStringToken extends Token {
+    public static class RawStringToken extends Token {
 
         private final String string;
 
@@ -187,7 +183,7 @@ public abstract class MessageBuilder {
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    protected class LinkToken extends Token {
+    public static class LinkToken extends Token {
 
         private final String url, text;
 
@@ -200,7 +196,7 @@ public abstract class MessageBuilder {
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    protected class FormatToken extends Token {
+    public static class FormatToken extends Token {
 
         private final boolean state;
 

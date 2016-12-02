@@ -122,7 +122,7 @@ public class TelegramDummy {
 
         @Override
         public Message sendMessage(MessageBuilder message) {
-            String msg = message.build();
+            String msg = TelegramMessageBuilder.build(message);
             Keyboard kb = message.getKeyboard();
             InlineReplyMarkup ikm = null;
             if (kb != null) {
@@ -224,7 +224,7 @@ public class TelegramDummy {
                 this.ikm = reply.build();
                 this.listener.addKeyboard(prefix, kb);
             }
-            this.listener.getBot().editInlineMessageText(this.messageId, message.build(), ParseMode.MARKDOWN, true, this.ikm);
+            this.listener.getBot().editInlineMessageText(this.messageId, TelegramMessageBuilder.build(message), ParseMode.MARKDOWN, true, this.ikm);
         }
 
         @Override

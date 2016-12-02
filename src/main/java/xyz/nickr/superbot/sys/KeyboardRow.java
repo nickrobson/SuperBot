@@ -14,6 +14,7 @@ public class KeyboardRow implements Iterable<KeyboardButton> {
     @Getter
     private List<KeyboardButton> buttons = new LinkedList<>();
 
+    @Getter
     @Setter(AccessLevel.PACKAGE)
     private boolean locked;
 

@@ -112,14 +112,14 @@ public class HangmanCommand implements Command {
                             List<Entry<String, Integer>> contrib = this.numCorrect.entrySet().stream().sorted((e1, e2) -> e2.getValue() - e1.getValue()).collect(Collectors.toList());
                             String curr = this.currentPhrase.replaceAll("[^A-Za-z]", "");
                             for (Entry<String, Integer> player : contrib) {
-                                if (stats.length() > 0) {
+                                if (!stats.isEmpty()) {
                                     stats.newLine();
                                 }
                                 String ps = String.valueOf(player.getValue() * 100.0 / curr.length());
                                 stats.bold(true).escaped(player.getKey() + ": ").bold(false);
                                 stats.escaped(player.getValue().toString() + "/" + curr.length() + " (" + (ps.length() > 5 ? ps.substring(0, 5) : ps) + "%%)");
                             }
-                            group.sendMessage(mb.escaped("[Hangman] Congratulations! You've uncovered the phrase!").newLine().escaped("It was: ").code(true).escaped(this.currentPhrase).code(false).raw(stats.length() > 0 ? sys.message().newLine().raw(stats) : sys.message()));
+                            group.sendMessage(mb.escaped("[Hangman] Congratulations! You've uncovered the phrase!").newLine().escaped("It was: ").code(true).escaped(this.currentPhrase).code(false).raw(!stats.isEmpty() ? sys.message().newLine().raw(stats) : sys.message()));
                             this.currentPhrase = null;
                             this.found = null;
                             this.guessed = null;

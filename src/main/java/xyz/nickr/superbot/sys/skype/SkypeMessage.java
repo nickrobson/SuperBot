@@ -54,7 +54,9 @@ public class SkypeMessage implements Message {
     public void edit(MessageBuilder message) {
         if (this.msg instanceof SentMessage) {
             try {
-                ((SentMessage) this.msg).edit(com.samczsun.skype4j.formatting.Message.fromHtml(message.build()));
+                String html = HtmlMessageBuilder.build(message);
+                com.samczsun.skype4j.formatting.Message m = com.samczsun.skype4j.formatting.Message.fromHtml(html);
+                ((SentMessage) this.msg).edit(m);
             } catch (ConnectionException e) {
                 e.printStackTrace();
             }

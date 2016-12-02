@@ -32,11 +32,6 @@ public class TelegramInlineSys extends Sys {
     }
 
     @Override
-    public MessageBuilder message() {
-        return this.sys.message();
-    }
-
-    @Override
     public String getUserFriendlyName(String uniqueId) {
         return this.sys.getUserFriendlyName(uniqueId);
     }

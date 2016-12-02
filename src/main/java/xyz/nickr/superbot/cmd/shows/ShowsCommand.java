@@ -3,11 +3,13 @@ package xyz.nickr.superbot.cmd.shows;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import xyz.nickr.superbot.SuperBotShows;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.PaginatedData;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
@@ -40,7 +42,8 @@ public class ShowsCommand implements Command {
             }
         }
         snd.sort(String.CASE_INSENSITIVE_ORDER);
-        PaginatedData pages = new PaginatedData(sys::message, snd, 20, true, true);
+        List<MessageBuilder> mbs = snd.stream().map(s -> sys.message().code(z -> z.escaped(s))).collect(Collectors.toList());
+        PaginatedData pages = new PaginatedData(mbs, 20);
         final int maxpages = pages.getNumberOfPages();
         int page = 0;
         if (args.length > 0) {
