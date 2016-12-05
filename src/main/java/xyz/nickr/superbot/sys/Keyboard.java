@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Keyboard implements Iterable<KeyboardRow> {
+public class Keyboard implements Iterable<KeyboardRow>, Cloneable {
 
     @Getter
     private List<KeyboardRow> rows = new LinkedList<>();
@@ -29,6 +29,13 @@ public class Keyboard implements Iterable<KeyboardRow> {
             this.rows.add(row);
         }
         return this;
+    }
+
+    @Override
+    public Keyboard clone() {
+        Keyboard newKeyboard = new Keyboard();
+        rows.forEach(r -> newKeyboard.add(r.clone()));
+        return newKeyboard;
     }
 
     @Override
