@@ -10,7 +10,7 @@ import com.samczsun.skype4j.events.chat.message.MessageReceivedEvent;
 import com.samczsun.skype4j.events.contact.ContactRequestEvent;
 import com.samczsun.skype4j.exceptions.ConnectionException;
 import xyz.nickr.superbot.SuperBotCommands;
-import xyz.nickr.superbot.cmd.link.LinkCommand;
+import xyz.nickr.superbot.cmd.LinkCommand;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.User;

@@ -1,4 +1,4 @@
-package xyz.nickr.superbot.cmd.link;
+package xyz.nickr.superbot.cmd;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -46,7 +46,8 @@ public class LinkCommand implements Command {
         try {
             Optional<Profile> profile = user.getProfile();
             MessageBuilder m = sys.message();
-            m.italic(x -> x.escaped("Message from %s user %s%s:", sys.getName(), profile.map(Profile::getName).orElse(user.getUsername()), profile.isPresent() ? " (profile)" : ""));
+            m.bold(x -> x.escaped(profile.map(Profile::getName).orElse(user.getUsername())));
+            m.italic(x -> x.escaped(": (%s%s)", sys.getName(), profile.isPresent() ? " profile" : ""));
             m.newLine().escaped(message.getMessage());
             group.share(m);
         } catch (Exception ex) {

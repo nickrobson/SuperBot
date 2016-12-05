@@ -4,7 +4,7 @@ import xyz.nickr.jitter.api.Message;
 import xyz.nickr.jitter.api.event.JitterListener;
 import xyz.nickr.jitter.api.event.MessageReceivedEvent;
 import xyz.nickr.superbot.SuperBotCommands;
-import xyz.nickr.superbot.cmd.link.LinkCommand;
+import xyz.nickr.superbot.cmd.LinkCommand;
 
 public class GitterListener implements JitterListener {
 
