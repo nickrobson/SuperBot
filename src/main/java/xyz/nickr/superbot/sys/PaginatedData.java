@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
 import lombok.Getter;
 
@@ -19,17 +18,7 @@ public class PaginatedData {
         while (page * pageHeight < lines.size()) {
             MessageBuilder m = new MessageBuilder();
             for (int i = page * pageHeight, j = Math.min((page + 1) * pageHeight, lines.size()); i < j; i++) {
-                final int x = i;
-//                if (code && escaped) {
-//                    m.code(z -> z.escaped(lines.get(x)));
-//                } else if (escaped) {
-//                    m.escaped(lines.get(x));
-//                } else if (code) {
-//                    m.code(z -> z.raw(lines.get(x)));
-//                } else {
-//                    m.raw(lines.get(x));
-//                }
-                m.raw(lines.get(x));
+                m.raw(lines.get(i));
                 if (i != j - 1) {
                     m.newLine();
                 }
@@ -38,11 +27,8 @@ public class PaginatedData {
             page++;
         }
         for (int i = 0; i < this.pages.size(); i++) {
-            MessageBuilder m = this.pages.get(i);
-            MessageBuilder z = new MessageBuilder();
-            z.bold(true).escaped("Page %d of %d", i + 1, this.pages.size()).bold(false).newLine();
-            z.raw(m);
-            z.setKeyboard(m.getKeyboard());
+            MessageBuilder z = new MessageBuilder(this.pages.get(i));
+            z.newLine().bold(true).escaped("Page %d of %d", i + 1, this.pages.size()).bold(false);
             this.pages.set(i, z);
         }
     }
@@ -52,9 +38,12 @@ public class PaginatedData {
     }
 
     public void send(Sys sys, Group group, int page) {
-        MessageBuilder builder = sys.message();
+        if (page < 0 || page >= pages.size()) {
+            System.out.format("requested page %d, only have [0, %d)", page, pages.size());
+            return;
+        }
         if (sys.hasKeyboards()) {
-            builder.raw(this.pages.get(page));
+            MessageBuilder builder = sys.message().raw(this.pages.get(page));
             AtomicInteger currentPage = new AtomicInteger(0);
             AtomicReference<Message> msg = new AtomicReference<>();
             if (this.pages.size() > 1) {

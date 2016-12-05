@@ -9,7 +9,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 @AllArgsConstructor
-public class KeyboardButton {
+public class KeyboardButton implements Cloneable {
 
     @NonNull
     @Getter
@@ -34,6 +34,11 @@ public class KeyboardButton {
 
     public KeyboardButtonResponse onClick(User user) {
         return this.onClick != null ? this.onClick.apply(user) : null;
+    }
+
+    @Override
+    public KeyboardButton clone() {
+        return new KeyboardButton(text, onClick);
     }
 
 }

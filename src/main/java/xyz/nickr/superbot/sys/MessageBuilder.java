@@ -13,7 +13,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
-public final class MessageBuilder {
+public final class MessageBuilder implements Cloneable {
 
     public static final String TOKEN_NEWLINE = "newline";
     public static final String TOKEN_ESCAPED_STRING = "string_escaped";
@@ -34,7 +34,13 @@ public final class MessageBuilder {
     public MessageBuilder() {}
 
     public MessageBuilder(MessageBuilder copyFrom) {
-        this.raw(copyFrom);
+        this.tokens.addAll(copyFrom.tokens);
+        this.keyboard = copyFrom.keyboard != null ? copyFrom.keyboard.clone() : null;
+    }
+
+    @Override
+    public MessageBuilder clone() {
+        return new MessageBuilder(this);
     }
 
     public List<Token> getTokens() {
