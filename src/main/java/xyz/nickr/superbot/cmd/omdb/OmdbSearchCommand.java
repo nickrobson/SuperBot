@@ -72,7 +72,7 @@ public class OmdbSearchCommand implements Command {
                     }
                 }
                 PaginatedData pages = new PaginatedData(lines, 20);
-                pages.send(sys, group, page - 1);
+                pages.send(sys, group, page - 1, false);
             } else {
                 group.sendMessage(sys.message().escaped("No results."));
             }
