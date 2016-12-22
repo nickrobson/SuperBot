@@ -42,8 +42,8 @@ public class PaginatedData {
             System.out.format("requested page %d, only have [0, %d)", page, pages.size());
             return;
         }
+        MessageBuilder builder = sys.message().codeblock(code).raw(this.pages.get(page)).codeblock(false);
         if (sys.hasKeyboards()) {
-            MessageBuilder builder = sys.message().codeblock(code).raw(this.pages.get(page)).codeblock(false);
             AtomicInteger currentPage = new AtomicInteger(0);
             AtomicReference<Message> msg = new AtomicReference<>();
             if (this.pages.size() > 1) {
@@ -62,7 +62,7 @@ public class PaginatedData {
             }
             msg.set(group.sendMessage(builder));
         } else {
-            group.sendMessage(this.pages.get(page));
+            group.sendMessage(builder);
         }
     }
 
