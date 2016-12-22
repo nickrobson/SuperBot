@@ -1,11 +1,8 @@
 package xyz.nickr.superbot.sys.telegram;
 
 import java.io.File;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import pro.zackpollard.telegrambot.api.chat.Chat;
-import pro.zackpollard.telegrambot.api.chat.ChatMember;
 import pro.zackpollard.telegrambot.api.chat.GroupChat;
 import pro.zackpollard.telegrambot.api.chat.IndividualChat;
 import pro.zackpollard.telegrambot.api.chat.SuperGroupChat;
@@ -16,7 +13,6 @@ import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
-import xyz.nickr.superbot.sys.User;
 
 /**
  * Created by bo0tzz
@@ -50,21 +46,6 @@ public class TelegramGroup implements Group {
             return GroupType.USER;
         }
         return GroupType.GROUP;
-    }
-
-    @Override
-    public boolean isAdmin(User u) {
-        for (ChatMember cm : this.chat.getChatAdministrators()) {
-            if (cm.getUser().getUsername().equals(this.sys.getBot().getBotUsername())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Set<User> getUsers() {
-        return this.chat.getChatAdministrators().stream().map(m -> this.sys.wrap(m.getUser())).collect(Collectors.toSet());
     }
 
     @Override

@@ -3,6 +3,7 @@ package xyz.nickr.superbot.sys;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import net.dv8tion.jda.core.entities.MessageChannel;
 
 public abstract class Sys {
 

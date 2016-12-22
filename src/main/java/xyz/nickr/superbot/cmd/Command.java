@@ -47,10 +47,6 @@ public interface Command {
         return group.sendMessage(sys.message().escaped("You don't have a profile! Create one first."));
     }
 
-    default Permission admin() {
-        return (s, c, u, p) -> c.isAdmin(u);
-    }
-
     default Permission string(String perm) {
         return (s, c, u, p) -> p.isPresent() && SuperBotPermissions.has(p.get().getName(), perm);
     }

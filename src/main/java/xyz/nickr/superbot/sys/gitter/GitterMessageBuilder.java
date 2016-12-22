@@ -5,7 +5,9 @@ import xyz.nickr.superbot.sys.MessageBuilder;
 import static xyz.nickr.superbot.sys.MessageBuilder.*;
 
 /**
- * Created by bo0tzz
+ *
+ *
+ * @author Nick Robson
  */
 public class GitterMessageBuilder {
 

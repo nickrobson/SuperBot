@@ -12,14 +12,6 @@ public interface Group extends Conversable {
 
     GroupType getType();
 
-    boolean isAdmin(User u);
-
-    Set<User> getUsers();
-
-    default Map<String, User> getUserMap() {
-        return getUsers().stream().collect(Collectors.toMap(u -> u.getUsername(), u -> u));
-    }
-
     default void share(MessageBuilder m) {
         new Thread(() -> {
             try {

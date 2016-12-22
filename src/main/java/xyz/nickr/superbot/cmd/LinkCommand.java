@@ -3,10 +3,9 @@ package xyz.nickr.superbot.cmd;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,8 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import xyz.nickr.superbot.SuperBotController;
-import xyz.nickr.superbot.cmd.Command;
-import xyz.nickr.superbot.cmd.Permission;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
@@ -37,7 +34,7 @@ public class LinkCommand implements Command {
     }
 
     public static Set<Map.Entry<String, String>> getLinkedGroups(Group g) {
-        Set<Map.Entry<String, String>> set =  getLinks(g).stream().map(linkedChats::get).flatMap(Set::stream).collect(Collectors.toSet());
+        Set<Map.Entry<String, String>> set = getLinks(g).stream().map(linkedChats::get).flatMap(Set::stream).collect(Collectors.toSet());
         set.remove(new AbstractMap.SimpleEntry<>(g.getProvider().getName(), g.getUniqueId()));
         return set;
     }
@@ -58,29 +55,28 @@ public class LinkCommand implements Command {
     @Override
     public void init() {
         try {
-            File linkedChatsJson = new File("linked_chats.json");
-            InputStreamReader fis = new InputStreamReader(new FileInputStream(linkedChatsJson));
-            JsonObject json = SuperBotController.GSON.fromJson(fis, JsonObject.class);
+            try (FileReader fis = new FileReader("linked_chats.json")) {
+                JsonObject json = SuperBotController.GSON.fromJson(fis, JsonObject.class);
 
-            JsonObject links = json.getAsJsonObject("links");
+                JsonObject links = json.getAsJsonObject("links");
 
-            links.entrySet().forEach(e -> {
-                String linkName = e.getKey();
-                JsonObject linkData = e.getValue().getAsJsonObject();
-                JsonObject chats = linkData.getAsJsonObject("chats");
+                links.entrySet().forEach(e -> {
+                    String linkName = e.getKey();
+                    JsonObject linkData = e.getValue().getAsJsonObject();
+                    JsonObject chats = linkData.getAsJsonObject("chats");
 
-                Set<Map.Entry<String, String>> set = new HashSet<>();
+                    Set<Map.Entry<String, String>> set = new HashSet<>();
 
-                chats.entrySet().forEach(entry -> {
-                    String provider = entry.getKey();
-                    JsonArray chatIds = entry.getValue().getAsJsonArray();
-                    chatIds.forEach(x -> set.add(new AbstractMap.SimpleEntry<String, String>(provider, x.getAsString())));
+                    chats.entrySet().forEach(entry -> {
+                        String provider = entry.getKey();
+                        JsonArray chatIds = entry.getValue().getAsJsonArray();
+                        chatIds.forEach(x -> set.add(new AbstractMap.SimpleEntry<String, String>(provider, x.getAsString())));
+                    });
+
+                    linkedChats.put(linkName, set);
                 });
 
-                linkedChats.put(linkName, set);
-            });
-
-            fis.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -109,14 +105,16 @@ public class LinkCommand implements Command {
 
         json.add("links", links);
 
-        try {
-            File linkedChatsJson = new File("linked_chats.json");
-            FileWriter writer = new FileWriter(linkedChatsJson);
+        File file = new File("linked_chats.json.tmp");
+        file.delete();
+        try (FileWriter writer = new FileWriter(file)) {
             SuperBotController.GSON.toJson(json, writer);
-            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        File newFile = new File("linked_chats.json");
+        newFile.delete();
+        file.renameTo(newFile);
     }
 
     @Override

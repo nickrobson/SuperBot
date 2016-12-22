@@ -1,17 +1,11 @@
 package xyz.nickr.superbot.sys.gitter;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import xyz.nickr.jitter.api.Room;
-import xyz.nickr.jitter.api.RoomUser;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
-import xyz.nickr.superbot.sys.User;
 
 public class GitterGroup implements Group {
 
@@ -58,17 +52,6 @@ public class GitterGroup implements Group {
             default:
                 return GroupType.GROUP;
         }
-    }
-
-    @Override
-    public boolean isAdmin(User u) {
-        Optional<RoomUser> ru = this.room.getUsers().stream().filter(g -> g.getID().equals(u.getUniqueId())).findAny();
-        return ru.isPresent() && ru.get().isAdmin();
-    }
-
-    @Override
-    public Set<User> getUsers() {
-        return this.room.getUsers().stream().map(u -> this.sys.wrap(u)).collect(Collectors.toSet());
     }
 
 }

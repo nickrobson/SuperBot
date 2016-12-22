@@ -41,6 +41,7 @@ import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Profile;
 import xyz.nickr.superbot.sys.Sys;
+import xyz.nickr.superbot.sys.discord.DiscordSys;
 import xyz.nickr.superbot.sys.gitter.GitterSys;
 import xyz.nickr.superbot.sys.skype.SkypeSys;
 import xyz.nickr.superbot.sys.telegram.TelegramSys;
@@ -78,6 +79,7 @@ public class SuperBotController {
             register(new SkypeSys(properties.getProperty("skype.username"), properties.getProperty("skype.password")));
             register(new TelegramSys(properties.getProperty("telegram.api")));
             register(new GitterSys(properties.getProperty("gitter.api")));
+            register(new DiscordSys(properties.getProperty("discord.api")));
 
             PasteFetchCommand.VILSOL_PASTE_TOKEN = properties.getProperty("vilsol.paste.token");
             Imgur.IMGUR_CLIENT_ID = properties.getProperty("imgur.clientid");
