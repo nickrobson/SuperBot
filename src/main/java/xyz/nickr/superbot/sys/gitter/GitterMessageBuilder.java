@@ -21,7 +21,7 @@ public class GitterMessageBuilder {
     }
 
     public static String build(MessageBuilder mb) {
-        mb.italic(false).bold(false).code(false);
+        mb.italic(false).bold(false).code(false).codeblock(false);
 
         String message = "";
         boolean isInCode = false;

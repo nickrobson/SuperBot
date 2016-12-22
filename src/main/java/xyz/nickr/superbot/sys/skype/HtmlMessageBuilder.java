@@ -16,7 +16,7 @@ public class HtmlMessageBuilder {
     }
 
     public static String build(MessageBuilder m) {
-        m.italic(false).bold(false).code(false);
+        m.italic(false).bold(false).code(false).codeblock(false);
 
         String message = "";
         for (MessageBuilder.Token token : m.getTokens()) {

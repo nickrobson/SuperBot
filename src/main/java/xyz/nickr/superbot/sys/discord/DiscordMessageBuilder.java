@@ -21,7 +21,7 @@ public class DiscordMessageBuilder {
     }
 
     public static String build(MessageBuilder mb) {
-        mb.italic(false).bold(false).code(false);
+        mb.italic(false).bold(false).code(false).codeblock(false);
 
         String message = "";
         boolean isInCode = false;
