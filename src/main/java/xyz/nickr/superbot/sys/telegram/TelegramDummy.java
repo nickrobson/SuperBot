@@ -1,12 +1,9 @@
 package xyz.nickr.superbot.sys.telegram;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import pro.zackpollard.telegrambot.api.chat.inline.InlineReplyMarkup;
 import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResult;
@@ -72,16 +69,6 @@ public class TelegramDummy {
         @Override
         public GroupType getType() {
             return GroupType.GROUP;
-        }
-
-        @Override
-        public boolean isAdmin(User u) {
-            return false;
-        }
-
-        @Override
-        public Set<User> getUsers() {
-            return new HashSet<>(Arrays.asList(this.dummy));
         }
 
     }

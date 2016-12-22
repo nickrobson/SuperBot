@@ -4,17 +4,13 @@ import com.samczsun.skype4j.chat.Chat;
 import com.samczsun.skype4j.chat.GroupChat;
 import com.samczsun.skype4j.chat.IndividualChat;
 import com.samczsun.skype4j.chat.messages.ChatMessage;
-import com.samczsun.skype4j.chat.messages.SentMessage;
 import com.samczsun.skype4j.exceptions.ConnectionException;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
-import xyz.nickr.superbot.sys.User;
 
 public class SkypeGroup implements Group {
 
@@ -75,16 +71,6 @@ public class SkypeGroup implements Group {
             return GroupType.USER;
         }
         return null;
-    }
-
-    @Override
-    public Set<User> getUsers() {
-        return this.conv.getAllUsers().stream().map(this.sys::wrap).collect(Collectors.toSet());
-    }
-
-    @Override
-    public boolean isAdmin(User u) {
-        return this.conv.getUser(u.getUsername()).getRole() == com.samczsun.skype4j.user.User.Role.ADMIN;
     }
 
 }

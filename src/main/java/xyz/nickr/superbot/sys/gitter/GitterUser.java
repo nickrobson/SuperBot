@@ -5,6 +5,7 @@ import java.util.Optional;
 import xyz.nickr.jitter.api.User;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
+import xyz.nickr.superbot.sys.discord.DiscordMessageBuilder;
 
 public class GitterUser implements xyz.nickr.superbot.sys.User {
 
@@ -28,7 +29,7 @@ public class GitterUser implements xyz.nickr.superbot.sys.User {
 
     @Override
     public xyz.nickr.superbot.sys.Message sendMessage(MessageBuilder message) {
-        return this.sys.wrap(this.user.sendMessage(GitterMessageBuilder.build(message)));
+        return this.sys.wrap(this.user.sendMessage(DiscordMessageBuilder.build(message)));
     }
 
     @Override
