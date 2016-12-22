@@ -23,8 +23,8 @@ public class VersionCommand implements Command {
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         MessageBuilder builder = sys.message();
-        builder.bold(true).escaped("Version: ").bold(false).escaped(SuperBotController.VERSION).newLine();
-        builder.bold(true).escaped("Build Number: ").bold(false);
+        builder.bold(true).escaped("Version:").bold(false).escaped(" " + SuperBotController.VERSION).newLine();
+        builder.bold(true).escaped("Build Number:").bold(false).escaped(" ");
         int build = SuperBotController.BUILD_NUMBER;
         if (build > 0) {
             builder.escaped(Integer.toString(build));
@@ -38,7 +38,7 @@ public class VersionCommand implements Command {
             String id = SuperBotController.GIT_COMMIT_IDS[i];
             String msg = SuperBotController.GIT_COMMIT_MESSAGES[i];
             String author = SuperBotController.GIT_COMMIT_AUTHORS[i];
-            builder.newLine().italic(true).escaped(author + " ").italic(false).escaped(msg + " ").link("https://github.com/nickrobson/SuperBot/commit/" + id, id.substring(0, 8)).setPreview(false);
+            builder.newLine().italic(true).escaped(author).italic(false).escaped(" " + msg + " ").link("https://github.com/nickrobson/SuperBot/commit/" + id, id.substring(0, 8)).setPreview(false);
         }
         group.sendMessage(builder);
     }

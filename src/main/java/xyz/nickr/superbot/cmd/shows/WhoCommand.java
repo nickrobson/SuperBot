@@ -105,11 +105,11 @@ public class WhoCommand implements Command {
         MessageBuilder mb = sys.message();
         if (shows.size() > 0) {
             int maxLen = shows.stream().mapToInt(String::length).max().orElse(0);
-            mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ")").bold(false);
+            mb.bold(true).escaped("Shows " + username + " is watching: (" + shows.size() + ") ").bold(false).codeblock(true);
             for (int i = 0; i < shows.size(); i++) {
-                mb.newLine().code(true).escaped(this.pad(shows.get(i), maxLen)).code(false);
+                mb.newLine().escaped(this.pad(shows.get(i), maxLen));
             }
-            group.sendMessage(mb);
+            group.sendMessage(mb.codeblock(false));
         } else {
             group.sendMessage(mb.bold(true).escaped("Error: ").bold(false).escaped("It doesn't look like " + username + " uses me. :("));
         }

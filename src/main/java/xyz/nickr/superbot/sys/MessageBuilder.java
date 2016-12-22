@@ -22,6 +22,7 @@ public final class MessageBuilder implements Cloneable {
     public static final String TOKEN_BOLD = "format_bold";
     public static final String TOKEN_ITALIC = "format_italic";
     public static final String TOKEN_CODE = "format_code";
+    public static final String TOKEN_CODEBLOCK = "format_codeblock";
 
     private final List<Token> tokens = new LinkedList<>();
 
@@ -115,6 +116,10 @@ public final class MessageBuilder implements Cloneable {
         return format(TOKEN_CODE, on);
     }
 
+    public MessageBuilder codeblock(boolean on) {
+        return format(TOKEN_CODEBLOCK, on);
+    }
+
     public MessageBuilder link(String url) {
         return this.link(url, url);
     }
@@ -132,6 +137,11 @@ public final class MessageBuilder implements Cloneable {
     public MessageBuilder code(Consumer<MessageBuilder> consumer) {
         consumer.accept(this.code(true));
         return this.code(false);
+    }
+
+    public MessageBuilder codeblock(Consumer<MessageBuilder> consumer) {
+        consumer.accept(this.codeblock(true));
+        return this.codeblock(false);
     }
 
     @Data

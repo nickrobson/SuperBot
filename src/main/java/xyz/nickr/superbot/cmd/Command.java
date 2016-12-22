@@ -40,7 +40,7 @@ public interface Command {
     default Message sendUsage(Sys sys, User user, Group group) {
         String[] help = help(user, group.getType() == GroupType.USER);
         String h = help != null && help[0] != null && !help[0].isEmpty() ? " " + help[0] : "";
-        return group.sendMessage(sys.message().bold(true).escaped("Usage: ").bold(false).escaped(sys.prefix() + names()[0] + h));
+        return group.sendMessage(sys.message().bold(true).escaped("Usage:").bold(false).escaped(" " + sys.prefix() + names()[0] + h));
     }
 
     default Message sendNoProfile(Sys sys, User user, Group group) {

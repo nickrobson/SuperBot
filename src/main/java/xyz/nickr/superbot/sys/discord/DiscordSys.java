@@ -32,7 +32,7 @@ public class DiscordSys extends Sys {
                             .setAudioEnabled(false)
                             .setAutoReconnect(true)
                             .addListener(new DiscordListener(this))
-                            .buildAsync();
+                            .buildBlocking();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -54,9 +54,13 @@ public class GitterMessageBuilder {
                     message += "_";
                     break;
                 }
+                case TOKEN_CODEBLOCK:
+                    message += "```";
+                    isInCode = !isInCode;
+                    break;
                 case TOKEN_CODE: {
                     message += "`";
-                    isInCode = true;
+                    isInCode = !isInCode;
                     break;
                 }
             }

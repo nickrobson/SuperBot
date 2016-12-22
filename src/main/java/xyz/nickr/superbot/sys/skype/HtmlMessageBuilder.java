@@ -50,6 +50,7 @@ public class HtmlMessageBuilder {
                     message += ft.isState() ? "<i>" : "</i>";
                     break;
                 }
+                case TOKEN_CODEBLOCK:
                 case TOKEN_CODE: {
                     FormatToken ft = (FormatToken) token;
                     message += ft.isState() ? "<pre>" : "</pre>";

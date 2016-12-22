@@ -58,14 +58,14 @@ public class AddShowCommand implements Command {
                 SuperBotShows.addShow(imdb, imdbShow);
             }
             SuperBotShows.saveShows();
-            mb.bold(true).escaped("Linking results:").bold(false);
+            mb.bold(true).escaped("Results:").bold(false);
             for (int i = 1; i < args.length; i++) {
                 String alias = args[i].toLowerCase();
                 Show show = SuperBotShows.getShow(alias);
                 if (show != null) {
-                    mb.newLine().escaped("Link exists: " + alias + " => " + show.getDisplay());
+                    mb.newLine().escaped("Show exists: " + alias + " => " + show.getDisplay());
                 } else if (SuperBotShows.addLink(imdb, alias)) {
-                    mb.newLine().escaped("New link added: " + alias + " => " + res.getTitle());
+                    mb.newLine().escaped("New show added: " + alias + " => " + res.getTitle());
                 } else {
                     mb.newLine().escaped("Something went wrong.");
                     break;
