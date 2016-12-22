@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 import com.google.gson.JsonObject;
 
-import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
@@ -79,7 +78,7 @@ public class PasteFetchCommand implements Command {
             } else if ((m = PasteFetchCommand.VILSOL.matcher(url)).matches() && PasteFetchCommand.VILSOL_PASTE_TOKEN != null) {
                 List<String> jsonLines = new LinkedList<>();
                 this.scrape(url, "https://p.vil.so/api/v1/get?token=" + PasteFetchCommand.VILSOL_PASTE_TOKEN + "&id=" + m.group(1), mb, jsonLines, "application/json");
-                JsonObject json = SuperBotController.GSON.fromJson(Joiner.join("", jsonLines), JsonObject.class);
+                JsonObject json = SuperBotController.GSON.fromJson(String.join("", jsonLines), JsonObject.class);
                 if (json.get("success").getAsBoolean()) {
                     lines.addAll(Arrays.asList(json.get("content").getAsString().split("(?:\r)?\n")));
                 }

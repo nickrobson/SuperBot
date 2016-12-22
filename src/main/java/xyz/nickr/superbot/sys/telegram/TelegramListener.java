@@ -23,7 +23,6 @@ import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEditReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageReceivedEvent;
-import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.cmd.Command;
@@ -156,7 +155,7 @@ public class TelegramListener implements Listener {
         boolean is_personal = false;
         int cache_time = 0;
         if (words.length >= 1) {
-            String cmd = "/" + Joiner.join(" ", words);
+            String cmd = "/" + String.join(" ", words);
             List<DummyMessage> msgs = new LinkedList<>();
             DummyUser user = new DummyUser(this, event, results, msgs);
             SuperBotCommands.exec(this.inlineSys, new DummyGroup(this, user), user, new DummyMessage(this, this.sys.wrap(event.getQuery().getSender()), cmd, null, null));

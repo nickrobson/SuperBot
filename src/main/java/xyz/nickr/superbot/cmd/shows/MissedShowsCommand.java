@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import xyz.nickr.jomdb.JOMDBException;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;
-import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotController;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.cmd.Command;
@@ -90,7 +89,7 @@ public class MissedShowsCommand implements Command {
                 }
                 if (!missed.isEmpty()) {
                     MessageBuilder mb = sys.message();
-                    String line = Joiner.join(", ", missed);
+                    String line = String.join(", ", missed);
                     lines.add(mb.bold(m -> m.escaped(show.getDisplay())).escaped(": ").escaped(line));
                 }
             } catch (JOMDBException ex) {

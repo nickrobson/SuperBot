@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
@@ -41,12 +40,12 @@ public class MathsCommand implements Command {
         }
         MessageBuilder mb = sys.message();
         try {
-            mb.escaped("[Maths] Query: " + Joiner.join(" ", args)).newLine();
+            mb.escaped("[Maths] Query: " + String.join(" ", args)).newLine();
             List<String> ags = new ArrayList<>(Arrays.asList(args));
             Map<String, Matcher> vars = ags.stream().collect(Collectors.toMap(a -> a, a -> VARIABLE_ARG.matcher(a)));
             vars.entrySet().removeIf(e -> !e.getValue().matches());
             ags.removeIf(a -> vars.containsKey(a));
-            String input = Joiner.join("", ags);
+            String input = String.join("", ags);
             List<Map.Entry<String, String>> vs = vars.entrySet().stream().map(e -> e.getValue()).map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2))).collect(Collectors.toList());
             Expression e = new ExpressionBuilder(input).variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet())).variables("e", "Pi").build();
             for (Map.Entry<String, String> ent : vs) {

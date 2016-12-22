@@ -3,7 +3,6 @@ package xyz.nickr.superbot.cmd.permission;
 import java.util.Optional;
 import java.util.Set;
 
-import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotPermissions;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
@@ -48,7 +47,7 @@ public class ListPermsCommand implements Command {
             mb.bold(true).escaped("Profile " + name + " has no permissions.").bold(false);
         } else {
             mb.bold(true).escaped("Profile " + name + " has the following permissions:").bold(false).newLine();
-            mb.escaped(Joiner.join(", ", perms));
+            mb.escaped(String.join(", ", perms));
         }
         group.sendMessage(mb);
     }

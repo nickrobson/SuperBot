@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
@@ -38,7 +37,7 @@ public class GraphCommand implements Command {
         }
         MessageBuilder mb = sys.message();
         try {
-            String input = Joiner.join("", args);
+            String input = String.join("", args);
             Expression e = new ExpressionBuilder(input).variables("x", "X").build();
             Map<Double, Double> values = new HashMap<>();
             Function<Double, Double> mapper = x -> e.setVariable("x", x).setVariable("X", x).evaluate();

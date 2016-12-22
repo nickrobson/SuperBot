@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import xyz.nickr.superbot.Joiner;
 import xyz.nickr.superbot.SuperBotShows;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.cmd.Command;
@@ -36,7 +35,7 @@ public class TimetableCommand implements Command {
         MessageBuilder mb = sys.message();
         List<String> names = set.stream().map(Show::getDisplay).collect(Collectors.toList());
         names.sort(String.CASE_INSENSITIVE_ORDER);
-        String n = Joiner.join(", ", names);
+        String n = String.join(", ", names);
         return checkAdd.test(day + ": " + n) ? mb.bold(true).escaped(day + ": ").bold(false).escaped(n) : null;
     }
 
@@ -59,7 +58,7 @@ public class TimetableCommand implements Command {
         List<String> alldays = new LinkedList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Netflix", "Not airing"));
         days.keySet().stream().filter(s -> !alldays.contains(s)).forEach(alldays::add);
         List<MessageBuilder> lines = new LinkedList<>();
-        String checkAgainst = Joiner.join(" ", args).toLowerCase();
+        String checkAgainst = String.join(" ", args).toLowerCase();
         Predicate<String> checkAdd = s -> s.toLowerCase().contains(checkAgainst);
         for (String day : alldays) {
             Set<Show> set = days.get(day);
