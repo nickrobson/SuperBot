@@ -100,7 +100,7 @@ public class HelpCommand implements Command {
             group.sendMessage(sys.message().bold(true).escaped(welcome));
             return;
         }
-        MessageBuilder mb = sys.message().bold(true).escaped(welcome).bold(false).escaped(" ").code(true);
+        MessageBuilder mb = sys.message().bold(true).escaped(welcome).bold(false).escaped(" ").codeblock(true);
         strings.stream().flatMap(s -> Arrays.stream(s.split("\\n"))).forEachOrdered(s -> mb.newLine().escaped(s));
         group.sendMessage(mb);
     }
