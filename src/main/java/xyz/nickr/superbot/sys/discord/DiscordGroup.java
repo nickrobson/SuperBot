@@ -35,9 +35,36 @@ public class DiscordGroup implements Group {
         return m;
     }
 
+    int countCodeBlocks(String s) {
+        return s.split("```").length;
+    }
+
+    Message _send(String m) {
+        return sys.wrap(channel.sendMessage(m));
+    }
+
     @Override
     public Message sendMessageNoShare(MessageBuilder mb) {
-        return sys.wrap(channel.sendMessage(DiscordMessageBuilder.build(mb)));
+        String message = DiscordMessageBuilder.build(mb);
+        String[] lines = message.split("\\r?\\n");
+        String currentLine = "";
+        Message m = null;
+        int i = 0;
+        while (i < lines.length) {
+            String nextLine = currentLine + "\n" + lines[i];
+            if (nextLine.length() >= 1995) {
+                boolean needsCodeBlock = (countCodeBlocks(nextLine) & 1) == 0;
+                m = _send(currentLine + (needsCodeBlock ? "```" : ""));
+                currentLine = (needsCodeBlock ? "```" : "") + lines[i];
+            } else {
+                currentLine = nextLine;
+            }
+            i++;
+        }
+        if (!currentLine.isEmpty()) {
+            m = _send(currentLine);
+        }
+        return m;
     }
 
     @Override
