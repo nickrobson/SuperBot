@@ -43,7 +43,7 @@ public class ShowsCommand implements Command {
         }
         snd.sort(String.CASE_INSENSITIVE_ORDER);
         List<MessageBuilder> mbs = snd.stream().map(s -> sys.message().escaped(s)).collect(Collectors.toList());
-        PaginatedData pages = new PaginatedData(mbs, 20);
+        PaginatedData pages = new PaginatedData(mbs, 20, true);
         final int maxpages = pages.getNumberOfPages();
         int page;
         if (args.length > 0) {
@@ -53,13 +53,13 @@ public class ShowsCommand implements Command {
                     final int x = page;
                     group.sendMessage(sys.message().bold(m -> m.escaped("Invalid page: %d, not in [1, %d]", x, maxpages)));
                 } else {
-                    pages.send(sys, group, page - 1, true);
+                    pages.send(sys, group, page - 1);
                 }
             } catch (Exception ex) {
                 group.sendMessage(sys.message().bold(m -> m.escaped("Not a number: %s", args[0])));
             }
         } else {
-            pages.send(sys, group, 0, true);
+            pages.send(sys, group, 0);
         }
     }
 

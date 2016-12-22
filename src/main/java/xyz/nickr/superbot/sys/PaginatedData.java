@@ -12,7 +12,7 @@ public class PaginatedData {
     @Getter
     private List<MessageBuilder> pages;
 
-    public PaginatedData(List<MessageBuilder> lines, int pageHeight) {
+    public PaginatedData(List<MessageBuilder> lines, int pageHeight, boolean code) {
         this.pages = new LinkedList<>();
         int page = 0;
         while (page * pageHeight < lines.size()) {
@@ -27,7 +27,7 @@ public class PaginatedData {
             page++;
         }
         for (int i = 0; i < this.pages.size(); i++) {
-            MessageBuilder z = new MessageBuilder(this.pages.get(i));
+            MessageBuilder z = new MessageBuilder().codeblock(code).raw(this.pages.get(i)).codeblock(false);
             z.newLine().bold(true).escaped("Page %d of %d", i + 1, this.pages.size()).bold(false);
             this.pages.set(i, z);
         }
@@ -37,12 +37,12 @@ public class PaginatedData {
         return this.pages.size();
     }
 
-    public void send(Sys sys, Group group, int page, boolean code) {
+    public void send(Sys sys, Group group, int page) {
         if (page < 0 || page >= pages.size()) {
             System.out.format("requested page %d, only have [0, %d)", page, pages.size());
             return;
         }
-        MessageBuilder builder = sys.message().codeblock(code).raw(this.pages.get(page)).codeblock(false);
+        MessageBuilder builder = sys.message().raw(this.pages.get(page));
         if (sys.hasKeyboards()) {
             AtomicInteger currentPage = new AtomicInteger(0);
             AtomicReference<Message> msg = new AtomicReference<>();
