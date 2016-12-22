@@ -62,7 +62,8 @@ public class DiscordGroup implements Group {
             i++;
         }
         if (!currentLine.isEmpty()) {
-            m = _send(currentLine);
+            boolean needsCodeBlock = (countCodeBlocks(currentLine) & 1) == 0;
+            m = _send(currentLine + (needsCodeBlock ? "```" : ""));
         }
         return m;
     }
