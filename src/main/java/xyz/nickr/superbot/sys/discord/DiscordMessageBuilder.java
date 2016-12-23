@@ -5,8 +5,6 @@ import xyz.nickr.superbot.sys.MessageBuilder;
 import static xyz.nickr.superbot.sys.MessageBuilder.*;
 
 /**
- *
- *
  * @author Nick Robson
  */
 public class DiscordMessageBuilder {

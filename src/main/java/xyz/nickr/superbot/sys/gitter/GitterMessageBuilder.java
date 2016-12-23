@@ -5,8 +5,6 @@ import xyz.nickr.superbot.sys.MessageBuilder;
 import static xyz.nickr.superbot.sys.MessageBuilder.*;
 
 /**
- *
- *
  * @author Nick Robson
  */
 public class GitterMessageBuilder {
@@ -47,7 +45,7 @@ public class GitterMessageBuilder {
                     break;
                 }
                 case TOKEN_BOLD: {
-                    message += "*";
+                    message += "**";
                     break;
                 }
                 case TOKEN_ITALIC: {

@@ -3,7 +3,6 @@ package xyz.nickr.superbot.sys.telegram;
 import lombok.AllArgsConstructor;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
-import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 
 @AllArgsConstructor
