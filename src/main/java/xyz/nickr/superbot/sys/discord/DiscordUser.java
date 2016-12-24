@@ -18,7 +18,7 @@ public class DiscordUser implements xyz.nickr.superbot.sys.User {
 
     @Override
     public String getUsername() {
-        return user.getDiscriminator();
+        return user.getName() + "#" + user.getDiscriminator();
     }
 
     @Override
