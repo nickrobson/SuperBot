@@ -52,6 +52,7 @@ import xyz.nickr.superbot.cmd.util.VersionCommand;
 public class RegisterCommands {
 
     public static void register() {
+        SuperBotCommands.loadCommands();
 
         SuperBotCommands.register(new ReloadCommand());
         SuperBotCommands.register(new StopCommand());
