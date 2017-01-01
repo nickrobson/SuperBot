@@ -4,7 +4,7 @@
 
     <groupId>xyz.nickr.superbot</groupId>
     <artifactId>superbot</artifactId>
-    <version>2.9.0</version>
+    <version>3.0.0</version>
     <packaging>pom</packaging>
 
     <properties>
