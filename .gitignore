@@ -1,13 +1,14 @@
+/.idea/
 /bin/
 /out/
 /logs/
 /target/
+/superbot-*/target/
 /.settings/
 .classpath
 .project
 *.class
 *.jar
-*.xml
 *.iml
 
 /dist/
