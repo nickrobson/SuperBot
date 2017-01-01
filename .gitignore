@@ -10,13 +10,5 @@
 *.xml
 *.iml
 
-/groups/
-/permissions/
-/profiles/
-/superchat_data/
+/dist/
 
-/imgurCache.json
-/tgusers.cache
-/linked_chats.json
-/config.cfg
-/shows.json
