@@ -2,74 +2,63 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>xyz.nickr</groupId>
-    <artifactId>SuperBot</artifactId>
+    <groupId>xyz.nickr.superbot</groupId>
+    <artifactId>superbot</artifactId>
     <version>2.9.0</version>
+    <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.jomdb>3.0.0</version.jomdb>
+        <version.exp4j>0.4.5</version.exp4j>
+        <version.gson>2.8.0</version.gson>
+        <version.lombok>1.16.12</version.lombok>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>xyz.nickr</groupId>
-            <artifactId>jomdb</artifactId>
-            <version>3.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>xyz.nickr</groupId>
-            <artifactId>jitter</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.samczsun</groupId>
-            <artifactId>skype4j</artifactId>
-            <version>0.1.5</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>pro.zackpollard.telegrambot.api</groupId>
-            <artifactId>jtelegram-botapi</artifactId>
-            <version>1.5.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.objecthunter</groupId>
-            <artifactId>exp4j</artifactId>
-            <version>0.4.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.nanohttpd</groupId>
-            <artifactId>nanohttpd</artifactId>
-            <version>2.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.6.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.6</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>3.0.BETA2_108</version>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>superbot-core</module>
+        <module>superbot-commands</module>
+        <module>superbot-main</module>
+        <module>superbot-discord</module>
+        <module>superbot-gitter</module>
+        <module>superbot-skype</module>
+        <module>superbot-telegram</module>
+    </modules>
 
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <name>jcenter-bintray</name>
-            <url>http://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>xyz.nickr</groupId>
+                <artifactId>jomdb</artifactId>
+                <version>${version.jomdb}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.objecthunter</groupId>
+                <artifactId>exp4j</artifactId>
+                <version>${version.exp4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${version.gson}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${version.lombok}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>xyz.nickr.superbot</groupId>
+                <artifactId>superbot-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -99,46 +88,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <JenkinsBuild>${build.number}</JenkinsBuild>
-                            <MavenVersion>${project.version}</MavenVersion>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>xyz.nickr.superbot.SuperBotController</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <JenkinsBuild>${build.number}</JenkinsBuild>
-                            <MavenVersion>${project.version}</MavenVersion>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
