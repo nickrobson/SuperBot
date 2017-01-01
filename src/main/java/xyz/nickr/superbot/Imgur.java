@@ -1,11 +1,16 @@
 package xyz.nickr.superbot;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +29,9 @@ public class Imgur {
     private static final Map<String, String> cache = new HashMap<>();
 
     static {
+        final Path file = new File("imgurCache.json").toPath();
         try {
-            FileReader reader = new FileReader("imgurCache.json");
+            BufferedReader reader = Files.newBufferedReader(file);
             JsonObject o = SuperBotController.GSON.fromJson(reader, JsonObject.class);
             o.entrySet().forEach(e -> cache.put(e.getKey(), e.getValue().getAsString()));
             reader.close();
@@ -35,8 +41,8 @@ public class Imgur {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                new File("imgurCache.json").delete();
-                FileWriter writer = new FileWriter("imgurCache.json");
+                Files.deleteIfExists(file);
+                BufferedWriter writer = Files.newBufferedWriter(file, StandardOpenOption.CREATE);
                 JsonObject o = new JsonObject();
                 cache.forEach(o::addProperty);
                 SuperBotController.GSON.toJson(o, writer);
