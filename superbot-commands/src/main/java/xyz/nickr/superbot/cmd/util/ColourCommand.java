@@ -94,7 +94,7 @@ public class ColourCommand implements Command {
                             f.createNewFile();
                             ImageIO.write(img, "png", f);
                         }
-                        group.sendPhoto(f, true);
+                        group.sendPhoto(f, true, true);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                         group.sendMessage(sys.message().escaped("Something went wrong!"));
@@ -119,8 +119,7 @@ public class ColourCommand implements Command {
         Shape shape = txt.getOutline(null);
 
         Graphics2D g2 = (Graphics2D) g.create();
-        AffineTransform affineTransform = new AffineTransform();
-        affineTransform = g2.getTransform();
+        AffineTransform affineTransform = g2.getTransform();
         affineTransform.translate(1.2, 1.2);
         g2.transform(affineTransform);
         g2.setColor(Color.BLACK);

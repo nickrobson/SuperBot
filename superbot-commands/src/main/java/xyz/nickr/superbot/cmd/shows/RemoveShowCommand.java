@@ -29,7 +29,7 @@ public class RemoveShowCommand implements Command {
 
     @Override
     public String[] help(User user, boolean userChat) {
-        return new String[] {"[link]", "Remove a link from its associated show"};
+        return new String[] {"[cmd]", "Remove a cmd from its associated show"};
     }
 
     @Override
@@ -41,7 +41,7 @@ public class RemoveShowCommand implements Command {
             Show show = SuperBotShows.getShow(args[0]);
             if (show != null) {
                 if (SuperBotShows.removeLink(args[0])) {
-                    group.sendMessage(mb.bold(true).escaped("Removed link (" + args[0] + ") from: ").bold(false).escaped(show.getDisplay()));
+                    group.sendMessage(mb.bold(true).escaped("Removed cmd (" + args[0] + ") from: ").bold(false).escaped(show.getDisplay()));
                 } else {
                     group.sendMessage(mb.escaped("Something went wrong."));
                 }

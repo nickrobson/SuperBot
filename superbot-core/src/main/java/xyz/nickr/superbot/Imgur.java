@@ -68,7 +68,7 @@ public class Imgur {
             try (InputStreamReader isr = new InputStreamReader(res.getEntity().getContent())) {
                 JsonObject obj = SuperBotResource.GSON.fromJson(isr, JsonObject.class);
                 if (obj.get("success").getAsBoolean()) {
-                    url = new URL(obj.getAsJsonObject("data").get("link").getAsString());
+                    url = new URL(obj.getAsJsonObject("data").get("cmd").getAsString());
                     if (cache) {
                         Imgur.cache.put(f.getAbsolutePath(), url.toString());
                     }

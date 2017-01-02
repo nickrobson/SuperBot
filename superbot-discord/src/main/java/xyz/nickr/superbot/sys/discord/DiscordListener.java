@@ -6,7 +6,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import xyz.nickr.superbot.SuperBotCommands;
-import xyz.nickr.superbot.cmd.LinkCommand;
+import xyz.nickr.superbot.event.EventManager;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.User;
@@ -39,7 +39,7 @@ public class DiscordListener extends ListenerAdapter {
         Message m = this.sys.wrap(message);
 
         if (!user.isBot()) {
-            LinkCommand.propagate(this.sys, g, u, m);
+            EventManager.onMessage(this.sys, g, u, m);
             SuperBotCommands.exec(this.sys, g, u, m);
         }
     }

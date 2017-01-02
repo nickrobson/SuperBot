@@ -16,13 +16,17 @@
     </properties>
 
     <modules>
+        <!-- API modules -->
         <module>superbot-core</module>
         <module>superbot-commands</module>
-        <module>superbot-main</module>
         <module>superbot-discord</module>
         <module>superbot-gitter</module>
         <module>superbot-skype</module>
         <module>superbot-telegram</module>
+
+        <!-- Bots -->
+        <module>superbot-main</module>
+        <module>janus</module>
     </modules>
 
     <dependencyManagement>

@@ -142,7 +142,7 @@ public class SuperBotShows {
         for (JsonElement el : data.getAsJsonArray("links")) {
             if (el != null && el.isJsonObject()) {
                 JsonObject obj = el.getAsJsonObject();
-                SuperBotShows.addLink(obj.get("imdb").getAsString(), obj.get("link").getAsString());
+                SuperBotShows.addLink(obj.get("imdb").getAsString(), obj.get("cmd").getAsString());
             }
         }
     }
@@ -161,7 +161,7 @@ public class SuperBotShows {
             for (String link : show.links) {
                 JsonObject obj = new JsonObject();
                 obj.addProperty("imdb", show.imdb);
-                obj.addProperty("link", link);
+                obj.addProperty("cmd", link);
                 links.add(obj);
             }
         }

@@ -11,24 +11,26 @@ public interface Conversable {
 
     String getUniqueId();
 
-    Message sendMessage(MessageBuilder mb);
+    default Message sendMessage(MessageBuilder mb) {
+        return sendMessage(mb, true);
+    }
 
-    Message sendMessageNoShare(MessageBuilder mb);
+    Message sendMessage(MessageBuilder mb, boolean event);
 
     default boolean supportsMultiplePhotos() {
         return false;
     }
 
     default void sendPhoto(File file) {
-        sendPhoto(file, false);
+        sendPhoto(file, true, false);
     }
 
-    default void sendPhoto(File file, boolean cache) {
-        sendPhoto(Imgur.upload(file, cache));
+    default void sendPhoto(File file, boolean event, boolean cache) {
+        sendPhoto(Imgur.upload(file, cache), event);
     }
 
-    default void sendPhoto(URL url) {
-        sendMessage(getProvider().message().link(url.toString()));
+    default void sendPhoto(URL url, boolean event) {
+        sendMessage(getProvider().message().link(url.toString()), event);
     }
 
 }

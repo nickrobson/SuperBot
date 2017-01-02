@@ -3,6 +3,7 @@ package xyz.nickr.superbot.sys.skype;
 import com.samczsun.skype4j.exceptions.ConnectionException;
 import java.util.Optional;
 
+import xyz.nickr.superbot.event.EventManager;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
@@ -29,11 +30,14 @@ public class SkypeUser implements User {
     }
 
     @Override
-    public Message sendMessage(MessageBuilder message) {
+    public Message sendMessage(MessageBuilder message, boolean event) {
         try {
             String html = HtmlMessageBuilder.build(message);
             com.samczsun.skype4j.formatting.Message m = com.samczsun.skype4j.formatting.Message.fromHtml(html);
-            return this.sys.wrap(this.user.getChat().sendMessage(m), null);
+            Message msg = this.sys.wrap(this.user.getChat().sendMessage(m), null);
+            if (event && msg != null)
+                EventManager.onSend(this, message);
+            return msg;
         } catch (ConnectionException e) {
             e.printStackTrace();
             return null;

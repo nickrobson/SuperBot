@@ -37,9 +37,9 @@ public class DiscordUser implements xyz.nickr.superbot.sys.User {
     }
 
     @Override
-    public Message sendMessage(MessageBuilder mb) {
+    public Message sendMessage(MessageBuilder mb, boolean event) {
         if (user.hasPrivateChannel()) {
-            return sys.wrap(user.getPrivateChannel()).sendMessageNoShare(mb);
+            return sys.wrap(user.getPrivateChannel()).sendMessage(mb, event);
         }
         return null;
     }

@@ -2,11 +2,10 @@
 /bin/
 /out/
 /logs/
+
 /target/
-/superbot-*/target/
-/.settings/
-.classpath
-.project
+/*/target/
+
 *.class
 *.jar
 *.iml

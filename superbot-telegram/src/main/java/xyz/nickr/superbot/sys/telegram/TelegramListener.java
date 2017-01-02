@@ -26,7 +26,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.MessageReceivedEvent;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotResource;
 import xyz.nickr.superbot.cmd.Command;
-import xyz.nickr.superbot.cmd.LinkCommand;
+import xyz.nickr.superbot.event.EventManager;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.Keyboard;
@@ -77,7 +77,7 @@ public class TelegramListener implements Listener {
         Group g = this.sys.wrap(event.getChat());
         User u = this.sys.wrap(event.getMessage().getSender());
         String content = ((TextContent) event.getMessage().getContent()).getContent();
-        LinkCommand.propagate(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(content), event.getMessage()));
+        EventManager.onMessage(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(content), event.getMessage()));
 
         String command = content.substring(1).split(" ")[0].split("@")[0];
 

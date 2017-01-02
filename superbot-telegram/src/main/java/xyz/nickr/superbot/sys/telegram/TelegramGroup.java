@@ -3,12 +3,10 @@ package xyz.nickr.superbot.sys.telegram;
 import java.io.File;
 
 import pro.zackpollard.telegrambot.api.chat.Chat;
-import pro.zackpollard.telegrambot.api.chat.GroupChat;
 import pro.zackpollard.telegrambot.api.chat.IndividualChat;
-import pro.zackpollard.telegrambot.api.chat.SuperGroupChat;
 import pro.zackpollard.telegrambot.api.chat.message.send.InputFile;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendablePhotoMessage;
-import xyz.nickr.superbot.cmd.LinkCommand;
+import xyz.nickr.superbot.event.EventManager;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
@@ -30,15 +28,10 @@ public class TelegramGroup implements Group {
 
     @Override
     public String getDisplayName() {
-        if (this.chat instanceof GroupChat) {
-            return ((GroupChat) this.chat).getName();
-        } else if (this.chat instanceof SuperGroupChat) {
-            return ((SuperGroupChat) this.chat).getName();
-        } else if (this.chat instanceof IndividualChat) {
+        if (this.chat instanceof IndividualChat) {
             return ((IndividualChat) this.chat).getPartner().getUsername();
-        } else {
-            return "";
         }
+        return this.chat.getName();
     }
 
     @Override
@@ -60,15 +53,11 @@ public class TelegramGroup implements Group {
     }
 
     @Override
-    public Message sendMessage(MessageBuilder message) {
+    public Message sendMessage(MessageBuilder message, boolean event) {
         Message m = this.sys.wrap(message, this.sys.sendMessage(this.chat, message));
-        LinkCommand.share(this, message);
+        if (event)
+            EventManager.onSend(this, message);
         return m;
-    }
-
-    @Override
-    public Message sendMessageNoShare(MessageBuilder message) {
-        return this.sys.wrap(message, this.sys.sendMessage(this.chat, message));
     }
 
     @Override

@@ -42,12 +42,7 @@ public class TelegramDummy {
         }
 
         @Override
-        public Message sendMessage(MessageBuilder message) {
-            return this.dummy.sendMessage(message);
-        }
-
-        @Override
-        public Message sendMessageNoShare(MessageBuilder message) {
+        public Message sendMessage(MessageBuilder message, boolean event) {
             return this.dummy.sendMessage(message);
         }
 
@@ -57,8 +52,8 @@ public class TelegramDummy {
         }
 
         @Override
-        public void sendPhoto(URL url) {
-            this.dummy.sendPhoto(url);
+        public void sendPhoto(URL url, boolean event) {
+            this.dummy.sendPhoto(url, event);
         }
 
         @Override
@@ -103,12 +98,12 @@ public class TelegramDummy {
         }
 
         @Override
-        public void sendPhoto(URL url) {
+        public void sendPhoto(URL url, boolean event) {
             this.results.add(InlineQueryResultPhoto.builder().thumbUrl(url).photoUrl(url).build());
         }
 
         @Override
-        public Message sendMessage(MessageBuilder message) {
+        public Message sendMessage(MessageBuilder message, boolean event) {
             String msg = TelegramMessageBuilder.build(message);
             Keyboard kb = message.getKeyboard();
             InlineReplyMarkup ikm = null;

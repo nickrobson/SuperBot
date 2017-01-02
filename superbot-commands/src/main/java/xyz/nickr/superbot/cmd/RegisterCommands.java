@@ -1,8 +1,6 @@
 package xyz.nickr.superbot.cmd;
 
 import xyz.nickr.superbot.SuperBotCommands;
-import xyz.nickr.superbot.cmd.config.EditConfigCommand;
-import xyz.nickr.superbot.cmd.config.ShowConfigCommand;
 import xyz.nickr.superbot.cmd.fun.FCCPointsCommand;
 import xyz.nickr.superbot.cmd.fun.HangmanCommand;
 import xyz.nickr.superbot.cmd.fun.NumberwangCommand;
@@ -14,15 +12,6 @@ import xyz.nickr.superbot.cmd.omdb.OmdbSearchCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbSeasonCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbSeasonsCommand;
 import xyz.nickr.superbot.cmd.omdb.OmdbTitleCommand;
-import xyz.nickr.superbot.cmd.permission.AddPermCommand;
-import xyz.nickr.superbot.cmd.permission.DelPermCommand;
-import xyz.nickr.superbot.cmd.permission.ListPermsCommand;
-import xyz.nickr.superbot.cmd.profile.CreateProfileCommand;
-import xyz.nickr.superbot.cmd.profile.DeleteTokenCommand;
-import xyz.nickr.superbot.cmd.profile.FindProfileCommand;
-import xyz.nickr.superbot.cmd.profile.GetProfileCommand;
-import xyz.nickr.superbot.cmd.profile.GetTokenCommand;
-import xyz.nickr.superbot.cmd.profile.RegisterAccountCommand;
 import xyz.nickr.superbot.cmd.shows.AddShowCommand;
 import xyz.nickr.superbot.cmd.shows.MissedShowsCommand;
 import xyz.nickr.superbot.cmd.shows.ProgressCommand;
@@ -56,24 +45,6 @@ public class RegisterCommands {
 
         SuperBotCommands.register(new ReloadCommand());
         SuperBotCommands.register(new StopCommand());
-
-        SuperBotCommands.register(new EditConfigCommand());
-        SuperBotCommands.register(new ShowConfigCommand());
-
-        SuperBotCommands.register(new LinkCommand());
-
-        SuperBotCommands.register(new AddPermCommand());
-        SuperBotCommands.register(new DelPermCommand());
-        SuperBotCommands.register(new ListPermsCommand());
-
-        SuperBotCommands.register(new GetProfileCommand());
-        SuperBotCommands.register(new FindProfileCommand());
-
-        SuperBotCommands.register(new CreateProfileCommand());
-        SuperBotCommands.register(new RegisterAccountCommand());
-
-        SuperBotCommands.register(new GetTokenCommand());
-        SuperBotCommands.register(new DeleteTokenCommand());
 
         SuperBotCommands.register(new OmdbSearchCommand());
         SuperBotCommands.register(new OmdbTitleCommand());

@@ -2,6 +2,7 @@ package xyz.nickr.superbot.sys.telegram;
 
 import java.util.Optional;
 
+import xyz.nickr.superbot.event.EventManager;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
@@ -41,7 +42,10 @@ public class TelegramUser implements User {
     }
 
     @Override
-    public Message sendMessage(MessageBuilder message) {
-        return this.sys.wrap(message, this.sys.sendMessage(this.sys.getBot().getChat(this.user.getId()), message));
+    public Message sendMessage(MessageBuilder message, boolean event) {
+        Message m = this.sys.wrap(message, this.sys.sendMessage(this.sys.getBot().getChat(this.user.getId()), message));
+        if (event && m != null)
+            EventManager.onSend(this, message);
+        return m;
     }
 }

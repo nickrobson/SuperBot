@@ -4,7 +4,7 @@ import xyz.nickr.jitter.api.Message;
 import xyz.nickr.jitter.api.event.JitterListener;
 import xyz.nickr.jitter.api.event.MessageReceivedEvent;
 import xyz.nickr.superbot.SuperBotCommands;
-import xyz.nickr.superbot.cmd.LinkCommand;
+import xyz.nickr.superbot.event.EventManager;
 
 public class GitterListener implements JitterListener {
 
@@ -17,7 +17,7 @@ public class GitterListener implements JitterListener {
     public void onMessage(MessageReceivedEvent event) {
         Message m = event.getMessage();
         if (!m.getSender().getUsername().equalsIgnoreCase(sys.jitter.getCurrentUser().getUsername()))
-            LinkCommand.propagate(sys, sys.wrap(m.getRoom()), sys.wrap(m.getSender()), sys.wrap(m));
+            EventManager.onMessage(sys, sys.wrap(m.getRoom()), sys.wrap(m.getSender()), sys.wrap(m));
         SuperBotCommands.exec(sys, sys.wrap(m.getRoom()), sys.wrap(m.getSender()), sys.wrap(m));
         m.getRoom().getMessageHistory().markRead();
     }

@@ -2,7 +2,7 @@ package xyz.nickr.superbot.sys.discord;
 
 import lombok.AllArgsConstructor;
 import net.dv8tion.jda.core.entities.MessageChannel;
-import xyz.nickr.superbot.cmd.LinkCommand;
+import xyz.nickr.superbot.event.EventManager;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
@@ -28,14 +28,6 @@ public class DiscordGroup implements Group {
         return channel.getId();
     }
 
-    @Override
-    public Message sendMessage(MessageBuilder mb) {
-        Message m = sendMessageNoShare(mb);
-        if (m != null)
-            LinkCommand.share(this, mb);
-        return m;
-    }
-
     int countCodeBlocks(String s) {
         return s.split("```").length;
     }
@@ -45,7 +37,7 @@ public class DiscordGroup implements Group {
     }
 
     @Override
-    public Message sendMessageNoShare(MessageBuilder mb) {
+    public Message sendMessage(MessageBuilder mb, boolean event) {
         String message = DiscordMessageBuilder.build(mb);
         String[] lines = message.split("\\r?\\n");
         String currentLine = "";
@@ -64,6 +56,9 @@ public class DiscordGroup implements Group {
         }
         if (!currentLine.isEmpty()) {
             m = _send(currentLine);
+        }
+        if (event) {
+            EventManager.onSend(this, mb);
         }
         return m;
     }

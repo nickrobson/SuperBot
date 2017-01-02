@@ -1,7 +1,7 @@
 package xyz.nickr.superbot.sys.gitter;
 
 import xyz.nickr.jitter.api.Room;
-import xyz.nickr.superbot.cmd.LinkCommand;
+import xyz.nickr.superbot.event.EventManager;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
@@ -29,15 +29,12 @@ public class GitterGroup implements Group {
     }
 
     @Override
-    public Message sendMessage(MessageBuilder message) {
+    public Message sendMessage(MessageBuilder message, boolean event) {
         Message m = this.sys.wrap(this.room.sendMessage(GitterMessageBuilder.build(message)));
-        LinkCommand.share(this, message);
+        if (event) {
+            EventManager.onSend(this, message);
+        }
         return m;
-    }
-
-    @Override
-    public Message sendMessageNoShare(MessageBuilder message) {
-        return this.sys.wrap(this.room.sendMessage(GitterMessageBuilder.build(message)));
     }
 
     @Override

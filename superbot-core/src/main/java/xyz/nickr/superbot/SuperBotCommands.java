@@ -8,11 +8,21 @@ import java.util.Map;
 
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.cmd.HelpCommand;
+import xyz.nickr.superbot.cmd.config.EditConfigCommand;
+import xyz.nickr.superbot.cmd.config.ShowConfigCommand;
+import xyz.nickr.superbot.cmd.permission.AddPermCommand;
+import xyz.nickr.superbot.cmd.permission.DelPermCommand;
+import xyz.nickr.superbot.cmd.permission.ListPermsCommand;
+import xyz.nickr.superbot.cmd.profile.CreateProfileCommand;
+import xyz.nickr.superbot.cmd.profile.DeleteTokenCommand;
+import xyz.nickr.superbot.cmd.profile.FindProfileCommand;
+import xyz.nickr.superbot.cmd.profile.GetProfileCommand;
+import xyz.nickr.superbot.cmd.profile.GetTokenCommand;
+import xyz.nickr.superbot.cmd.profile.RegisterAccountCommand;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.GroupConfiguration;
 import xyz.nickr.superbot.sys.GroupType;
 import xyz.nickr.superbot.sys.Message;
-import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -30,11 +40,21 @@ public class SuperBotCommands {
     }
 
     public static void loadCommands() {
-        SuperBotCommands.COMMANDS.clear();
-
         SuperBotCommands.register(new HelpCommand());
 
-        CMDS.sort((c1, c2) -> c1.names()[0].compareTo(c2.names()[0]));
+        SuperBotCommands.register(new EditConfigCommand());
+        SuperBotCommands.register(new ShowConfigCommand());
+
+        SuperBotCommands.register(new AddPermCommand());
+        SuperBotCommands.register(new DelPermCommand());
+        SuperBotCommands.register(new ListPermsCommand());
+
+        SuperBotCommands.register(new GetProfileCommand());
+        SuperBotCommands.register(new FindProfileCommand());
+        SuperBotCommands.register(new CreateProfileCommand());
+        SuperBotCommands.register(new RegisterAccountCommand());
+        SuperBotCommands.register(new GetTokenCommand());
+        SuperBotCommands.register(new DeleteTokenCommand());
     }
 
     public static void exec(Sys sys, Group g, User u, Message message) {
@@ -68,10 +88,7 @@ public class SuperBotCommands {
 
         if (g.getType() == GroupType.GROUP || userchat) {
             if (!cmd.perm().has(sys, g, u, u.getProfile())) {
-                MessageBuilder mb = sys.message();
-                mb.bold(true).escaped("Error: ").bold(false);
-                mb.escaped("You don't have permission to use " + prefix + cmdName + "!");
-                g.sendMessage(mb);
+                cmd.sendNoPermission(sys, g);
             } else {
                 try {
                     cmd.exec(sys, u, g, cmdName, args, message);
