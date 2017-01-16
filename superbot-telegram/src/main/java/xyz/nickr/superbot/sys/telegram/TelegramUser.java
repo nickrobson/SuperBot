@@ -43,7 +43,7 @@ public class TelegramUser implements User {
 
     @Override
     public Message sendMessage(MessageBuilder message, boolean event) {
-        Message m = this.sys.wrap(message, this.sys.sendMessage(this.sys.getBot().getChat(this.user.getId()), message));
+        Message m = this.sys.sendMessage(this.sys.getBot().getChat(this.user.getId()), message);
         if (event && m != null)
             EventManager.onSend(this, message);
         return m;

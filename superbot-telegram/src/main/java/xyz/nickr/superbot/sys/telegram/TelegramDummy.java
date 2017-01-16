@@ -18,17 +18,14 @@ import xyz.nickr.superbot.sys.*;
 
 public class TelegramDummy {
 
-    private static final String KEYBOARD_ID_NAMESPACE = "SuperBot::InlineKeyboard";
-    private static final String RESULT_ID_NAMESPACE = "SuperBot::InlineResult";
-
     public static class DummyGroup implements Group {
 
         private TelegramListener listener;
-        private DummyUser dummy;
+        private DummyUser user;
 
-        public DummyGroup(TelegramListener listener, DummyUser dummy) {
+        public DummyGroup(TelegramListener listener, DummyUser user) {
             this.listener = listener;
-            this.dummy = dummy;
+            this.user = user;
         }
 
         @Override
@@ -38,12 +35,12 @@ public class TelegramDummy {
 
         @Override
         public String getUniqueId() {
-            return this.dummy.getUniqueId();
+            return this.user.getUniqueId();
         }
 
         @Override
         public Message sendMessage(MessageBuilder message, boolean event) {
-            return this.dummy.sendMessage(message);
+            return this.user.sendMessage(message);
         }
 
         @Override
@@ -53,12 +50,12 @@ public class TelegramDummy {
 
         @Override
         public void sendPhoto(URL url, boolean event) {
-            this.dummy.sendPhoto(url, event);
+            this.user.sendPhoto(url, event);
         }
 
         @Override
         public String getDisplayName() {
-            return this.dummy.getDisplayName().orElse(this.dummy.getUsername());
+            return this.user.getDisplayName().orElse(this.user.getUsername());
         }
 
         @Override
@@ -109,23 +106,11 @@ public class TelegramDummy {
             InlineReplyMarkup ikm = null;
             if (kb != null) {
                 kb.lock();
-                String prefix = ConsecutiveId.next(KEYBOARD_ID_NAMESPACE);
-                InlineKeyboardMarkupBuilder reply = InlineKeyboardMarkup.builder();
-                int row = 0;
-                for (KeyboardRow kbr : kb) {
-                    List<InlineKeyboardButton> btns = new LinkedList<>();
-                    int rowb = 0;
-                    for (KeyboardButton b : kbr) {
-                        btns.add(InlineKeyboardButton.builder().callbackData(prefix + "-" + row + "-" + rowb).text(b.getText()).build());
-                        rowb++;
-                    }
-                    reply.addRow(btns);
-                    row++;
-                }
-                ikm = reply.build();
-                this.listener.addKeyboard(prefix, kb);
+                String prefix = ConsecutiveId.next(TelegramInlineSys.KEYBOARD_ID_NAMESPACE);
+                ikm = TelegramInlineSys.toTGKeyboard(prefix, kb);
+                this.listener.addInlineKeyboard(prefix, kb);
             }
-            String id = ConsecutiveId.next(RESULT_ID_NAMESPACE);
+            String id = ConsecutiveId.next(TelegramInlineSys.RESULT_ID_NAMESPACE);
             this.results.add(TelegramListener.res(id, "Result:", msg, msg, false, ikm));
             DummyMessage m = new DummyMessage(this.listener, this, msg, id, ikm);
             this.messages.add(m);
@@ -190,21 +175,9 @@ public class TelegramDummy {
             Keyboard kb = message.getKeyboard();
             if (kb != null) {
                 kb.lock();
-                String prefix = ConsecutiveId.next(KEYBOARD_ID_NAMESPACE);
-                InlineKeyboardMarkupBuilder reply = InlineKeyboardMarkup.builder();
-                int row = 0;
-                for (KeyboardRow kbr : kb) {
-                    List<InlineKeyboardButton> btns = new LinkedList<>();
-                    int rowb = 0;
-                    for (KeyboardButton b : kbr) {
-                        btns.add(InlineKeyboardButton.builder().callbackData(prefix + "-" + row + "-" + rowb).text(b.getText()).build());
-                        rowb++;
-                    }
-                    reply.addRow(btns);
-                    row++;
-                }
-                this.ikm = reply.build();
-                this.listener.addKeyboard(prefix, kb);
+                String prefix = ConsecutiveId.next(TelegramInlineSys.KEYBOARD_ID_NAMESPACE);
+                this.ikm = TelegramInlineSys.toTGKeyboard(prefix, kb);
+                this.listener.addInlineKeyboard(prefix, kb);
             }
             this.listener.getBot().editInlineMessageText(this.messageId, TelegramMessageBuilder.build(message), ParseMode.MARKDOWN, true, this.ikm);
         }

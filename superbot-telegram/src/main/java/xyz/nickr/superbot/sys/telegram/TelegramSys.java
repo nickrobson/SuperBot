@@ -6,14 +6,25 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Properties;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
+import pro.zackpollard.telegrambot.api.chat.inline.InlineReplyMarkup;
+import pro.zackpollard.telegrambot.api.chat.message.ReplyMarkup;
+import pro.zackpollard.telegrambot.api.chat.message.ReplyMarkupType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage.SendableTextMessageBuilder;
+import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboard;
+import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardMarkup;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
+import xyz.nickr.superbot.ConsecutiveId;
 import xyz.nickr.superbot.sys.Group;
+import xyz.nickr.superbot.sys.Keyboard;
+import xyz.nickr.superbot.sys.KeyboardButton;
+import xyz.nickr.superbot.sys.KeyboardRow;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
@@ -27,13 +38,14 @@ public class TelegramSys extends Sys {
     private TelegramBot bot;
 
     private final Properties usernameCache = new Properties();
+    TelegramListener listener;
 
     public TelegramSys(String key) {
         new Thread(() -> {
             long now = System.currentTimeMillis();
             System.out.println("Loading SuperBot: Telegram");
             this.bot = TelegramBot.login(key);
-            this.bot.getEventsManager().register(new TelegramListener(this.bot, this));
+            this.bot.getEventsManager().register(listener = new TelegramListener(this.bot, this));
             this.bot.startUpdates(true);
 
             try {
@@ -63,6 +75,9 @@ public class TelegramSys extends Sys {
     public boolean isUIDCaseSensitive() {
         return false;
     }
+
+    @Override
+    public boolean hasKeyboards() { return true; }
 
     @Override
     public String getUserFriendlyName(String uniqueId) {
@@ -102,16 +117,26 @@ public class TelegramSys extends Sys {
         return new TelegramUser(user, this);
     }
 
-    Message wrap(MessageBuilder msg, pro.zackpollard.telegrambot.api.chat.message.Message message) {
+    TelegramMessage wrap(MessageBuilder msg, pro.zackpollard.telegrambot.api.chat.message.Message message) {
         return new TelegramMessage(this, TelegramMessageBuilder.build(msg), message);
     }
 
-    public pro.zackpollard.telegrambot.api.chat.message.Message sendMessage(Chat chat, MessageBuilder message) {
-        SendableTextMessageBuilder msg = SendableTextMessage.builder();
+    public Message sendMessage(Chat chat, MessageBuilder message) {
+        SendableTextMessageBuilder msg = SendableTextMessage.builder().parseMode(ParseMode.MARKDOWN);
         msg.disableWebPagePreview(!message.isPreview());
         msg.message(TelegramMessageBuilder.build(message));
-        msg.parseMode(ParseMode.MARKDOWN);
-        return this.bot.sendMessage(chat, msg.build());
+        Keyboard kb = message.getKeyboard();
+        InlineReplyMarkup replyMarkup = null;
+        if (kb != null) {
+            kb.lock();
+            String prefix = ConsecutiveId.next(TelegramInlineSys.KEYBOARD_ID_NAMESPACE);
+            msg.replyMarkup(replyMarkup = TelegramInlineSys.toTGKeyboard(prefix, kb));
+            this.listener.addInlineKeyboard(prefix, kb);
+        }
+        pro.zackpollard.telegrambot.api.chat.message.Message m = this.bot.sendMessage(chat, msg.build());
+        TelegramMessage x = wrap(message, m);
+        x.setReplyMarkup(replyMarkup);
+        return x;
     }
 
 }

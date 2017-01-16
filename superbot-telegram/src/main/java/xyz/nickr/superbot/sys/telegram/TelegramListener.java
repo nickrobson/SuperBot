@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.CallbackQuery;
 import pro.zackpollard.telegrambot.api.chat.inline.InlineCallbackQuery;
 import pro.zackpollard.telegrambot.api.chat.inline.InlineReplyMarkup;
 import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
@@ -16,10 +17,12 @@ import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResul
 import pro.zackpollard.telegrambot.api.chat.message.content.TextContent;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.event.Listener;
+import pro.zackpollard.telegrambot.api.event.chat.CallbackQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineCallbackQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
+import pro.zackpollard.telegrambot.api.event.chat.message.MessageCallbackQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEditReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageReceivedEvent;
@@ -46,14 +49,14 @@ public class TelegramListener implements Listener {
     private final TelegramBot bot;
     private final TelegramSys sys;
     final TelegramInlineSys inlineSys;
-    private final Map<String, Keyboard> keyboards;
+    private final Map<String, Keyboard> inlineKeyboards;
     private final Map<String, DummyMessage> dummies;
 
     public TelegramListener(TelegramBot bot, TelegramSys sys) {
         this.bot = bot;
         this.sys = sys;
         this.inlineSys = new TelegramInlineSys(sys);
-        this.keyboards = new HashMap<>();
+        this.inlineKeyboards = new HashMap<>();
         this.dummies = new HashMap<>();
     }
 
@@ -106,13 +109,13 @@ public class TelegramListener implements Listener {
     }
 
     @Override
-    public void onInlineCallbackQueryReceivedEvent(InlineCallbackQueryReceivedEvent event) {
-        InlineCallbackQuery q = event.getCallbackQuery();
+    public void onCallbackQueryReceivedEvent(CallbackQueryReceivedEvent event) {
+        CallbackQuery q = event.getCallbackQuery();
         String callback = q.getData();
         boolean answer = false;
         if (callback.contains("-")) {
             String[] spl = callback.split("-");
-            Keyboard kb = this.keyboards.get(spl[0]);
+            Keyboard kb = this.inlineKeyboards.get(spl[0]);
             if (kb != null) {
                 KeyboardButton btn = kb.getRows().get(Integer.parseInt(spl[1])).getButtons().get(Integer.parseInt(spl[2]));
                 if (btn != null) {
@@ -129,8 +132,8 @@ public class TelegramListener implements Listener {
         }
     }
 
-    public void addKeyboard(String messageId, Keyboard kb) {
-        this.keyboards.put(messageId, kb);
+    public void addInlineKeyboard(String messageId, Keyboard kb) {
+        this.inlineKeyboards.put(messageId, kb);
     }
 
     static InlineQueryResultArticle res(String title, String desc, String text, boolean web) {

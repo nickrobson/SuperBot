@@ -1,7 +1,11 @@
 package xyz.nickr.superbot.sys.telegram;
 
+import lombok.Setter;
+import pro.zackpollard.telegrambot.api.chat.inline.InlineReplyMarkup;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import xyz.nickr.superbot.ConsecutiveId;
 import xyz.nickr.superbot.sys.Conversable;
+import xyz.nickr.superbot.sys.Keyboard;
 import xyz.nickr.superbot.sys.Message;
 import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
@@ -13,8 +17,10 @@ import xyz.nickr.superbot.sys.User;
 public class TelegramMessage implements Message {
 
     private final TelegramSys sys;
-    private final String strmsg;
+    private String strmsg;
     private pro.zackpollard.telegrambot.api.chat.message.Message message;
+    @Setter private InlineReplyMarkup replyMarkup;
+    private String kbPrefix;
 
     public TelegramMessage(TelegramSys sys, String strmsg, pro.zackpollard.telegrambot.api.chat.message.Message message) {
         this.sys = sys;
@@ -49,8 +55,17 @@ public class TelegramMessage implements Message {
 
     @Override
     public void edit(MessageBuilder message) {
-        pro.zackpollard.telegrambot.api.chat.message.Message n = this.sys.getBot().editMessageText(this.message, TelegramMessageBuilder.build(message), ParseMode.MARKDOWN, !message.isPreview(), null);
+        String newText = TelegramMessageBuilder.build(message);
+        Keyboard kb = message.getKeyboard();
+        if (kb != null) {
+            kb.lock();
+            kbPrefix = ConsecutiveId.next(TelegramInlineSys.KEYBOARD_ID_NAMESPACE);
+            replyMarkup = TelegramInlineSys.toTGKeyboard(kbPrefix, kb);
+            sys.listener.addInlineKeyboard(kbPrefix, kb);
+        }
+        pro.zackpollard.telegrambot.api.chat.message.Message n = this.sys.getBot().editMessageText(this.message, newText, ParseMode.MARKDOWN, !message.isPreview(), replyMarkup);
         if (n != null) {
+            this.strmsg = newText;
             this.message = n;
         }
     }

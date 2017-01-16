@@ -39,7 +39,7 @@ public class PaginatedData {
 
     public void send(Sys sys, Group group, int page) {
         if (page < 0 || page >= pages.size()) {
-            System.out.format("requested page %d, only have [0, %d)", page, pages.size());
+            System.err.format("requested page %d, only have [0, %d)", page, pages.size());
             return;
         }
         MessageBuilder builder = sys.message().raw(this.pages.get(page));

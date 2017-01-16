@@ -54,7 +54,7 @@ public class TelegramGroup implements Group {
 
     @Override
     public Message sendMessage(MessageBuilder message, boolean event) {
-        Message m = this.sys.wrap(message, this.sys.sendMessage(this.chat, message));
+        Message m = this.sys.sendMessage(this.chat, message);
         if (event)
             EventManager.onSend(this, message);
         return m;
