@@ -36,7 +36,7 @@ public class ShowsCommand implements Command {
                 snd.put(show.getDisplay(), sys.message().italic(z -> z.escaped(show.getDisplay())).escaped(": " + links));
         }
         List<MessageBuilder> list = new LinkedList<>(snd.values());
-        PaginatedData pages = new PaginatedData(list, 20, true);
+        PaginatedData pages = new PaginatedData(list, 20, false);
         final int maxpages = pages.getNumberOfPages();
         int page;
         if (args.length > 0) {
