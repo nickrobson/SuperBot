@@ -3,7 +3,8 @@ package xyz.nickr.superbot.cmd.shows;
 import java.util.LinkedList;
 import java.util.List;
 
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.TreeMap;
 import xyz.nickr.superbot.SuperBotShows;
 import xyz.nickr.superbot.SuperBotShows.Show;
 import xyz.nickr.superbot.cmd.Command;
@@ -28,22 +29,14 @@ public class ShowsCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        List<String> snd = new LinkedList<>();
+        Map<String, MessageBuilder> snd = new TreeMap<>();
         for (Show show : SuperBotShows.getShows()) {
-            StringBuilder sb = new StringBuilder();
-            for (String s : show.getLinks()) {
-                if (sb.length() > 0) {
-                    sb.append(", ");
-                }
-                sb.append(s);
-            }
-            if (sb.length() > 0) {
-                snd.add("[" + show.getDisplay() + "] " + sb.toString());
-            }
+            String links = String.join(", ", show.getLinks());
+            if (!links.isEmpty())
+                snd.put(show.getDisplay(), sys.message().italic(z -> z.escaped(show.getDisplay())).escaped(": " + links));
         }
-        snd.sort(String.CASE_INSENSITIVE_ORDER);
-        List<MessageBuilder> mbs = snd.stream().map(s -> sys.message().escaped(s)).collect(Collectors.toList());
-        PaginatedData pages = new PaginatedData(mbs, 20, true);
+        List<MessageBuilder> list = new LinkedList<>(snd.values());
+        PaginatedData pages = new PaginatedData(list, 20, true);
         final int maxpages = pages.getNumberOfPages();
         int page;
         if (args.length > 0) {
