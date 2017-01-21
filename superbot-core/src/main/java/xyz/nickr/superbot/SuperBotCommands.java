@@ -58,6 +58,7 @@ public class SuperBotCommands {
     }
 
     public static void exec(Sys sys, Group g, User u, Message message) {
+        System.out.println(u.getDisplayName().orElse(u.getUsername()) + ": " + message.getMessage());
         String msg = message.getMessage().trim();
         String[] words = msg.split("\\s+");
         String prefix = sys.prefix();
