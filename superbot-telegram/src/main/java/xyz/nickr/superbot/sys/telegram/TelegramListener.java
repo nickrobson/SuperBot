@@ -82,7 +82,7 @@ public class TelegramListener implements Listener {
         String content = ((TextContent) event.getMessage().getContent()).getContent();
         EventManager.onMessage(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(content), event.getMessage()));
 
-        String command = content.substring(1).split(" ")[0].split("@")[0];
+        String command = content.split(" ")[0].split("@")[0];
 
         int argsStart = content.indexOf(" ");
         String args = "";
@@ -91,7 +91,7 @@ public class TelegramListener implements Listener {
             args = content.substring(argsStart).trim();
         }
 
-        String msg = this.sys.prefix() + command.trim() + " " + args.trim();
+        String msg = command.trim() + " " + args.trim();
         SuperBotCommands.exec(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(msg), event.getMessage()));
     }
 
