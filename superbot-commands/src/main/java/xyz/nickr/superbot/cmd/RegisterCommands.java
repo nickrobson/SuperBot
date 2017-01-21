@@ -34,7 +34,6 @@ import xyz.nickr.superbot.cmd.util.MathsCommand;
 import xyz.nickr.superbot.cmd.util.PasteFetchCommand;
 import xyz.nickr.superbot.cmd.util.UidCommand;
 import xyz.nickr.superbot.cmd.util.UpdateCommand;
-import xyz.nickr.superbot.cmd.util.VersionCommand;
 
 /**
  * @author Nick Robson
@@ -84,7 +83,6 @@ public class RegisterCommands {
         SuperBotCommands.register(new PasteFetchCommand());
         SuperBotCommands.register(new UidCommand());
         SuperBotCommands.register(new UpdateCommand());
-        SuperBotCommands.register(new VersionCommand());
     }
 
 }

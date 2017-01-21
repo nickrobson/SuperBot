@@ -44,12 +44,6 @@ public class SuperBotResource {
     public static final CloseableHttpClient HTTP = HttpClients.createDefault();
     public static final JavaOMDB OMDB = new JavaOMDB(false);
 
-    public static int BUILD_NUMBER = 0;
-    public static String VERSION = "Unknown";
-    public static String[] GIT_COMMIT_IDS = new String[] {"Unknown"};
-    public static String[] GIT_COMMIT_MESSAGES = new String[] {"Unknown"};
-    public static String[] GIT_COMMIT_AUTHORS = new String[] {"Unknown"};
-
     public static String whichEarlier(String a, String b) {
         String[] ad = a.substring(1).split("E");
         String[] bd = b.substring(1).split("E");

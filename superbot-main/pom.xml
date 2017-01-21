@@ -75,10 +75,6 @@
                         <manifest>
                             <mainClass>xyz.nickr.superbot.SuperBotController</mainClass>
                         </manifest>
-                        <manifestEntries>
-                            <JenkinsBuild>${build.number}</JenkinsBuild>
-                            <MavenVersion>${project.version}</MavenVersion>
-                        </manifestEntries>
                     </archive>
                 </configuration>
                 <executions>
