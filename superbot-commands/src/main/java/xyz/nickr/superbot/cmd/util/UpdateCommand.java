@@ -1,5 +1,6 @@
 package xyz.nickr.superbot.cmd.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -56,9 +57,25 @@ public class UpdateCommand implements Command {
             if (gitExit != 0) {
                 group.sendMessage(sys.message().escaped("Git process exited with a non-zero exit code."));
                 return;
-            } else {
-                group.sendMessage(sys.message().escaped("Successfully pulled new code."));
             }
+            Process gitHashProc = new ProcessBuilder()
+                    .command("git", "log", "-n", "1", "--pretty=format:%h:%s")
+                    .directory(buildDir)
+                    .start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(gitHashProc.getInputStream()));
+            String[] parts = reader.readLine().split(":");
+            reader.close();
+            group.sendMessage(sys.message()
+                    .escaped("Successfully pulled from repo.")
+                    .newLine()
+                    .bold(true)
+                    .escaped("Latest commit:")
+                    .bold(false)
+                    .escaped(" " + parts[1] + "(")
+                    .italic(true)
+                    .escaped(parts[0])
+                    .italic(false)
+                    .escaped(")"));
             int mvnExit = new ProcessBuilder()
                     .command("mvn", "package")
                     .directory(buildDir)
