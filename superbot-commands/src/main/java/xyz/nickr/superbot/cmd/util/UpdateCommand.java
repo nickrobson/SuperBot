@@ -21,11 +21,10 @@ import xyz.nickr.superbot.sys.User;
 public class UpdateCommand implements Command {
 
     private final String GIT_URL = "https://github.com/nickrobson/SuperBot.git";
-    private final String GIT_NO_CHANGES = "Already up-to-date.";
 
     @Override
     public String[] names() {
-        return new String[]{ "" };
+        return new String[]{ "update" };
     }
 
     @Override
