@@ -56,20 +56,6 @@ public class SuperBotController {
                 System.exit(0);
             }, "SuperBot Sleepy Thread").start();
 
-            new Thread(() -> {
-                while (true) {
-                    File file = new File(".jenkins-built");
-                    if (file.exists()) {
-                        file.delete();
-                        SuperBotResource.saveProgress();
-                        System.exit(0);
-                    }
-                    try {
-                        Thread.sleep(10_000); // 10 seconds
-                    } catch (Exception ex) {}
-                }
-            }, "SuperBot FileWatch Thread").start();
-
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
                     SuperBotResource.HTTP.close();
