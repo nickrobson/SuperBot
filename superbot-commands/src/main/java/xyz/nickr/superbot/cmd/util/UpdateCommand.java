@@ -56,13 +56,14 @@ public class UpdateCommand implements Command {
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
         File buildDir = new File("build");
         try {
-            ProcessBuilder gitProc = new ProcessBuilder();
+            ProcessBuilder gitProcBuilder = new ProcessBuilder();
             if (buildDir.exists()) {
-                gitProc.command("git", "pull").directory(buildDir);
+                gitProcBuilder.command("git", "pull").directory(buildDir);
             } else {
-                gitProc.command("git", "clone", GIT_URL, buildDir.toString());
+                gitProcBuilder.command("git", "clone", GIT_URL, buildDir.toString());
             }
-            int gitExit = gitProc.start().waitFor();
+            Process gitProc = gitProcBuilder.start();
+            int gitExit = gitProc.waitFor();
             if (gitExit != 0) {
                 group.sendMessage(sys.message().escaped("Git process exited with a non-zero exit code."));
                 return;
@@ -97,16 +98,21 @@ public class UpdateCommand implements Command {
                     .redirectErrorStream(true)
                     .start();
             int mvnExit = mvnProc.waitFor();
-            List<String> mvnOutput = new LinkedList<>();
+            List<String> updateOutput = new LinkedList<>();
+            BufferedReader gitReader = new BufferedReader(new InputStreamReader(gitProc.getInputStream()));
             BufferedReader mvnReader = new BufferedReader(new InputStreamReader(mvnProc.getInputStream()));
             String line;
+            updateOutput.add("\n=== GIT ===\n");
+            while ((line = gitReader.readLine()) != null)
+                updateOutput.add(line);
+            updateOutput.add("\n=== MAVEN ===\n");
             while ((line = mvnReader.readLine()) != null)
-                mvnOutput.add(line);
+                updateOutput.add(line);
             String pasteId = null;
             try {
                 pasteId = Unirest.post("https://nickr.xyz/cgi/paste.py")
                         .field("lang", "text")
-                        .field("text", String.join("\n", mvnOutput))
+                        .field("text", String.join("\n", updateOutput))
                         .asString()
                         .getBody();
             } catch (UnirestException e) {
