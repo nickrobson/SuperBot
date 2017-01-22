@@ -1,8 +1,11 @@
 package xyz.nickr.superbot.cmd.util;
 
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
@@ -10,11 +13,14 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import org.apache.http.client.methods.HttpPost;
 import xyz.nickr.superbot.cmd.Command;
 import xyz.nickr.superbot.cmd.Permission;
 import xyz.nickr.superbot.sys.Group;
 import xyz.nickr.superbot.sys.Message;
+import xyz.nickr.superbot.sys.MessageBuilder;
 import xyz.nickr.superbot.sys.Sys;
 import xyz.nickr.superbot.sys.User;
 
@@ -80,26 +86,40 @@ public class UpdateCommand implements Command {
             group.sendMessage(sys.message()
                     .escaped("Successfully pulled from repo.")
                     .newLine()
-                    .bold(true)
-                    .escaped("Latest commit:")
-                    .bold(false)
+                    .bold(z -> z.escaped("Latest commit:"))
                     .escaped(" " + parts[1] + " (")
-                    .italic(true)
-                    .escaped(parts[0].substring(0, 6))
-                    .italic(false)
+                    .italic(z -> z.escaped(parts[0].substring(0, 6)))
                     .escaped(")"));
             Files.write(LAST_PULL_FILE.toPath(), Collections.singletonList(parts[0]), StandardOpenOption.CREATE);
-            int mvnExit = new ProcessBuilder()
+            Process mvnProc = new ProcessBuilder()
                     .command("mvn", "package")
                     .directory(buildDir)
-                    .inheritIO()
-                    .start()
-                    .waitFor();
+                    .redirectErrorStream(true)
+                    .start();
+            int mvnExit = mvnProc.waitFor();
+            List<String> mvnOutput = new LinkedList<>();
+            BufferedReader mvnReader = new BufferedReader(new InputStreamReader(mvnProc.getInputStream()));
+            String line;
+            while ((line = mvnReader.readLine()) != null)
+                mvnOutput.add(line);
+            String pasteId = null;
+            try {
+                pasteId = Unirest.post("https://nickr.xyz/cgi/paste.py")
+                        .field("lang", "text")
+                        .field("text", String.join("\n", mvnOutput))
+                        .asString()
+                        .getBody();
+            } catch (UnirestException e) {
+                e.printStackTrace();
+            }
             if (mvnExit != 0) {
                 group.sendMessage(sys.message().escaped("Maven process exited with a non-zero exit code."));
                 return;
             } else {
-                group.sendMessage(sys.message().escaped("Successfully built new version."));
+                MessageBuilder mb = sys.message().escaped("Successfully built new version.");
+                if (pasteId != null)
+                    mb.newLine().escaped("Maven output: ").link("https://nickr.xyz/paste/" + pasteId);
+                group.sendMessage(mb);
             }
             File targetDir = new File(buildDir, "superbot-main");
             targetDir = new File(targetDir, "target");
