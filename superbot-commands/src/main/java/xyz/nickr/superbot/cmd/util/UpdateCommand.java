@@ -124,7 +124,7 @@ public class UpdateCommand implements Command {
             } else {
                 MessageBuilder mb = sys.message().escaped("Successfully built new version.");
                 if (pasteId != null)
-                    mb.newLine().escaped("Maven output: ").link("https://nickr.xyz/paste/" + pasteId);
+                    mb.newLine().escaped("Git and maven output: ").link("https://nickr.xyz/paste/" + pasteId);
                 group.sendMessage(mb);
             }
             File targetDir = new File(buildDir, "superbot-main");
