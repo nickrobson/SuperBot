@@ -39,27 +39,22 @@ public class MathsCommand implements Command {
             return;
         }
         MessageBuilder mb = sys.message();
-        try {
-            mb.escaped("[Maths] Query: " + String.join(" ", args)).newLine();
-            List<String> ags = new ArrayList<>(Arrays.asList(args));
-            Map<String, Matcher> vars = ags.stream().collect(Collectors.toMap(a -> a, a -> VARIABLE_ARG.matcher(a)));
-            vars.entrySet().removeIf(e -> !e.getValue().matches());
-            ags.removeIf(a -> vars.containsKey(a));
-            String input = String.join("", ags);
-            List<Map.Entry<String, String>> vs = vars.entrySet().stream().map(e -> e.getValue()).map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2))).collect(Collectors.toList());
-            Expression e = new ExpressionBuilder(input).variables(vs.stream().map(z -> z.getKey()).collect(Collectors.toSet())).variables("e", "Pi").build();
-            for (Map.Entry<String, String> ent : vs) {
-                e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
-            }
-            e.setVariable("e", Math.E);
-            e.setVariable("Pi", Math.PI);
-            double result = e.evaluate();
-            mb.escaped("[Maths] Result: " + result);
-            group.sendMessage(mb);
-        } catch (Exception ex) {
-            group.sendMessage(mb.escaped("An error occurred: " + ex.getMessage()));
-            ex.printStackTrace();
+        mb.escaped("[Maths] Query: " + String.join(" ", args)).newLine();
+        List<String> ags = new ArrayList<>(Arrays.asList(args));
+        Map<String, Matcher> vars = ags.stream().collect(Collectors.toMap(a -> a, VARIABLE_ARG::matcher));
+        vars.entrySet().removeIf(e -> !e.getValue().matches());
+        ags.removeIf(vars::containsKey);
+        String input = String.join("", ags);
+        List<Map.Entry<String, String>> vs = vars.values().stream().map(m -> new AbstractMap.SimpleEntry<>(m.group(1), m.group(2))).collect(Collectors.toList());
+        Expression e = new ExpressionBuilder(input).variables(vs.stream().map(Map.Entry::getKey).collect(Collectors.toSet())).variables("e", "Pi").build();
+        for (Map.Entry<String, String> ent : vs) {
+            e.setVariable(ent.getKey(), Double.parseDouble(ent.getValue()));
         }
+        e.setVariable("e", Math.E);
+        e.setVariable("Pi", Math.PI);
+        double result = e.evaluate();
+        mb.escaped("[Maths] Result: " + result);
+        group.sendMessage(mb);
     }
 
     @Override
