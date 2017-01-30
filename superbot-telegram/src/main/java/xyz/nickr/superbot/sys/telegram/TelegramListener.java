@@ -7,7 +7,6 @@ import java.util.Map;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.CallbackQuery;
-import pro.zackpollard.telegrambot.api.chat.inline.InlineCallbackQuery;
 import pro.zackpollard.telegrambot.api.chat.inline.InlineReplyMarkup;
 import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
 import pro.zackpollard.telegrambot.api.chat.inline.send.content.InputMessageContent;
@@ -19,13 +18,11 @@ import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.CallbackQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
-import pro.zackpollard.telegrambot.api.event.chat.inline.InlineCallbackQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.inline.InlineResultChosenEvent;
-import pro.zackpollard.telegrambot.api.event.chat.message.MessageCallbackQueryReceivedEvent;
+import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEditReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEvent;
-import pro.zackpollard.telegrambot.api.event.chat.message.MessageReceivedEvent;
 import xyz.nickr.superbot.SuperBotCommands;
 import xyz.nickr.superbot.SuperBotResource;
 import xyz.nickr.superbot.cmd.Command;
@@ -65,7 +62,7 @@ public class TelegramListener implements Listener {
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
         cmd(event);
     }
 
