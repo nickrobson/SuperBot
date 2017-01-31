@@ -79,7 +79,10 @@ public class TelegramListener implements Listener {
         String content = ((TextContent) event.getMessage().getContent()).getContent();
         EventManager.onMessage(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(content), event.getMessage()));
 
-        String command = content.split(" ")[0].split("@")[0];
+        String[] commandParts = content.split(" ")[0].split("@");
+        String command = commandParts[0];
+        if (commandParts.length > 1 && !commandParts[1].equals(this.bot.getBotUsername()))
+            return;
 
         int argsStart = content.indexOf(" ");
         String args = "";
