@@ -7,6 +7,7 @@ import java.util.Map;
 
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.CallbackQuery;
+import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.inline.InlineReplyMarkup;
 import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
 import pro.zackpollard.telegrambot.api.chat.inline.send.content.InputMessageContent;
@@ -63,7 +64,8 @@ public class TelegramListener implements Listener {
 
     @Override
     public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
-        cmd(event);
+        if (event.isBotMentioned() || event.getMessage().getChat().getType() == ChatType.PRIVATE)
+            cmd(event);
     }
 
     @Override
@@ -79,10 +81,7 @@ public class TelegramListener implements Listener {
         String content = ((TextContent) event.getMessage().getContent()).getContent();
         EventManager.onMessage(this.sys, g, u, this.sys.wrap(this.sys.message().escaped(content), event.getMessage()));
 
-        String[] commandParts = content.split(" ")[0].split("@");
-        String command = commandParts[0];
-        if (commandParts.length > 1 && !commandParts[1].equals(this.bot.getBotUsername()))
-            return;
+        String command = content.split(" ")[0].split("@")[0];
 
         int argsStart = content.indexOf(" ");
         String args = "";
