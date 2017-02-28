@@ -8,14 +8,22 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -45,13 +53,13 @@ public class SuperBotShows {
     private static final Map<Integer, String> days = new HashMap<>();
 
     static {
-        SuperBotShows.days.put(Calendar.SUNDAY, "Sunday");
-        SuperBotShows.days.put(Calendar.MONDAY, "Monday");
-        SuperBotShows.days.put(Calendar.TUESDAY, "Tuesday");
-        SuperBotShows.days.put(Calendar.WEDNESDAY, "Wednesday");
-        SuperBotShows.days.put(Calendar.THURSDAY, "Thursday");
-        SuperBotShows.days.put(Calendar.FRIDAY, "Friday");
-        SuperBotShows.days.put(Calendar.SATURDAY, "Saturday");
+        SuperBotShows.days.put(DayOfWeek.SUNDAY.getValue(), "Sunday");
+        SuperBotShows.days.put(DayOfWeek.MONDAY.getValue(), "Monday");
+        SuperBotShows.days.put(DayOfWeek.TUESDAY.getValue(), "Tuesday");
+        SuperBotShows.days.put(DayOfWeek.WEDNESDAY.getValue(), "Wednesday");
+        SuperBotShows.days.put(DayOfWeek.THURSDAY.getValue(), "Thursday");
+        SuperBotShows.days.put(DayOfWeek.FRIDAY.getValue(), "Friday");
+        SuperBotShows.days.put(DayOfWeek.SATURDAY.getValue(), "Saturday");
     }
 
     public static void setup() {
@@ -221,7 +229,7 @@ public class SuperBotShows {
         private Integer totalSeasons;
         private boolean dateCached;
         private SeasonResult season;
-        private Calendar date;
+        private LocalDateTime date;
 
         private Map<String, SeasonResult> seasons = new TreeMap<>((s1, s2) -> {
             try {
@@ -281,10 +289,7 @@ public class SuperBotShows {
             if (this.season != null) {
                 return this.season;
             }
-            Calendar today = Calendar.getInstance();
-            Calendar now = Calendar.getInstance();
-            now.clear();
-            now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            LocalDateTime now = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
             SeasonResult next = null;
             int n = 0;
             try {
@@ -297,12 +302,12 @@ public class SuperBotShows {
                         SeasonEpisodeResult[] episodes = next.getEpisodes();
                         SeasonEpisodeResult first = next.getEpisodes()[0],
                                         last = episodes[episodes.length - 1];
-                        Calendar a = first.getReleaseDate(), b = last.getReleaseDate();
+                        LocalDateTime a = first.getReleaseDate(), b = last.getReleaseDate();
                         if (a == null || b == null) {
                             break;
-                        } else if (a.after(now) && b.after(now)) {
+                        } else if (a.isAfter(now) && b.isAfter(now)) {
                             this.season = next;
-                        } else if (!a.after(now) && !b.before(now)) {
+                        } else if (!a.isAfter(now) && !b.isBefore(now)) {
                             this.season = next;
                             break;
                         }
@@ -314,22 +319,19 @@ public class SuperBotShows {
             return this.season;
         }
 
-        public Calendar getDate() {
+        public LocalDateTime getDate() {
             if (this.dateCached) {
                 return this.date;
             }
             this.dateCached = true;
             try {
                 SeasonResult season = this.getSeason();
-                Calendar today = Calendar.getInstance();
-                Calendar now = Calendar.getInstance();
-                now.clear();
-                now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+                LocalDateTime now = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
                 if (season != null) {
                     List<SeasonEpisodeResult> eps = Arrays.asList(season.getEpisodes());
                     for (Iterator<SeasonEpisodeResult> it = eps.iterator(); it.hasNext();) {
-                        Calendar cal = it.next().getReleaseDate();
-                        if (cal != null && cal.after(now)) {
+                        LocalDateTime cal = it.next().getReleaseDate();
+                        if (cal != null && cal.isAfter(now)) {
                             return this.date = cal;
                         }
                     }
@@ -357,7 +359,7 @@ public class SuperBotShows {
         public String getLatestEpisode() {
             if (this.latest != null)
                 return this.latest;
-            Calendar now = Calendar.getInstance();
+            LocalDateTime now = LocalDateTime.now();
             int season = 1;
             while (true) {
                 SeasonResult res = getSeason(String.valueOf(season));
@@ -367,8 +369,8 @@ public class SuperBotShows {
                 }
                 for (SeasonEpisodeResult ser : res) {
                     try {
-                        Calendar release = ser.getReleaseDate();
-                        if (release == null || release.after(now)) {
+                        LocalDateTime release = ser.getReleaseDate();
+                        if (release == null || release.isAfter(now)) {
                             done = true;
                             break;
                         }
@@ -388,8 +390,8 @@ public class SuperBotShows {
         }
 
         public String getDay() {
-            Calendar date = this.getDate();
-            return date != null ? SuperBotShows.days.getOrDefault(date.get(Calendar.DAY_OF_WEEK), "N/A") : "N/A";
+            LocalDateTime date = this.getDate();
+            return date != null ? SuperBotShows.days.getOrDefault(date.get(ChronoField.DAY_OF_WEEK), "N/A") : "N/A";
         }
 
         @Override
@@ -403,11 +405,13 @@ public class SuperBotShows {
                 return o == this;
             }
             Show s = (Show) o;
-            return this.imdb == s.imdb || this.imdb != null && this.imdb.equals(s.imdb);
+            return Objects.equals(this.imdb, s.imdb);
         }
 
-        public static String getDateString(Calendar date) {
-            return date != null ? new SimpleDateFormat("E, d MMM yyyy").format(date.getTime()) : "N/A";
+        private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("d MMM ''uu").withLocale(Locale.US);
+
+        public static String getDateString(LocalDateTime date) {
+            return date != null ? format.format(date) : "N/A";
         }
 
     }

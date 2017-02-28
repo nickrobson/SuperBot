@@ -1,5 +1,6 @@
 package xyz.nickr.superbot.cmd.shows;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -40,7 +41,7 @@ public class MissedShowsCommand implements Command {
             return;
         }
         Map<Show, String> progress = SuperBotResource.getUserProgress(prof.getName());
-        Calendar now = Calendar.getInstance();
+        LocalDateTime now = LocalDateTime.now();
         List<MessageBuilder> lines = new LinkedList<>();
         for (Entry<Show, String> entry : progress.entrySet()) {
             Show show = entry.getKey();
@@ -61,8 +62,8 @@ public class MissedShowsCommand implements Command {
                         }
                         for (SeasonEpisodeResult ep : sres) {
                             try {
-                                Calendar release = ep.getReleaseDate();
-                                if (release == null || release.after(now)) {
+                                LocalDateTime release = ep.getReleaseDate();
+                                if (release == null || release.isAfter(now)) {
                                     break;
                                 }
                                 if (!miss.isEmpty() || startSeason < season || Integer.parseInt(ep.getEpisode()) > episode) {

@@ -9,7 +9,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.jomdb>3.0.0</version.jomdb>
+        <version.jomdb>4.0.0</version.jomdb>
         <version.exp4j>0.4.5</version.exp4j>
         <version.gson>2.8.0</version.gson>
         <version.lombok>1.16.12</version.lombok>

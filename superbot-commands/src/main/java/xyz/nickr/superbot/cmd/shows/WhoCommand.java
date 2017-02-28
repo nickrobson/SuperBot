@@ -1,7 +1,7 @@
 package xyz.nickr.superbot.cmd.shows;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,7 +61,7 @@ public class WhoCommand implements Command {
         List<String> shows = new ArrayList<>();
         Map<Show, String> progress = SuperBotResource.getUserProgress(username.toLowerCase());
 
-        Calendar now = Calendar.getInstance();
+        LocalDateTime now = LocalDateTime.now();
 
         int maxEpLen = progress.values().stream().mapToInt(String::length).max().orElse(0);
 
@@ -82,8 +82,8 @@ public class WhoCommand implements Command {
                     }
                     for (SeasonEpisodeResult ser : res) {
                         try {
-                            Calendar release = ser.getReleaseDate();
-                            if (release == null || release.after(now)) {
+                            LocalDateTime release = ser.getReleaseDate();
+                            if (release == null || release.isAfter(now)) {
                                 done = true;
                                 break;
                             }

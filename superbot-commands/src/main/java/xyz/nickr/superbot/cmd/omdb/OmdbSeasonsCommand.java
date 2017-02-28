@@ -1,10 +1,13 @@
 package xyz.nickr.superbot.cmd.omdb;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.util.Locale;
 import xyz.nickr.jomdb.JavaOMDB;
 import xyz.nickr.jomdb.model.SeasonEpisodeResult;
 import xyz.nickr.jomdb.model.SeasonResult;
@@ -31,8 +34,10 @@ public class OmdbSeasonsCommand implements Command {
         return new String[] {"[imdbId]", "get information about the show's seasons"};
     }
 
-    String toString(Calendar c) {
-        return c != null ? new SimpleDateFormat("d MMM yyyy").format(c.getTime()) : "not released";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM ''uu").withLocale(Locale.US);
+
+    String toString(LocalDateTime ldt) {
+        return ldt != null ? formatter.format(ldt) : "not released";
     }
 
     @Override

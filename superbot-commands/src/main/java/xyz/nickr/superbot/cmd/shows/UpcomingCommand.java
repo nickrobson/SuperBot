@@ -1,8 +1,10 @@
 package xyz.nickr.superbot.cmd.shows;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import xyz.nickr.superbot.SuperBotShows;
@@ -28,26 +30,20 @@ public class UpcomingCommand implements Command {
 
     @Override
     public void exec(Sys sys, User user, Group group, String used, String[] args, Message message) {
-        Calendar today = Calendar.getInstance();
-        Calendar now = Calendar.getInstance();
-        now.clear();
-        now.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-        now.add(Calendar.DAY_OF_MONTH, -2);
-        Calendar week = Calendar.getInstance();
-        week.clear();
-        week.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-        week.add(Calendar.DAY_OF_MONTH, 8);
+        LocalDateTime now = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
+        now = now.minus(1, ChronoUnit.DAYS);
+        LocalDateTime week = now.plus(8, ChronoUnit.DAYS);
 
-        Map<Calendar, String> days = new TreeMap<>();
+        Map<LocalDateTime, String> days = new TreeMap<>();
         for (Show show : SuperBotShows.getShows()) {
-            Calendar date = show.getDate();
-            if (date != null && !date.before(now) && !date.after(week)) {
+            LocalDateTime date = show.getDate();
+            if (date != null && !date.isBefore(now) && !date.isAfter(week)) {
                 days.merge(date, show.getDisplay(), (a, b) -> a + "\n" + b);
             }
         }
 
         MessageBuilder mb = sys.message().bold(true).escaped("Upcoming episodes of shows:").bold(false);
-        for (Entry<Calendar, String> entry : days.entrySet()) {
+        for (Map.Entry<LocalDateTime, String> entry : days.entrySet()) {
             mb.newLine().bold(true).escaped(Show.getDateString(entry.getKey())).bold(false);
             for (String show : entry.getValue().split("\\n")) {
                 mb.newLine().escaped("   - " + show);

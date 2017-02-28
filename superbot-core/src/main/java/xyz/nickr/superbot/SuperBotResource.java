@@ -42,7 +42,7 @@ public class SuperBotResource {
 
     public static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
     public static final CloseableHttpClient HTTP = HttpClients.createDefault();
-    public static final JavaOMDB OMDB = new JavaOMDB(false);
+    public static final JavaOMDB OMDB = new JavaOMDB();
 
     public static String whichEarlier(String a, String b) {
         String[] ad = a.substring(1).split("E");
